@@ -1,0 +1,88 @@
+# Hermes Content Studio — Harness Engineering 설정
+# 참조: https://github.com/walkinglabs/awesome-harness-engineering
+# CAR: Control–Agency–Runtime (HarnessCard)
+
+harness:
+  version: "1.2.0"
+  reference: awesome-harness-engineering
+  card:
+    control:
+      - repo_local_instructions  # AGENTS.md, HARNESS.md
+      - feature_list_scope       # .harness/feature_list.json
+      - quality_gates            # validate-output.sh
+      - sensitive_path_deny      # deny_paths
+    agency:
+      - deterministic_pipeline   # assemble-*.py (LLM 불필요)
+      - tool_masking             # hermes-cli only for content
+      - context_backpressure     # pre-fetch search, filesystem memory
+      - single_active_feature    # one pipeline stage at a time
+    runtime:
+      - init_bootstrap           # init.sh
+      - observability            # traces, cost ledger, timing
+      - session_handoff          # progress.md, session-handoff.md
+      - health_gates             # health-check.sh before run
+
+paths:
+  harness_dir: .harness
+  feature_list: .harness/feature_list.json
+  progress: .harness/progress.md
+  session_handoff: .harness/session-handoff.md
+  traces: .harness/traces
+  cost_ledger: .harness/cost-ledger.jsonl
+  eval_results: .harness/eval-results.json
+
+# 성능 고도화 (Intel Mac)
+performance:
+  # 결정적 파이프라인 우선 — LLM polish는 HERMES_ENHANCE=1 일 때만
+  deterministic_first: true
+  parallel_search_workers: 4
+  search_max_results: 3
+  # 단계별 SLA (초) — 초과 시 warn
+  sla_seconds:
+    research: 30
+    content: 10
+    lecture_basic: 15
+    lecture_claude_design: 300
+    notion_archive: 120
+    full_pipeline: 60
+  # 컨텍스트 절약: 콘텐츠 생성 시 MCP·브라우저 제외
+  tool_masking:
+    content_skills: [content-orchestration, marketing-research, content-pipeline, channel-linkedin, content-studio-slides]
+    default_toolsets: hermes-cli
+  # Ollama 메모리 관리
+  ollama:
+    unload_after_pipeline: false
+    max_concurrent_llm: 1
+
+# 가드레일
+guardrails:
+  deny_paths:
+    - ~/.hermes/.env
+    - ~/.ssh
+    - "**/.env"
+    - "**/credentials*"
+    - "**/*secret*"
+  require_validation_before_done: true
+  require_notion_sync_telegram: true
+
+# 검증 (12-Factor AgentOps)
+verification:
+  pre_run:
+    - scripts/health-check.sh
+  post_stage:
+    research: scripts/validate-output.sh research
+    blog: scripts/validate-output.sh blog
+    instagram: scripts/validate-output.sh instagram
+    linkedin: scripts/validate-output.sh linkedin
+    lecture: scripts/validate-output.sh lecture
+  post_pipeline:
+    - scripts/harness-eval.sh --record
+
+# Eval 기준선 (harness-eval.sh)
+eval:
+  baseline_seconds:
+    research: 20
+    content: 5
+    full_pipeline: 45
+  min_search_hits: 5
+  regression_threshold_pct: 25

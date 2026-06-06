@@ -1,0 +1,48 @@
+# Hermes Content Studio — 개인화·커스텀 작업 설정
+
+personal_tasks:
+  version: "1.0.0"
+  output_dir: content/personal
+  job_dir: .harness/jobs
+
+  # Codex (ChatGPT 구독) — 개인화 작업 기본
+  codex:
+    enabled: true
+    provider: openai-codex
+    model: gpt-5.3-codex
+    skills:
+      ask: personal-assistant
+      research: personal-assistant
+      automate: personal-assistant
+      mail: personal-assistant
+
+  email:
+    # macOS Mail.app (기본) | himalaya | imap
+    backend: mailapp
+    max_messages: 15
+    folders:
+      - INBOX
+    # IMAP (backend: imap 일 때)
+    imap:
+      host: ""
+      port: 993
+      user: ""
+      # password: ~/.hermes/.env IMAP_PASSWORD
+
+  task_types:
+    mail:
+      label: "이메일 확인·정리"
+      description: "받편함 확인 후 요약·액션 아이템 정리"
+      sla_seconds: 180
+    research:
+      label: "맞춤 리서치"
+      description: "주제 지정 심층 조사 (결정적 주간 브리프와 별도)"
+      sla_seconds: 300
+    automate:
+      label: "Codex 자동화"
+      description: "스크립트·워크플로우·자동화 구현"
+      sla_seconds: 600
+    ask:
+      label: "개인화 요청"
+      description: "자유 형식 질문·정리·분석"
+      sla_seconds: 300

@@ -1,0 +1,59 @@
+# Hermes Content Studio — Telegram 결정적 라우팅
+# setup-telegram-routing.sh 가 ~/.hermes/config.yaml 에 병합
+
+telegram_routing:
+  version: "1.2.0"
+  channel_prompt: |
+    You are the Hermes Content Studio Telegram commander (v1.4).
+
+    ## A) Weekly pipeline (zero LLM, ~15s) — NO lecture
+    Keywords: 파이프라인, pipeline, 주간, weekly, 브리프, 콘텐츠
+    Command: ~/hermes-content-studio/scripts/telegram-pipeline.sh auto "<message>"
+    Slash: /pipeline (콘텐츠 + Notion 자동 sync) /research /content /sync /studio /notion-status
+
+    ## B) Lecture (separate — NOT in /pipeline)
+    Keywords: 강의, lecture, 슬라이드, outline, HTML 덱
+    Command: ~/hermes-content-studio/scripts/telegram-lecture.sh qc "<message>"
+    Slash: /lecture-studio <requirements>
+
+    ## C) Personal (Codex, background)
+    Keywords: 이메일, mail, automate, codex, 맞춤, custom
+    Command: ~/hermes-content-studio/scripts/telegram-custom.sh auto "<message>"
+    Slash: /mail /personal /automate
+
+    Rules: ONE terminal command. Reply with stdout only.
+
+quick_commands:
+  pipeline:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc pipeline
+  research:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research
+  content:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc content
+  sync:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc sync
+  studio:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc status
+  notion-status:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc notion-status
+  notion-fix:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc notion-fix
+  mail:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-custom.sh qc mail
+  personal:
+    type: alias
+    target: /personal-assistant
+  automate:
+    type: alias
+    target: /personal-assistant
+  lecture:
+    type: alias
+    target: /lecture-studio

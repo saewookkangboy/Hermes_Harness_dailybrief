@@ -1,0 +1,95 @@
+# Hermes Content Studio — 채널별 품질·알고리즘 가이드라인
+# 공식 문서·업계 베스트 프랙티스 기반 (2025–2026)
+
+blog:
+  seo:
+    title_length: [50, 60]
+    meta_description_length: [140, 160]
+    h1_count: 1
+    h2_min: 3
+    internal_links_min: 1
+    required_meta: [title, description, canonical, og:title, og:description]
+    image_alt_required: true
+  aeo:
+    direct_answer_first: true
+    faq_min: 3
+    faq_schema_jsonld: true
+    article_schema_jsonld: true
+    quotable_blocks: true  # AI 인용 가능한 40–60자 요약 블록
+    sources:
+      - "Google Search Central — Structured data"
+      - "schema.org FAQPage, Article"
+  geo:
+    # Generative Engine Optimization (ChatGPT, Perplexity, Gemini 인용)
+    entity_clarity: true       # 고유명사·정의 명확화
+    citation_blocks: true      # 출처 인용 블록
+    freshness_signals: true    # 날짜·업데이트 표시
+    author_attribution: true
+    semantic_headings: true    # 질문형 H2
+    sources:
+      - "Princeton GEO research (2024)"
+      - "Search Engine Journal — GEO guide 2025"
+
+linkedin:
+  algorithm:
+    # LinkedIn 2025–2026 feed ranking signals
+    hook_lines: 2              # "see more" 전 노출
+    max_chars: 1300
+    paragraph_max_lines: 2     # dwell time — 짧은 문단
+    bullet_style: "→"
+    bullets_min: 3
+    bullets_max: 5
+    hashtags: [3, 5]
+    comment_trigger: true      # 마지막 질문
+    link_strategy: "first_comment"  # 본문 링크 ↓ reach — 댓글에 URL
+    native_content: true       # PDF·외부 링크보다 네이티브 텍스트 우선
+    personal_frame: true       # 1인칭 전문가 관점
+    whitespace_breaks: true
+    sources:
+      - "LinkedIn Creator Mode best practices"
+      - "LinkedIn algorithm — dwell time, comments, native content"
+
+instagram:
+  algorithm:
+    carousel_slides: 3
+    aspect_ratios: ["1080x1350"]   # 4:5 portrait — 2026 feed 권장
+    aspect_ratio_api: "4:5"
+    grid_safe_zone: "1080x1080 center"
+    hook_seconds: 3
+    save_trigger: true
+    swipe_completion: true         # 미완독 재노출 대비
+    caption_hook_chars: 125
+    caption_readability: true
+    hashtags: 5                    # 5개 고정 (스팸 신호 회피)
+    alt_text_per_slide: true
+    content_format: informational  # 정보형 인포그래피 (저장형)
+    sources:
+      - "Instagram carousel 4:5 — save rate, completion rate, feed dominance"
+      - "2026 feed portrait 1080×1350 recommended over 1:1"
+  image_generation:
+    engine: "Gemini Nano Banana Pro 2 (gemini-3-pro-image-preview)"
+    aspect_ratio: "4:5"
+    pixels: "1080×1350"
+    image_size: "2K"
+    style: "Korean informational infographic card"
+    font: "Nanum Gothic (나눔고딕)"
+    language: "ko"
+    layout: "headline + bullet cards, save-worthy educational"
+    korean_text_rules: "exact Hangul in prompts, Nanum Gothic, no broken characters"
+    brand_accent: "#FFE500"
+
+lectures:
+  design_source: "https://getdesign.md/"
+  default_preset: content-studio
+  output_formats: [outline, html, pptx]
+
+voice:
+  # im-not-ai: https://github.com/epoko77-ai/im-not-ai
+  source: config/voice-style.yaml
+  blog_register: semi_formal
+  linkedin_register: personal_expert
+  avoid_ai_tell: true
+  deterministic: scripts/lib/humanize_korean.py
+  slide_types: [cover, agenda, body, table, closing]
+  speaker_notes: true
+  faq_slides: 1

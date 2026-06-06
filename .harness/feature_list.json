@@ -1,0 +1,130 @@
+{
+  "project": "hermes-content-studio",
+  "last_updated": "2026-06-06T22:45:00+09:00",
+  "rules": {
+    "single_active_feature": true,
+    "passing_requires_evidence": true,
+    "do_not_skip_verification": true,
+    "deterministic_first": true
+  },
+  "status_legend": {
+    "not_started": "작업 미시작",
+    "in_progress": "현재 활성 작업",
+    "blocked": "차단됨 — blocker 문서화 필요",
+    "passing": "검증 통과 + 증거 기록됨"
+  },
+  "features": [
+    {
+      "id": "pipe-001",
+      "priority": 1,
+      "area": "research",
+      "title": "주간 리서치 브리프 (결정적)",
+      "user_visible_behavior": "run-research-brief.sh 실행 시 ~20초 내 brief.md 생성",
+      "status": "passing",
+      "verification": [
+        "scripts/init.sh",
+        "scripts/run-research-brief.sh",
+        "scripts/validate-output.sh research content/research/YYYY-MM-DD_brief.md"
+      ],
+      "evidence": ["content/research/2026-06-05_brief.md"],
+      "notes": "병렬 ddgs 4 workers, assemble-research-brief.py"
+    },
+    {
+      "id": "pipe-002",
+      "priority": 2,
+      "area": "content",
+      "title": "콘텐츠 패키지 (blog + instagram + linkedin)",
+      "user_visible_behavior": "run-content-package.sh 실행 시 3채널 산출물 생성",
+      "status": "passing",
+      "verification": [
+        "scripts/run-content-package.sh",
+        "scripts/validate-output.sh blog",
+        "scripts/validate-output.sh instagram",
+        "scripts/validate-output.sh linkedin"
+      ],
+      "evidence": ["content/blog/", "content/instagram/", "content/linkedin/"],
+      "notes": "assemble-content-package.py 결정적 조립"
+    },
+    {
+      "id": "pipe-003",
+      "priority": 3,
+      "area": "lecture",
+      "title": "강의 슬라이드 (basic)",
+      "user_visible_behavior": "run-lecture-slides.sh --from-brief 로 outline + HTML + PPTX",
+      "status": "passing",
+      "verification": [
+        "scripts/run-lecture-slides.sh --from-brief YYYY-MM-DD"
+      ],
+      "evidence": ["content/lectures/"],
+      "notes": "claude-design 모드는 선택 (2-5min)"
+    },
+    {
+      "id": "pipe-004",
+      "priority": 4,
+      "area": "notion",
+      "title": "Notion 아카이브 + Telegram Permalink",
+      "user_visible_behavior": "archive-to-notion.sh --force 후 Permalink 전송",
+      "status": "passing",
+      "verification": [
+        "scripts/archive-to-notion.sh YYYY-MM-DD --force"
+      ],
+      "evidence": ["content/.notion-archive-state.json"],
+      "notes": "Telegram 요청 시 필수"
+    },
+    {
+      "id": "pipe-005",
+      "priority": 5,
+      "area": "harness",
+      "title": "Harness eval + 성능 기준선",
+      "user_visible_behavior": "harness-eval.sh 실행 시 SLA/regression 리포트",
+      "status": "passing",
+      "verification": [
+        "scripts/harness-eval.sh",
+        "scripts/harness-eval.sh --record"
+      ],
+      "evidence": [".harness/eval-results.json"],
+      "notes": "awesome-harness-engineering 기반 v1.2.0 — research 11s, content 0s, full 11s"
+    },
+    {
+      "id": "pipe-006",
+      "priority": 6,
+      "area": "telegram",
+      "title": "Telegram E2E (입력→파이프라인→Permalink)",
+      "user_visible_behavior": "Telegram 요청 시 60s 내 결정적 파이프라인 + Notion Permalink 회신",
+      "status": "passing",
+      "verification": [
+        "scripts/setup-telegram-routing.sh",
+        "scripts/telegram-pipeline.sh qc pipeline",
+        "scripts/e2e-smoke-test.sh --telegram"
+      ],
+      "evidence": [
+        "scripts/telegram-pipeline.sh",
+        "config/telegram-routing.yaml",
+        "~/.hermes/config.yaml quick_commands",
+        ".harness/eval-results.json (2026-06-06)"
+      ],
+      "blockers": [],
+      "notes": "qc pipeline: research+content ≤15s, Notion sync-bg (Hermes command_timeout 30s 준수)"
+    },
+    {
+      "id": "pipe-007",
+      "priority": 7,
+      "area": "personal",
+      "title": "Telegram 개인화 (mail · Codex · custom research)",
+      "user_visible_behavior": "/mail /personal /automate 로 맞춤 작업 접수 + Telegram 완료 알림",
+      "status": "passing",
+      "verification": [
+        "scripts/telegram-custom.sh status",
+        "scripts/mail-digest.py",
+        "scripts/setup-telegram-routing.sh",
+        "Telegram: /mail"
+      ],
+      "evidence": [
+        "scripts/telegram-custom.sh",
+        "skills/personal-assistant/SKILL.md",
+        "config/personal-tasks.yaml"
+      ],
+      "notes": "Codex bg job · content/personal/"
+    }
+  ]
+}

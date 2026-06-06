@@ -1,0 +1,44 @@
+# Hermes Content Studio — 문체 (im-not-ai AI-tell + casual 해요체)
+# Reference: https://github.com/epoko77-ai/im-not-ai
+
+source: im-not-ai
+version: "2.1.0"
+
+principles:
+  - meaning_invariant
+  - genre_preserved
+  - no_ai_tell
+  - blog_formal_linkedin_haeyo
+  - change_rate_max: 0.30
+
+genres:
+  blog:
+    register: formal_hamnida
+    avoid:
+      - "결론적으로"
+      - "~를 통해" spam
+      - "시사하는 바"
+      - 장황한 AI slop
+      - 마크다운 헤더·볼드 (평문 LinkedIn형)
+    prefer:
+      - ~합니다 / ~입니다
+      - 출처 기반 확장 본문
+      - 실무 적용은 generic 체크리스트 금지
+  linkedin:
+    register: casual_haeyo_personal
+    avoid:
+      - 본문 URL
+      - 3인칭 템플릿
+    prefer:
+      - 1인칭 ("저는", "돌려보니")
+      - Hook 2줄
+      - → 불릿 3~5
+      - ~세요? CTA
+  instagram:
+    register: casual_haeyo
+    emoji: minimal
+
+pipeline:
+  deterministic: scripts/lib/humanize_korean.py
+  llm_optional: humanize-korean
+  apply_to: [blog, linkedin, blog_html_prose]

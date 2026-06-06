@@ -1,0 +1,43 @@
+---
+description: Harness engineering — 성능·신뢰성 규칙 (awesome-harness-engineering)
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Harness Engineering Rules
+
+## 세션 시작
+
+1. `scripts/init.sh` 실행 (또는 `--skip-health`로 빠른 시작)
+2. `.harness/progress.md` 읽기
+3. `.harness/feature_list.json`에서 `in_progress` 기능 확인
+
+## 성능 우선순위
+
+- **결정적 파이프라인 우선:** `run-research-brief.sh`, `run-content-package.sh`, `assemble-*.py`
+- **LLM polish는 선택:** `HERMES_ENHANCE=1`일 때만
+- **도구 마스킹:** 콘텐츠 작업 시 `hermes-cli` only (`-t hermes-cli`)
+- **컨텍스트 절약:** `content/research/_search_context_*.md` 참조, web_search 생략
+
+## 완료 정의 (Definition of Done)
+
+작업 완료 선언 전 필수:
+
+1. `scripts/validate-output.sh` 통과
+2. 산출물이 `content/{channel}/`에 저장됨
+3. Telegram 요청 시 `archive-to-notion.sh --force` + Permalink
+4. `.harness/progress.md` 업데이트
+
+## 금지 (Anti-patterns)
+
+- 검증 없이 "완료" 선언
+- `~/.hermes/.env`, credentials 파일 읽기/커밋
+- Notion 동기화 없이 Telegram 응답만 전송
+- 결정적 파이프라인 가능한데 LLM으로 전체 재생성
+
+## 참조
+
+- `HARNESS.md` — 전체 하네스 스펙
+- `config/harness.yaml` — SLA, 가드레일, eval 기준선
+- `AGENTS.md` — 워크스페이스 규칙

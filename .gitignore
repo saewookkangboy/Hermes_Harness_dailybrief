@@ -1,0 +1,43 @@
+# Secrets & local env
+.env
+.env.*
+*.pem
+credentials.json
+**/credentials/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# macOS
+.DS_Store
+
+# Personal / private outputs
+content/personal/
+
+# Harness runtime traces & logs
+.harness/traces/
+.harness/*.log
+.harness/eval-results.json
+
+# Notion local state
+content/.notion-archive-state.json
+
+# Generated content (keep structure)
+content/blog/*.html
+content/instagram/*.md
+content/linkedin/*.md
+content/lectures/*
+content/packages/*
+content/logs/*
+content/drafts/**/*
+!content/drafts/cursor-handoff/.gitkeep
+
+# Search context cache (regenerated daily)
+content/research/_search_context_*
+
+# Cron exports
+cron-exports/*

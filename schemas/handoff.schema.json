@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hermes Content Studio Handoff",
+  "description": "M1~M5 마케팅 오케스트레이션 + 채널 산출물 handoff. marketing-ai-orchestration-harness 호환.",
+  "type": "object",
+  "required": [
+    "stage",
+    "assumptions",
+    "inputs_used",
+    "artifacts",
+    "quality_notes",
+    "next_stage_ready",
+    "handoff_payload"
+  ],
+  "properties": {
+    "stage": {
+      "type": "string",
+      "enum": ["M1", "M2", "M3", "M4", "M5", "SYNTH"]
+    },
+    "channel": {
+      "type": "string",
+      "enum": ["research", "blog", "instagram", "linkedin", "lectures", "unified", "all"]
+    },
+    "assumptions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "inputs_used": {
+      "type": "object",
+      "properties": {
+        "brief_path": { "type": "string" },
+        "search_context": { "type": "string" },
+        "local_docs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "content_output_conditions": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "artifacts": {
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "conditions_applied": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "quality_notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "next_stage_ready": {
+      "type": "boolean"
+    },
+    "handoff_payload": {
+      "type": "object",
+      "description": "다음 단계 입력. M1→M2 topic_clusters, M2→M3 channel drafts 등"
+    }
+  },
+  "additionalProperties": true
+}

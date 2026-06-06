@@ -1,0 +1,151 @@
+# Hermes Content Studio — 설정
+# Intel Mac (MacBook Pro) 자체호스팅
+
+studio:
+  name: Hermes Content Studio
+  version: "1.3.0"
+  orchestration: config/content-orchestration.yaml
+  harness: config/harness.yaml
+  harness_doc: HARNESS.md
+  workspace: ~/hermes-content-studio
+  design_system: ~/hermes-content-studio/Getdesign.md
+
+host:
+  platform: darwin
+  arch: x86_64
+  model: Intel Core i5-8259U
+  notes: "로컬 Ollama gemma4 8B — 요약·초안용. 결정적 파이프라인(~30s) + Hermes polish(선택)"
+
+channels:
+  blog:
+    enabled: true
+    format: html
+    seo: true
+    aeo: true
+    output: content/blog
+  instagram:
+    enabled: true
+    format: markdown
+    carousel_slides: 3
+    image_engine: gemini-3-pro-image-preview
+    style: webtoon
+    output: content/instagram
+  linkedin:
+    enabled: true
+    format: markdown
+    max_chars: 1300
+    output: content/linkedin
+  lectures:
+    enabled: true
+    formats: [outline, html, pptx]
+    design_catalog: config/design-catalog.yaml
+    design_config: config/lecture-design.yaml
+    design_modes: [basic, claude-design]
+    default_design_mode: basic
+    design_source: https://getdesign.md/
+    output: content/lectures
+  research:
+    enabled: true
+    format: markdown
+    output: content/research
+
+schedule:
+  timezone: Asia/Seoul
+  jobs:
+    - name: daily-research-brief
+      cron: "0 8 * * *"   # 매일 08:00 — 일일 렌즈
+      skill: channels/research
+    - name: weekly-content-package
+      cron: "0 9 * * 3"   # 수 09:00 — M2
+      skill: content-orchestration
+    - name: weekly-lecture-planning
+      cron: "0 9 * * 5"   # 금 09:00
+      skill: content-studio-slides
+
+projects:
+  marketers-brain: ~/Desktop/개발_코딩_프로젝트/marketers-brain
+  vibe-coding-navigator: ~/Desktop/개발_코딩_프로젝트/vibe-coding-navigator
+  lecture-materials: ~/Desktop/교육_강의_자료
+
+integrations:
+  cursor:
+    cli: true  # cursor-agent (~/.local/bin) + run-cursor-handoff.sh
+    agent_bin: ~/.local/bin/cursor-agent
+    ide_bin: ~/.local/bin/cursor
+    handoff_dir: content/drafts/cursor-handoff
+    auto_run: true  # HERMES_CURSOR_AUTO=1 — /automate 후 CLI 실행
+    mcp:
+      notion:
+        server: plugin-notion-workspace-notion
+        endpoint: https://mcp.notion.com/mcp
+        status: connected  # OAuth 완료, 16 tools
+      slack:
+        server: plugin-slack-slack
+        endpoint: https://mcp.slack.com/mcp
+        status: connected  # OAuth 완료, 20 tools
+  ollama:
+    endpoint: http://127.0.0.1:11434
+    model: gemma4:latest
+  codex:
+    provider: openai-codex
+    model: gpt-5.3-codex
+    auth: oauth  # ChatGPT/Codex 구독 — hermes auth / setup-codex.sh
+    cli: ~/.hermes/node/bin/codex
+    setup_script: scripts/setup-codex.sh
+    fallback: true  # ~/.hermes/config.yaml fallback_providers
+    quality_paths:
+      - claude-design
+      - HERMES_ENHANCE
+    status: connected
+  hermes:
+    gateway: true
+    config: ~/.hermes/config.yaml
+    mcp:
+      notion:
+        endpoint: https://mcp.notion.com/mcp
+        auth: oauth
+        status: enabled  # hermes mcp test notion ✓
+      slack:
+        endpoint: https://mcp.slack.com/mcp
+        auth: oauth
+        status: disabled  # Hermes OAuth 등록 404 — Cursor MCP 사용 권장
+  notion_api:
+    # MCP 외 REST API 연동 시 (hermes notion 스킬)
+    env_key: NOTION_API_KEY
+    status: optional
+  slack_bot:
+    # cron deliver·알림용 네이티브 연동 (MCP 대안)
+    env_keys: [SLACK_BOT_TOKEN, SLACK_APP_TOKEN, SLACK_ALLOWED_USERS]
+    manifest: ~/.hermes/slack-manifest.json
+    setup_script: scripts/setup-slack.sh
+    routing_script: scripts/setup-slack-routing.sh
+    home_channel: C0B8CN2EA05
+    home_channel_name: 일반데이터
+    allowed_users: [U05E547KR0D]  # 박충효(트로이)
+    role: commander
+    status: pending_tokens  # setup-slack.sh 실행 필요
+  playmcp:
+    endpoint: https://playmcp.kakao.com/mcp
+    env_keys: [MCP_PLAYMCP_API_KEY, MCP_PLAYMCP_REFRESH_TOKEN]
+    setup_script: scripts/setup-playmcp.sh
+    skill: playmcp-commander
+    role: commander
+    status: enabled
+  telegram:
+    # Discord 대체 — BotFather 토큰만으로 연결 (WhatsApp보다 간편)
+    env_keys: [TELEGRAM_BOT_TOKEN, TELEGRAM_ALLOWED_USERS]
+    setup_script: scripts/setup-telegram.sh
+    watch_script: scripts/watch-telegram.sh
+    post_sync_script: scripts/telegram-post-sync.sh
+    commander_skill: telegram-commander
+    role: commander
+    status: connected
+  notion_archive:
+    root_page_id: "376fb3b5-e389-8196-b400-c0e67b560967"
+    root_url: "https://app.notion.com/p/376fb3b5e3898196b400c0e67b560967"
+    parent: workspace
+    script: scripts/archive-to-notion.sh
+    config: config/notion-archive.yaml
+    status: enabled
+  discord:
+    status: disabled  # 2026-06-05 Telegram으로 대체

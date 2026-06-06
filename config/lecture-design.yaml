@@ -1,0 +1,36 @@
+# Hermes Content Studio — 강의 슬라이드 디자인 모드
+
+modes:
+  basic:
+    description: "slide_generator 템플릿 HTML + PPTX (빠름, 로컬)"
+    preset_default: content-studio
+  claude-design:
+    description: "PPTX(로컬) + claude-design 스킬 HTML 덱(1920x1080, Hermes LLM)"
+    preset_default: claude
+    hermes_skills: [claude-design, content-studio-slides]
+    toolsets: hermes-cli
+    deck:
+      width: 1920
+      height: 1080
+      keyboard_nav: true
+      slide_counter: true
+      local_storage: true
+    colors:
+      primary: "#1A1614"
+      secondary: "#6B6560"
+      tertiary: "#D97757"
+      accent: "#D97757"
+      neutral: "#FAF9F7"
+      surface: "#FFFFFF"
+      border: "#E8E4DF"
+    typography:
+      heading: "Source Serif 4"
+      body: "Source Sans 3"
+    references:
+      - ~/hermes-content-studio/Getdesign.md
+      - ~/hermes-content-studio/config/design-catalog.yaml
+      - https://getdesign.md/ (Claude preset)
+
+notion_sync:
+  default_on_design_mode: claude-design
+  archive_script: scripts/archive-to-notion.sh

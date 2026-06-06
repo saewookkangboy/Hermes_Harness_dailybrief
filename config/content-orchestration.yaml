@@ -1,0 +1,133 @@
+# Hermes Content Studio — 콘텐츠 오케스트레이션
+# 참조: marketing-ai-orchestration-harness, harness-100, strategy-prompts, linkedin-feed-strategy-maker
+
+version: "1.0.0"
+
+# M1~M5 ↔ Hermes 채널 매핑
+stages:
+  M1:
+    name: content_strategy
+    hermes_channel: research
+    skill: channels/research
+    script: scripts/run-research-brief.sh
+    output: content/research/{date}_brief.md
+    validate: scripts/validate-output.sh research
+    sla_seconds: 30
+    deterministic: true
+  M2:
+    name: content_execution
+    requires_brief: true
+    brief_sot: content/research/{date}_brief.md
+    search_context: content/research/_search_context_{date}.json
+    hermes_channels: [blog, instagram, linkedin]
+    skill: content-orchestration
+    script: scripts/run-content-package.sh
+    voice: config/voice-style.yaml
+    humanize: scripts/lib/humanize_korean.py
+    outputs:
+      blog: content/blog/{date}_blog_*.html
+      blog_article: content/packages/{date}_blog-article.md
+      instagram: content/instagram/{date}_instagram_*.md
+      instagram_context: content/packages/{date}_instagram-context.md
+      linkedin: content/linkedin/{date}_linkedin_*.md
+      linkedin_context: content/packages/{date}_linkedin-context.md
+      unified: content/packages/{date}_unified-context.md
+    sla_seconds: 10
+    deterministic: true
+  M3:
+    name: optimization
+    skill: channels/linkedin
+    sub_pipeline: [analyze, strategy, draft, validate]
+    optional_enhance: HERMES_ENHANCE=1
+    guidelines: config/content-guidelines.yaml
+  M4:
+    name: performance_analysis
+    skill: harness-ops
+    mode: simulation  # campaign_data 없을 때
+    notes: "향후 analytics 연동"
+  M5:
+    name: archive_reporting
+    skill: notion-archive
+    script: scripts/archive-to-notion.sh
+    telegram_permalink: true
+
+# 공통 5-Phase (채널 skill 내부)
+channel_phases:
+  - id: P0_INPUT
+    role: upstream 참조 (brief, search_context, user request)
+  - id: P1_CONTEXT
+    role: packages/*-context.md 생성
+  - id: P2_ASSEMBLE
+    role: templates + assemble-*.py
+  - id: P3_VALIDATE
+    role: validate-output.sh
+  - id: P4_ARCHIVE
+    role: archive-to-notion.sh + Permalink
+  - id: P5_ENHANCE
+    role: HERMES_ENHANCE=1 (선택)
+
+# 파이프라인 트리거
+pipelines:
+  daily_research:
+    schedule: "0 8 * * *"
+    stages: [M1]
+  daily_content:
+    schedule: "0 8 * * *"
+    stages: [M1, M2, M5]
+    requires: [M1]
+    note: "Brief SoT — gather → brief Top 7 → blog · instagram · linkedin"
+  telegram_pipeline:
+    script: scripts/telegram-pipeline.sh
+    stages: [M1, M2, M5]
+    exclude: [lectures]
+  full_deterministic:
+    script: scripts/run-pipeline.sh
+    stages: [M1, M2]
+
+# LinkedIn 전용: analyze → strategy → draft (linkedin-feed-strategy-maker)
+linkedin_pipeline:
+  steps:
+    - id: analyze
+      skill: channels/linkedin/01-analyze
+      input: [brief, search_context, observations_optional]
+      output: content/packages/{date}_linkedin-analysis.md
+    - id: strategy
+      skill: channels/linkedin/02-strategy
+      input: [linkedin-analysis, profile_optional]
+      output: content/packages/{date}_linkedin-strategy.md
+    - id: draft
+      skill: channels/linkedin/03-draft
+      input: [linkedin-strategy, linkedin-context]
+      output: content/linkedin/{date}_linkedin_*.md
+    - id: validate
+      validate: scripts/validate-output.sh linkedin
+
+# strategy-prompts 프레임워크 (M1/M2 보강)
+strategy_frameworks:
+  m1:
+    - MECE 이슈 트리
+    - SCQA / 피라미드
+    - SWOT + So What
+    - 콘텐츠 퍼널·채널 믹스
+  m2:
+    - AIDA (Hook→Action)
+    - 콘셉트 정교화
+    - 크리에이티브 브리프
+  linkedin:
+    - feed_grammar_checklist
+    - hook_2lines_dwell_comments
+    - link_strategy_first_comment
+
+# harness-100 Scale Modes
+scale_modes:
+  full: "M1→M2→M5 (일일 기본 · Brief SoT)"
+  reduced: "M2 only (당일 brief 존재·신선 시 — HERMES_SKIP_RESEARCH=1)"
+  single_channel: "linkedin | blog | instagram 개별"
+  enhance: "full + HERMES_ENHANCE=1"
+
+# skill 계층 (harness-100 3-layer)
+skill_layers:
+  orchestrator: [content-orchestration, content-pipeline]
+  channel: [channels/research, channels/blog, channels/instagram, channels/linkedin]
+  shared: [shared/validate, shared/handoff, notion-archive, telegram-commander]
+  prompts: [prompts/strategy-frameworks, prompts/linkedin-pipeline]

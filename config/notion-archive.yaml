@@ -1,0 +1,89 @@
+# Hermes Content Studio — Notion Archive 설정
+# 날짜별 Daily 페이지 → 카테고리별 단일 하위 페이지 (일 1페이지/카테고리)
+
+archive:
+  root_page_id: "376fb3b5-e389-8196-b400-c0e67b560967"
+  root_url: "https://app.notion.com/p/376fb3b5e3898196b400c0e67b560967"
+  parent: workspace
+
+rules:
+  skip_empty_daily: true
+  min_body_chars: 1
+  wrap_code_fences: true
+  exclude_binary: true
+  one_page_per_category: true
+  force_sync: true
+
+categories:
+  unified:
+    label: "Unified Context"
+    icon: "🔗"
+    glob: "content/packages/*_unified-context.md"
+    order: 1
+  research:
+    label: "Research Brief"
+    icon: "📋"
+    glob: "content/research/*_brief.md"
+    exclude: ["*_SEED.md", "_search_context_*"]
+    order: 2
+  blog:
+    label: "Blog"
+    icon: "📝"
+    glob: "content/packages/*_blog-article.md"
+    order: 3
+  instagram:
+    label: "Instagram Context"
+    icon: "📸"
+    glob: "content/packages/*_instagram-context.md"
+    order: 4
+  linkedin:
+    label: "LinkedIn Context"
+    icon: "💼"
+    glob: "content/packages/*_linkedin-context.md"
+    order: 5
+  lecture_outline:
+    label: "Lecture Outline"
+    icon: "📑"
+    glob: "content/lectures/*_outline.md"
+    pipeline: false
+    order: 10
+  lecture_html:
+    label: "Lecture HTML"
+    icon: "🎓"
+    glob: "content/lectures/*.html"
+    exclude: ["*_outline.md", "*_base.html"]
+    pipeline: false
+    order: 11
+
+hygiene:
+  enabled: true
+  draft_archive:
+    title: "Draft & Incomplete Archive"
+    icon: "🗂️"
+  quality:
+    min_score: 60
+    min_chars:
+      unified: 400
+      research: 1200
+      blog: 800
+      instagram: 350
+      linkedin: 350
+    placeholder_patterns:
+      - "\\bTODO\\b"
+      - "\\bTBD\\b"
+      - "PLACEHOLDER"
+      - "작성\\s*중"
+      - "본문\\s*일부\\s*생략"
+      - "\\.\\.{4,}"
+
+mcp:
+  server: notion
+  create_tool: mcp_notion_notion_create_pages
+  update_tool: mcp_notion_notion_update_page
+  move_tool: mcp_notion_notion_move_pages
+  search_tool: mcp_notion_notion_search
+  fetch_tool: mcp_notion_notion_fetch
+
+telegram:
+  notify_on_sync: true
+  progress_steps: 5

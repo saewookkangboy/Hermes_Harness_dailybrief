@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} | Content Studio</title>
+  <meta name="description" content="{{META_DESCRIPTION}}">
+  <link rel="canonical" href="{{CANONICAL_URL}}">
+  <meta property="og:title" content="{{TITLE}}">
+  <meta property="og:description" content="{{META_DESCRIPTION}}">
+  <meta property="og:type" content="article">
+  <meta name="author" content="Hermes Content Studio">
+  <meta name="robots" content="index, follow">
+  <script type="application/ld+json">
+{{FAQ_JSONLD}}
+  </script>
+  <script type="application/ld+json">
+{{ARTICLE_JSONLD}}
+  </script>
+  <style>
+    :root {
+      --primary: #111111;
+      --secondary: #666666;
+      --neutral: #F7F7F7;
+      --border: #D9D9D9;
+      --accent: #E60012;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--primary);
+      line-height: 1.6;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+    .meta { color: var(--secondary); font-size: 0.875rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin: 2rem 0 1rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin: 0 0 1rem 1.25rem; }
+    li { margin-bottom: 0.5rem; }
+    .callout {
+      background: var(--neutral);
+      border-left: 3px solid var(--primary);
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 4px;
+    }
+    .geo-quote {
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+    }
+    .faq { margin-top: 2rem; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 1rem 0; }
+    .faq-item h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .sources { margin-top: 2rem; font-size: 0.9rem; }
+    .sources a { color: var(--primary); }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--secondary); font-size: 0.875rem; }
+  </style>
+</head>
+<body>
+  <article itemscope itemtype="https://schema.org/Article">
+    <header>
+      <h1 itemprop="headline">{{TITLE}}</h1>
+      <p class="meta">
+        <time itemprop="datePublished" datetime="{{DATE_ISO}}">{{DATE_DISPLAY}}</time>
+        · {{READ_TIME}}분 읽기
+        · <span itemprop="author">Hermes Content Studio</span>
+      </p>
+    </header>
+
+    <!-- AEO + GEO: 직접 답변형 첫 문단 -->
+    <section class="summary">
+      <p><strong>{{DIRECT_ANSWER}}</strong></p>
+    </section>
+
+    <!-- GEO: AI 인용 가능 블록 -->
+    <blockquote class="geo-quote" cite="Hermes Content Studio">
+      {{GEO_QUOTE}}
+    </blockquote>
+
+    {{SECTIONS}}
+
+    <!-- FAQ (AEO) -->
+    <section class="faq" itemscope itemtype="https://schema.org/FAQPage">
+      <h2>자주 묻는 질문</h2>
+      {{FAQ_ITEMS}}
+    </section>
+
+    <section class="sources">
+      <h2>참고 출처</h2>
+      <ul>{{SOURCES_LIST}}</ul>
+    </section>
+
+    <footer>
+      <p>태그: {{TAGS}}</p>
+      <p>최종 업데이트: {{DATE_DISPLAY}} · SEO · AEO · GEO 최적화</p>
+    </footer>
+  </article>
+</body>
+</html>

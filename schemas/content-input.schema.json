@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hermes Content Studio Input",
+  "description": "오케스트레이션 입력 변수. marketing-ai-orchestration-harness input-template 호환.",
+  "type": "object",
+  "properties": {
+    "campaign_name": { "type": "string" },
+    "brand_name": { "type": "string" },
+    "brand_category": { "type": "string" },
+    "product_specs": { "type": "string" },
+    "target_region": { "type": "string", "default": "KR/ko" },
+    "competitor_set": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "positioning": { "type": "string" },
+          "message_pattern": { "type": "string" }
+        }
+      },
+      "minItems": 1
+    },
+    "topic_clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "topic": { "type": "string" },
+          "channels": {
+            "type": "array",
+            "items": { "enum": ["blog", "instagram", "linkedin", "lecture"] }
+          },
+          "insight_ref": { "type": "string" }
+        }
+      },
+      "minItems": 1
+    },
+    "campaign_data": {
+      "type": "object",
+      "description": "없으면 M4 시뮬레이션 모드"
+    },
+    "content_output_conditions": {
+      "type": "object",
+      "properties": {
+        "blog": { "type": "object" },
+        "instagram": { "type": "object" },
+        "linkedin": { "type": "object" },
+        "tone": { "type": "string", "default": "실무형 해요체" },
+        "language": { "type": "string", "default": "ko" }
+      }
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    }
+  },
+  "additionalProperties": true
+}
