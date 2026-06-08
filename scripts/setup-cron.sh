@@ -7,12 +7,12 @@ echo "=== Cron 작업 등록 (Asia/Seoul) ==="
 
 # 기존 중복 Daily AI Marketing Brief 제거
 echo "기존 중복 작업 정리..."
-hermes cron list 2>/dev/null | grep "Daily AI Marketing Brief" | while read -r line; do
+while read -r line; do
   id=$(echo "$line" | awk '{print $1}')
   if [ -n "$id" ]; then
     hermes cron remove "$id" 2>/dev/null && echo "  제거: $id" || true
   fi
-done
+done < <(hermes cron list 2>/dev/null | grep "Daily AI Marketing Brief" || true)
 
 # 매일: 일일 리서치 브리프 (Top 7)
 echo "등록: daily-research-brief (매일 08:00)"
@@ -44,41 +44,8 @@ hermes cron create \
   "content-studio-slides 스킬: 이번 주 리서치에서 강의 소재 1개를 선정하고, lecture-outline 템플릿으로 기획안 + HTML 초안을 작성해줘. Getdesign.md 슬라이드 규칙 적용." \
   2>/dev/null || echo "  (이미 존재하거나 CLI 옵션 확인 필요)"
 
-# 결정적 모닝 브리핑 (LLM 없음)
-echo "등록: cron-morning-brief (평일 09:00)"
-mkdir -p "$HOME/.hermes/scripts"
-ln -sf "$WORKDIR/scripts/cron-morning-brief.sh" "$HOME/.hermes/scripts/cron-morning-brief.sh"
-ln -sf "$WORKDIR/scripts/cron-health-alert.sh" "$HOME/.hermes/scripts/cron-health-alert.sh"
-chmod +x "$WORKDIR/scripts/cron-morning-brief.sh" "$WORKDIR/scripts/cron-health-alert.sh"
-
-DELIVER="${CRON_DELIVER:-telegram}"
-hermes cron list 2>/dev/null | grep "cron-morning-brief" | while read -r line; do
-  id=$(echo "$line" | awk '{print $1}')
-  [[ -n "$id" ]] && hermes cron remove "$id" 2>/dev/null || true
-done
-hermes cron create \
-  --name "cron-morning-brief" \
-  --workdir "$WORKDIR" \
-  --script cron-morning-brief.sh \
-  --no-agent \
-  --deliver "$DELIVER" \
-  "0 9 * * 1-5" \
-  2>/dev/null || echo "  (morning cron 확인 필요)"
-
-# 런타임 헬스 알림 (이상 시에만 deliver)
-echo "등록: cron-health-alert (매일 10:00 · 18:00)"
-hermes cron list 2>/dev/null | grep "cron-health-alert" | while read -r line; do
-  id=$(echo "$line" | awk '{print $1}')
-  [[ -n "$id" ]] && hermes cron remove "$id" 2>/dev/null || true
-done
-hermes cron create \
-  --name "cron-health-alert" \
-  --workdir "$WORKDIR" \
-  --script cron-health-alert.sh \
-  --no-agent \
-  --deliver "$DELIVER" \
-  "0 10,18 * * *" \
-  2>/dev/null || echo "  (health cron 확인 필요)"
+# 결정적 Commander cron (모닝 · 헬스)
+"$WORKDIR/scripts/setup-commander-cron.sh" || echo "  ⚠️  Commander cron 등록 실패 — setup-commander-cron.sh 재실행"
 
 echo ""
 echo "등록된 작업:"

@@ -2,17 +2,18 @@
 # setup-slack-routing.sh 가 ~/.hermes/config.yaml 에 병합
 
 slack_routing:
-  version: "1.0.0"
+  version: "1.1.0"
   # #일반데이터 — troeteam.slack.com
   default_home_channel: C0B8CN2EA05
   default_home_channel_name: 일반데이터
   channel_prompt: |
-    You are the Hermes Content Studio Slack commander (v1.4).
+    You are the Hermes Content Studio Slack commander (v1.5).
 
     ## A) Weekly pipeline (zero LLM, ~15s) — NO lecture
     Keywords: 파이프라인, pipeline, 주간, weekly, 브리프, 콘텐츠
     Command: ~/hermes-content-studio/scripts/telegram-pipeline.sh auto "<message>"
-    Slash: /pipeline (콘텐츠 + Notion 자동 sync) /research /content /sync /studio /notion-status
+    Slash: /pipeline (M1+M2+M2b+Notion) /research /content /newsletter /sync /studio /notion-status
+    Slash (intent): /morning /catch-up /publish /pending /approve /linkedin /traces /handoff /graph /commands
 
     ## B) Lecture (separate — NOT in /pipeline)
     Keywords: 강의, lecture, 슬라이드, outline, HTML 덱
@@ -37,6 +38,9 @@ quick_commands:
   content:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc content
+  newsletter:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc newsletter
   sync:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc sync
@@ -61,9 +65,6 @@ quick_commands:
   lecture:
     type: alias
     target: /lecture-studio
-  newsletter:
-    type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc newsletter
   morning:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc morning
@@ -76,6 +77,12 @@ quick_commands:
   publish:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc publish
+  deep:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc deep
+  ask:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc ask
   linkedin:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc linkedin
@@ -94,3 +101,6 @@ quick_commands:
   approve:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc approve
+  pending:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc pending

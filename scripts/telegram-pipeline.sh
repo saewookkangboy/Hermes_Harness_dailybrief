@@ -330,8 +330,15 @@ case "$MODE" in
         echo "예: 자연어 'AX 트렌드 심층' 또는 hermes-agent.sh deep '주제'"
         ;;
       ask)
-        echo "ℹ️ /ask는 질문이 필요합니다."
-        echo "예: 자연어 'Kurly 인사이트 뭐였지' 또는 hermes-agent.sh route '질문'"
+        if [[ -n "${ACTION:-}" ]]; then
+          "$DIR/hermes-agent.sh" ask "$ACTION" --date "$DATE" --session "${CHAT_ID:-cli}"
+        else
+          echo "ℹ️ /ask는 질문이 필요합니다."
+          echo "예: 자연어 'Kurly 인사이트 뭐였지' 또는 hermes-agent.sh ask '질문'"
+        fi
+        ;;
+      pending)
+        run_intent_qc pending
         ;;
       linkedin)
         run_intent_qc linkedin

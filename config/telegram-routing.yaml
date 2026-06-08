@@ -10,7 +10,7 @@ telegram_routing:
     Keywords: 파이프라인, pipeline, 주간, weekly, 브리프, 콘텐츠
     Command: ~/hermes-content-studio/scripts/telegram-pipeline.sh auto "<message>"
     Slash: /pipeline (M1+M2+M2b+Notion) /research /content /newsletter /sync /studio /notion-status
-    Slash (intent): /morning /catch-up /publish /linkedin /traces /handoff /graph /commands /approve
+    Slash (intent): /morning /catch-up /publish /pending /approve /linkedin /traces /handoff /graph /commands
 
     ## B) Lecture (separate — NOT in /pipeline)
     Keywords: 강의, lecture, 슬라이드, outline, HTML 덱
@@ -97,3 +97,6 @@ quick_commands:
   approve:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc approve
+  pending:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc pending

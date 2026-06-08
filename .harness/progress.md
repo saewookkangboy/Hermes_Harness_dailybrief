@@ -1,5 +1,37 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+## 변경 요약 (2026-06-08, Studio 아키텍처 Notion·MD)
+
+### 운영 리소스 · 의존성 다이어그램
+- **로컬 MD:** `content/logs/2026-06-08_studio-resources-spec.md` · `studio-dependency-diagrams.md` · `studio-architecture-guide.md`
+- **Notion 별도 페이지 (Daily Archive 루트 하위):**
+  - [운영 리소스·기술 스펙](https://app.notion.com/p/379fb3b5e389810f9630cd8cbfed942b)
+  - [의존성 다이어그램](https://app.notion.com/p/379fb3b5e38981c2a947ec8af87330b4)
+- **재동기화:** `scripts/export-architecture-notion.sh` · state `content/.notion-architecture-state.json`
+
+## 변경 요약 (2026-06-08, Commander Phases 1–4)
+
+### Phase 1 — 자동 모닝 · 헬스 알림
+- **`cron-morning-brief.sh`** · **`cron-health-alert.sh`** · **`lib/runtime_health.py`**
+- **`setup-commander-cron.sh`** — hermes cron `--no-agent` (평일 09:00 · 10:00/18:00) → Telegram deliver
+- **`lib/commander_notify.sh`** — Telegram + Slack 공용 알림
+
+### Phase 2 — /ask + Brief Graph
+- **`memory_router.py`:** 14일 brief 히스토리 · graph streak 검색 · Graph 섹션 출력
+- **`hermes-agent.sh ask`** — route alias
+
+### Phase 3 — HITL 발행
+- **`publish_gate.py`:** `format_telegram_approval` · `format_pending_status`
+- **`/pending`** quick_command · publish/approve 시 commander_notify
+
+### Phase 4 — Slack Commander 동등화
+- **`slack-routing.yaml`** — Telegram quick_commands 25개 동일 · intent prompt
+- **`setup-slack-routing.sh`** 갱신
+
+### 검증
+- **`commander-phases-eval.sh`** 13/13 PASS
+- cron 등록: `setup-commander-cron.sh` (스크립트는 `~/.hermes/scripts/` 실제 복사본)
+
 ## 변경 요약 (2026-06-08, Telegram /morning 슬래시 등록)
 
 ### Unrecognized slash command 해결

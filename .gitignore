@@ -40,6 +40,7 @@ content/newsletter/*
 
 # Notion local state
 content/.notion-archive-state.json
+content/.notion-architecture-state.json
 
 # Generated content (keep structure)
 content/blog/*.html

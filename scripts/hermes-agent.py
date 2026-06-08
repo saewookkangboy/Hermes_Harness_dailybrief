@@ -78,7 +78,7 @@ def detect_intent(text: str) -> tuple[str, str]:
 def _commander_notify(msg: str) -> None:
     env = {**dict(__import__("os").environ)}
     subprocess.run(
-        [str(SCRIPTS / "lib" / "commander_notify.sh"), "notify", msg],
+        ["bash", str(SCRIPTS / "lib" / "commander_notify.sh"), "notify", msg],
         check=False,
         env=env,
         cwd=str(WORKDIR),
@@ -154,13 +154,17 @@ def cmd_publish(args: argparse.Namespace) -> int:
             pending=[f"approve_{channel}"],
         )
         _trace_intent(args, "publish", "hitl_gate", t0, stamp)
-        print(format_approval_card(stamp, queue))
+        card = format_approval_card(stamp, queue)
+        print(card)
+        _commander_notify(format_telegram_approval(stamp, queue))
         return 0
     approve_channels(stamp, [channel])
     result = execute_approved_publish(stamp, [channel])
     record_action(args.session, intent="publish", action=f"publish_{channel}", stamp=stamp)
     _trace_intent(args, "publish", f"publish_{channel}", t0, stamp)
-    print(f"✅ publish {channel} · {stamp} · {result.get('published', [])}")
+    msg = f"✅ publish {channel} · {stamp} · {result.get('published', [])}"
+    print(msg)
+    _commander_notify(msg)
     return 0
 
 
@@ -296,7 +300,15 @@ def cmd_approve(args: argparse.Namespace) -> int:
     )
     _trace_intent(args, "approve", "hitl_execute", t0, stamp)
     print(format_approval_card(stamp, data))
-    print(f"\n✅ 발행: {result.get('published', [])}")
+    msg = f"✅ HITL 발행 완료 · {stamp} · {result.get('published', [])}"
+    print(f"\n{msg}")
+    _commander_notify(msg)
+    return 0
+
+
+def cmd_pending(args: argparse.Namespace) -> int:
+    stamp = args.date or ""
+    print(format_pending_status(stamp or None))
     return 0
 
 
@@ -430,6 +442,10 @@ def main() -> int:
     p_route.add_argument("query")
     p_route.set_defaults(func=cmd_route)
 
+    p_ask = sub.add_parser("ask", help="Memory Router 질의 (alias)", parents=[common])
+    p_ask.add_argument("query")
+    p_ask.set_defaults(func=cmd_route)
+
     p_m = sub.add_parser("morning", help="Morning intent pack", parents=[common])
     p_m.set_defaults(func=cmd_morning)
 
@@ -483,6 +499,9 @@ def main() -> int:
     p_ap = sub.add_parser("approve", help="HITL publish approve", parents=[common])
     p_ap.add_argument("channels", nargs="*", default=["all"])
     p_ap.set_defaults(func=cmd_approve)
+
+    p_pend = sub.add_parser("pending", help="HITL publish queue status", parents=[common])
+    p_pend.set_defaults(func=cmd_pending)
 
     p_cmd = sub.add_parser("commands", help="Command registry", parents=[common])
     p_cmd.set_defaults(func=cmd_commands)

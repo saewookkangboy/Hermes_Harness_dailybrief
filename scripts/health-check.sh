@@ -123,6 +123,8 @@ warn "Python markitdown" "python3 -m markitdown --help"
 echo ""
 echo "--- Cron ---"
 hermes cron list 2>/dev/null | grep -E "weekly|research|content|lecture" || echo "⚠️  주간 cron 미설정"
+warn "Commander cron (morning)" "hermes cron list 2>/dev/null | grep -q cron-morning-brief"
+warn "Commander cron (health)" "hermes cron list 2>/dev/null | grep -q cron-health-alert"
 
 echo ""
 echo "=== 결과: ✅ $PASS / ❌ $FAIL / ⚠️ $WARN ==="
