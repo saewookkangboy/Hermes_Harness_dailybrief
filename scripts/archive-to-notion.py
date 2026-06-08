@@ -41,6 +41,26 @@ from lib.notify_dedupe import should_skip_notify  # noqa: E402
 from lib.telegram_notify import send_message  # noqa: E402
 from lib.slack_notify import send_message as slack_send  # noqa: E402
 
+ARCHIVED_NOTION_HINT = (
+    "Notion 상위 페이지(Daily Archive 루트 또는 해당 일자 페이지)가 보관(archive) 상태입니다. "
+    "Notion 사이드바 → 보관/휴지통에서 복원한 뒤 재시도하거나, "
+    "`archive-to-notion.sh DATE --reset-notion-state`로 로컬 state를 초기화하세요."
+)
+
+
+def is_archived_notion_error(exc: BaseException) -> bool:
+    return "archived" in str(exc).lower()
+
+
+def clear_stamp_notion_state(state: dict, stamp: str) -> int:
+    """해당 날짜의 day·category 페이지 캐시 제거. 제거된 page 키 수 반환."""
+    state.get("days", {}).pop(stamp, None)
+    prefix = f"{stamp}/"
+    keys = [k for k in list(state.get("pages", {})) if k.startswith(prefix)]
+    for k in keys:
+        state["pages"].pop(k, None)
+    return len(keys)
+
 
 def push_notify(
     telegram_chat: str,
@@ -195,7 +215,11 @@ def ensure_day_page(
     cfg: dict,
     state: dict,
     stamp: str,
+    *,
+    recreate: bool = False,
 ) -> tuple[str, str]:
+    if recreate:
+        clear_stamp_notion_state(state, stamp)
     if stamp in state.get("days", {}):
         day = state["days"][stamp]
         if isinstance(day, dict):
@@ -222,6 +246,58 @@ def ensure_day_page(
     state.setdefault("days", {})[stamp] = {"id": day_id, "url": day_url}
     save_state(state)
     return day_id, day_url
+
+
+def upsert_category_page(
+    registry,
+    cfg: dict,
+    state: dict,
+    stamp: str,
+    *,
+    day_id: str,
+    parent_id: str,
+    pk: str,
+    store_key: str,
+    prev: dict | None,
+    tier: str,
+    force: bool,
+    chash: str,
+    icon: str,
+    title: str,
+    content: str,
+) -> tuple[str, str, str]:
+    """카테고리 페이지 생성/갱신. Notion archived 오류 시 state 초기화 후 1회 재시도."""
+    last_exc: BaseException | None = None
+    for attempt in range(2):
+        try:
+            if tier == "canonical" and prev and prev.get("id") and (force or prev.get("hash") != chash):
+                try:
+                    url = update_page_content(registry, cfg, prev["id"], content)
+                    return prev["id"], url, day_id
+                except Exception as exc:  # noqa: BLE001
+                    if not is_archived_notion_error(exc):
+                        raise
+                    log(f"Replace failed (archived ancestor): {exc}")
+            page_id, url = create_page(
+                registry, cfg, parent_id, f"{icon} {title}", content, icon
+            )
+            return page_id, url, day_id
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            if attempt == 0 and is_archived_notion_error(exc):
+                cleared = clear_stamp_notion_state(state, stamp)
+                save_state(state)
+                log(f"Notion archived block — cleared {cleared} cached page(s) for {stamp}")
+                day_id, _ = ensure_day_page(registry, cfg, state, stamp, recreate=False)
+                parent_id = day_id
+                prev = None
+                continue
+            break
+    if last_exc and is_archived_notion_error(last_exc):
+        raise RuntimeError(f"{ARCHIVED_NOTION_HINT}\n원본: {last_exc}") from last_exc
+    if last_exc:
+        raise last_exc
+    raise RuntimeError("upsert_category_page: unreachable")
 
 
 def archive_date(
@@ -338,22 +414,27 @@ def archive_date(
             draft_pk = f"{pk}@draft"
             store_key = pk if tier == "canonical" else draft_pk
 
-            if tier == "canonical" and prev and prev.get("id") and (force or prev.get("hash") != chash):
-                try:
-                    url = update_page_content(registry, cfg, prev["id"], content)
-                    page_id = prev["id"]
-                except Exception as exc:  # noqa: BLE001
-                    log(f"Replace failed, creating new: {exc}")
-                    page_id, url = create_page(
-                        registry, cfg, parent_id, f"{icon} {title}", content, icon
-                    )
-            elif tier == "canonical" and prev and prev.get("id") and not force:
+            if tier == "canonical" and prev and prev.get("id") and not force and prev.get("hash") == chash:
                 url = prev.get("url", notion_page_id_to_url(prev["id"]))
                 page_id = prev["id"]
                 log(f"Unchanged (skip): {pk}")
             else:
-                page_id, url = create_page(
-                    registry, cfg, parent_id, f"{icon} {title}", content, icon
+                page_id, url, day_id = upsert_category_page(
+                    registry,
+                    cfg,
+                    state,
+                    stamp,
+                    day_id=day_id,
+                    parent_id=parent_id,
+                    pk=pk,
+                    store_key=store_key,
+                    prev=prev,
+                    tier=tier,
+                    force=force,
+                    chash=chash,
+                    icon=icon,
+                    title=title,
+                    content=content,
                 )
 
             state.setdefault("pages", {})[store_key] = {
@@ -440,6 +521,11 @@ def main() -> int:
         action="store_true",
         help="Send one completion message only (for telegram-post-sync)",
     )
+    parser.add_argument(
+        "--reset-notion-state",
+        action="store_true",
+        help="Clear cached Notion page IDs for DATE before sync (archived ancestor recovery)",
+    )
     args = parser.parse_args()
 
     chat = args.telegram_chat or ""
@@ -452,6 +538,12 @@ def main() -> int:
             notify_mode = "full"
 
     force = not args.no_force
+
+    if args.reset_notion_state:
+        state = load_state()
+        n = clear_stamp_notion_state(state, args.date)
+        save_state(state)
+        log(f"Reset Notion state for {args.date}: {n} page key(s) cleared")
 
     try:
         result = archive_date(

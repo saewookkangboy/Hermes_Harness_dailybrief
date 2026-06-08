@@ -135,3 +135,18 @@ def create_page(
     url = pages[0].get("url") or notion_page_id_to_url(page_id)
     log(f"Created: {title} → {url}")
     return page_id, url
+
+
+def update_page_content(registry, cfg: dict, page_id: str, content: str) -> str:
+    """Notion 페이지 본문 전체 교체 (replace_content)."""
+    tool = cfg["mcp"].get("update_tool", "mcp_notion_notion_update_page")
+    payload = {
+        "page_id": page_id,
+        "command": "replace_content",
+        "new_str": content,
+        "allow_deleting_content": True,
+    }
+    result = mcp_call(registry, tool, payload)
+    url = result.get("url") or notion_page_id_to_url(page_id)
+    log(f"Replaced content: {page_id} → {url}")
+    return url

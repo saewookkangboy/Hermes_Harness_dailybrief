@@ -6,10 +6,29 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
-from lib.content_quality import localize_title
+from lib.common import compress_sentences
+from lib.content_quality import localize_title, polish_display_title
 
 INSIGHT_LIMIT = 7
 CONFIG_PATH = Path.home() / "hermes-content-studio" / "config" / "research-brief.yaml"
+
+TITLE_BY_TOPIC: dict[str, str] = {
+    "korea_ax": "한국 AX 전환 — 교육·FAQ·사례 중심",
+    "ax": "글로벌 AX(AI Transformation) 확산",
+    "workspace_agents": "ChatGPT Workspace Agents 실무 검토",
+    "llm_anthropic": "Claude 엔터프라이즈 — 거버넌스·컨텍스트",
+    "llm_google": "Google Gemini — AEO·Workspace 연동",
+    "llm_perplexity": "Perplexity·AI 검색(AEO) 최적화",
+    "aeo": "2026 AEO(Answer Engine Optimization) 실무",
+    "agent_marketing": "AI 에이전트·마케팅 자동화",
+    "ai_governance": "AI 거버넌스·책임있는 AI",
+    "ai_literacy": "AI 리터러시·조직 역량",
+    "harness_engineering": "하네스·컨텍스트 엔지니어링",
+    "hermes_agent": "Hermes Agent·자체호스팅 에이전트",
+    "ai_ide": "AI IDE(Cursor·Windsurf) 실무",
+    "ai_native": "AI Native 도입·파일럿 확대",
+    "korea_adoption": "국내 B2B AI 도입·예산 승인",
+}
 
 PERSONA_INTRO = (
     "21년차 디지털 마케터(브랜드·콘텐츠·퍼포먼스·그로스·전략)이자, "
@@ -306,9 +325,11 @@ def synthesize_korean_summary(title: str, snippet: str, query: str) -> str:
     )
 
 
-def synthesize_insight_derivation(topic_key: str, title: str) -> str:
+def synthesize_insight_derivation(
+    topic_key: str, title: str, summary_ko: str = ""
+) -> str:
     """Insight 도출 — So What."""
-    ko = localize_title(title)
+    ko = polish_display_title(title)
     insights: dict[str, str] = {
         "korea_ax": (
             "국내 AX는 '언제'보다 '어디서 손대느냐'가 핵심입니다. "
@@ -338,11 +359,29 @@ def synthesize_insight_derivation(topic_key: str, title: str) -> str:
             "클라우드 에이전트만으로는 데이터·채널 커스터마이징 한계가 있습니다. "
             "Hermes류 자체호스팅이 AX·AI Native 로드맵의 대안축입니다."
         ),
+        "llm_anthropic": (
+            "Claude 도입은 안전·정책·컨텍스트 윈도우를 거버넌스 체크리스트와 "
+            "함께 봐야 멀티 LLM 전략의 한 축이 됩니다."
+        ),
+        "llm_google": (
+            "Gemini·Google 검색·Workspace 변경은 AEO·콘텐츠 갱신 주기와 "
+            "연동해 모니터링해야 합니다."
+        ),
+        "llm_perplexity": (
+            "Perplexity 노출은 출처 URL·갱신일·FAQ 구조가 핵심입니다. "
+            "브랜드 GEO 실험장으로 쓰기 좋습니다."
+        ),
+        "korea_adoption": (
+            "국내 B2B는 기술 데모보다 직군별 use case 워크숍이 "
+            "예산 승인 속도를 좌우합니다."
+        ),
     }
-    return insights.get(
-        topic_key,
-        f"{ko}에서 드러나는 패턴은 '글로벌 신호 → 국내 실무 FAQ → 채널 재가공' "
-        f"파이프라인으로 압축 가능합니다.",
+    if topic_key in insights:
+        return insights[topic_key]
+    lead = compress_sentences(summary_ko, 140, max_sentences=2) if summary_ko else ko
+    return (
+        f"{lead} "
+        f"이 신호는 국내 실무 FAQ와 채널 재가공으로 연결할 수 있습니다."
     )
 
 
@@ -562,10 +601,9 @@ def build_llm_platform_pulse(enriched: list[dict]) -> str:
         ]
         if matched:
             e = matched[0]
-            lines.append(
-                f"- **{label}:** {e['insight_derivation'][:120]} "
-                f"(출처: {e['korean_title']})"
-            )
+            pulse = compress_sentences(e["insight_derivation"], 160, max_sentences=2)
+            src_title = polish_display_title(e.get("korean_title") or e.get("title") or "")
+            lines.append(f"- **{label}:** {pulse} (출처: {src_title})")
         else:
             lines.append(
                 f"- **{label}:** 금일 수집 결과에 직접 매칭 없음 — "
@@ -594,7 +632,8 @@ def build_coverage_table(enriched: list[dict]) -> str:
         matched = [e for e in enriched if e["topic_key"] in keys]
         if matched:
             e = matched[0]
-            lines.append(f"| {label} | ✅ | {e['korean_title'][:32]} |")
+            cell = compress_sentences(e["korean_title"], 48, max_sentences=1)
+            lines.append(f"| {label} | ✅ | {cell} |")
         else:
             lines.append(f"| {label} | — | 2차 수집 권장 |")
     lines.append("")
@@ -627,10 +666,11 @@ def enrich_insight(item: dict, used_views: set[str] | None = None) -> dict:
     url = (item.get("url") or "").strip()
     topic_key = classify_insight(title, snippet, query)
     channel = item.get("channel") or ""
+    summary_ko = synthesize_korean_summary(title, snippet, query)
     marketer_view = synthesize_marketer_view(topic_key, title, channel)
     if used_views is not None:
         if marketer_view in used_views:
-            suffix = localize_title(title)[:28]
+            suffix = compress_sentences(polish_display_title(title), 40, max_sentences=1)
             marketer_view = f"{marketer_view} ({suffix} 맥락에서 우선순위를 재정렬합니다.)"
         used_views.add(marketer_view)
 
@@ -638,9 +678,9 @@ def enrich_insight(item: dict, used_views: set[str] | None = None) -> dict:
         **item,
         "topic_key": topic_key,
         "research_category": research_category_label(topic_key),
-        "korean_title": localize_title(title),
-        "summary_ko": synthesize_korean_summary(title, snippet, query),
-        "insight_derivation": synthesize_insight_derivation(topic_key, title),
+        "korean_title": TITLE_BY_TOPIC.get(topic_key) or polish_display_title(title),
+        "summary_ko": summary_ko,
+        "insight_derivation": synthesize_insight_derivation(topic_key, title, summary_ko),
         "marketer_view": marketer_view,
         "utilization": synthesize_utilization(topic_key, channel),
         "guides_tips": synthesize_guides_tips(topic_key),

@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from lib.common import read_template, slugify, truncate
+from lib.common import compress_sentences, finish_at_sentence, read_template, slugify, truncate
 from lib.humanize_korean import humanize, humanize_linkedin_post
 
 WORKDIR = Path.home() / "hermes-content-studio"
@@ -31,24 +31,62 @@ class Insight:
 
     @property
     def korean_title(self) -> str:
-        return localize_title(self.title)
+        return polish_display_title(self.title)
 
     @property
     def korean_summary(self) -> str:
         return synthesize_korean_summary(self.title, self.summary, self.marketer_view)
 
+    def context_blurb(self, *, max_chars: int = 220, max_sentences: int = 2) -> str:
+        """Unified·Research 표용 — 완결 문장 맥락 요약."""
+        parts: list[str] = []
+        for field in (self.insight_derivation, self.marketer_view):
+            val = (field or "").strip()
+            if val and has_meaningful_korean(val) and val not in parts:
+                parts.append(val)
+        if not parts:
+            summary = (self.summary or "").strip()
+            if summary and has_meaningful_korean(summary):
+                parts.append(summary)
+        text = " ".join(parts) if parts else self.korean_summary
+        return compress_sentences(text, max_chars, max_sentences=max_sentences)
+
+
+def _hangul_count(text: str) -> int:
+    return len(re.findall(r"[가-힣]", text or ""))
+
+
+def has_meaningful_korean(text: str, *, min_chars: int = 4) -> bool:
+    return _hangul_count(text) >= min_chars
+
+
+def is_garbage_korean_title(title: str) -> bool:
+    """영문 조각 + '실무 가이드' 등 다운스트림 맥락 단절 제목."""
+    t = (title or "").strip()
+    if not t:
+        return True
+    latin = len(re.findall(r"[A-Za-z]", t))
+    hangul = _hangul_count(t)
+    if "..." in t or "…" in t:
+        return True
+    if hangul < 8 and latin > 12:
+        return True
+    if re.search(r" — 실무\s*가이드\s*$", t) and latin > 10:
+        return True
+    return False
+
 
 def localize_title(title: str) -> str:
-    """영문 제목을 한국어 실무 제목으로 변환 (규칙 기반)."""
+    """영문 제목을 한국어 실무 제목으로 변환 (규칙 기반 · 완결형)."""
     t = title.strip()
     tl = t.lower()
 
-    if re.search(r"[가-힣]{4,}", t):
-        return re.sub(r"\s+", " ", t)[:80]
+    if has_meaningful_korean(t) and not is_garbage_korean_title(t):
+        return re.sub(r"\s+", " ", t).strip()
 
     if "ax" in tl and ("korea" in tl or "south korea" in tl):
         return "한국 AX 전환, 지금 시작해야 하는 이유"
-    if "aeo" in tl or "answer engine" in tl:
+    if "aeo" in tl or "answer engine" in tl or "ai search" in tl:
         return "2026 AEO(Answer Engine Optimization) 실무 가이드"
     if "agent" in tl and "automation" in tl:
         return "AI 에이전트 자동화, 2026 워크플로 혁신"
@@ -56,6 +94,24 @@ def localize_title(title: str) -> str:
         return "ChatGPT Workspace Agents 실무 검토"
     if "cursor" in tl or "windsurf" in tl:
         return "Cursor vs Windsurf — 2026 AI IDE 선택 가이드"
+    if "expo" in tl or "axia" in tl:
+        return "AXIA EXPO 2026 — 국내 AX 실무 신호"
+    if "marketing" in tl and "asia" in tl:
+        return "아시아 디지털 마케팅 2026 트렌드"
+    if "release notes" in tl or "help.openai" in tl:
+        return "ChatGPT 릴리스 노트 주간 펄스"
+    if "opus" in tl or ("anthropic" in tl and "claude" in tl):
+        return "Claude Opus 업데이트 — 엔터프라이즈 적용"
+    if "enterprise ai adoption" in tl or "pilots to production" in tl:
+        return "엔터프라이즈 AI 도입 — 파일럿에서 프로덕션으로"
+    if "developer" in tl and "openai" in tl:
+        return "OpenAI 개발자 커뮤니티 동향"
+    if "sk telecom" in tl or "nvidia" in tl:
+        return "SK텔레콤·NVIDIA AI 인프라 협력"
+    if "perplexity" in tl:
+        return "Perplexity·AI 검색(AEO) 최적화 실무"
+    if "gemini" in tl:
+        return "Google Gemini 업데이트 — AEO·Workspace 연동"
 
     keywords = []
     for kw, label in [
@@ -69,14 +125,27 @@ def localize_title(title: str) -> str:
             keywords.append(label)
     if keywords:
         return f"2026 {keywords[0]} 실무 인사이트"
-    return f"{t[:45]} — 실무 가이드" if len(t) > 10 else t
+    words = re.sub(r"[^\w\s\-]", " ", t).split()[:5]
+    if words:
+        return compress_sentences(f"{' '.join(words)} 관련 AI·마케팅 신호입니다.", 72, max_sentences=1)
+    return "2026 AI·마케팅 실무 인사이트"
+
+
+def polish_display_title(title: str) -> str:
+    """브리프·Unified에 노출할 완결형 제목."""
+    t = (title or "").strip()
+    if t and has_meaningful_korean(t) and not is_garbage_korean_title(t):
+        return re.sub(r"\s+", " ", t).strip()
+    return localize_title(t)
 
 
 def synthesize_korean_summary(title: str, summary: str, marketer_view: str) -> str:
     """영문 스니펫을 한국어 실무 요약으로 재구성."""
     base = marketer_view.strip() if marketer_view else ""
-    if base and re.search(r"[가-힣]", base):
-        return base[:280]
+    if base and has_meaningful_korean(base):
+        return compress_sentences(base, 280, max_sentences=3)
+    if summary and has_meaningful_korean(summary):
+        return compress_sentences(summary, 280, max_sentences=3)
     tl = title.lower()
     if "aeo" in tl or "answer engine" in tl:
         return (
@@ -135,10 +204,13 @@ def parse_brief(text: str) -> tuple[str, list[Insight]]:
         guides_m = re.search(r"- \*\*가이드·팁:\*\* (.+)", block)
         cat_m = re.search(r"- \*\*리서치 영역:\*\* (.+)", block)
         ko_title_m = re.search(r"- \*\*한국어 제목:\*\* (.+)", block)
+        ko_raw = ko_title_m.group(1).strip() if ko_title_m else ""
+        display_title = ko_raw if ko_raw and not is_garbage_korean_title(ko_raw) else title
+        raw_summary = (summary_m.group(1) if summary_m else title).strip()
         insights.append(
             Insight(
-                title=ko_title_m.group(1).strip() if ko_title_m else title,
-                summary=(summary_m.group(1) if summary_m else title)[:400],
+                title=display_title,
+                summary=compress_sentences(raw_summary, 400, max_sentences=4),
                 marketer_view=(marketer_m.group(1) if marketer_m else ""),
                 channels=(channel_m.group(1) if channel_m else "blog"),
                 url=(url_m.group(1).strip() if url_m else ""),
@@ -194,9 +266,9 @@ def _korean_source_context(ins: Insight) -> str:
         ins.market_impact.strip(),
         ins.guides_tips.strip(),
     ]
-    korean = [p for p in parts if p and re.search(r"[가-힣]{4,}", p)]
+    korean = [p for p in parts if p and has_meaningful_korean(p)]
     if korean:
-        return " ".join(korean)[:600]
+        return compress_sentences(" ".join(korean), 600, max_sentences=5)
     return ins.korean_summary
 
 
@@ -379,12 +451,37 @@ def build_practical_application(insights: list[Insight], summary: str) -> list[s
     return steps[:8]
 
 
+def build_faq_answer(ins: Insight) -> str:
+    """FAQ 답변 — AEO Direct Answer용 완결 문장 2~4개."""
+    parts: list[str] = []
+    for field in (ins.insight_derivation, ins.summary, ins.marketer_view, ins.korea_apply):
+        val = (field or "").strip()
+        if not val or not has_meaningful_korean(val):
+            continue
+        if any(val in p or p in val for p in parts):
+            continue
+        parts.append(val)
+        if len(parts) >= 2:
+            break
+    text = " ".join(parts) if parts else ins.korean_summary
+    return compress_sentences(text, 420, max_sentences=4)
+
+
 def build_faq_items(insights: list[Insight], summary: str) -> list[tuple[str, str]]:
     if not insights:
         return [
-            ("AEO란 무엇이며 SEO와 어떻게 다른가요?", truncate(summary, 300)),
-            ("2026년 AI 마케팅에서 에이전트 자동화를 어떻게 시작하나요?", truncate(summary, 300)),
-            ("한국 B2B 시장에서 AX 전환 콘텐츠 기회는?", truncate(summary, 300)),
+            (
+                "AEO란 무엇이며 SEO와 어떻게 다른가요?",
+                compress_sentences(summary, 360, max_sentences=3),
+            ),
+            (
+                "2026년 AI 마케팅에서 에이전트 자동화를 어떻게 시작하나요?",
+                compress_sentences(summary, 360, max_sentences=3),
+            ),
+            (
+                "한국 B2B 시장에서 AX 전환 콘텐츠 기회는?",
+                compress_sentences(summary, 360, max_sentences=3),
+            ),
         ]
     faqs: list[tuple[str, str]] = []
     q_templates = [
@@ -393,9 +490,9 @@ def build_faq_items(insights: list[Insight], summary: str) -> list[tuple[str, st
         "{}가 팀 운영과 콘텐츠 전략에 주는 변화는 무엇입니까?",
     ]
     for i, ins in enumerate(insights[:3]):
-        q = q_templates[i].format(truncate(ins.korean_title, 40)) if i < len(q_templates) else ins.korean_title
-        a = truncate(expand_insight_body(ins, i + 1), 280)
-        faqs.append((q, a))
+        title = ins.korean_title
+        q = q_templates[i].format(title) if i < len(q_templates) else title
+        faqs.append((q, build_faq_answer(ins)))
     return faqs
 
 
@@ -416,7 +513,7 @@ def build_blog_html(stamp: str, summary: str, insights: list[Insight]) -> str:
     if insights:
         items = "".join(
             f"<li><strong>{html.escape(ins.korean_title)}</strong> — "
-            f"{html.escape(ins.korean_summary[:120])}</li>"
+            f"{html.escape(ins.context_blurb(max_chars=160, max_sentences=2))}</li>"
             for ins in insights[:3]
         )
         sections_html += f"<section><h2>핵심 트렌드 3가지</h2><ul>{items}</ul></section>\n"
@@ -476,8 +573,12 @@ def build_blog_html(stamp: str, summary: str, insights: list[Insight]) -> str:
         "{{TAGS}}": "AI, AEO, GEO, Agentic AI, Marketing, AX",
         "{{FAQ_JSONLD}}": json.dumps(faq_jsonld, ensure_ascii=False, indent=2),
         "{{ARTICLE_JSONLD}}": json.dumps(article_jsonld, ensure_ascii=False, indent=2),
-        "{{GEO_QUOTE}}": truncate(
-            insights[0].korean_summary if insights else summary, 80
+        "{{GEO_QUOTE}}": compress_sentences(
+            insights[0].context_blurb(max_chars=200, max_sentences=2)
+            if insights
+            else summary,
+            200,
+            max_sentences=2,
         ),
     }
     result = template
@@ -993,7 +1094,13 @@ def build_blog_article_md(stamp: str, summary: str, insights: list[Insight]) -> 
         )
 
     geo_quote = humanize(
-        truncate(insights[0].korean_summary if insights else summary, 200),
+        compress_sentences(
+            insights[0].context_blurb(max_chars=240, max_sentences=2)
+            if insights
+            else summary,
+            240,
+            max_sentences=2,
+        ),
         genre="blog",
     ).text
     body_parts.extend(
@@ -1145,8 +1252,8 @@ def build_linkedin_context_md(stamp: str, summary: str, insights: list[Insight])
     return "\n".join(lines)
 
 
-def _table_cell(text: str, max_len: int = 80) -> str:
-    s = truncate(str(text or "—"), max_len)
+def _table_cell(text: str, max_len: int = 80, *, max_sentences: int = 2) -> str:
+    s = compress_sentences(str(text or "—"), max_len, max_sentences=max_sentences)
     return s.replace("|", "\\|").replace("\n", " ").strip()
 
 
@@ -1162,9 +1269,13 @@ def build_brief_excerpt_table(insights: list[Insight], stamp: str) -> str:
         "|---:|---|---|---|---|",
     ]
     for i, ins in enumerate(insights[:7], 1):
-        title = _table_cell(ins.korean_title, 52)
-        summary = _table_cell(ins.korean_summary, 96)
-        view = _table_cell(ins.marketer_view or ins.korea_apply or ins.opportunity, 72)
+        title = _table_cell(ins.korean_title, 56, max_sentences=1)
+        summary = _table_cell(ins.context_blurb(max_chars=200, max_sentences=2), 200, max_sentences=2)
+        view = _table_cell(
+            ins.marketer_view or ins.korea_apply or ins.opportunity,
+            140,
+            max_sentences=2,
+        )
         src = ins.url.strip() if ins.url else "—"
         lines.append(f"| {i} | {title} | {summary} | {view} | {src} |")
     return "\n".join(lines)
@@ -1203,11 +1314,14 @@ def build_unified_context_md(
         "## Top 인사이트 (공통 소스)",
     ]
     for i, ins in enumerate(insights[:7], 1):
-        lines.append(f"{i}. **{ins.korean_title}** — {truncate(ins.korean_summary, 100)}")
+        blurb = ins.context_blurb(max_chars=180, max_sentences=2)
+        lines.append(f"{i}. **{ins.korean_title}** — {blurb}")
     if insights:
         lines.extend(["", build_brief_excerpt_table(insights, stamp)])
     elif brief_excerpt:
-        lines.extend(["", "## Research Brief 발췌", truncate(brief_excerpt, 500)])
+        lines.extend(
+            ["", "## Research Brief 발췌", compress_sentences(brief_excerpt, 1200, max_sentences=8)]
+        )
     lines.extend(
         [
             "",
@@ -1241,7 +1355,12 @@ def build_notion_packages(
         build_linkedin_context_md(stamp, summary, insights), encoding="utf-8"
     )
     paths["unified"].write_text(
-        build_unified_context_md(stamp, summary, insights, brief_excerpt=brief_text[:800]),
+        build_unified_context_md(
+            stamp,
+            summary,
+            insights,
+            brief_excerpt=compress_sentences(brief_text, 1200, max_sentences=8),
+        ),
         encoding="utf-8",
     )
     return paths

@@ -1,5 +1,26 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+## 변경 요약 (2026-06-08, Cursor Agent 리소스 Notion)
+
+- **로컬 MD:** `content/logs/2026-06-08_cursor-agent-resources.md` — Cursor transcript 기반 토큰·시간·스킬 맵
+- **Notion:** https://app.notion.com/p/379fb3b5e38981a4ba83f2a9d3af9979
+- **export:** `export-architecture-notion.py` — `cursor` 페이지 추가 · 기존 resources/diagrams replace
+- **state:** `content/.notion-architecture-state.json`
+
+## 변경 요약 (2026-06-08, Notion archived ancestor 복구)
+
+- **원인:** 기존 `2026-06-08` Daily/카테고리 페이지가 Notion 보관(archive) 상태 → update/create 400
+- **수정:** `archive-to-notion.py` — `is_archived_notion_error` · `clear_stamp_notion_state` · `upsert_category_page` · `--reset-notion-state`
+- **복구:** `--reset-notion-state --force` → Daily `https://app.notion.com/p/379fb3b5e389815cab0ae900fd564b0b` · 8페이지 동기화
+
+## 변경 요약 (2026-06-08, Brief·Unified 맥락 완결형)
+
+### Research Brief → Unified Context 맥락 단절 수정
+- **`compress_sentences` / `finish_at_sentence`** (`lib/common.py`) — 중간 `…` 잘림 대신 완결 문장 압축
+- **`context_blurb` · `polish_display_title` · `has_meaningful_korean`** (`content_quality.py`) — 한국어 제목·요약 연속성
+- **`TITLE_BY_TOPIC` · insight_derivation 보강** (`brief_quality.py`) — 영문 조각 제목·반복 템플릿 제거
+- **재생성:** `2026-06-08_brief.md` · `2026-06-08_unified-context.md` · validate PASS
+
 ## 변경 요약 (2026-06-08, Studio 아키텍처 Notion·MD)
 
 ### 운영 리소스 · 의존성 다이어그램

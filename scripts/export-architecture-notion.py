@@ -17,6 +17,7 @@ from lib.notion_client import (  # noqa: E402
     load_config,
     log,
     setup_mcp,
+    update_page_content,
 )
 
 WORKDIR = Path.home() / "hermes-content-studio"
@@ -46,8 +47,15 @@ def _paths(date: str) -> dict[str, Path]:
     return {
         "resources": LOGS / f"{date}_studio-resources-spec.md",
         "diagrams": LOGS / f"{date}_studio-dependency-diagrams.md",
+        "cursor": LOGS / f"{date}_cursor-agent-resources.md",
         "guide": LOGS / f"{date}_studio-architecture-guide.md",
     }
+
+
+def _load_state() -> dict:
+    if STATE_PATH.exists():
+        return json.loads(STATE_PATH.read_text(encoding="utf-8"))
+    return {"date": "", "pages": {}}
 
 
 def _notion_body(path: Path) -> str:
@@ -71,6 +79,8 @@ def main() -> int:
     cfg = load_config()
     root = cfg["archive"]["root_page_id"]
     registry = setup_mcp()
+    prior = _load_state()
+    prior_pages = prior.get("pages") or {}
 
     exports = [
         (
@@ -85,13 +95,25 @@ def main() -> int:
             "🗺️",
             paths["diagrams"],
         ),
+        (
+            "cursor",
+            f"Hermes Studio — Cursor Agent 리소스 맵 ({date})",
+            "🤖",
+            paths["cursor"],
+        ),
     ]
 
     pages: dict[str, dict] = {}
     for key, title, icon, src in exports:
         body = _notion_body(src)
-        page_id, url = create_page(registry, cfg, root, title, body, icon)
-        pages[key] = {"id": page_id, "url": url, "title": title, "local": str(src)}
+        existing = prior_pages.get(key) or {}
+        page_id = existing.get("id", "")
+        if page_id:
+            url = update_page_content(registry, cfg, page_id, body)
+            pages[key] = {"id": page_id, "url": url, "title": title, "local": str(src)}
+        else:
+            page_id, url = create_page(registry, cfg, root, title, body, icon)
+            pages[key] = {"id": page_id, "url": url, "title": title, "local": str(src)}
 
     _save_state(date, pages)
 

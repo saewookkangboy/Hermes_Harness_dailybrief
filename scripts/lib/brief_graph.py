@@ -8,6 +8,7 @@ from pathlib import Path
 
 from lib.brief_gate import brief_path
 from lib.common import studio_today, truncate
+from lib.common import compress_sentences
 from lib.content_quality import Insight, _insight_topic_key, parse_brief
 
 WORKDIR = Path.home() / "hermes-content-studio"
@@ -143,14 +144,17 @@ def build_brief_graph_table(stamp: str, insights: list[Insight], days: int = 14)
         "|---:|---|---|---|---|",
     ]
 
-    def cell(text: str, n: int) -> str:
-        return truncate(str(text or "—"), n).replace("|", "\\|").replace("\n", " ")
+    def cell(text: str, n: int, *, max_sentences: int = 2) -> str:
+        return compress_sentences(str(text or "—"), n, max_sentences=max_sentences).replace(
+            "|", "\\|"
+        ).replace("\n", " ")
 
     for i, ins in enumerate(insights[:7], 1):
         diff = diff_hint_for_insight(stamp, ins, graph)
         lines.append(
-            f"| {i} | {cell(ins.korean_title, 48)} | {cell(ins.korean_summary, 80)} "
-            f"| {cell(diff, 40)} | {ins.url or '—'} |"
+            f"| {i} | {cell(ins.korean_title, 56, max_sentences=1)} "
+            f"| {cell(ins.context_blurb(max_chars=180, max_sentences=2), 180, max_sentences=2)} "
+            f"| {cell(diff, 80, max_sentences=2)} | {ins.url or '—'} |"
         )
     top_streaks = graph.get("streaks", [])[:3]
     if top_streaks:
@@ -158,7 +162,7 @@ def build_brief_graph_table(stamp: str, insights: list[Insight], days: int = 14)
         for s in top_streaks:
             lines.append(
                 f"- **{s['topic_key']}** · {s['streak_days']}일 연속 · "
-                f"{truncate(s['latest_title'], 40)}"
+                f"{compress_sentences(s['latest_title'], 56, max_sentences=1)}"
             )
     return "\n".join(lines)
 

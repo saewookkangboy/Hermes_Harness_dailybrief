@@ -49,6 +49,60 @@ def truncate(s: str, n: int) -> str:
     return cut + "…" if cut else s[: n - 1] + "…"
 
 
+def finish_at_sentence(text: str, max_chars: int) -> str:
+    """max_chars 이내에서 마지막 완결 문장 경계까지 자른다 (중간 '…' 생략 없음)."""
+    text = re.sub(r"\s+", " ", (text or "").strip())
+    if not text:
+        return ""
+    if len(text) <= max_chars:
+        return text
+    chunk = text[:max_chars]
+    last_end = 0
+    for m in re.finditer(r"[.!?。…]", chunk):
+        last_end = m.end()
+    if last_end >= max(24, int(max_chars * 0.35)):
+        return chunk[:last_end].strip()
+    cut = chunk.rsplit(" ", 1)[0].strip()
+    if cut and cut[-1] in ".!?。…":
+        return cut
+    return (cut or chunk.strip()) + "."
+
+
+def compress_sentences(text: str, max_chars: int, *, max_sentences: int = 2) -> str:
+    """완결 문장만 이어 붙여 길이 제한 (맥락 단절 방지)."""
+    text = re.sub(r"\s+", " ", (text or "").strip())
+    if not text:
+        return ""
+    if len(text) <= max_chars:
+        return text if text[-1] in ".!?。…" else finish_at_sentence(text, max_chars)
+
+    parts = [p.strip() for p in re.split(r"(?<=[.!?。…])\s+", text) if p.strip()]
+    if not parts:
+        return finish_at_sentence(text, max_chars)
+    if len(parts) == 1:
+        return finish_at_sentence(parts[0], max_chars)
+
+    picked: list[str] = []
+    total = 0
+    for part in parts:
+        if len(picked) >= max_sentences:
+            break
+        sep = 1 if picked else 0
+        if total + sep + len(part) <= max_chars:
+            picked.append(part)
+            total += sep + len(part)
+        elif not picked:
+            return finish_at_sentence(part, max_chars)
+        else:
+            break
+    if picked:
+        out = " ".join(picked)
+        if out[-1] in ".!?。…":
+            return out
+        return finish_at_sentence(out, max_chars)
+    return finish_at_sentence(text, max_chars)
+
+
 @lru_cache(maxsize=8)
 def read_template(rel_path: str) -> str:
     """Cache template reads (blog HTML, etc.)."""
