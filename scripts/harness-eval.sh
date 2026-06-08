@@ -70,8 +70,23 @@ check_struct "State (progress)" "$WORKDIR/.harness/progress.md"
 check_struct "Verification (init.sh)" "$DIR/init.sh"
 check_struct "Verification (validate-output)" "$DIR/validate-output.sh"
 check_struct "Config (harness.yaml)" "$WORKDIR/config/harness.yaml"
+check_struct "Newsletter pipeline (run-newsletter)" "$DIR/run-newsletter.sh"
+check_struct "Newsletter eval (newsletter-eval)" "$DIR/newsletter-eval.sh"
+check_struct "Newsletter config" "$WORKDIR/config/newsletter.yaml"
+check_struct "Newsletter feature (pipe-008)" "$WORKDIR/.harness/feature_list.json"
 warn_check "Lifecycle (session-handoff)" "$WORKDIR/.harness/session-handoff.md"
 warn_check "Observability (traces)" "$WORKDIR/.harness/traces"
+
+if command -v jq >/dev/null 2>&1; then
+  if jq -e '.features[] | select(.id=="pipe-008" and .area=="newsletter")' \
+    "$WORKDIR/.harness/feature_list.json" >/dev/null 2>&1; then
+    echo "✅ feature pipe-008 (newsletter)"
+    PASS=$((PASS + 1))
+  else
+    echo "❌ feature pipe-008 (newsletter) — feature_list.json"
+    FAIL=$((FAIL + 1))
+  fi
+fi
 
 if [[ "$MODE" == "quick" ]]; then
   echo ""
@@ -100,8 +115,15 @@ CONTENT_ELAPSED=$(( CONTENT_END - CONTENT_START ))
 echo "콘텐츠: ${CONTENT_ELAPSED}s"
 RESULTS+=("content:${CONTENT_ELAPSED}")
 
-FULL_ELAPSED=$(( RESEARCH_ELAPSED + CONTENT_ELAPSED ))
-echo "합계 (research+content): ${FULL_ELAPSED}s"
+NEWSLETTER_START=$(date +%s)
+SKIP_INIT=1 "$DIR/run-newsletter.sh" "$DATE" >/tmp/harness-eval-newsletter.log 2>&1 || true
+NEWSLETTER_END=$(date +%s)
+NEWSLETTER_ELAPSED=$(( NEWSLETTER_END - NEWSLETTER_START ))
+echo "뉴스레터: ${NEWSLETTER_ELAPSED}s"
+RESULTS+=("newsletter:${NEWSLETTER_ELAPSED}")
+
+FULL_ELAPSED=$(( RESEARCH_ELAPSED + CONTENT_ELAPSED + NEWSLETTER_ELAPSED ))
+echo "합계 (research+content+newsletter): ${FULL_ELAPSED}s"
 RESULTS+=("full_pipeline:${FULL_ELAPSED}")
 
 # Regression check via Python
@@ -118,6 +140,7 @@ results = {
     'stages': [
         check_regression('research', $RESEARCH_ELAPSED),
         check_regression('content', $CONTENT_ELAPSED),
+        check_regression('newsletter', $NEWSLETTER_ELAPSED),
         check_regression('full_pipeline', $FULL_ELAPSED),
     ],
 }

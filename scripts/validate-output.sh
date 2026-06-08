@@ -3,7 +3,7 @@
 set -euo pipefail
 
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
-TYPE="${1:?Usage: validate-output.sh research|blog|instagram|linkedin|lecture FILE}"
+TYPE="${1:?Usage: validate-output.sh research|blog|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|lecture FILE}"
 FILE="${2:?Missing file path}"
 
 fail() { echo "❌ $1" >&2; exit 1; }
@@ -124,7 +124,91 @@ print(len(post))
     grep -qi "SEO / AEO / GEO" "$FILE" || fail "SEO/AEO/GEO 섹션 없음"
     grep -qi "## Research Brief 발췌" "$FILE" || fail "Research Brief 발췌 섹션 없음"
     grep -q "| # |" "$FILE" || fail "Research Brief 표 형식 없음"
+    grep -qi "| Newsletter |" "$FILE" || fail "Newsletter 채널 행 없음"
     pass "unified context OK: $FILE ($SIZE bytes)"
+    ;;
+  unified-newsletter)
+    grep -qi "## Newsletter (B2B 이메일)" "$FILE" || fail "Newsletter unified 섹션 없음"
+    grep -qi "권장 제목" "$FILE" || fail "권장 제목 없음"
+    pass "unified newsletter patch OK: $FILE ($SIZE bytes)"
+    ;;
+  newsletter)
+    grep -qi "## 30초 TLDR" "$FILE" || fail "TLDR 섹션 없음"
+    grep -qi "## 오늘의 1가지" "$FILE" || fail "Hero 섹션 없음"
+    grep -qi "## 3분 읽기" "$FILE" || fail "Insight 모듈 섹션 없음"
+    grep -qi "이번 주 실습 1가지" "$FILE" || fail "Single CTA 없음"
+    grep -qi "제목 후보" "$FILE" || fail "제목 A/B 없음"
+    grep -qi "자동 스코어" "$FILE" || fail "제목 스코어 없음"
+    grep -qi "권장 제목" "$FILE" || fail "권장 제목 없음"
+    grep -qi "프리헤더" "$FILE" || fail "프리헤더 없음"
+    grep -qi "다음 호" "$FILE" || fail "다음 호 예고 없음"
+    MOD_COUNT=$(grep -c "^### [123]\." "$FILE" || true)
+    (( MOD_COUNT >= 3 )) || fail "Insight 모듈 3개 미달: $MOD_COUNT"
+    python3 - "$FILE" <<'PY' || fail "뉴스레터 길이·제목 게이트"
+import re
+import sys
+from pathlib import Path
+text = Path(sys.argv[1]).read_text(encoding="utf-8")
+head = text.split("## 30초 TLDR")[0]
+for row in re.findall(r"\|\s*\d+.*?\|\s*\d+\s*\|\s*(.+?)\s*\|", head):
+    title = row.strip().strip("`")
+    if len(title) > 50:
+        raise SystemExit(f"제목 50자 초과: {len(title)}")
+body = text.split("## 30초 TLDR", 1)[-1]
+chars = len(re.sub(r"\s+", " ", body))
+if chars < 600:
+    raise SystemExit(f"본문 너무 짧음: {chars}")
+if chars > 4500:
+    raise SystemExit(f"본문 너무 김(완독 저하): {chars}")
+PY
+    pass "newsletter OK: $FILE ($SIZE bytes, modules=$MOD_COUNT)"
+    ;;
+  newsletter-context)
+    grep -qi "Newsletter 컨텍스트" "$FILE" || fail "Newsletter 컨텍스트 헤더 없음"
+    grep -qi "CTOR" "$FILE" || fail "CTOR 벤치마크 없음"
+    grep -qi "모듈 체크리스트" "$FILE" || fail "모듈 체크리스트 없음"
+    pass "newsletter context OK: $FILE ($SIZE bytes)"
+    ;;
+  newsletter-html)
+    grep -qi "30초 TLDR" "$FILE" || fail "TLDR 모듈 없음"
+    grep -qi "이번 주 실습" "$FILE" || fail "CTA 모듈 없음"
+    grep -qi "role=\"presentation\"" "$FILE" || fail "이메일 테이블 레이아웃 없음"
+    grep -qi "{{" "$FILE" && fail "미치환 플레이스홀더 남음"
+    pass "newsletter HTML OK: $FILE ($SIZE bytes)"
+    ;;
+  newsletter-paste)
+    grep -qi "붙여넣기 팩" "$FILE" || fail "붙여넣기 팩 헤더 없음"
+    grep -qi "## §1 제목" "$FILE" || fail "§1 제목 섹션 없음"
+    grep -qi "## §2 프리헤더" "$FILE" || fail "§2 프리헤더 섹션 없음"
+    grep -qi "## §3 본문" "$FILE" || fail "§3 본문 섹션 없음"
+    grep -qi "## §4 본문" "$FILE" || fail "§4 HTML 섹션 없음"
+    grep -qi "## 30초 TLDR" "$FILE" || fail "본문 TLDR 코드블록 없음"
+    pass "newsletter paste OK: $FILE ($SIZE bytes)"
+    ;;
+  newsletter-subject-scores)
+    python3 - "$FILE" <<'PY' || fail "제목 스코어 JSON 게이트"
+import json, sys
+from pathlib import Path
+p = Path(sys.argv[1])
+data = json.loads(p.read_text(encoding="utf-8"))
+winner = data.get("winner") or {}
+cands = data.get("candidates") or []
+if not winner or not cands:
+    raise SystemExit("winner/candidates 없음")
+import yaml
+from pathlib import Path as P
+cfg_path = P.home() / "hermes-content-studio" / "config" / "newsletter.yaml"
+min_score = 40
+if cfg_path.exists():
+    cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+    min_score = int((cfg.get("scoring") or {}).get("min_winner_score", 40))
+if winner.get("score", 0) < min_score:
+    raise SystemExit(f"winner score 낮음: {winner.get('score')} < {min_score}")
+for c in cands:
+    if len(c.get("text", "")) > 50:
+        raise SystemExit(f"제목 50자 초과: {c['text']}")
+PY
+    pass "newsletter subject scores OK: $FILE"
     ;;
   lecture)
     grep -qiE "목차|outline|강의|슬라이드" "$FILE" || fail "강의 구조 없음"

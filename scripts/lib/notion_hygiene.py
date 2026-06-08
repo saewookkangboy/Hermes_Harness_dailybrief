@@ -53,9 +53,20 @@ def parse_child_pages(fetch_text: str) -> list[dict]:
     return children
 
 
-def canonical_page_id(state: dict, stamp: str, cat_key: str) -> str | None:
+def resolve_state_page(state: dict, stamp: str, cat_key: str) -> tuple[str, dict | None]:
+    """canonical 키 우선, draft-only는 `{stamp}/{cat}@draft` fallback."""
+    pages = state.get("pages", {})
     pk = f"{stamp}/{cat_key}"
-    entry = state.get("pages", {}).get(pk)
+    draft_pk = f"{pk}@draft"
+    if pk in pages:
+        return pk, pages[pk]
+    if draft_pk in pages:
+        return draft_pk, pages[draft_pk]
+    return pk, None
+
+
+def canonical_page_id(state: dict, stamp: str, cat_key: str) -> str | None:
+    _, entry = resolve_state_page(state, stamp, cat_key)
     if isinstance(entry, dict):
         return entry.get("id")
     return None
@@ -232,6 +243,8 @@ def resolve_sync_parent(
         "score": quality.score,
         "tier": quality.tier,
         "issues": quality.issues,
+        "fact_checked": quality.fact_checked,
+        "fact_check_issues": quality.fact_check_issues,
     }
     if quality.tier == "canonical":
         day_entry = state.get("days", {}).get(stamp)

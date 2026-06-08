@@ -6,7 +6,13 @@ set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source=lib/studio-date.sh
 source "$DIR/lib/studio-date.sh"
-DATE="${1:-$(studio_today)}"
+# shellcheck source=lib/telegram_sync_guard.sh
+source "$DIR/lib/telegram_sync_guard.sh"
+DATE="${1:-$(studio_commander_date)}"
+
+if telegram_sync_should_skip_watch; then
+  exit 0
+fi
 CHAT_ID="${2:-${TELEGRAM_CHAT_ID:-}}"
 
 if [[ -z "$CHAT_ID" ]]; then
@@ -15,4 +21,6 @@ if [[ -z "$CHAT_ID" ]]; then
 fi
 
 export TELEGRAM_CHAT_ID="$CHAT_ID"
-"$DIR/archive-to-notion.sh" "$DATE" --telegram-chat "$CHAT_ID" --notify-final || true
+telegram_sync_begin "$DATE"
+"$DIR/archive-to-notion.sh" "$DATE" --force --telegram-chat "$CHAT_ID" --notify-final || true
+telegram_sync_end

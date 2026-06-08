@@ -9,7 +9,7 @@ personal_tasks:
   codex:
     enabled: true
     provider: openai-codex
-    model: gpt-5.3-codex
+    model: gpt-5.5
     skills:
       ask: personal-assistant
       research: personal-assistant

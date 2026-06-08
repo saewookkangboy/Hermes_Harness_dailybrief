@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Hermes Content Studio — 전체 파이프라인 (리서치 → 콘텐츠 → 강의 → Notion)
+# Hermes Content Studio — 전체 파이프라인 (리서치 → 콘텐츠 → 뉴스레터 → 강의 → Notion)
 # Harness v1.2.0 — 결정적 우선, init + 타이밍 트레이스
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -22,6 +22,11 @@ if [[ -z "$REQUESTED_DATE" ]]; then
 fi
 # M1 직후 brief SoT 재사용 (중복 gather 방지)
 HERMES_SKIP_RESEARCH=1 "$DIR/run-content-package.sh" "$DATE"
+# M2b 뉴스레터 — Brief SoT (SKIP_NEWSLETTER=1 로 건너뛰기)
+if [[ "${SKIP_NEWSLETTER:-0}" != "1" ]]; then
+  "$DIR/run-newsletter.sh" "$DATE" --validate \
+    || echo "⚠️  Newsletter skipped (see content-studio.log)"
+fi
 # 강의 슬라이드 — /pipeline 제외 (/lecture 명령 사용)
 # SKIP_LECTURE=0 으로만 파이프라인에 포함
 if [[ "${SKIP_LECTURE:-1}" != "1" ]]; then

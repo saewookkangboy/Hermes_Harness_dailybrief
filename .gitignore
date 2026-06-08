@@ -22,6 +22,21 @@ content/personal/
 .harness/traces/
 .harness/*.log
 .harness/eval-results.json
+.harness/handoffs/
+.harness/jobs/
+.harness/publish-queue/
+.harness/sessions/
+.harness/watch-telegram-state/
+.harness/watch-telegram.lock
+.harness/notify-dedupe.json
+.harness/m4-snapshot.json
+.harness/newsletter-ctor-metrics.json
+
+# Research graph cache (regenerated)
+content/research/_brief_graph.json
+
+# Generated newsletter outputs
+content/newsletter/*
 
 # Notion local state
 content/.notion-archive-state.json

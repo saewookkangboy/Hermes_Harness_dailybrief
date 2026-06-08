@@ -21,6 +21,7 @@ from lib.notion_hygiene import (  # noqa: E402
     hygiene_enabled,
     parse_child_pages,
     prune_state,
+    resolve_state_page,
     run_day_hygiene,
     stale_state_keys,
 )
@@ -106,8 +107,7 @@ def audit_date(stamp: str, *, fix: bool = False, dry_run: bool = False) -> dict:
         }
 
         local_path = local_files.get(cat_key)
-        pk = f"{stamp}/{cat_key}"
-        state_page = state.get("pages", {}).get(pk)
+        pk, state_page = resolve_state_page(state, stamp, cat_key)
 
         if local_path:
             raw = local_path.read_text(encoding="utf-8")

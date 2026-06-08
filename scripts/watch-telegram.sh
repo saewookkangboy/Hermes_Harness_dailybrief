@@ -15,13 +15,15 @@ SCRIPTS="$WORKDIR/scripts"
 AGENT_LOG="${HERMES_AGENT_LOG:-$HOME/.hermes/logs/agent.log}"
 GATEWAY_LOG="${HERMES_GATEWAY_LOG:-$HOME/.hermes/logs/gateway.log}"
 STUDIO_LOG="${HERMES_STUDIO_LOG:-$HOME/.hermes/logs/content-studio.log}"
-STATE_DIR="${HERMES_WATCH_STATE:-/tmp/hermes-watch-$$}"
-INSTANCE_LOCK="${HERMES_WATCH_LOCK:-/tmp/hermes-watch-telegram.lock}"
+STATE_DIR="${HERMES_WATCH_STATE:-$WORKDIR/.harness/watch-telegram-state/$$}"
+INSTANCE_LOCK="${HERMES_WATCH_LOCK:-$WORKDIR/.harness/watch-telegram.lock}"
 SYNC_DEBOUNCE_SEC="${NOTION_SYNC_DEBOUNCE_SEC:-0}"
 BAR_WIDTH=24
 MODE="${1:-follow}"
 # shellcheck source=lib/studio-date.sh
 source "$SCRIPTS/lib/studio-date.sh"
+# shellcheck source=lib/telegram_sync_guard.sh
+source "$SCRIPTS/lib/telegram_sync_guard.sh"
 
 if [[ "$MODE" != "--once" ]]; then
   if [[ -f "$INSTANCE_LOCK" ]]; then
@@ -47,6 +49,7 @@ SYNC_LOCK="$STATE_DIR/sync_lock"
 LAST_SYNC_FILE="$STATE_DIR/last_sync_ts"
 LAST_EVENT_FILE="$STATE_DIR/last_event_hash"
 SYNC_RUNNING="$STATE_DIR/sync_running"
+SLASH_FILE="$STATE_DIR/slash_cmd"
 
 echo "phase=대기 중" > "$PHASE_FILE"
 echo "0" > "$ACTIVE_FILE"
@@ -71,7 +74,7 @@ notify_telegram() {
   [[ -z "$chat" ]] && return 0
   [[ "${TELEGRAM_PROGRESS:-1}" == "0" ]] && return 0
   local dated
-  dated="$(studio_today)
+  dated="$(studio_commander_date)
 ${msg}"
   local last
   last=$(cat "$NOTIFIED_FILE" 2>/dev/null || echo "")
@@ -140,14 +143,24 @@ sync_debounce_ok() {
 }
 
 run_post_sync() {
+  # 기본 OFF — 슬래시/파이프라인이 Notion sync 담당. 대화형 LLM만 HERMES_WATCH_POST_SYNC=1
+  [[ "${HERMES_WATCH_POST_SYNC:-0}" == "1" ]] || return 0
   local chat sync_date
   chat=$(cat "$CHAT_FILE" 2>/dev/null || echo "")
   [[ -z "$chat" ]] && return 0
+  if [[ -f "$SLASH_FILE" ]]; then
+    echo "ℹ️  슬래시 커맨드 — 파이프라인 sync가 알림 담당 (watch skip)" >&2
+    rm -f "$SLASH_FILE"
+    return 0
+  fi
+  if telegram_sync_should_skip_watch; then
+    return 0
+  fi
   if [[ -f "$SYNC_RUNNING" ]]; then
     echo "ℹ️  Notion sync 이미 실행 중 — skip" >&2
     return 0
   fi
-  sync_date="$(studio_today)"
+  sync_date="$(studio_commander_date)"
   notify_telegram "$chat" "[████░] 4/5 Notion 동기화 중… ($sync_date)"
   (
     touch "$SYNC_RUNNING"
@@ -174,6 +187,11 @@ handle_line() {
 
   if echo "$line" | grep -q "inbound message: platform=telegram"; then
     msg=$(echo "$line" | extract_msg)
+    if echo "${msg:-}" | grep -qE '^/[a-zA-Z0-9_-]+'; then
+      echo "1" > "$SLASH_FILE"
+    else
+      rm -f "$SLASH_FILE"
+    fi
     [[ -n "$chat" ]] && echo "$chat" > "$CHAT_FILE"
     echo "$msg" > "$MSG_FILE"
     echo "1" > "$ACTIVE_FILE"

@@ -5,7 +5,8 @@
 # 기본 cron 파이프라인은 Ollama 유지, 품질 경로만 Codex로 라우팅.
 
 export HERMES_CODEX_PROVIDER="${HERMES_CODEX_PROVIDER:-openai-codex}"
-export HERMES_CODEX_MODEL="${HERMES_CODEX_MODEL:-gpt-5.3-codex}"
+# gpt-5.3-codex retired on ChatGPT Codex OAuth (2026-06) — use gpt-5.5
+export HERMES_CODEX_MODEL="${HERMES_CODEX_MODEL:-gpt-5.5}"
 export PATH="${HOME}/.hermes/node/bin:${PATH}"
 
 hermes_should_use_codex() {

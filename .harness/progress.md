@@ -1,5 +1,219 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+## 변경 요약 (2026-06-08, Telegram /morning 슬래시 등록)
+
+### Unrecognized slash command 해결
+- **원인:** `/morning` · `/newsletter` 등 intent-pack이 `quick_commands`에 미등록 → gateway unknown-command
+- **수정:** `telegram-routing.yaml` + `telegram-pipeline.sh qc` (morning/catch-up/publish/linkedin/traces/handoff/graph/commands/approve)
+- **적용:** `setup-telegram-routing.sh` → `~/.hermes/config.yaml` · gateway restart
+- **eval:** commander-integration-eval 28/28 PASS
+
+## 변경 요약 (2026-06-08, Telegram 2026-06-05 중복 재발 수정)
+
+### 근본 원인
+- **watch-telegram 7중 실행** (Fri/Sun 수동·start-services 중복)
+- watch가 `[Notion Archive] 시작: 2026-06-05` 로그마다 **sync lock을 과거 날짜로 덮어씀**
+- 병렬 archive(2026-06-05 + 2026-06-08) → Telegram에 **2026-06-05 Permalink** 전송
+
+### 수정
+- **`kill-stale-watch-telegram.sh`** · **`start-services.sh`:** 기동 전 중복 watch 정리 (macOS `ps|rg` 호환)
+- **`watch-telegram`:** post-sync **기본 OFF** (`HERMES_WATCH_POST_SYNC=1`만 대화형) · 로그 기반 `telegram_sync_begin` **제거**
+- **`archive-to-notion.sh`:** `REQUESTED_DATE` 파싱(DATE env 오염 방지) · Telegram/`--notify-final` 시 **commander 날짜 보정** · flock/PID lock
+- **`telegram_sync_guard`:** lock **다운그레이드 금지** (2026-06-08 lock 유지)
+- **`commander-integration-eval.sh`:** 25/25 PASS
+
+### 운영
+```bash
+~/hermes-content-studio/scripts/kill-stale-watch-telegram.sh   # 중복 watch 정리
+~/hermes-content-studio/scripts/start-services.sh              # 단일 watch 재기동
+# Telegram: /sync 1회 → stamp=오늘(2026-06-08) Permalink 1건만
+```
+
+## 변경 요약 (2026-06-08, Commander 통합 점검 · Telegram sync 수정)
+
+### Telegram 슬래시 Notion 중복 수정
+- **`studio_commander_date`:** 오늘 → 최신 brief 1건 (2026-06-05 고정 출력 방지)
+- **`telegram_sync_guard`:** 파이프라인 sync 중 watch post-sync skip
+- **`watch-telegram`:** 슬래시(`/pipeline` 등) 응답 시 agent post-sync skip
+- **`pages_for_stamp`:** 타 날짜 fallback 제거 · completion 1 stamp만
+- **`notify_dedupe`:** 동일 chat+stamp 알림 120s 억제
+- **`commander-integration-eval.sh`**
+
+## 변경 요약 (2026-06-08, P6 Notion 붙여넣기 팩)
+
+### P6 — 배포 워크플로 (ESP 없음)
+- **`lib/newsletter_paste.py`:** §1 제목 · §2 프리헤더 · §3 MD · §4 HTML 코드 블록
+- **`content/packages/{date}_newsletter-paste.md`** · Notion `newsletter_paste` 채널 (order 8)
+- **`config/newsletter.yaml`:** `delivery.mode: notion_paste` · `esp_send: false`
+- **`newsletter-p6-eval.sh`** · e2e newsletter-paste 게이트 · Notion 8페이지
+
+### 워크플로 (유지)
+1. `run-newsletter.sh --validate` → paste 팩 생성
+2. `archive-to-notion.sh --force` → Notion Newsletter Paste
+3. Notion 코드 블록 **복사** → 스티비·센드그리드 등 문서 편집기 붙여넣기
+
+## 변경 요약 (2026-06-08, P4–P5 CTOR·LinkedIn)
+
+### P4 — CTOR 실측 + LinkedIn 팩트체크
+- **`lib/newsletter_ctor.py`:** delivered/opens/clicks → CTOR · `.harness/newsletter-ctor-metrics.json`
+- **`newsletter-ctor-record.sh` / `newsletter-ctor-dashboard.sh`:** HTML+MD 대시보드 (`content/logs/`)
+- **`build_linkedin_context_md`:** `## 출처` URL → Notion **canonical (score 100)**
+- **`newsletter-p4-eval.sh`:** 7/7 PASS
+
+### Notion (2026-06-08 갱신)
+- LinkedIn: https://www.notion.so/379fb3b5e3898117b646d966482999db (canonical)
+
+## 변경 요약 (2026-06-08, P3 마감 + Notion 동기화)
+
+### Notion 동기화 (2026-06-08)
+- **7페이지** canonical · newsletter + newsletter_html 갱신
+- Newsletter: https://www.notion.so/379fb3b5e389814f9a9fc065ce583fe1
+- Newsletter HTML: https://www.notion.so/379fb3b5e389812b8b34df8e6c62c640
+
+### P3 — 문서·M4·eval 마감
+- **`m4_analytics.newsletter_kpis`** · `run-newsletter.sh` trace
+- **`harness-eval.sh` full:** newsletter 타이밍·회귀
+- **`newsletter-p3-eval.sh`** · README/HARNESS · feature_list 갱신
+
+## 변경 요약 (2026-06-08, P2 뉴스레터 고도화)
+
+### P2 구현
+- **`newsletter.yaml` 로더:** subject_templates · scoring · outputs(html/scores) → 코드 연동
+- **`patch_unified_context_newsletter`:** unified에 권장 제목·경로 · `unified-newsletter` 게이트
+- **`slack-daily-log`:** Newsletter Context · MD/HTML 산출물
+- **`publish_gate`:** newsletter HITL 채널 · `run-newsletter` 발행 경로
+- **`skills/channels/newsletter/SKILL.md`**
+- **`newsletter-p2-eval.sh`:** 9/9 PASS
+
+### 검증
+- `newsletter-p2-eval.sh 2026-06-08` · `e2e-smoke-test` 12/12 · `archive-to-notion --force`
+
+## 변경 요약 (2026-06-08, P0 파이프라인 연동)
+
+### P0 — 주간 오케스트레이션
+- **`run-pipeline.sh`:** M2b `run-newsletter.sh --validate` (SKIP_NEWSLETTER=1로 제외)
+- **`e2e-smoke-test.sh`:** newsletter 4게이트 + 파이프라인 SLA 70s
+- **`content-orchestration.yaml`:** M2b · newsletter_pipeline · daily M1+M2+M2b+M5
+
+### P1 — Telegram·문서·Notion 상태
+- **`telegram-pipeline.sh`:** run_newsletter · qc newsletter · /pipeline에 M2b 포함
+- **`telegram-routing.yaml`:** `/newsletter` quick command
+- **`AGENTS.md`:** newsletter 채널·실행·품질 게이트
+- **`notion_hygiene.resolve_state_page`:** `@draft` state fallback (false missing 제거)
+
+### 검증
+- `e2e-smoke-test.sh 2026-06-08` — 12/12 PASS
+- `newsletter-eval.sh` — 9/9 PASS
+
+## 변경 요약 (2026-06-08, B2B 뉴스레터 확장)
+
+### Step 1 — A/B 제목 자동 스코어링
+- **`lib/newsletter_subject.py`:** Stripo 휴리스틱 (길이·질문형·스팸·B2B 키워드)
+- 산출: `content/newsletter/{date}_newsletter_subject-scores.json`
+- MD 본문: 스코어 테이블 + ⭐ 권장 제목
+
+### Step 2 — HTML 이메일 템플릿
+- **`templates/email/newsletter.html`:** 모바일 단일 컬럼 · table layout · preheader
+- **`lib/newsletter_html.py`:** TLDR/Hero/모듈/CTA 모듈 조립
+- 산출: `content/newsletter/{date}_newsletter_{slug}.html`
+
+### Step 3 — Notion 아카이브 채널
+- **`config/notion-archive.yaml`:** `newsletter` (context) · `newsletter_html` (order 6–7)
+- **`notion_quality.py` / `notify_format.py` / `archive-to-notion.py`** 연동
+
+### 설계 (오픈율·완독율/CTOR)
+- **근거:** Stripo B2B 2026 · ClickMinded · Morning Brew modular · Dyspatch
+- **구조:** TLDR 3불릿 → Hero → 모듈×3 → Grab Bag → Single CTA → 다음 호 예고
+- **설정:** `config/newsletter.yaml` · `config/content-guidelines.yaml#newsletter`
+
+### 구현
+- **`lib/newsletter_quality.py`:** `assemble_newsletter()` → md + html + scores
+- **`run-newsletter.sh` / `assemble-newsletter.py`:** Brief SoT → `content/newsletter/`
+- **`validate-output.sh`:** newsletter · context · html · subject-scores 게이트
+- **`hermes-agent.sh newsletter`:** `/newsletter` intent
+
+### Harness 등록
+- **`feature_list.json` pipe-008:** B2B 뉴스레터 파이프라인 (area: newsletter, status: passing)
+- **`harness.yaml`:** SLA newsletter 10s · post_stage 4게이트 · eval baseline 5s
+
+### 검증
+- **`newsletter-eval.sh`:** 9/9 PASS · `content/logs/2026-06-08_newsletter-eval-report.md`
+- Notion 동기화 완료 (2026-06-08): 7페이지 · newsletter + newsletter_html canonical
+  - Daily: https://app.notion.com/p/379fb3b5e38981d2b8ecc42bea10db1d
+  - Newsletter: https://app.notion.com/p/379fb3b5e389814f9a9fc065ce583fe1
+  - Newsletter HTML: https://app.notion.com/p/379fb3b5e389812b8b34df8e6c62c640
+
+## 변경 요약 (2026-06-08, Phase 3 Agent 고도화)
+
+### Command Registry (agent-native parity)
+- **`lib/command_registry.py`:** intent packs + script commands 단일 SoT
+- **`config/agent-commands.yaml` v3.0:** `commands:` pipeline · notion-sync · research · content · slack-digest
+- **`hermes-agent.py commands` / `run <id>`:** CLI·Telegram·Cursor 동일 진입점
+
+### Brief Graph Lite
+- **`lib/brief_graph.py`:** topic_key streak · `_brief_graph.json` · unified context **이전 브리프와의 차이** 열
+- **`hermes-agent.py graph --write-unified`:** packages unified-context Graph 표 반영
+
+### HITL Publish Gate
+- **`lib/publish_gate.py`:** `.harness/publish-queue/{stamp}.json` · 승인 카드
+- **`publish` (기본):** HITL 대기 · **`--approve` / `approve`:** 발행 실행
+
+### 검증
+- **`phase3-eval.sh`:** 7/7 PASS · Phase 2 regression OK
+- **E2E 2026-06-08:** `e2e-smoke-test` 7/7 · `--telegram` 11/11 · Agent+HITL 8/8
+- 리포트: `content/logs/2026-06-08_e2e-full-report.md`
+- **fix:** `hermes-agent auto` — graph/traces 등 서브커맨드 기본 인자 (`_auto_defaults`)
+
+## 변경 요약 (2026-06-08, Phase 2 Agent 고도화)
+
+### M4 Traces 실측화
+- **`lib/m4_analytics.py`:** traces 집계 · SLA breach · Notion tier · `m4-snapshot.json`
+- **`hermes-agent.py traces`:** M4 리포트 · agent intent trace 기록
+
+### LinkedIn M3 Sub-pipeline
+- **`lib/linkedin_pipeline.py`:** analyze → strategy → draft (결정적)
+- **`run-linkedin-pipeline.sh`:** `packages/*_linkedin-analysis.md` · `*_linkedin-strategy.md` · context M3 섹션
+- **`hermes-agent.py linkedin`:** Telegram `/linkedin` 라우팅
+
+### Session Handoff 고도화
+- **`lib/session_handoff.py`:** `format_resume_block()` · `write_session_handoff()` → `.harness/session-handoff.md`
+- **`hermes-agent.py handoff`:** 이어하기 명령 + M4 embed
+
+### 검증
+- **`phase2-eval.sh`:** 8/8 PASS · Phase 1 regression OK
+- 리포트: `content/logs/2026-06-07_phase2-eval-report.md`
+- **다음:** Phase 3 — command registry · Brief Graph · HITL publish gate
+
+## 변경 요약 (2026-06-08, Phase 1 Agent 고도화)
+
+### 우선순위 1 — Memory Router + Intent Pack
+- **`config/agent-commands.yaml`:** morning · catch-up · publish · deep · ask intent pack
+- **`lib/memory_router.py`:** brief → packages → personal → notion_state 우선 질의 · `skip_web_search`
+- **`hermes-agent.py` / `hermes-agent.sh`:** route · morning · catch-up · publish · deep · proactive · bridge-sync · session · auto
+- **`telegram-pipeline.sh`:** `/morning` · `/catch-up` · publish · deep · ask · intent-pack 라우팅
+
+### 우선순위 2 — Brief ↔ Personal Bridge
+- **`lib/personal_bridge.py`:** `_inbox_candidates.json` · `sync_inbox_from_personal()` · `queue_topic_for_brief()`
+
+### 우선순위 3 — Session SoT + Proactive
+- **`lib/session_sot.py`:** `.harness/sessions/{id}.json` · `record_action()` · `resume_hint()`
+- **`lib/proactive_triggers.py`:** brief_freshness · notion_stale (24h) 체크
+- **`archive-to-notion.py`:** 페이지 state `synced_at` (proactive용)
+
+### 검증
+- **`phase1-eval.sh`:** 8/8 PASS · 리포트 `content/logs/2026-06-07_phase1-eval-report.md`
+- memory_router 5.4ms · harness-eval --quick OK
+- **다음:** Phase 2 — M4 traces · LinkedIn sub-pipeline · Session handoff 고도화
+
+## 변경 요약 (2026-06-08, Notion Fact-check 게이트)
+
+### Notion 아카이브
+- **`notion_quality.py`:** Notion 반영 전 `fact_check` 게이트 추가 — 출처 URL·수치 주장·최상급/절대 표현 검증
+- **Draft 분기:** Fact-check 이슈가 있으면 canonical 대신 Draft Archive 반영
+- **`notion_templates.py`:** Notion 페이지 상단 메타에 팩트체크 통과/보류·이슈 표기
+- **검증:** py_compile 통과 · `harness-eval --quick` 9/9 PASS · 2026-06-08 Notion force sync 5페이지 완료
+
+
 ## 변경 요약 (2026-06-07, Notion 템플릿 · 알림 포맷)
 
 ### Notion 아카이브

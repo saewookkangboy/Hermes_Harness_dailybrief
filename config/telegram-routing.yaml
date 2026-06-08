@@ -9,7 +9,8 @@ telegram_routing:
     ## A) Weekly pipeline (zero LLM, ~15s) — NO lecture
     Keywords: 파이프라인, pipeline, 주간, weekly, 브리프, 콘텐츠
     Command: ~/hermes-content-studio/scripts/telegram-pipeline.sh auto "<message>"
-    Slash: /pipeline (콘텐츠 + Notion 자동 sync) /research /content /sync /studio /notion-status
+    Slash: /pipeline (M1+M2+M2b+Notion) /research /content /newsletter /sync /studio /notion-status
+    Slash (intent): /morning /catch-up /publish /linkedin /traces /handoff /graph /commands /approve
 
     ## B) Lecture (separate — NOT in /pipeline)
     Keywords: 강의, lecture, 슬라이드, outline, HTML 덱
@@ -33,6 +34,9 @@ quick_commands:
   content:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc content
+  newsletter:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc newsletter
   sync:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc sync
@@ -57,3 +61,39 @@ quick_commands:
   lecture:
     type: alias
     target: /lecture-studio
+  morning:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc morning
+  catch-up:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc catch-up
+  catchup:
+    type: alias
+    target: /catch-up
+  publish:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc publish
+  deep:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc deep
+  ask:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc ask
+  linkedin:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc linkedin
+  traces:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc traces
+  handoff:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc handoff
+  graph:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc graph
+  commands:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc commands
+  approve:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc approve

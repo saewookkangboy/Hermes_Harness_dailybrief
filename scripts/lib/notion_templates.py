@@ -73,6 +73,8 @@ def build_archive_page_body(
     tier: str = "canonical",
     quality_score: int | None = None,
     quality_issues: list[str] | None = None,
+    fact_checked: bool | None = None,
+    fact_check_issues: list[str] | None = None,
 ) -> str:
     """Structured Notion page: callout meta + normalized body."""
     try:
@@ -88,8 +90,17 @@ def build_archive_page_body(
     ]
     if quality_score is not None:
         meta_lines.append(f"> **품질 점수:** {quality_score}/100")
+    if fact_checked is not None:
+        if fact_checked and not fact_check_issues:
+            meta_lines.append("> **팩트체크:** ✅ 통과 — 출처 URL·수치/최상급 주장 기준 확인")
+        elif fact_checked:
+            meta_lines.append("> **팩트체크:** ⚠️ 보류 — 검증 이슈로 Draft Archive 반영")
+        else:
+            meta_lines.append("> **팩트체크:** 제외 — 비데이터성 콘텐츠")
     if quality_issues:
         meta_lines.append(f"> **이슈:** {', '.join(quality_issues[:4])}")
+    if fact_check_issues:
+        meta_lines.append(f"> **팩트체크 이슈:** {', '.join(fact_check_issues[:4])}")
 
     meta = "\n".join(meta_lines)
     return f"{meta}\n\n---\n\n{body.strip()}\n"

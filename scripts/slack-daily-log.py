@@ -27,17 +27,30 @@ def sections_for(stamp: str) -> list[tuple[str, Path]]:
         ("Blog Article", WORKDIR / "content" / "packages" / f"{stamp}_blog-article.md"),
         ("Instagram Context", WORKDIR / "content" / "packages" / f"{stamp}_instagram-context.md"),
         ("LinkedIn Context", WORKDIR / "content" / "packages" / f"{stamp}_linkedin-context.md"),
+        ("Newsletter Context", WORKDIR / "content" / "packages" / f"{stamp}_newsletter-context.md"),
+        ("Newsletter Paste", WORKDIR / "content" / "packages" / f"{stamp}_newsletter-paste.md"),
         ("Unified Context", WORKDIR / "content" / "packages" / f"{stamp}_unified-context.md"),
     ]
 
 
 def channel_outputs(stamp: str) -> list[tuple[str, Path]]:
     out: list[tuple[str, Path]] = []
-    for channel, sub in (("Blog HTML", "blog"), ("Instagram Post", "instagram"), ("LinkedIn Post", "linkedin")):
+    for channel, sub in (
+        ("Blog HTML", "blog"),
+        ("Instagram Post", "instagram"),
+        ("LinkedIn Post", "linkedin"),
+        ("Newsletter MD", "newsletter"),
+        ("Newsletter HTML", "newsletter"),
+    ):
         base = WORKDIR / "content" / sub
         if not base.is_dir():
             continue
-        matches = sorted(base.glob(f"{stamp}_{sub}_*"))
+        if sub == "newsletter" and channel == "Newsletter HTML":
+            matches = sorted(base.glob(f"{stamp}_newsletter_*.html"))
+        elif sub == "newsletter":
+            matches = sorted(base.glob(f"{stamp}_newsletter_*.md"))
+        else:
+            matches = sorted(base.glob(f"{stamp}_{sub}_*"))
         if matches:
             out.append((channel, matches[-1]))
     return out

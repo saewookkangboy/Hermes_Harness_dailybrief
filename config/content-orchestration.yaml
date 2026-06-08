@@ -34,6 +34,27 @@ stages:
       unified: content/packages/{date}_unified-context.md
     sla_seconds: 10
     deterministic: true
+  M2b:
+    name: newsletter_execution
+    requires_brief: true
+    brief_sot: content/research/{date}_brief.md
+    hermes_channel: newsletter
+    skill: content-orchestration
+    script: scripts/run-newsletter.sh
+    config: config/newsletter.yaml
+    outputs:
+      newsletter: content/newsletter/{date}_newsletter_*.md
+      newsletter_html: content/newsletter/{date}_newsletter_*.html
+      newsletter_context: content/packages/{date}_newsletter-context.md
+      subject_scores: content/newsletter/{date}_newsletter_subject-scores.json
+    validate:
+      - scripts/validate-output.sh newsletter
+      - scripts/validate-output.sh newsletter-context
+      - scripts/validate-output.sh newsletter-html
+      - scripts/validate-output.sh newsletter-subject-scores
+    sla_seconds: 10
+    deterministic: true
+    skip_env: SKIP_NEWSLETTER
   M3:
     name: optimization
     skill: channels/linkedin
@@ -73,16 +94,16 @@ pipelines:
     stages: [M1]
   daily_content:
     schedule: "0 8 * * *"
-    stages: [M1, M2, M5]
+    stages: [M1, M2, M2b, M5]
     requires: [M1]
-    note: "Brief SoT — gather → brief Top 7 → blog · instagram · linkedin"
+    note: "Brief SoT — gather → brief Top 7 → blog · instagram · linkedin · newsletter"
   telegram_pipeline:
     script: scripts/telegram-pipeline.sh
-    stages: [M1, M2, M5]
+    stages: [M1, M2, M2b, M5]
     exclude: [lectures]
   full_deterministic:
     script: scripts/run-pipeline.sh
-    stages: [M1, M2]
+    stages: [M1, M2, M2b]
 
 # LinkedIn 전용: analyze → strategy → draft (linkedin-feed-strategy-maker)
 linkedin_pipeline:
@@ -102,6 +123,23 @@ linkedin_pipeline:
     - id: validate
       validate: scripts/validate-output.sh linkedin
 
+# B2B 뉴스레터: Brief SoT → md + HTML + A/B 제목 스코어
+newsletter_pipeline:
+  steps:
+    - id: assemble
+      script: scripts/assemble-newsletter.py
+      input: [brief]
+      output: content/newsletter/{date}_newsletter_*.md
+    - id: html
+      output: content/newsletter/{date}_newsletter_*.html
+    - id: subject_scores
+      output: content/newsletter/{date}_newsletter_subject-scores.json
+    - id: context
+      output: content/packages/{date}_newsletter-context.md
+    - id: validate
+      script: scripts/run-newsletter.sh
+      args: ["{date}", "--validate"]
+
 # strategy-prompts 프레임워크 (M1/M2 보강)
 strategy_frameworks:
   m1:
@@ -120,14 +158,14 @@ strategy_frameworks:
 
 # harness-100 Scale Modes
 scale_modes:
-  full: "M1→M2→M5 (일일 기본 · Brief SoT)"
-  reduced: "M2 only (당일 brief 존재·신선 시 — HERMES_SKIP_RESEARCH=1)"
-  single_channel: "linkedin | blog | instagram 개별"
+  full: "M1→M2→M2b→M5 (일일 기본 · Brief SoT)"
+  reduced: "M2+M2b only (당일 brief 존재·신선 시 — HERMES_SKIP_RESEARCH=1)"
+  single_channel: "linkedin | blog | instagram | newsletter 개별"
   enhance: "full + HERMES_ENHANCE=1"
 
 # skill 계층 (harness-100 3-layer)
 skill_layers:
   orchestrator: [content-orchestration, content-pipeline]
-  channel: [channels/research, channels/blog, channels/instagram, channels/linkedin]
+  channel: [channels/research, channels/blog, channels/instagram, channels/linkedin, newsletter]
   shared: [shared/validate, shared/handoff, notion-archive, telegram-commander]
   prompts: [prompts/strategy-frameworks, prompts/linkedin-pipeline]

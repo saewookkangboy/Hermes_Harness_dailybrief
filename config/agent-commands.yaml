@@ -1,0 +1,188 @@
+# Hermes Conversational Agent — Phase 1–3 Intent Packs & Command Registry
+version: "3.0.0"
+
+memory_router:
+  # 로컬 소스 우선순위 (web_search 생략 목표)
+  source_order:
+    - brief
+    - packages
+    - personal
+    - notion_state
+  max_snippet_chars: 1200
+  skip_web_search_when_hit: true
+
+session:
+  dir: .harness/sessions
+  default_id: cli
+  persist_fields:
+    - last_stamp
+    - last_intent
+    - last_action
+    - pending_actions
+    - chat_id
+
+proactive:
+  enabled: true
+  checks:
+  - id: brief_freshness
+    label: "Brief 신선도"
+  - id: notion_stale
+    label: "Notion 동기화 지연"
+    max_hours_without_sync: 24
+
+personal_bridge:
+  inbox_file: content/personal/_inbox_candidates.json
+  max_candidates: 20
+  promote_to_brief: true
+
+intent_packs:
+  morning:
+    label: "모닝 브리핑"
+    aliases: ["/morning", "모닝", "아침 브리핑", "오늘 뭐해"]
+    steps:
+      - proactive_check
+      - brief_top3
+      - session_resume_hint
+    sla_seconds: 15
+
+  catch-up:
+    label: "최근 요약"
+    aliases: ["/catch-up", "/catchup", "최근 요약", "이번 주 뭐했지"]
+    default_args:
+      days: 3
+    steps:
+      - memory_recent_briefs
+      - notion_permalinks
+    sla_seconds: 10
+
+  publish:
+    label: "채널 발행"
+    aliases: ["/publish", "발행", "채널만"]
+    channels: [blog, instagram, linkedin]
+    steps:
+      - content_channel
+      - validate_channel
+      - notion_sync_final
+    sla_seconds: 60
+
+  deep:
+    label: "심층 리서치"
+    aliases: ["/deep", "심층", "deep dive"]
+    steps:
+      - memory_router_topic
+      - personal_bridge_queue
+      - telegram_custom_research
+    sla_seconds: 300
+
+  ask:
+    label: "세컨드 브레인 질의"
+    aliases: ["/ask", "질문", "뭐였지", "찾아줘"]
+    steps:
+      - memory_router_query
+    sla_seconds: 5
+
+  linkedin:
+    label: "LinkedIn M3 sub-pipeline"
+    aliases: ["/linkedin", "링크드인 전략", "linkedin strategy"]
+    steps:
+      - linkedin_analyze
+      - linkedin_strategy
+      - linkedin_draft
+      - validate_linkedin
+    sla_seconds: 15
+
+  traces:
+    label: "M4 성능 리포트"
+    aliases: ["/traces", "m4", "성능 리포트"]
+    steps:
+      - m4_aggregate_traces
+      - notion_tier_stats
+    sla_seconds: 3
+
+  handoff:
+    label: "세션 핸드오프"
+    aliases: ["/handoff", "핸드오프", "이어하기"]
+    steps:
+      - session_resume_block
+      - write_session_handoff_md
+      - m4_embed
+    sla_seconds: 5
+
+  graph:
+    label: "Brief Graph"
+    aliases: ["/graph", "brief graph", "브리프 그래프"]
+    steps:
+      - build_brief_graph
+      - topic_streaks
+    sla_seconds: 5
+
+  newsletter:
+    label: "B2B 뉴스레터"
+    aliases: ["/newsletter", "뉴스레터", "newsletter"]
+    steps:
+      - brief_sot
+      - newsletter_modules
+      - validate_newsletter
+    sla_seconds: 10
+
+  approve:
+    label: "HITL 발행 승인"
+    aliases: ["/approve", "승인", "approve"]
+    channels: [blog, instagram, linkedin, newsletter, all]
+    sla_seconds: 90
+
+# Agent-native script commands (CLI · Telegram · Cursor parity)
+commands:
+  pipeline:
+    label: "전체 파이프라인 M1→M2→M5"
+    script: run-pipeline.sh
+    args: []
+    agent_cli: "hermes-agent.sh run pipeline"
+
+  notion-sync:
+    label: "Notion force sync + Permalink"
+    script: archive-to-notion.sh
+    args: ["{date}", "--force", "--notify-final"]
+    agent_cli: "hermes-agent.sh run notion-sync"
+
+  research:
+    label: "M1 리서치 브리프"
+    script: run-research-brief.sh
+    args: []
+    agent_cli: "hermes-agent.sh run research"
+
+  content:
+    label: "M2 콘텐츠 패키지"
+    script: run-content-package.sh
+    args: ["{date}"]
+    agent_cli: "hermes-agent.sh run content"
+
+  slack-digest:
+    label: "Slack #일반데이터 digest"
+    script: slack-daily-log.sh
+    args: ["{date}", "--summary-only"]
+    agent_cli: "hermes-agent.sh run slack-digest"
+
+  linkedin-pipeline:
+    label: "LinkedIn M3 sub-pipeline"
+    script: run-linkedin-pipeline.sh
+    args: ["{date}"]
+    agent_cli: "hermes-agent.sh linkedin"
+
+  newsletter:
+    label: "B2B 뉴스레터 생성"
+    script: run-newsletter.sh
+    args: ["{date}", "--validate"]
+    agent_cli: "hermes-agent.sh newsletter --validate"
+
+publish_gate:
+  enabled: true
+  require_approval: true
+  queue_dir: .harness/publish-queue
+  bypass_flag: "--approve"
+
+brief_graph:
+  enabled: true
+  graph_file: content/research/_brief_graph.json
+  window_days: 14
+  diff_column: "이전 브리프와의 차이"

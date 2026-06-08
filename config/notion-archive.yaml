@@ -41,6 +41,21 @@ categories:
     icon: "💼"
     glob: "content/packages/*_linkedin-context.md"
     order: 5
+  newsletter:
+    label: "Newsletter"
+    icon: "📧"
+    glob: "content/packages/*_newsletter-context.md"
+    order: 6
+  newsletter_html:
+    label: "Newsletter HTML"
+    icon: "✉️"
+    glob: "content/newsletter/*_newsletter_*.html"
+    order: 7
+  newsletter_paste:
+    label: "Newsletter Paste"
+    icon: "📋"
+    glob: "content/packages/*_newsletter-paste.md"
+    order: 8
   lecture_outline:
     label: "Lecture Outline"
     icon: "📑"
@@ -62,12 +77,32 @@ hygiene:
     icon: "🗂️"
   quality:
     min_score: 60
+    fact_check:
+      enabled: true
+      minimum_urls: 1
+      penalty: 30
+      categories: [unified, research, blog, instagram, linkedin, lecture_outline]
     min_chars:
       unified: 400
       research: 1200
       blog: 800
       instagram: 350
       linkedin: 350
+      newsletter: 800
+      newsletter_html: 1200
+      newsletter_paste: 600
+    required_markers:
+      newsletter:
+        - "Newsletter 컨텍스트"
+        - "CTOR"
+        - "제목 A/B"
+      newsletter_html:
+        - "30초 TLDR"
+        - "이번 주 실습"
+      newsletter_paste:
+        - "붙여넣기 팩"
+        - "§1 제목"
+        - "§3 본문"
     placeholder_patterns:
       - "\\bTODO\\b"
       - "\\bTBD\\b"

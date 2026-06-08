@@ -16,7 +16,11 @@ WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
 LOG="$HOME/.hermes/logs/content-studio.log"
 # shellcheck source=lib/studio-date.sh
 source "$DIR/lib/studio-date.sh"
+# shellcheck source=lib/telegram_sync_guard.sh
+source "$DIR/lib/telegram_sync_guard.sh"
 studio_refresh_date
+DATE="$(studio_commander_date)"
+export DATE
 
 load_chat_id() {
   if [[ -n "${TELEGRAM_CHAT_ID:-}" ]]; then
@@ -46,7 +50,8 @@ SLACK_CHANNEL="$(load_slack_channel)"
 
 notify() {
   local msg="$1"
-  studio_refresh_date
+  DATE="$(studio_commander_date)"
+  export DATE
   local dated="📅 ${DATE}
 ${msg}"
   [[ -n "$CHAT_ID" ]] && "$DIR/telegram-notify.sh" "$CHAT_ID" "$dated" 2>/dev/null || true
@@ -61,10 +66,27 @@ detect_personal() {
     '이메일|email|mail|받편지함|inbox|메일|개인|맞춤|custom|자동화|automate|codex|구현|심층|deep.?dive|personal'
 }
 
+detect_intent_pack() {
+  local msg="${1:-}"
+  if "$DIR/hermes-agent.sh" auto "$msg" --date "$DATE" 2>/dev/null; then
+    return 0
+  fi
+  return 1
+}
+
 detect_action() {
   local msg="${1:-}"
   local lower
   lower=$(echo "$msg" | tr '[:upper:]' '[:lower:]')
+
+  if echo "$lower" | grep -qE '^/(morning|catch-up|catchup|publish|approve|deep|ask|linkedin|traces|handoff|graph|commands|newsletter)\b'; then
+    echo "intent-pack"
+    return
+  fi
+  if echo "$lower" | grep -qE '^(모닝|아침 브리핑|최근 요약|catch.?up|링크드인 전략|핸드오프|성능 리포트|브리프 그래프|승인|명령 목록|뉴스레터)'; then
+    echo "intent-pack"
+    return
+  fi
 
   if echo "$lower" | grep -qE '노션|notion|동기화|sync|permalink|permalink'; then
     echo "sync"
@@ -112,6 +134,19 @@ run_content() {
   ls "$WORKDIR/content/linkedin/${DATE}"_linkedin_* 2>/dev/null | head -1 || true
 }
 
+run_newsletter() {
+  studio_refresh_date
+  local start end elapsed
+  start=$(date +%s)
+  notify "[███░░] 3b/5 B2B 뉴스레터 생성 중…"
+  SKIP_INIT=1 "$DIR/run-newsletter.sh" "$DATE" --validate >>"$LOG" 2>&1
+  end=$(date +%s)
+  elapsed=$(( end - start ))
+  echo "✅ 뉴스레터 완료 (${elapsed}s)"
+  ls "$WORKDIR/content/newsletter/${DATE}"_newsletter_*.md 2>/dev/null | head -1 || true
+  ls "$WORKDIR/content/newsletter/${DATE}"_newsletter_*.html 2>/dev/null | head -1 || true
+}
+
 run_pipeline() {
   studio_refresh_date
   notify "[█░░░░] 1/5 파이프라인 시작 ($DATE)"
@@ -119,9 +154,12 @@ run_pipeline() {
   start=$(date +%s)
   run_research
   HERMES_SKIP_RESEARCH=1 run_content
+  if [[ "${SKIP_NEWSLETTER:-0}" != "1" ]]; then
+    run_newsletter
+  fi
   end=$(date +%s)
   elapsed=$(( end - start ))
-  notify "[████░] 4/5 콘텐츠 완료 (${elapsed}s) — Notion 강제 동기화"
+  notify "[████░] 4/5 콘텐츠+뉴스레터 완료 (${elapsed}s) — Notion 강제 동기화"
   echo ""
   echo "=== 파이프라인 완료: ${elapsed}s ==="
   run_sync
@@ -134,9 +172,12 @@ run_pipeline_qc() {
   start=$(date +%s)
   run_research
   HERMES_SKIP_RESEARCH=1 run_content
+  if [[ "${SKIP_NEWSLETTER:-0}" != "1" ]]; then
+    run_newsletter
+  fi
   end=$(date +%s)
   elapsed=$(( end - start ))
-  notify "[████░] 4/5 콘텐츠 완료 (${elapsed}s) — Notion 백그라운드 동기화"
+  notify "[████░] 4/5 콘텐츠+뉴스레터 완료 (${elapsed}s) — Notion 백그라운드 동기화"
   if [[ -n "$SLACK_CHANNEL" ]]; then
     SKIP_INIT=1 "$DIR/slack-daily-log.sh" "$DATE" --build-only 2>>"$LOG" || true
     notify "📋 Daily digest 저장됨 — Notion sync 후 Slack 전송"
@@ -147,7 +188,9 @@ run_pipeline_qc() {
 }
 
 run_sync() {
-  studio_refresh_date
+  DATE="$(studio_commander_date)"
+  export DATE
+  telegram_sync_begin "$DATE"
   if [[ -z "$CHAT_ID" && -z "$SLACK_CHANNEL" ]]; then
     echo "⚠️ TELEGRAM_CHAT_ID / SLACK_HOME_CHANNEL 없음 — Notion만 동기화"
   fi
@@ -160,11 +203,14 @@ run_sync() {
     ${SLACK_CHANNEL:+--slack-channel "$SLACK_CHANNEL"} >>"$LOG" 2>&1
   end=$(date +%s)
   elapsed=$(( end - start ))
-  echo "✅ Notion 동기화 (${elapsed}s) — Telegram/Slack 최종 알림 전송됨"
+  telegram_sync_end
+  echo "✅ Notion 동기화 (${elapsed}s) · ${DATE} — Telegram/Slack 최종 알림 1회"
 }
 
 run_sync_bg() {
-  studio_refresh_date
+  DATE="$(studio_commander_date)"
+  export DATE
+  telegram_sync_begin "$DATE"
   (
     export DATE SLACK_CHANNEL
     TELEGRAM_CHAT_ID="$CHAT_ID" "$0" sync
@@ -192,7 +238,14 @@ run_lecture() {
 
 run_full() {
   run_pipeline
-  run_sync
+}
+
+run_intent_qc() {
+  local intent="$1"
+  shift || true
+  studio_refresh_date
+  DATE="$(studio_commander_date)"
+  "$DIR/hermes-agent.sh" "$intent" --date "$DATE" --session "${CHAT_ID:-cli}" "$@"
 }
 
 run_notion_status() {
@@ -215,9 +268,10 @@ run_status() {
   ls "$WORKDIR/content/blog/${DATE}"_blog_* >/dev/null 2>&1 && echo "✅ blog" || echo "⬜ blog"
   ls "$WORKDIR/content/instagram/${DATE}"_instagram_* >/dev/null 2>&1 && echo "✅ instagram" || echo "⬜ instagram"
   ls "$WORKDIR/content/linkedin/${DATE}"_linkedin_* >/dev/null 2>&1 && echo "✅ linkedin" || echo "⬜ linkedin"
+  ls "$WORKDIR/content/newsletter/${DATE}"_newsletter_*.md >/dev/null 2>&1 && echo "✅ newsletter" || echo "⬜ newsletter"
   pgrep -f "hermes_cli.main gateway" >/dev/null && echo "✅ Gateway" || echo "❌ Gateway"
   echo ""
-  echo "명령: /pipeline /research /content /sync /studio /notion-status (Telegram·Slack)"
+  echo "명령: /pipeline /research /content /newsletter /sync /morning /catch-up /publish /ask /studio"
   echo "개인화: /mail /personal /automate"
   echo "강의: /lecture-studio <요구사항>"
 }
@@ -240,6 +294,10 @@ case "$MODE" in
         notify "[█░░░░] 1/5 콘텐츠 시작"
         run_content
         ;;
+      newsletter)
+        notify "[█░░░░] 1/5 뉴스레터 시작"
+        run_newsletter
+        ;;
       sync-bg)
         run_sync_bg
         ;;
@@ -257,6 +315,41 @@ case "$MODE" in
         ;;
       notion-fix)
         run_notion_status --fix
+        ;;
+      morning)
+        run_intent_qc morning
+        ;;
+      catch-up|catchup)
+        run_intent_qc catch-up --days 3
+        ;;
+      publish)
+        run_intent_qc publish linkedin
+        ;;
+      deep)
+        echo "ℹ️ /deep는 주제가 필요합니다."
+        echo "예: 자연어 'AX 트렌드 심층' 또는 hermes-agent.sh deep '주제'"
+        ;;
+      ask)
+        echo "ℹ️ /ask는 질문이 필요합니다."
+        echo "예: 자연어 'Kurly 인사이트 뭐였지' 또는 hermes-agent.sh route '질문'"
+        ;;
+      linkedin)
+        run_intent_qc linkedin
+        ;;
+      traces)
+        run_intent_qc traces --days 7
+        ;;
+      handoff)
+        run_intent_qc handoff --days 7
+        ;;
+      graph)
+        run_intent_qc graph --days 14
+        ;;
+      commands)
+        run_intent_qc commands
+        ;;
+      approve)
+        run_intent_qc approve all
         ;;
       *)
         echo "Unknown qc action: $ACTION"
@@ -277,6 +370,9 @@ case "$MODE" in
     fi
     echo "# 라우팅: $DETECTED ← \"$MSG\""
     case "$DETECTED" in
+      intent-pack)
+        detect_intent_pack "$MSG"
+        ;;
       research) run_research ;;
       content)  run_content ;;
       pipeline) run_pipeline ;;
@@ -289,6 +385,28 @@ case "$MODE" in
       *)        run_pipeline ;;
     esac
     ;;
+  morning)
+    "$DIR/hermes-agent.sh" morning --date "$DATE" --session "${CHAT_ID:-cli}"
+    ;;
+  catch-up|catchup)
+    "$DIR/hermes-agent.sh" catch-up --date "$DATE" --session "${CHAT_ID:-cli}"
+    ;;
+  publish)
+    CH="${ACTION:-linkedin}"
+    "$DIR/hermes-agent.sh" publish "$CH" --date "$DATE" --session "${CHAT_ID:-cli}"
+    ;;
+  deep)
+    "$DIR/hermes-agent.sh" deep "${ACTION:-}" --date "$DATE" --session "${CHAT_ID:-cli}"
+    ;;
+  ask)
+    "$DIR/hermes-agent.sh" route "${ACTION:-}" --date "$DATE" --session "${CHAT_ID:-cli}"
+    ;;
+  proactive)
+    "$DIR/hermes-agent.sh" proactive --date "$DATE"
+    ;;
+  bridge-sync)
+    "$DIR/hermes-agent.sh" bridge-sync --date "$DATE"
+    ;;
   research)  notify "[█░░░░] 1/5"; run_research ;;
   content)   notify "[█░░░░] 1/5"; run_content ;;
   pipeline)  run_pipeline ;;
@@ -296,7 +414,7 @@ case "$MODE" in
   sync-bg)   run_sync_bg ;;
   status|studio) run_status ;;
   *)
-    echo "Usage: $0 {pipeline|research|content|sync|lecture|full|status|qc|auto} [args]"
+    echo "Usage: $0 {pipeline|research|content|sync|morning|catch-up|publish|deep|ask|proactive|status|qc|auto} [args]"
     exit 1
     ;;
 esac

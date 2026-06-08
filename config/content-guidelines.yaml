@@ -49,6 +49,27 @@ linkedin:
       - "LinkedIn Creator Mode best practices"
       - "LinkedIn algorithm — dwell time, comments, native content"
 
+newsletter:
+  engagement:
+    # 2026 B2B — CTOR > open rate (Apple MPP)
+    ctor_target_pct: [10, 15]
+    open_rate_directional_b2b: [18, 25]
+    subject_max_chars: 50
+    preheader_max_chars: 40
+    read_minutes: [4, 6]
+    single_primary_cta: true
+    link_body_max: 1
+  structure:
+    # Morning Brew + Stripo + modular (Dyspatch)
+    modules: [meta, tldr_3bullets, hero, insight_x3, grab_bag, single_cta, next_teaser]
+    mobile_first_line_max: 30
+    tapering_paragraphs: true
+    sources:
+      - "Stripo B2B Email Benchmarks 2026"
+      - "ClickMinded Newsletter Statistics 2026"
+      - "Morning Brew modular format"
+      - "Dyspatch modular email design"
+
 instagram:
   algorithm:
     carousel_slides: 3

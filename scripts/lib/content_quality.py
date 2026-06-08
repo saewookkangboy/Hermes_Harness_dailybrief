@@ -1075,12 +1075,18 @@ def build_instagram_context_md(stamp: str, summary: str, insights: list[Insight]
             hashtags,
             "",
             "## 출처",
+            *_insight_source_lines(insights, limit=3),
         ]
     )
-    for ins in insights[:3]:
-        if ins.url:
-            lines.append(f"- {ins.korean_title}: {ins.url}")
     return "\n".join(lines)
+
+
+def _insight_source_lines(insights: list[Insight], limit: int = 5) -> list[str]:
+    lines: list[str] = []
+    for ins in insights[:limit]:
+        if ins.url:
+            lines.append(f"- {truncate(ins.korean_title, 48)}: {ins.url}")
+    return lines
 
 
 def build_linkedin_context_md(stamp: str, summary: str, insights: list[Insight]) -> str:
@@ -1117,6 +1123,9 @@ def build_linkedin_context_md(stamp: str, summary: str, insights: list[Insight])
             "",
             "## 해시태그",
             "#AIMarketing #AEO #AgenticAI #B2BMarketing #AX",
+            "",
+            "## 출처",
+            *(_insight_source_lines(insights) or ["- (brief Top 인사이트 출처 URL)"]),
             "",
             "## 전체 포스트 초안",
             "```",
@@ -1189,6 +1198,7 @@ def build_unified_context_md(
         "| Blog | ~합니다 평문 | SEO/AEO/GEO · 출처 기반 확장 |",
         "| Instagram | 3장 정보형 캐러셀 | Gemini 4:5 · Hook → Insight → CTA |",
         "| LinkedIn | 1300자 | 2줄 훅 + 불릿 + 댓글 CTA |",
+        "| Newsletter | md + HTML | TLDR · Hero · 모듈×3 · 단일 CTA · A/B 제목 |",
         "",
         "## Top 인사이트 (공통 소스)",
     ]

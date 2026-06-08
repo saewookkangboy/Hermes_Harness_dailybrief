@@ -33,16 +33,19 @@ else
   echo "[3/4] Hermes Gateway 이미 실행 중 (PID: $(pgrep -f 'hermes_cli.main gateway'))"
 fi
 
-# 4. Telegram 모니터 (Notion Permalink 자동 전송)
+# 4. Telegram 모니터 (진행 표시 — Notion sync는 슬래시/파이프라인 담당)
 if [[ "${SKIP_WATCH_TELEGRAM:-0}" != "1" ]]; then
-  if [[ -f "$WATCH_PID_FILE" ]] && kill -0 "$(cat "$WATCH_PID_FILE")" 2>/dev/null; then
-    echo "[4/4] watch-telegram 이미 실행 중 (PID: $(cat "$WATCH_PID_FILE"))"
-  else
-    echo "[4/4] watch-telegram 시작 (백그라운드)..."
-    nohup "$DIR/watch-telegram.sh" >>"$HOME/.hermes/logs/watch-telegram.log" 2>&1 &
-    echo $! > "$WATCH_PID_FILE"
-    echo "  PID: $(cat "$WATCH_PID_FILE") · 로그: ~/.hermes/logs/watch-telegram.log"
+  stale=$(ps -ax -o command= 2>/dev/null | rg -c 'watch-telegram\.sh' 2>/dev/null || echo 0)
+  stale="${stale:-0}"
+  if (( stale > 0 )); then
+    echo "[4/4] watch-telegram 중복 ${stale}건 정리..."
+    SKIP_INIT=1 "$DIR/kill-stale-watch-telegram.sh" 2>/dev/null || true
+    sleep 0.5
   fi
+  echo "[4/4] watch-telegram 시작 (백그라운드, 단일 인스턴스)..."
+  nohup "$DIR/watch-telegram.sh" >>"$HOME/.hermes/logs/watch-telegram.log" 2>&1 &
+  echo $! > "$WATCH_PID_FILE"
+  echo "  PID: $(cat "$WATCH_PID_FILE") · 로그: ~/.hermes/logs/watch-telegram.log"
 else
   echo "[4/4] watch-telegram 스킵 (SKIP_WATCH_TELEGRAM=1)"
 fi

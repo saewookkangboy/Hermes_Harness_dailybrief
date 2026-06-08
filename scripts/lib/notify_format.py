@@ -9,6 +9,9 @@ CATEGORY_BLURB = {
     "blog": "SEO/AEO 블로그 아티클",
     "instagram": "3장 캐러셀 + Gemini 프롬프트",
     "linkedin": "포스트 + 2×2 웹툰 프롬프트",
+    "newsletter": "B2B 뉴스레터 컨텍스트 · A/B 제목",
+    "newsletter_html": "HTML 이메일 · 모바일 단일 컬럼",
+    "newsletter_paste": "붙여넣기 팩 · 제목/프리헤더/본문 코드 블록",
     "lecture_outline": "강의 아웃라인",
     "lecture_html": "강의 HTML",
 }
@@ -43,9 +46,10 @@ def pages_for_stamp(pages: list[dict], stamp: str) -> list[dict]:
     for p in pages:
         path = p.get("path") or ""
         title = p.get("title") or p.get("label") or ""
-        if stamp in path or stamp in title:
+        cat = p.get("category") or ""
+        if stamp in path or stamp in title or stamp in cat:
             out.append(p)
-    return out or pages
+    return out
 
 
 def format_update_summary(pages: list[dict], stamp: str) -> list[str]:

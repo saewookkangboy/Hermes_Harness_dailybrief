@@ -51,7 +51,7 @@ metadata:
 
 ## Codex
 
-개인화 작업은 **Codex (gpt-5.3-codex)** 사용:
+개인화 작업은 **Codex (gpt-5.5)** 사용:
 - `HERMES_USE_CODEX=1` (telegram-custom.sh 자동 설정)
 - 미연결: `~/hermes-content-studio/scripts/setup-codex.sh`
 

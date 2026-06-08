@@ -1,0 +1,77 @@
+# B2B 뉴스레터 — 오픈율·완독율(CTOR) 최적화 구조
+# 참조: Stripo B2B 2026, ClickMinded, Morning Brew, Lenny's Newsletter, Dyspatch modular
+version: "1.0.0"
+
+benchmarks:
+  open_rate_b2b: "18-25% (MPP 보정 시 방향성 지표)"
+  ctor_target: "10-15%"
+  subject_max_chars: 50
+  preheader_max_chars: 40
+  read_time_minutes: [4, 6]
+  sources:
+    - "https://research.stripo.email/b2b-email-open-rate-benchmarks-2026"
+    - "https://www.clickminded.com/newsletter-statistics/"
+    - "https://growthmodels.co/morning-brew-marketing/"
+    - "https://resources.averi.ai/examples/newsletter-examples"
+
+patterns:
+  # Morning Brew: TLDR → Hero → Modular roundups → tapering length → single CTA
+  # Stripo 2026: CTOR > open rate, mobile first-line <30 chars
+  # Lenny: one big idea + scannable modules + reader value first
+  modules:
+    - id: meta
+      label: "발송 메타"
+      required: [subject_lines, preheader, send_window]
+    - id: tldr
+      label: "30초 TLDR"
+      bullets: 3
+      role: "스킵 독자도 가치 — 완독율 기반"
+    - id: hero
+      label: "오늘의 1가지"
+      words: [60, 120]
+      role: "Inverted pyramid peak"
+    - id: insight_modules
+      label: "3분 읽기"
+      count: 3
+      format: "볼드 헤드라인 첫 줄 + 맥락 + 현장 적용 + 출처"
+    - id: grab_bag
+      label: "한 줄 데이터"
+      role: "Morning Brew Grab Bag — 리듬 변화"
+    - id: single_cta
+      label: "이번 주 실습 1가지"
+      links_max: 1
+      role: "CTOR 집중 — 링크 분산 금지"
+    - id: next_teaser
+      label: "다음 호 예고"
+      role: "호기심 루프 · 습관 형성"
+
+voice:
+  sender_name: "Hermes Studio"
+  tone: "21년차 B2B 마케터 · 해요체 · 밀도 높음"
+  mobile_first_line_max: 30
+
+subject_templates:
+  - "{topic} — 지금 손댈 곳은?"
+  - "AX 실무, 3분이면 돼요"
+  - "[{stamp}] B2B AI 주간 신호"
+
+scoring:
+  min_winner_score: 40
+  ideal_subject_chars: [28, 45]
+
+send_window:
+  days: [tue, wed]
+  time_kst: "10:00-11:00"
+
+outputs:
+  channel: content/newsletter
+  package: content/packages/{date}_newsletter-context.md
+  filename: "{date}_newsletter_{slug}.md"
+  html: "{date}_newsletter_{slug}.html"
+  subject_scores: "{date}_newsletter_subject-scores.json"
+
+delivery:
+  mode: notion_paste
+  paste_pack: "content/packages/{date}_newsletter-paste.md"
+  workflow: "Notion 코드 블록 복사 → 외부 뉴스레터 플랫폼 문서 편집기 붙여넣기"
+  esp_send: false

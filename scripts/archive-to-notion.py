@@ -10,7 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import date, datetime
+from datetime import datetime
 from fnmatch import fnmatch
 from pathlib import Path
 
@@ -36,6 +36,8 @@ from lib.notion_client import (  # noqa: E402
     setup_mcp,
 )
 from lib.notion_hygiene import hygiene_enabled, resolve_sync_parent, run_day_hygiene  # noqa: E402
+from lib.common import studio_today  # noqa: E402
+from lib.notify_dedupe import should_skip_notify  # noqa: E402
 from lib.telegram_notify import send_message  # noqa: E402
 from lib.slack_notify import send_message as slack_send  # noqa: E402
 
@@ -46,10 +48,14 @@ def push_notify(
     text: str,
     *,
     enabled: bool = True,
+    stamp: str = "",
 ) -> None:
     if not enabled:
         return
     if telegram_chat:
+        if should_skip_notify(telegram_chat, text, stamp=stamp):
+            log(f"Skip duplicate Telegram notify ({stamp or 'n/a'})")
+            return
         send_message(telegram_chat, text)
     if slack_channel:
         slack_send(slack_channel, text)
@@ -105,6 +111,8 @@ def build_page_body(
     tier: str = "canonical",
     quality_score: int | None = None,
     quality_issues: list[str] | None = None,
+    fact_checked: bool | None = None,
+    fact_check_issues: list[str] | None = None,
 ) -> str:
     return build_archive_page_body(
         label,
@@ -114,20 +122,27 @@ def build_page_body(
         tier=tier,
         quality_score=quality_score,
         quality_issues=quality_issues,
+        fact_checked=fact_checked,
+        fact_check_issues=fact_check_issues,
     )
 
 
 def file_status_for_stamp(stamp: str) -> list[tuple[str, bool, str]]:
     rows: list[tuple[str, bool, str]] = []
-    checks = [
+    nl_html_matches = sorted((WORKDIR / "content" / "newsletter").glob(f"{stamp}_newsletter_*.html"))
+    nl_html = nl_html_matches[-1] if nl_html_matches else None
+    checks: list[tuple[str, Path | None]] = [
         ("Research Brief", WORKDIR / "content" / "research" / f"{stamp}_brief.md"),
         ("Blog", WORKDIR / "content" / "packages" / f"{stamp}_blog-article.md"),
         ("Instagram", WORKDIR / "content" / "packages" / f"{stamp}_instagram-context.md"),
         ("LinkedIn", WORKDIR / "content" / "packages" / f"{stamp}_linkedin-context.md"),
+        ("Newsletter", WORKDIR / "content" / "packages" / f"{stamp}_newsletter-context.md"),
+        ("Newsletter HTML", nl_html),
+        ("Newsletter Paste", WORKDIR / "content" / "packages" / f"{stamp}_newsletter-paste.md"),
         ("Unified", WORKDIR / "content" / "packages" / f"{stamp}_unified-context.md"),
     ]
     for label, path in checks:
-        if path.exists():
+        if path and path.exists():
             try:
                 rel = str(path.relative_to(WORKDIR))
             except ValueError:
@@ -312,6 +327,8 @@ def archive_date(
                 tier=tier,
                 quality_score=qdict.get("score"),
                 quality_issues=qdict.get("issues"),
+                fact_checked=qdict.get("fact_checked"),
+                fact_check_issues=qdict.get("fact_check_issues"),
             )
             title = f"{label} — {stamp}"
             if tier == "draft":
@@ -346,6 +363,7 @@ def archive_date(
                 "path": str(path),
                 "tier": tier,
                 "quality_score": qdict.get("score"),
+                "synced_at": __import__("time").time(),
             }
             synced_pages.append(
                 {
@@ -386,7 +404,7 @@ def archive_date(
             day_url=day_url or "",
             hygiene_duplicates=dup_count,
         )
-        push_notify(telegram_chat, "", completion)
+        push_notify(telegram_chat, "", completion, stamp=stamp)
         if slack_channel:
             slack_msg = format_slack_archive_summary(
                 stamp,
@@ -396,35 +414,20 @@ def archive_date(
             )
             push_notify("", slack_channel, slack_msg)
     elif show_progress:
-        push_notify(
-            telegram_chat,
-            slack_channel,
-            format_progress(3, "동기화 검증", f"{count}건 완료", stamp=stamp),
+        completion = format_completion(
+            stamp,
+            synced_pages,
+            day_url=day_url or "",
+            hygiene_duplicates=dup_count,
         )
-        push_notify(
-            telegram_chat,
-            slack_channel,
-            format_completion(stamp, synced_pages, day_url=day_url or ""),
-        )
-        if dup_count:
-            push_notify(
-                telegram_chat,
-                slack_channel,
-                f"🗂️ 중복 {dup_count}건 → Draft Archive 이동",
-            )
-        if day_url:
-            push_notify(
-                telegram_chat,
-                slack_channel,
-                format_progress(TOTAL_STEPS, "완료", f"Daily Archive:\n{day_url}", stamp=stamp),
-            )
+        push_notify(telegram_chat, slack_channel, completion, stamp=stamp)
 
     return result
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Archive content to Notion")
-    parser.add_argument("date", nargs="?", default=date.today().isoformat())
+    parser.add_argument("date", nargs="?", default=studio_today())
     parser.add_argument("--force", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--no-force", action="store_true", help="Skip unchanged files (hash match)")
     parser.add_argument("--hygiene-only", action="store_true", help="Run duplicate cleanup only")

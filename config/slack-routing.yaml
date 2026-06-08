@@ -61,3 +61,36 @@ quick_commands:
   lecture:
     type: alias
     target: /lecture-studio
+  newsletter:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc newsletter
+  morning:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc morning
+  catch-up:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc catch-up
+  catchup:
+    type: alias
+    target: /catch-up
+  publish:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc publish
+  linkedin:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc linkedin
+  traces:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc traces
+  handoff:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc handoff
+  graph:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc graph
+  commands:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc commands
+  approve:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc approve

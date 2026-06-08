@@ -29,7 +29,7 @@ echo ""
 
 # ── 1. 하네스 디렉토리 ─────────────────────────────────────
 mkdir -p "$WORKDIR/.harness/traces"
-mkdir -p "$WORKDIR/content"/{research,blog,instagram,linkedin,lectures,drafts/cursor-handoff}
+mkdir -p "$WORKDIR/content"/{research,blog,instagram,linkedin,newsletter,lectures,drafts/cursor-handoff}
 
 if [[ ! -f "$WORKDIR/.harness/feature_list.json" ]]; then
   echo "⚠️  feature_list.json 없음 — config/harness.yaml 참조" >&2

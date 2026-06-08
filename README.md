@@ -10,6 +10,7 @@ Intel Mac (MacBook Pro) 자체호스팅 Hermes Agent 기반 **마케팅·교육 
 | 블로그 (SEO/AEO) | HTML 초안 | 수 09:00 |
 | 인스타그램 | 캐러셀·캡션 | 수 09:00 |
 | 링크드인 | 뉴스피드 포스트 | 수 09:00 |
+| B2B 뉴스레터 | md + HTML 이메일 · A/B 제목 | 수 09:00 (M2b) |
 | 강의 자료 | 기획·HTML·슬라이드 | 금 09:00 |
 | 바이브 코딩 | Cursor 핸드오프 | 요청 시 |
 
@@ -50,6 +51,7 @@ hermes-content-studio/
 │   ├── blog/
 │   ├── instagram/
 │   ├── linkedin/
+│   ├── newsletter/
 │   ├── lectures/
 │   └── drafts/cursor-handoff/
 └── scripts/                  # 셋업·운영 스크립트
@@ -77,7 +79,7 @@ hermes-content-studio/
 
 ## Intel Mac 최적화 (v1.2.0)
 
-- **결정적 파이프라인:** `run-research-brief.sh` + `run-content-package.sh` (~25초, LLM 불필요)
+- **결정적 파이프라인:** `run-research-brief.sh` + `run-content-package.sh` + `run-newsletter.sh` (~70s, LLM 불필요)
 - **병렬 웹 검색:** ddgs 4 workers (`gather-web-research.py`)
 - **로컬 모델:** Ollama `gemma4:latest` (8B Q4) — Hermes polish(선택)용
 - **클라우드 API:** 장문·슬라이드·복잡 분석 시 OpenRouter 등 권장

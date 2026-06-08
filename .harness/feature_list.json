@@ -1,6 +1,6 @@
 {
   "project": "hermes-content-studio",
-  "last_updated": "2026-06-06T22:45:00+09:00",
+  "last_updated": "2026-06-08T18:30:00+09:00",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -104,7 +104,7 @@
         ".harness/eval-results.json (2026-06-06)"
       ],
       "blockers": [],
-      "notes": "qc pipeline: research+content ≤15s, Notion sync-bg (Hermes command_timeout 30s 준수)"
+      "notes": "qc pipeline: M1+M2+M2b+Notion sync-bg (Hermes command_timeout 30s 준수)"
     },
     {
       "id": "pipe-007",
@@ -125,6 +125,42 @@
         "config/personal-tasks.yaml"
       ],
       "notes": "Codex bg job · content/personal/"
+    },
+    {
+      "id": "pipe-008",
+      "priority": 8,
+      "area": "newsletter",
+      "title": "B2B 뉴스레터 파이프라인 (결정적)",
+      "user_visible_behavior": "run-newsletter.sh 실행 시 Brief SoT → md + HTML 이메일 + A/B 제목 스코어 + context 생성 (~10s)",
+      "status": "passing",
+      "depends_on": ["pipe-001"],
+      "verification": [
+        "scripts/run-newsletter.sh YYYY-MM-DD --validate",
+        "scripts/newsletter-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-p2-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-p3-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-p4-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-p4-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-p6-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-ctor-dashboard.sh YYYY-MM-DD",
+        "scripts/validate-output.sh newsletter-paste",
+        "scripts/harness-eval.sh --quick",
+        "scripts/validate-output.sh newsletter",
+        "scripts/validate-output.sh newsletter-context",
+        "scripts/validate-output.sh newsletter-html",
+        "scripts/validate-output.sh newsletter-subject-scores",
+        "scripts/hermes-agent.sh newsletter --date YYYY-MM-DD --validate",
+        "scripts/archive-to-notion.sh YYYY-MM-DD --force"
+      ],
+      "evidence": [
+        "content/newsletter/2026-06-08_newsletter_2026.md",
+        "content/newsletter/2026-06-08_newsletter_2026.html",
+        "content/newsletter/2026-06-08_newsletter_subject-scores.json",
+        "content/packages/2026-06-08_newsletter-context.md",
+        "content/logs/2026-06-08_newsletter-eval-report.md",
+        "content/.notion-archive-state.json (2026-06-08/newsletter, newsletter_html)"
+      ],
+      "notes": "lib/newsletter_quality · newsletter_subject · newsletter_html · Notion newsletter+newsletter_html · CTOR 10–15% 구조"
     }
   ]
 }

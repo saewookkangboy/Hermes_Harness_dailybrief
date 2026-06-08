@@ -44,7 +44,10 @@ performance:
     lecture_basic: 15
     lecture_claude_design: 300
     notion_archive: 120
-    full_pipeline: 60
+    full_pipeline: 70
+    linkedin_m3: 15
+    newsletter: 10
+    agent_intent: 5
   # 컨텍스트 절약: 콘텐츠 생성 시 MCP·브라우저 제외
   tool_masking:
     content_skills: [content-orchestration, marketing-research, content-pipeline, channel-linkedin, content-studio-slides]
@@ -74,6 +77,10 @@ verification:
     blog: scripts/validate-output.sh blog
     instagram: scripts/validate-output.sh instagram
     linkedin: scripts/validate-output.sh linkedin
+    newsletter: scripts/validate-output.sh newsletter
+    newsletter_context: scripts/validate-output.sh newsletter-context
+    newsletter_html: scripts/validate-output.sh newsletter-html
+    newsletter_subject_scores: scripts/validate-output.sh newsletter-subject-scores
     lecture: scripts/validate-output.sh lecture
   post_pipeline:
     - scripts/harness-eval.sh --record
@@ -83,6 +90,7 @@ eval:
   baseline_seconds:
     research: 20
     content: 5
+    newsletter: 5
     full_pipeline: 45
   min_search_hits: 5
   regression_threshold_pct: 25

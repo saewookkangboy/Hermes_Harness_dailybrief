@@ -51,3 +51,25 @@ studio_resolve_archive_date() {
 
   echo "$today"
 }
+
+# Telegram/슬래시 커맨더 — 오늘 우선, 없으면 최신 brief 1건
+studio_latest_brief_date() {
+  local w="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+  local latest
+  latest=$(ls -t "$w/content/research/"*_brief.md 2>/dev/null | grep -v SEED | head -1 || true)
+  if [[ -n "$latest" ]]; then
+    basename "$latest" | sed 's/_brief.md//'
+    return 0
+  fi
+  studio_today
+}
+
+studio_commander_date() {
+  local today
+  today="$(studio_today)"
+  if studio_has_content_for "$today"; then
+    echo "$today"
+    return 0
+  fi
+  studio_latest_brief_date
+}

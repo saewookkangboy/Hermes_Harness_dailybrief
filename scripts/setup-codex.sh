@@ -60,11 +60,66 @@ verify_auth() {
   fi
 }
 
+patch_hermes_fallback_model() {
+  local config="$HOME/.hermes/config.yaml"
+  local target_model="${HERMES_CODEX_MODEL:-gpt-5.5}"
+  [[ -f "$config" ]] || return 0
+  echo "[3b/4] Hermes fallback 모델 점검 ($target_model)..."
+  "$HERMES_PY" - "$config" "$target_model" <<'PY'
+import sys
+from pathlib import Path
+
+try:
+    import yaml
+except ImportError:
+    print("  ⚠️  PyYAML 없음 — fallback 수동 확인: ~/.hermes/config.yaml")
+    raise SystemExit(0)
+
+config_path = Path(sys.argv[1])
+target = sys.argv[2]
+retired = {"gpt-5.3-codex", "gpt-5.2-codex", "gpt-5.2"}
+
+config = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+changed = False
+
+for entry in config.get("fallback_providers") or []:
+    if not isinstance(entry, dict):
+        continue
+    if entry.get("provider") != "openai-codex":
+        continue
+    model = str(entry.get("model") or "")
+    if model in retired or not model:
+        entry["model"] = target
+        changed = True
+        print(f"  ✅ fallback_providers: {model or '(empty)'} → {target}")
+
+if changed:
+    config_path.write_text(
+        yaml.dump(config, allow_unicode=True, default_flow_style=False, sort_keys=False),
+        encoding="utf-8",
+    )
+elif any(
+    isinstance(e, dict) and e.get("provider") == "openai-codex" and e.get("model") == target
+    for e in (config.get("fallback_providers") or [])
+):
+    print(f"  ✅ fallback_providers 이미 {target}")
+else:
+    fallbacks = config.setdefault("fallback_providers", [])
+    fallbacks.append({"provider": "openai-codex", "model": target})
+    config_path.write_text(
+        yaml.dump(config, allow_unicode=True, default_flow_style=False, sort_keys=False),
+        encoding="utf-8",
+    )
+    print(f"  ✅ fallback_providers 추가: openai-codex / {target}")
+PY
+}
+
 show_config() {
+  local codex_model="${HERMES_CODEX_MODEL:-gpt-5.5}"
   echo "[4/4] 설정 요약"
   echo ""
   echo "  Primary (cron/기본):  Ollama gemma4"
-  echo "  Fallback:             openai-codex / gpt-5.3-codex"
+  echo "  Fallback:             openai-codex / $codex_model"
   echo "  품질 경로 (자동 Codex):"
   echo "    - claude-design HTML 덱"
   echo "    - HERMES_ENHANCE=1 polish"
@@ -77,16 +132,23 @@ show_config() {
 }
 
 case "$MODE" in
+  --patch-model)
+    patch_hermes_fallback_model
+    echo ""
+    echo "Gateway 재시작: hermes gateway restart"
+    ;;
   --import)
     ensure_codex_cli
     import_codex_tokens
     verify_auth
+    patch_hermes_fallback_model
     show_config
     ;;
   --login)
     ensure_codex_cli
     login_codex
     verify_auth
+    patch_hermes_fallback_model
     show_config
     ;;
   setup|*)
@@ -100,6 +162,7 @@ case "$MODE" in
       login_codex
     fi
     verify_auth
+    patch_hermes_fallback_model
     show_config
     ;;
 esac

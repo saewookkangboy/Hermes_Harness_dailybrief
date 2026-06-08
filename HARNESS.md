@@ -28,8 +28,10 @@ LLM 호출 없이 `assemble-*.py`로 산출물 생성 (~25초).
 `HERMES_ENHANCE=1`일 때만 Hermes polish (2-5분).
 
 ```bash
-./scripts/run-pipeline.sh          # 결정적 전체 (~45s)
+./scripts/run-pipeline.sh          # 결정적 전체 M1+M2+M2b (~70s)
 HERMES_ENHANCE=1 ./scripts/run-pipeline.sh  # LLM polish 추가
+./scripts/run-newsletter.sh [DATE] --validate  # M2b 단독
+./scripts/newsletter-eval.sh · newsletter-p2-eval.sh · newsletter-p3-eval.sh
 ```
 
 ### 2. 컨텍스트 백프레셔 (Agency)

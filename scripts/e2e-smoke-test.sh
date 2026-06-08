@@ -83,14 +83,20 @@ PIPE_END=$(date +%s)
 PIPE_ELAPSED=$(( PIPE_END - PIPE_START ))
 
 BRIEF="$WORKDIR/content/research/${DATE}_brief.md"
+NL_SCORES="$WORKDIR/content/newsletter/${DATE}_newsletter_subject-scores.json"
 if [[ -f "$BRIEF" ]]; then
-  if (( PIPE_ELAPSED <= 60 )); then
-    pass "파이프라인 ${PIPE_ELAPSED}s (SLA ≤60s)"
+  if (( PIPE_ELAPSED <= 70 )); then
+    pass "파이프라인 ${PIPE_ELAPSED}s (SLA ≤70s, M1+M2+M2b)"
   else
-    warn "파이프라인 ${PIPE_ELAPSED}s (SLA 60s 초과)"
+    warn "파이프라인 ${PIPE_ELAPSED}s (SLA 70s 초과)"
   fi
 else
   fail "파이프라인 — brief 미생성"
+fi
+if [[ -f "$NL_SCORES" ]]; then
+  pass "파이프라인 newsletter 산출"
+else
+  fail "파이프라인 — newsletter 미생성"
 fi
 
 echo ""
@@ -99,11 +105,20 @@ for spec in \
   "research:$BRIEF" \
   "blog:$WORKDIR/content/blog/${DATE}_blog_" \
   "instagram:$WORKDIR/content/instagram/${DATE}_instagram_" \
-  "linkedin:$WORKDIR/content/linkedin/${DATE}_linkedin_"; do
+  "linkedin:$WORKDIR/content/linkedin/${DATE}_linkedin_" \
+  "newsletter:$WORKDIR/content/newsletter/${DATE}_newsletter_" \
+  "newsletter-html:$WORKDIR/content/newsletter/${DATE}_newsletter_" \
+  "newsletter-context:$WORKDIR/content/packages/${DATE}_newsletter-context.md" \
+  "newsletter-paste:$WORKDIR/content/packages/${DATE}_newsletter-paste.md" \
+  "newsletter-subject-scores:$NL_SCORES"; do
   type="${spec%%:*}"
   path_prefix="${spec#*:}"
   if [[ "$path_prefix" == *"_" && "$path_prefix" != *.md && "$path_prefix" != *.html ]]; then
-    found=$(ls "$path_prefix"*.html "$path_prefix"*.md 2>/dev/null | head -1 || true)
+    case "$type" in
+      newsletter) found=$(ls "$path_prefix"*.md 2>/dev/null | head -1 || true) ;;
+      newsletter-html) found=$(ls "$path_prefix"*.html 2>/dev/null | head -1 || true) ;;
+      *) found=$(ls "$path_prefix"*.html "$path_prefix"*.md 2>/dev/null | head -1 || true) ;;
+    esac
     if [[ -n "$found" ]] && "$DIR/validate-output.sh" "$type" "$found" >/dev/null 2>&1; then
       pass "validate $type"
     else
@@ -141,6 +156,11 @@ if [[ "$FULL" -eq 1 || "$TELEGRAM" -eq 1 ]]; then
   if "$DIR/archive-to-notion.sh" "${ARCH_ARGS[@]}" >/tmp/e2e-notion.log 2>&1; then
     ARCH_ELAPSED=$(( $(date +%s) - ARCH_START ))
     COUNT=$(grep -o '"count": [0-9]*' /tmp/e2e-notion.log | tail -1 | grep -o '[0-9]*' || echo "?")
+    if [[ -n "$COUNT" && "$COUNT" != "?" ]] && (( COUNT >= 8 )); then
+      pass "Notion 카테고리 ${COUNT}건 (newsletter+paste 포함)"
+    elif [[ -n "$COUNT" && "$COUNT" != "?" ]]; then
+      warn "Notion ${COUNT}건 (<8, newsletter_paste 누락 가능)"
+    fi
     if (( ARCH_ELAPSED <= 120 )); then
       pass "Notion 아카이브 ${ARCH_ELAPSED}s (${COUNT}건)"
     else
