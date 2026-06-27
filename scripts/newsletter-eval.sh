@@ -34,6 +34,24 @@ grep -q "권장 제목" "$NL" 2>/dev/null && record PASS "subject_winner" || rec
 [[ -f "$CTX" ]] && record PASS "context_package" || record FAIL "context"
 grep -q "newsletter:" "$WORKDIR/config/notion-archive.yaml" 2>/dev/null && record PASS "notion_category" || record FAIL "notion"
 
+AUDIT=$(python3 - <<PY 2>&1
+import sys
+sys.path.insert(0, "$DIR")
+from pathlib import Path
+from lib.newsletter_complete import audit_newsletter_md
+p = Path("$NL")
+if not p.exists():
+    print("FAIL no_file")
+    sys.exit(0)
+issues = audit_newsletter_md(p.read_text(encoding="utf-8"))
+if issues:
+    print("FAIL " + "; ".join(issues[:3]))
+else:
+    print("PASS completeness")
+PY
+)
+echo "$AUDIT" | grep -q "^PASS" && record PASS "completeness_no_truncation" || record FAIL "completeness ($(echo "$AUDIT" | sed 's/^FAIL //'))"
+
 SAMPLE=$(head -60 "$NL" 2>/dev/null || echo "N/A")
 WINNER=$(python3 -c "import json; d=json.load(open('$SCORES')); print(d.get('winner',{}).get('text','N/A')+' (score '+str(d.get('winner',{}).get('score','?'))+')')" 2>/dev/null || echo "N/A")
 {

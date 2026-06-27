@@ -23,9 +23,30 @@ from lib.m4_analytics import format_m4_report, record_agent_trace, save_m4_snaps
 from lib.session_handoff import format_resume_block, write_session_handoff  # noqa: E402
 from lib.brief_graph import (  # noqa: E402
     format_graph_summary,
+    format_weekly_digest,
     patch_unified_context,
     save_brief_graph,
 )
+from lib.blog_pipeline import format_pipeline_summary as format_blog_summary, run_blog_pipeline  # noqa: E402
+from lib.instagram_pipeline import (  # noqa: E402
+    format_pipeline_summary as format_instagram_summary,
+    run_instagram_pipeline,
+)
+from lib.quality_auditor import audit_stamp, format_audit_summary  # noqa: E402
+from lib.repurpose_pipeline import format_repurpose_summary, run_repurpose  # noqa: E402
+from lib.publish_scheduler import (  # noqa: E402
+    cancel_schedule,
+    format_schedule_created,
+    format_schedule_list,
+    list_schedules,
+    process_due_schedules,
+    schedule_publish,
+)
+from lib.pipeline_supervisor import format_supervisor_report, run_supervised_pipeline  # noqa: E402
+from lib.wiki_curator import format_curator_summary, run_wiki_curator  # noqa: E402
+from lib.research_squad import format_squad_report, run_research_squad  # noqa: E402
+from lib.competitive_watch import format_watch_summary, run_competitive_watch  # noqa: E402
+from lib.m4_coach import format_coach_summary, run_m4_coach  # noqa: E402
 from lib.command_registry import (  # noqa: E402
     format_registry_table,
     list_commands,
@@ -58,6 +79,17 @@ INTENT_ALIASES: dict[str, list[str]] = {
     "approve": ["/approve", "승인", "approve"],
     "commands": ["/commands", "명령 목록", "registry"],
     "newsletter": ["/newsletter", "뉴스레터", "newsletter"],
+    "blog": ["/blog", "블로그 seo", "blog pipeline"],
+    "instagram": ["/instagram", "인스타", "instagram", "인스타그램"],
+    "audit": ["/audit", "품질 감사", "audit", "검증"],
+    "repurpose": ["/repurpose", "재조립", "repurpose"],
+    "schedule": ["/schedule", "스케줄", "예약 발행", "schedule"],
+    "schedules": ["/schedules", "예약 목록"],
+    "supervised": ["/supervised", "감독 파이프라인", "supervised"],
+    "wiki": ["/wiki", "위키", "wiki curator"],
+    "squad": ["/squad", "리서치 스쿼드", "research squad"],
+    "watch": ["/watch", "경쟁 감시", "competitive watch"],
+    "coach": ["/coach", "성과 코치", "m4 coach", "performance coach"],
 }
 
 
@@ -136,12 +168,16 @@ def cmd_publish(args: argparse.Namespace) -> int:
     t0 = time.perf_counter()
     stamp = args.date or studio_today()
     channel = (args.channel or "linkedin").lower()
-    if channel not in ("blog", "instagram", "linkedin"):
-        print(f"❌ 채널: blog | instagram | linkedin (got {channel})", file=sys.stderr)
+    if channel not in ("blog", "instagram", "linkedin", "newsletter"):
+        print(f"❌ 채널: blog | instagram | linkedin | newsletter (got {channel})", file=sys.stderr)
         return 1
     if args.dry_run:
-        print(f"[dry-run] HERMES_SKIP_RESEARCH=1 run-content-package.sh {stamp}")
-        print(f"[dry-run] validate {channel}")
+        if channel == "newsletter":
+            print(f"[dry-run] run-newsletter.sh {stamp} --validate")
+            print(f"[dry-run] validate newsletter-paste")
+        else:
+            print(f"[dry-run] HERMES_SKIP_RESEARCH=1 run-content-package.sh {stamp}")
+            print(f"[dry-run] validate {channel}")
         print(f"[dry-run] archive-to-notion.sh {stamp} --force --notify-final")
         return 0
     if not getattr(args, "approve", False):
@@ -174,26 +210,132 @@ def cmd_deep(args: argparse.Namespace) -> int:
         print("❌ 주제 필요: hermes-agent.py deep 'AX 트렌드'", file=sys.stderr)
         return 1
     stamp = args.date or studio_today()
-    result = route_query(topic, stamp)
-    sync_inbox_from_personal(stamp)
-    queue_topic_for_brief(topic, source="deep-intent")
-    parts = [
-        f"🔍 Deep Pack · {stamp}",
-        "",
-        result.answer,
-        "",
-        format_inbox_summary(),
-        "",
-        "다음: telegram-custom.sh qc ask-bg \"{topic}\" 또는 run-research-brief.sh".format(topic=topic[:40]),
-    ]
+    if getattr(args, "quick", False):
+        result = route_query(topic, stamp)
+        sync_inbox_from_personal(stamp)
+        queue_topic_for_brief(topic, source="deep-intent")
+        parts = [
+            f"🔍 Deep Pack (quick) · {stamp}",
+            "",
+            result.answer,
+            "",
+            format_inbox_summary(),
+        ]
+        record_action(args.session, intent="deep", action="deep_quick", stamp=stamp)
+        print("\n".join(parts))
+        return 0
+    report = run_research_squad(topic, stamp)
     record_action(
         args.session,
         intent="deep",
-        action="deep_queue",
+        action="research_squad",
         stamp=stamp,
         pending=["research_followup"],
     )
-    print("\n".join(parts))
+    print(format_squad_report(report))
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "topic": topic,
+                    "stamp": stamp,
+                    "roles": [r.role for r in report.roles],
+                    "elapsed_seconds": report.elapsed_seconds,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    return 0
+
+
+def cmd_squad(args: argparse.Namespace) -> int:
+    topic = args.topic or ""
+    if not topic:
+        print("❌ 주제 필요", file=sys.stderr)
+        return 1
+    stamp = args.date or studio_today()
+    t0 = time.perf_counter()
+    report = run_research_squad(topic, stamp)
+    record_action(args.session, intent="squad", action="research_squad", stamp=stamp)
+    _trace_intent(args, "squad", "research_squad", t0, stamp)
+    print(format_squad_report(report))
+    if args.json:
+        print(json.dumps({"topic": topic, "stamp": stamp}, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_wiki(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    mode = args.mode or "status"
+    result = run_wiki_curator(
+        mode,
+        write_report=mode in ("lint", "all"),
+        trigger_llm=getattr(args, "llm", False),
+    )
+    record_action(args.session, intent="wiki", action=f"wiki_{mode}", stamp=args.date or studio_today())
+    _trace_intent(args, "wiki", mode, t0)
+    print(format_curator_summary(result))
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+    if mode == "seed" and result.get("seed", {}).get("concepts", 0) == 0:
+        return 1
+    return 0
+
+
+def cmd_watch(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    days = args.days or 14
+    report = run_competitive_watch(window_days=days, write_report=True)
+    record_action(args.session, intent="watch", action="competitive_watch", stamp=report.get("stamp", ""))
+    _trace_intent(args, "watch", "competitive_watch", t0)
+    print(format_watch_summary(report))
+    if args.verbose:
+        from pathlib import Path as P
+
+        rp = report.get("report_path")
+        if rp and P(rp).exists():
+            print()
+            print(P(rp).read_text(encoding="utf-8"))
+    if args.json:
+        print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
+    return 0
+
+
+    return 0
+
+
+def cmd_coach(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    stamp = args.date or studio_today()
+    days = args.days or 7
+    report = run_m4_coach(stamp, days=days, write_report=True)
+    record_action(args.session, intent="coach", action="m4_coach", stamp=stamp)
+    _trace_intent(args, "coach", "m4_coach", t0, stamp)
+    print(format_coach_summary(report))
+    if args.verbose:
+        from lib.m4_coach import format_coach_report
+        from lib.newsletter_ctor_feedback import load_ctor_feedback
+
+        print()
+        print(format_coach_report(report, load_ctor_feedback()))
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "stamp": stamp,
+                    "analytics_mode": report.analytics_mode,
+                    "ctor_feedback_applied": report.ctor_feedback_applied,
+                    "channels": [
+                        {"channel": c.channel, "status": c.status, "score": c.score}
+                        for c in report.channels
+                    ],
+                    "global_actions": report.global_actions,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
     return 0
 
 
@@ -250,11 +392,16 @@ def cmd_linkedin(args: argparse.Namespace) -> int:
 def cmd_traces(args: argparse.Namespace) -> int:
     t0 = time.perf_counter()
     days = args.days or 7
+    from lib.m4_channel_metrics import format_channel_metrics_block, sync_ctor_to_channel_metrics
+
+    sync_ctor_to_channel_metrics()
     report = format_m4_report(days)
     path = save_m4_snapshot(days)
     record_action(args.session, intent="traces", action="m4_report", stamp=args.date or studio_today())
     _trace_intent(args, "traces", "m4_report", t0)
     print(report)
+    print("")
+    print(format_channel_metrics_block())
     print(f"\n---\nsnapshot: {path}")
     if args.json:
         from lib.m4_analytics import build_m4_report
@@ -270,7 +417,10 @@ def cmd_graph(args: argparse.Namespace) -> int:
     stamp = args.date or studio_today()
     record_action(args.session, intent="graph", action="build_graph", stamp=stamp)
     _trace_intent(args, "graph", "build_graph", t0, stamp)
-    print(format_graph_summary(days))
+    if getattr(args, "weekly", False):
+        print(format_weekly_digest(days))
+    else:
+        print(format_graph_summary(days))
     print(f"\n---\ngraph: {path}")
     if args.write_unified:
         patched = patch_unified_context(stamp, days)
@@ -289,6 +439,23 @@ def cmd_approve(args: argparse.Namespace) -> int:
     channels = args.channels or ["all"]
     if isinstance(channels, str):
         channels = [channels]
+    if "esp" in [c.lower() for c in channels]:
+        import os
+
+        from lib.newsletter_esp import execute_send
+
+        os.environ["HERMES_ESP_APPROVED"] = "1"
+        try:
+            result = execute_send(stamp, live=True, approved=True)
+            msg = f"✅ ESP manifest/live · {stamp} · mode={result.get('mode')}"
+            print(msg)
+            _commander_notify(msg)
+        except (EnvironmentError, PermissionError, FileNotFoundError, RuntimeError) as e:
+            print(f"⚠️ ESP: {e}", file=sys.stderr)
+        channels = [c for c in channels if c.lower() != "esp"]
+    if not channels or channels == ["esp"]:
+        _trace_intent(args, "approve", "hitl_esp", t0, stamp)
+        return 0
     data = approve_channels(stamp, channels)
     result = execute_approved_publish(stamp, data.get("approved_channels"))
     record_action(
@@ -365,6 +532,181 @@ def cmd_newsletter(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_blog(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    stamp = args.date or studio_today()
+    try:
+        result = run_blog_pipeline(stamp, validate=args.validate)
+    except FileNotFoundError as e:
+        print(f"❌ {e}", file=sys.stderr)
+        return 1
+    record_action(args.session, intent="blog", action="blog_m3_pipeline", stamp=stamp)
+    _trace_intent(args, "blog", "m3_pipeline", t0, stamp)
+    print(format_blog_summary(result))
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_instagram(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    stamp = args.date or studio_today()
+    try:
+        result = run_instagram_pipeline(stamp, validate=args.validate)
+    except FileNotFoundError as e:
+        print(f"❌ {e}", file=sys.stderr)
+        return 1
+    record_action(args.session, intent="instagram", action="instagram_m3_pipeline", stamp=stamp)
+    _trace_intent(args, "instagram", "m3_pipeline", t0, stamp)
+    print(format_instagram_summary(result))
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_audit(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    stamp = args.date or studio_today()
+    report = audit_stamp(stamp, write_report=not args.no_report)
+    record_action(args.session, intent="audit", action="quality_audit", stamp=stamp)
+    _trace_intent(args, "audit", "quality_audit", t0, stamp)
+    print(format_audit_summary(report))
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "stamp": stamp,
+                    "all_pass": report.all_pass,
+                    "pass_count": report.pass_count,
+                    "fail_count": report.fail_count,
+                    "elapsed_seconds": report.elapsed_seconds,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    return 0 if report.all_pass else 1
+
+
+def cmd_repurpose(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    stamp = args.date or studio_today()
+    channel = (args.channel or "linkedin").lower()
+    index = args.index or 1
+    try:
+        result = run_repurpose(stamp, channel, index, validate=args.validate)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"❌ {e}", file=sys.stderr)
+        return 1
+    record_action(
+        args.session,
+        intent="repurpose",
+        action=f"repurpose_{channel}_i{index}",
+        stamp=stamp,
+    )
+    _trace_intent(args, "repurpose", f"{channel}_i{index}", t0, stamp)
+    print(format_repurpose_summary(result))
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_schedule(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    stamp = args.date or studio_today()
+    if getattr(args, "schedule_action", "create") == "cancel":
+        if not args.schedule_id:
+            print("❌ schedule_id 필요", file=sys.stderr)
+            return 1
+        data = cancel_schedule(args.schedule_id)
+        if not data:
+            print(f"❌ 예약 없음: {args.schedule_id}", file=sys.stderr)
+            return 1
+        print(f"✅ 취소됨: {args.schedule_id}")
+        return 0
+    if getattr(args, "schedule_action", "create") == "process":
+        done = process_due_schedules(notify=not args.dry_run)
+        print(f"처리됨: {len(done)}건")
+        for d in done:
+            print(f"  · {d.get('id')} → {d.get('stamp')}")
+        return 0
+    when = args.at or ""
+    if not when:
+        print("❌ --at 필요 (예: 09:00 | 2026-06-27 09:00 | +30m)", file=sys.stderr)
+        return 1
+    channels = args.channels if isinstance(args.channels, list) else [args.channels or "linkedin"]
+    try:
+        data = schedule_publish(stamp, channels, when, note=args.note or "")
+    except ValueError as e:
+        print(f"❌ {e}", file=sys.stderr)
+        return 1
+    record_action(args.session, intent="schedule", action="schedule_publish", stamp=stamp)
+    _trace_intent(args, "schedule", "create", t0, stamp)
+    print(format_schedule_created(data))
+    if not args.dry_run:
+        _commander_notify(format_schedule_created(data))
+    return 0
+
+
+def cmd_schedules(args: argparse.Namespace) -> int:
+    stamp = args.date or ""
+    items = list_schedules(stamp=stamp, include_done=args.all)
+    print(format_schedule_list(items))
+    if args.json:
+        print(json.dumps(items, ensure_ascii=False, indent=2))
+    return 0
+
+
+def cmd_supervised(args: argparse.Namespace) -> int:
+    t0 = time.perf_counter()
+    stamp = args.date or studio_today()
+
+    def progress(msg: str) -> None:
+        print(msg, flush=True)
+        if not args.quiet:
+            _commander_notify(msg)
+
+    report = run_supervised_pipeline(
+        stamp,
+        skip_newsletter=args.skip_newsletter,
+        skip_notion=args.skip_notion,
+        skip_audit=args.skip_audit,
+        notify=progress if not args.quiet else None,
+    )
+    record_action(
+        args.session,
+        intent="supervised",
+        action="supervised_pipeline",
+        stamp=stamp,
+        pending=[] if report.success else [f"fix_{report.blocked_at}"],
+    )
+    _trace_intent(args, "supervised", "pipeline", t0, stamp)
+    print()
+    print(format_supervisor_report(report))
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "stamp": stamp,
+                    "success": report.success,
+                    "blocked_at": report.blocked_at,
+                    "elapsed_seconds": report.elapsed_seconds,
+                    "stages": [
+                        {
+                            "id": s.stage_id,
+                            "status": s.status,
+                            "elapsed_seconds": s.elapsed_seconds,
+                        }
+                        for s in report.stages
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    return 0 if report.success else 1
+
+
 def cmd_handoff(args: argparse.Namespace) -> int:
     t0 = time.perf_counter()
     path = write_session_handoff(args.session, m4_days=args.days or 7)
@@ -381,11 +723,32 @@ def _auto_defaults(args: argparse.Namespace, intent: str, rest: str) -> None:
     defaults: dict[str, dict] = {
         "catch-up": {"days": 3},
         "publish": {"channel": rest.split()[0] if rest else "linkedin", "dry_run": False, "approve": False},
-        "deep": {"topic": rest},
+        "deep": {"topic": rest, "quick": False},
+        "squad": {"topic": rest},
+        "wiki": {"mode": rest.split()[0] if rest else "status", "llm": False},
+        "watch": {"days": 14, "verbose": False},
+        "coach": {"days": 7, "verbose": False},
         "linkedin": {"validate": False, "dry_run": False},
         "traces": {"days": 7},
         "handoff": {"days": 7},
-        "graph": {"days": 14, "write_unified": False},
+        "graph": {"days": 14, "write_unified": False, "weekly": False},
+        "blog": {"validate": False},
+        "instagram": {"validate": False},
+        "audit": {"no_report": False},
+        "repurpose": {
+            "channel": rest.split()[0] if rest else "linkedin",
+            "index": int(rest.split()[1]) if len(rest.split()) > 1 and rest.split()[1].isdigit() else 1,
+            "validate": False,
+        },
+        "schedule": {
+            "channels": rest.split()[:1] if rest else ["linkedin"],
+            "at": rest.split()[1] if len(rest.split()) > 1 else "",
+            "dry_run": False,
+            "note": "",
+            "schedule_action": "create",
+        },
+        "schedules": {"all": False},
+        "supervised": {"skip_newsletter": False, "skip_notion": False, "skip_audit": False, "quiet": False},
         "approve": {"channels": rest.split() if rest else ["all"]},
     }
     for key, val in defaults.get(intent, {}).items():
@@ -405,6 +768,14 @@ def cmd_auto(args: argparse.Namespace) -> int:
         return cmd_publish(args)
     if intent == "deep":
         return cmd_deep(args)
+    if intent == "squad":
+        return cmd_squad(args)
+    if intent == "wiki":
+        return cmd_wiki(args)
+    if intent == "watch":
+        return cmd_watch(args)
+    if intent == "coach":
+        return cmd_coach(args)
     if intent == "linkedin":
         return cmd_linkedin(args)
     if intent == "traces":
@@ -419,11 +790,25 @@ def cmd_auto(args: argparse.Namespace) -> int:
         return cmd_commands(args)
     if intent == "newsletter":
         return cmd_newsletter(args)
+    if intent == "blog":
+        return cmd_blog(args)
+    if intent == "instagram":
+        return cmd_instagram(args)
+    if intent == "audit":
+        return cmd_audit(args)
+    if intent == "repurpose":
+        return cmd_repurpose(args)
+    if intent == "schedule":
+        return cmd_schedule(args)
+    if intent == "schedules":
+        return cmd_schedules(args)
+    if intent == "supervised":
+        return cmd_supervised(args)
     if intent == "ask" or rest:
         args.query = rest or args.text
         return cmd_route(args)
     print(
-        "의도 미감지 — morning/catch-up/publish/approve/graph/commands/linkedin/traces/handoff/ask",
+        "의도 미감지 — morning/deep/squad/wiki/watch/supervised/schedule/publish/approve/ask …",
         file=sys.stderr,
     )
     return 1
@@ -459,10 +844,35 @@ def main() -> int:
     p_pub.add_argument("--approve", action="store_true", help="HITL 우회 · 즉시 발행")
     p_pub.set_defaults(func=cmd_publish, approve=False)
 
-    p_deep = sub.add_parser("deep", help="Deep research pack", parents=[common])
+    p_deep = sub.add_parser("deep", help="Deep research (Research Squad)", parents=[common])
     p_deep.add_argument("topic", nargs="?", default="")
     p_deep.add_argument("--query", default="")
+    p_deep.add_argument("--quick", action="store_true", help="memory_router만")
     p_deep.set_defaults(func=cmd_deep)
+
+    p_squad = sub.add_parser("squad", help="Research Squad", parents=[common])
+    p_squad.add_argument("topic")
+    p_squad.set_defaults(func=cmd_squad)
+
+    p_wiki = sub.add_parser("wiki", help="Wiki Curator", parents=[common])
+    p_wiki.add_argument(
+        "mode",
+        nargs="?",
+        default="status",
+        choices=["status", "seed", "lint", "ingest", "all"],
+    )
+    p_wiki.add_argument("--llm", action="store_true")
+    p_wiki.set_defaults(func=cmd_wiki)
+
+    p_watch = sub.add_parser("watch", help="Competitive Watch", parents=[common])
+    p_watch.add_argument("--days", type=int, default=14)
+    p_watch.add_argument("--verbose", action="store_true")
+    p_watch.set_defaults(func=cmd_watch)
+
+    p_coach = sub.add_parser("coach", help="M4 Performance Coach", parents=[common])
+    p_coach.add_argument("--days", type=int, default=7)
+    p_coach.add_argument("--verbose", action="store_true")
+    p_coach.set_defaults(func=cmd_coach)
 
     p_pr = sub.add_parser("proactive", help="Proactive triggers", parents=[common])
     p_pr.set_defaults(func=cmd_proactive)
@@ -494,7 +904,47 @@ def main() -> int:
     p_gr = sub.add_parser("graph", help="Brief Graph Lite", parents=[common])
     p_gr.add_argument("--days", type=int, default=14)
     p_gr.add_argument("--write-unified", action="store_true")
-    p_gr.set_defaults(func=cmd_graph, write_unified=False)
+    p_gr.add_argument("--weekly", action="store_true", help="주간 Graph digest")
+    p_gr.set_defaults(func=cmd_graph, write_unified=False, weekly=False)
+
+    p_blog = sub.add_parser("blog", help="Blog M3 sub-pipeline", parents=[common])
+    p_blog.add_argument("--validate", action="store_true")
+    p_blog.set_defaults(func=cmd_blog)
+
+    p_ig = sub.add_parser("instagram", help="Instagram M3 sub-pipeline", parents=[common])
+    p_ig.add_argument("--validate", action="store_true")
+    p_ig.set_defaults(func=cmd_instagram)
+
+    p_aud = sub.add_parser("audit", help="Quality Auditor — DoD 일괄 감사", parents=[common])
+    p_aud.add_argument("--no-report", action="store_true", help="audit-report.md 생략")
+    p_aud.set_defaults(func=cmd_audit, no_report=False)
+
+    p_rep = sub.add_parser("repurpose", help="Brief 인사이트 → 채널 재조립", parents=[common])
+    p_rep.add_argument("channel", nargs="?", default="linkedin")
+    p_rep.add_argument("--index", type=int, default=1, help="Brief 인사이트 번호 (1-based)")
+    p_rep.add_argument("--validate", action="store_true")
+    p_rep.set_defaults(func=cmd_repurpose)
+
+    p_sched = sub.add_parser("schedule", help="HITL 발행 예약", parents=[common])
+    p_sched.add_argument("channels", nargs="*", default=["linkedin"])
+    p_sched.add_argument("--at", default="", help="09:00 | YYYY-MM-DD HH:MM | +30m")
+    p_sched.add_argument("--note", default="")
+    p_sched.add_argument("--dry-run", action="store_true")
+    p_sched.add_argument("--cancel", dest="schedule_action", action="store_const", const="cancel")
+    p_sched.add_argument("--process", dest="schedule_action", action="store_const", const="process")
+    p_sched.add_argument("--id", dest="schedule_id", default="", help="취소할 schedule id")
+    p_sched.set_defaults(func=cmd_schedule, schedule_action="create")
+
+    p_sched_list = sub.add_parser("schedules", help="발행 예약 목록", parents=[common])
+    p_sched_list.add_argument("--all", action="store_true", help="완료·취소 포함")
+    p_sched_list.set_defaults(func=cmd_schedules)
+
+    p_sup = sub.add_parser("supervised", help="Pipeline Supervisor M1→M5", parents=[common])
+    p_sup.add_argument("--skip-newsletter", action="store_true")
+    p_sup.add_argument("--skip-notion", action="store_true")
+    p_sup.add_argument("--skip-audit", action="store_true")
+    p_sup.add_argument("--quiet", action="store_true", help="Telegram 진행 알림 생략")
+    p_sup.set_defaults(func=cmd_supervised)
 
     p_ap = sub.add_parser("approve", help="HITL publish approve", parents=[common])
     p_ap.add_argument("channels", nargs="*", default=["all"])

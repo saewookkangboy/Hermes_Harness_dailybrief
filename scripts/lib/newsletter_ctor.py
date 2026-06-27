@@ -92,6 +92,18 @@ def record_campaign(
     records.sort(key=lambda r: r.get("stamp", ""), reverse=True)
     data["records"] = records
     save_metrics(data)
+    try:
+        from lib.m4_channel_metrics import sync_ctor_to_channel_metrics
+
+        sync_ctor_to_channel_metrics()
+    except ImportError:
+        pass
+    try:
+        from lib.newsletter_ctor_feedback import compute_ctor_feedback
+
+        compute_ctor_feedback()
+    except ImportError:
+        pass
     return row
 
 

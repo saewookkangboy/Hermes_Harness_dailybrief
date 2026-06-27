@@ -5,7 +5,7 @@ import html
 import re
 from pathlib import Path
 
-from lib.common import read_template, truncate
+from lib.common import compress_sentences, finish_at_sentence, read_template
 from lib.content_quality import Insight
 from lib.newsletter_subject import SubjectScore
 
@@ -43,17 +43,23 @@ def build_newsletter_html(
 ) -> str:
     tpl = read_template(str(TEMPLATE_PATH.relative_to(WORKDIR)))
     subject = winner.text if winner else f"B2B AI 주간 — {stamp}"
-    pre = truncate(preheader, 40)
+    pre = finish_at_sentence(preheader.replace("\n", " "), 40)
 
     tldr_li = "".join(f"<li style='margin-bottom:8px;'>{_md_inline(b)}</li>" for b in tldr)
     tldr_html = f"<ul style='margin:0;padding-left:20px;'>{tldr_li}</ul>"
 
+    from lib.longform_context import apply_sentence_for_newsletter, insight_paragraph_for_newsletter
+    from lib.newsletter_quality import _newsletter_title
+
     modules_html = ""
     for i, ins in enumerate(insights[:3], 1):
+        summary = insight_paragraph_for_newsletter(ins)
+        apply = apply_sentence_for_newsletter(ins)
         mod = (
-            f"<p style='margin:0 0 8px;'><strong>{html.escape(ins.korean_title)}</strong></p>"
-            f"<p style='margin:0 0 8px;'>{html.escape(truncate(ins.korean_summary, 160))}</p>"
-            f"<p style='margin:0;font-size:13px;color:#666;'>현장 적용: {html.escape(truncate(ins.marketer_view or '', 90))}</p>"
+            f"<p style='margin:0 0 8px;'><strong>{html.escape(_newsletter_title(ins))}</strong></p>"
+            f"<p style='margin:0 0 8px;'>{html.escape(summary)}</p>"
+            f"<p style='margin:0;font-size:13px;color:#666;'>현장 적용: {html.escape(apply)}</p>"
+            f"<p style='margin:8px 0 0;font-size:12px;color:#888;'>출처: {html.escape(ins.url or '—')}</p>"
         )
         modules_html += _section_block(f"{i}. Top 인사이트", mod)
 

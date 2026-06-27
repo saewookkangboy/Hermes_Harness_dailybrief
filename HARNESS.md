@@ -39,6 +39,8 @@ HERMES_ENHANCE=1 ./scripts/run-pipeline.sh  # LLM polish 추가
 - **사전 검색:** `gather-web-research.py` — 에이전트가 `web_search` 호출 생략
 - **도구 마스킹:** 콘텐츠 스킬은 `-t hermes-cli`만 (MCP·브라우저 제외)
 - **파일시스템 메모리:** `.harness/` + `content/research/_search_context_*.md`
+- **이중 메모리 (선택):** 일별 `{date}_brief.md` SoT + 누적 `content/wiki/` — `docs/LLM-WIKI-INTEGRATION.md`
+  - 결정적 Seed: `HERMES_WIKI_SEED=1 wiki-seed.sh` · LLM Ingest/Lint는 비동기만
 
 ### 3. 관측성 (Runtime)
 

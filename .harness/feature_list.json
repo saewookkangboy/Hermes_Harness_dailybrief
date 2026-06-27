@@ -161,6 +161,138 @@
         "content/.notion-archive-state.json (2026-06-08/newsletter, newsletter_html)"
       ],
       "notes": "lib/newsletter_quality · newsletter_subject · newsletter_html · Notion newsletter+newsletter_html · CTOR 10–15% 구조"
+    },
+    {
+      "id": "pipe-009",
+      "priority": 9,
+      "area": "wiki",
+      "title": "LLM Wiki 계층 (부분 통합)",
+      "user_visible_behavior": "wiki-lint-eval PASS · HERMES_WIKI_SEED=1 시 Brief Graph→concepts · /ask index-first",
+      "status": "passing",
+      "depends_on": ["pipe-001"],
+      "verification": [
+        "scripts/wiki-lint-eval.sh",
+        "HERMES_WIKI_SEED=1 scripts/wiki-seed.sh",
+        "scripts/hermes-agent.sh ask"
+      ],
+      "evidence": [
+        "docs/LLM-WIKI-INTEGRATION.md",
+        "config/wiki.yaml",
+        "content/wiki/index.md",
+        "scripts/lib/wiki_router.py",
+        "scripts/lib/wiki_seed.py"
+      ],
+      "notes": "Karpathy 패턴 선택 반영 · Ingest/Lint는 HERMES_WIKI_*=1 비동기"
+    },
+    {
+      "id": "pipe-010",
+      "priority": 10,
+      "area": "features",
+      "title": "우선순위 P1–P8 기능 패키지",
+      "user_visible_behavior": "CTOR 피드백·HITL newsletter·Wiki M2·Proactive·Blog M3·M4 live·PlayMCP·ESP HITL",
+      "status": "passing",
+      "depends_on": ["pipe-001", "pipe-008"],
+      "verification": [
+        "scripts/features-priority-eval.sh",
+        "scripts/playmcp-integration-eval.sh",
+        "scripts/hermes-agent.sh publish newsletter --dry-run",
+        "scripts/run-blog-pipeline.sh YYYY-MM-DD --validate"
+      ],
+      "evidence": [
+        "scripts/lib/newsletter_ctor_feedback.py",
+        "scripts/lib/wiki_concepts.py",
+        "scripts/lib/blog_pipeline.py",
+        "scripts/lib/m4_channel_metrics.py",
+        "config/playmcp-routing.yaml"
+      ],
+      "notes": "설계 원칙 1–4 준수 · 결정적 우선 · Brief SoT · validate · Notion Permalink"
+    },
+    {
+      "id": "pipe-011",
+      "priority": 11,
+      "area": "content-quality",
+      "title": "콘텐츠 품질 Agent (Instagram M3 · Auditor · Repurpose)",
+      "user_visible_behavior": "hermes-agent.sh instagram/audit/repurpose 로 채널 M3·DoD 감사·인사이트 재조립",
+      "status": "passing",
+      "depends_on": ["pipe-001", "pipe-002"],
+      "verification": [
+        "scripts/content-quality-eval.sh YYYY-MM-DD",
+        "scripts/hermes-agent.sh instagram --date YYYY-MM-DD",
+        "scripts/hermes-agent.sh audit --date YYYY-MM-DD",
+        "scripts/hermes-agent.sh repurpose linkedin --index 1 --date YYYY-MM-DD"
+      ],
+      "evidence": [
+        "scripts/lib/instagram_pipeline.py",
+        "scripts/lib/quality_auditor.py",
+        "scripts/lib/repurpose_pipeline.py",
+        "config/agent-commands.yaml"
+      ],
+      "notes": "Blog·LinkedIn M3 대칭 · validate-output.sh · content/logs audit-report"
+    },
+    {
+      "id": "pipe-012",
+      "priority": 12,
+      "area": "content-ops",
+      "title": "운영 Agent (HITL Scheduler · Pipeline Supervisor)",
+      "user_visible_behavior": "hermes-agent.sh schedule/supervised 로 예약 발행 + M1→M5 감독 파이프라인",
+      "status": "passing",
+      "depends_on": ["pipe-011"],
+      "verification": [
+        "scripts/content-ops-eval.sh YYYY-MM-DD",
+        "scripts/hermes-agent.sh schedule linkedin --at +30m --dry-run --date YYYY-MM-DD",
+        "scripts/hermes-agent.sh schedules",
+        "SKIP_NEWSLETTER=1 SKIP_NOTION_ARCHIVE=1 ./scripts/run-supervised-pipeline.sh YYYY-MM-DD"
+      ],
+      "evidence": [
+        "scripts/lib/publish_scheduler.py",
+        "scripts/lib/pipeline_supervisor.py",
+        "scripts/cron-publish-schedule.sh",
+        "config/agent-commands.yaml"
+      ],
+      "notes": "HITL 자동 승인 없음 · cron 15분 · audit WARN는 non-blocking"
+    },
+    {
+      "id": "pipe-013",
+      "priority": 13,
+      "area": "knowledge",
+      "title": "지식·리서치 Agent (Wiki Curator · Research Squad · Competitive Watch)",
+      "user_visible_behavior": "hermes-agent.sh wiki/squad/watch · deep→Research Squad 기본",
+      "status": "passing",
+      "depends_on": ["pipe-009", "pipe-012"],
+      "verification": [
+        "scripts/content-knowledge-eval.sh YYYY-MM-DD",
+        "scripts/hermes-agent.sh wiki status",
+        "scripts/hermes-agent.sh squad 'AX 트렌드' --date YYYY-MM-DD",
+        "scripts/hermes-agent.sh watch --verbose"
+      ],
+      "evidence": [
+        "scripts/lib/wiki_curator.py",
+        "scripts/lib/research_squad.py",
+        "scripts/lib/competitive_watch.py",
+        "config/competitive-watch.yaml"
+      ],
+      "notes": "결정적 코어 · HERMES_WIKI_* LLM은 선택 · cron 월 09:00 watch"
+    },
+    {
+      "id": "pipe-014",
+      "priority": 14,
+      "area": "performance",
+      "title": "M4 Performance Coach — 전 채널 trait 코칭",
+      "user_visible_behavior": "hermes-agent.sh coach 로 CTOR 피드백 → newsletter/linkedin/blog/instagram 코칭",
+      "status": "passing",
+      "depends_on": ["pipe-010", "pipe-013"],
+      "verification": [
+        "scripts/content-performance-eval.sh YYYY-MM-DD",
+        "scripts/agents-eval.sh YYYY-MM-DD",
+        "scripts/hermes-agent.sh coach --date YYYY-MM-DD --verbose",
+        "scripts/telegram-pipeline.sh qc coach"
+      ],
+      "evidence": [
+        "scripts/lib/m4_coach.py",
+        "config/m4-coach.yaml",
+        "scripts/lib/newsletter_ctor_feedback.py"
+      ],
+      "notes": "CTOR trait 전파 · channel-metrics import · content/logs m4-coach.md"
     }
   ]
 }

@@ -79,16 +79,18 @@ detect_action() {
   local lower
   lower=$(echo "$msg" | tr '[:upper:]' '[:lower:]')
 
-  if echo "$lower" | grep -qE '^/(morning|catch-up|catchup|publish|approve|deep|ask|linkedin|traces|handoff|graph|commands|newsletter)\b'; then
+  if echo "$lower" | grep -qE '^/(morning|catch-up|catchup|publish|approve|deep|ask|linkedin|blog|instagram|audit|repurpose|schedule|schedules|supervised|wiki|squad|watch|coach|agents-eval|agents|traces|handoff|graph|commands|newsletter)\b'; then
     echo "intent-pack"
     return
   fi
-  if echo "$lower" | grep -qE '^(모닝|아침 브리핑|최근 요약|catch.?up|링크드인 전략|핸드오프|성능 리포트|브리프 그래프|승인|명령 목록|뉴스레터)'; then
+  if echo "$lower" | grep -qE '^(모닝|아침 브리핑|최근 요약|catch.?up|링크드인 전략|핸드오프|성능 리포트|성과 코치|브리프 그래프|승인|명령 목록|뉴스레터|감독|스케줄|예약|에이전트 검증)'; then
     echo "intent-pack"
     return
   fi
 
-  if echo "$lower" | grep -qE '노션|notion|동기화|sync|permalink|permalink'; then
+  if echo "$lower" | grep -qE 'agents.?eval|에이전트 검증|agent eval'; then
+    echo "agents-eval"
+  elif echo "$lower" | grep -qE '노션|notion|동기화|sync|permalink|permalink'; then
     echo "sync"
   elif echo "$lower" | grep -qE '강의|lecture|slide|슬라이드|pptx|claude.?design'; then
     echo "lecture_hint"
@@ -343,6 +345,9 @@ case "$MODE" in
       linkedin)
         run_intent_qc linkedin
         ;;
+      blog)
+        "$DIR/run-blog-pipeline.sh" "$DATE" --validate
+        ;;
       traces)
         run_intent_qc traces --days 7
         ;;
@@ -357,6 +362,32 @@ case "$MODE" in
         ;;
       approve)
         run_intent_qc approve all
+        ;;
+      coach)
+        run_intent_qc coach
+        ;;
+      agents-eval|agents)
+        "$DIR/agents-eval.sh" "$DATE"
+        ;;
+      audit)
+        run_intent_qc audit
+        ;;
+      instagram)
+        run_intent_qc instagram
+        ;;
+      wiki)
+        run_intent_qc wiki seed
+        ;;
+      squad)
+        echo "ℹ️ /squad는 주제가 필요합니다."
+        echo "예: hermes-agent.sh squad 'AX 트렌드' --date $DATE"
+        ;;
+      watch)
+        run_intent_qc watch
+        ;;
+      supervised)
+        echo "ℹ️ /supervised는 ~60s+ 소요 — 터미널 권장"
+        echo "실행: SKIP_NEWSLETTER=1 SKIP_NOTION_ARCHIVE=1 $DIR/run-supervised-pipeline.sh $DATE"
         ;;
       *)
         echo "Unknown qc action: $ACTION"
@@ -379,6 +410,9 @@ case "$MODE" in
     case "$DETECTED" in
       intent-pack)
         detect_intent_pack "$MSG"
+        ;;
+      agents-eval)
+        "$DIR/agents-eval.sh" "$DATE"
         ;;
       research) run_research ;;
       content)  run_content ;;

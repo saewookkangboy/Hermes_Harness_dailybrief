@@ -213,3 +213,43 @@ def format_graph_summary(days: int = 14) -> str:
             f"{truncate(s['latest_title'], 36)} |"
         )
     return "\n".join(lines)
+
+
+def format_weekly_digest(days: int = 14) -> str:
+    """주간 Brief Graph digest — 반복·신규·공백 topic."""
+    graph = build_brief_graph(days)
+    streaks = graph.get("streaks") or []
+    stamps = _list_brief_stamps(days)
+    recent_keys = set()
+    for node in graph.get("nodes", []):
+        if node.get("stamp") in stamps[:7]:
+            recent_keys.add(node.get("topic_key", ""))
+
+    repeating = [s for s in streaks if s.get("streak_days", 0) >= 2][:5]
+    all_keys = {s["topic_key"] for s in streaks}
+    new_topics = [s for s in streaks if s.get("appearances", 0) == 1 and s["topic_key"] in recent_keys][:5]
+    gap_hint = "AX·거버넌스·에이전트" if len(all_keys) < 5 else "—"
+
+    lines = [
+        f"📅 주간 Brief Graph Digest · {days}일",
+        "",
+        f"브리프 {len(stamps)}건 · 노드 {graph['node_count']}",
+        "",
+        "### 반복 topic (streak≥2)",
+    ]
+    if repeating:
+        for s in repeating:
+            lines.append(
+                f"- **{s['topic_key']}** · {s['streak_days']}일 연속 · "
+                f"{truncate(s['latest_title'], 48)}"
+            )
+    else:
+        lines.append("- (없음)")
+    lines.extend(["", "### 신규 topic (이번 주 첫 등장)"])
+    if new_topics:
+        for s in new_topics:
+            lines.append(f"- **{s['topic_key']}** · {truncate(s['latest_title'], 48)}")
+    else:
+        lines.append("- (없음)")
+    lines.extend(["", f"### 커버리지 공백 힌트: {gap_hint}"])
+    return "\n".join(lines)

@@ -161,6 +161,16 @@ if chars < 600:
 if chars > 4500:
     raise SystemExit(f"본문 너무 김(완독 저하): {chars}")
 PY
+    python3 - "$FILE" <<'PY' || fail "뉴스레터 완성도·잘림 게이트"
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path.home() / "hermes-content-studio/scripts"))
+from lib.newsletter_complete import audit_newsletter_md
+text = Path(sys.argv[1]).read_text(encoding="utf-8")
+issues = audit_newsletter_md(text)
+if issues:
+    raise SystemExit("; ".join(issues[:5]))
+PY
     pass "newsletter OK: $FILE ($SIZE bytes, modules=$MOD_COUNT)"
     ;;
   newsletter-context)

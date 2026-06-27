@@ -7,8 +7,8 @@ from pathlib import Path
 
 import yaml
 
-from lib.common import slugify, truncate
-from lib.content_quality import Insight, parse_brief
+from lib.common import compress_sentences, finish_at_sentence, slugify
+from lib.content_quality import Insight, parse_brief, polish_display_title
 from lib.humanize_korean import humanize
 from lib.newsletter_html import build_newsletter_html
 from lib.newsletter_subject import (
@@ -28,57 +28,125 @@ def load_newsletter_config() -> dict:
         return yaml.safe_load(f) or {}
 
 
+def _nl_short(text: str, max_chars: int, *, max_sentences: int = 2) -> str:
+    """완결 문장만 — 중간 '…' 생략 금지."""
+    return compress_sentences((text or "").strip(), max_chars, max_sentences=max_sentences)
+
+
+def _newsletter_title(ins: Insight) -> str:
+    """뉴스레터용 완결 제목 — garbage·localize 폴백."""
+    for raw in (ins.korean_title, ins.title):
+        t = polish_display_title(raw or "")
+        if t and "신호입니다" not in t and "OpenAI News OpenAI" not in t:
+            return t
+    return polish_display_title(ins.title or ins.korean_title or "AI 마케팅 주간")
+
+
+def _nl_label(text: str, max_chars: int) -> str:
+    """인라인 제목·라벨 — polish 후 완결 문장 압축."""
+    return _nl_short(polish_display_title(text or ""), max_chars, max_sentences=1)
+
+
+def _pick_apply(ins: Insight) -> str:
+    for field in (ins.utilization, ins.marketer_view, ins.guides_tips, ins.insight_derivation):
+        val = (field or "").strip()
+        if len(val) >= 20:
+            return val
+    return "실무 체크리스트와 사례 검증으로 팀 내 도입 우선순위를 정해 보세요."
+
+
 def _subject_candidates(topic: str, stamp: str, cfg: dict | None = None) -> list[str]:
     """Stripo: 질문형·config subject_max_chars·구체성."""
     c = cfg or load_newsletter_config()
     from lib.newsletter_subject import subject_limits
 
     max_c, _, _ = subject_limits(c)
-    t = truncate(topic, 28)
+    t = _nl_label(topic, 32)
     templates = c.get("subject_templates") or [
         "{topic} — 지금 손댈 곳은?",
         "AX 실무, 3분이면 돼요",
         "[{stamp}] B2B AI 주간 신호",
     ]
-    return [truncate(tpl.format(topic=t, stamp=stamp), max_c) for tpl in templates]
+    out: list[str] = []
+    for tpl in templates:
+        cand = tpl.format(topic=t, stamp=stamp)
+        if len(cand) <= max_c:
+            out.append(cand)
+        else:
+            out.append(finish_at_sentence(cand, max_c))
+    return out
 
 
 def _preheader(summary: str, cfg: dict | None = None) -> str:
     c = cfg or load_newsletter_config()
     max_c = int((c.get("benchmarks") or {}).get("preheader_max_chars", 40))
-    s = humanize(truncate(summary, 80), genre="linkedin").text
-    return truncate(s.replace("\n", " "), max_c)
+    s = humanize(summary, genre="linkedin").text.replace("\n", " ")
+    s = re.sub(r"\s+", " ", s).strip()
+    s = re.sub(r"^일일 관측\([^)]+\)\s*—\s*", "", s)
+    out = finish_at_sentence(s, max_c)
+    if len(out) > max_c:
+        out = finish_at_sentence(_nl_short(s, max_c, max_sentences=1), max_c)
+    return out
 
 
 def _tldr_bullets(insights: list[Insight]) -> list[str]:
+    from lib.longform_context import complete_text, load_longform_config
+
+    cfg = load_longform_config()
+    nc = cfg.get("newsletter") or {}
     bullets: list[str] = []
     for ins in insights[:3]:
-        bullets.append(f"**{truncate(ins.korean_title, 32)}** — {truncate(ins.korean_summary, 72)}")
+        title = _nl_label(_newsletter_title(ins), 40)
+        body = complete_text(
+            ins.korean_summary or ins.insight_derivation or ins.marketer_view or "",
+            int(nc.get("tldr_body_max_chars", 120)),
+            max_sentences=int(nc.get("tldr_bullet_sentences", 2)),
+            cfg=cfg,
+        )
+        bullets.append(f"**{title}** — {body}")
     while len(bullets) < 3:
         bullets.append("이번 주 AX·AEO·에이전트 신호를 3분 안에 정리했어요.")
     return bullets
 
 
 def _hero_block(ins: Insight | None, summary: str) -> str:
+    from lib.longform_context import complete_text, load_longform_config
+
+    cfg = load_longform_config()
+    nc = cfg.get("newsletter") or {}
     if not ins:
-        return humanize(truncate(summary, 280), genre="linkedin").text
+        return humanize(
+            complete_text(summary, 320, max_sentences=int(nc.get("hero_sentences", 4)), cfg=cfg),
+            genre="linkedin",
+        ).text
+    title = _newsletter_title(ins)
+    core = complete_text(
+        ins.insight_derivation or ins.korean_summary or ins.marketer_view or "",
+        280,
+        max_sentences=3,
+        cfg=cfg,
+    )
     body = (
-        f"이번 주 가장 먼저 짚을 주제는 **{ins.korean_title}**예요. "
-        f"{truncate(ins.insight_derivation or ins.korean_summary, 160)} "
-        f"현장에서는 선언형 AI보다 FAQ·실습·사례로 구매 전 검증하는 흐름이 더 강해요."
+        f"이번 주 가장 먼저 짚을 주제는 **{title}**입니다. "
+        f"{core} "
+        f"현장에서는 선언형 AI보다 FAQ·실습·사례로 구매 전 검증하는 흐름이 더 강합니다. "
+        f"아래 모듈은 모두 완결 문장으로 구성되어 스킵 독자와 완독 독자 모두를 위한 "
+        f"SEO·AEO·GEO 인용 가능한 형태입니다."
     )
     return humanize(body, genre="linkedin").text
 
 
 def _insight_module(idx: int, ins: Insight) -> str:
-    """Morning Brew: 볼드 헤드라인 인라인 + 짧은 문단."""
-    headline = f"**{ins.korean_title}**"
-    context = truncate(ins.korean_summary, 140)
-    apply = truncate(ins.utilization or ins.marketer_view or ins.guides_tips, 100)
+    """Morning Brew: 볼드 헤드라인 + 완결 문장 본문 (longform)."""
+    from lib.longform_context import apply_sentence_for_newsletter, insight_paragraph_for_newsletter
+
+    headline = _newsletter_title(ins)
+    context = humanize(insight_paragraph_for_newsletter(ins), genre="linkedin").text
+    apply = humanize(apply_sentence_for_newsletter(ins), genre="linkedin").text
     src = ins.url or "—"
     return "\n".join(
         [
-            f"### {idx}. {headline}",
+            f"### {idx}. **{headline}**",
             "",
             context,
             "",
@@ -91,17 +159,18 @@ def _insight_module(idx: int, ins: Insight) -> str:
 def _grab_bag(insights: list[Insight]) -> str:
     ins = insights[0] if insights else None
     if ins and ins.market_impact:
-        return f"📊 **한 줄 데이터** — {truncate(ins.market_impact, 120)}"
+        line = _nl_short(ins.market_impact, 140, max_sentences=2)
+        return f"📊 **한 줄 데이터** — {line}"
     return "📊 **한 줄 데이터** — B2B 뉴스레터 CTOR 10–15%가 건강 구간이에요. (ClickMinded 2026)"
 
 
 def _single_cta(insights: list[Insight]) -> str:
-    topic = insights[0].korean_title if insights else "AX"
+    topic = _nl_label(insights[0].korean_title if insights else "AX", 28)
     return "\n".join(
         [
             "## 이번 주 실습 1가지 (CTA)",
             "",
-            f"팀 반복 업무 3개를 적고, 그중 1개만 **{truncate(topic, 20)}** 관점으로 자동화 후보를 골라보세요.",
+            f"팀 반복 업무 3개를 적고, 그중 1개만 **{topic}** 관점으로 자동화 후보를 골라보세요.",
             "",
             "→ 댓글/회신으로 공유해 주시면 다음 호에 사례를 반영할게요.",
             "",
@@ -111,8 +180,11 @@ def _single_cta(insights: list[Insight]) -> str:
 
 
 def _next_teaser(insights: list[Insight]) -> str:
-    nxt = insights[1].korean_title if len(insights) > 1 else "LLM 4사 주간 펄스"
-    return f"**다음 호 예고:** {truncate(nxt, 40)} — 심화 FAQ와 체크리스트로 이어갑니다."
+    nxt = _nl_label(
+        _newsletter_title(insights[1]) if len(insights) > 1 else "LLM 4사 주간 펄스",
+        48,
+    )
+    return f"**다음 호 예고:** {nxt} — 심화 FAQ와 체크리스트로 이어갑니다."
 
 
 def _ranked_subjects(topic: str, stamp: str, cfg: dict | None = None):
@@ -197,7 +269,7 @@ def patch_unified_context_newsletter(
 def build_newsletter_md(stamp: str, summary: str, insights: list[Insight]) -> str:
     """완독율 중심 모듈형 뉴스레터 본문."""
     cfg = load_newsletter_config()
-    topic = insights[0].korean_title if insights else "AI 마케팅 주간"
+    topic = _newsletter_title(insights[0]) if insights else "AI 마케팅 주간"
     ranked = _ranked_subjects(topic, stamp, cfg)
     pre = _preheader(summary, cfg)
     ctor = (cfg.get("benchmarks") or {}).get("ctor_target", "10-15%")
@@ -279,7 +351,7 @@ def build_newsletter_md(stamp: str, summary: str, insights: list[Insight]) -> st
 def build_newsletter_context_md(stamp: str, summary: str, insights: list[Insight]) -> str:
     """Notion/에디터용 컨텍스트 패키지."""
     cfg = load_newsletter_config()
-    topic = insights[0].korean_title if insights else "주간 트렌드"
+    topic = _newsletter_title(insights[0]) if insights else "주간 트렌드"
     ranked = _ranked_subjects(topic, stamp, cfg)
     read_m = (cfg.get("benchmarks") or {}).get("read_time_minutes") or [4, 6]
     lines = [
@@ -309,10 +381,10 @@ def build_newsletter_context_md(stamp: str, summary: str, insights: list[Insight
 
 
 def _cta_html(insights: list[Insight]) -> str:
-    topic = insights[0].korean_title if insights else "AX"
+    topic = _nl_label(_newsletter_title(insights[0]) if insights else "AX", 28)
     return (
         f"<p style='margin:0 0 12px;'>팀 반복 업무 3개를 적고, 그중 1개만 "
-        f"<strong>{html.escape(truncate(topic, 20))}</strong> 관점으로 자동화 후보를 골라보세요.</p>"
+        f"<strong>{html.escape(topic)}</strong> 관점으로 자동화 후보를 골라보세요.</p>"
         "<p style='margin:0;'><a href='#' style='color:#E60012;font-weight:600;'>"
         "→ 통합 컨텍스트에서 전문 확인 (링크 1곳)</a></p>"
     )
@@ -322,8 +394,8 @@ def assemble_newsletter(stamp: str, brief_text: str) -> tuple[Path, Path, Path, 
     cfg = load_newsletter_config()
     summary, insights = parse_brief(brief_text)
     summary = humanize(summary, genre="blog").text
-    slug = slugify(insights[0].korean_title if insights else "weekly")
-    topic = insights[0].korean_title if insights else "AI 마케팅 주간"
+    slug = slugify(_newsletter_title(insights[0]) if insights else "weekly")
+    topic = _newsletter_title(insights[0]) if insights else "AI 마케팅 주간"
     ranked = _ranked_subjects(topic, stamp, cfg)
     winner = ranked[0] if ranked else None
     pre = _preheader(summary, cfg)

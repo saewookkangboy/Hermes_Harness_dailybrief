@@ -3,7 +3,9 @@ version: "3.0.0"
 
 memory_router:
   # 로컬 소스 우선순위 (web_search 생략 목표)
+  # wiki: index-first — docs/LLM-WIKI-INTEGRATION.md
   source_order:
+    - wiki
     - brief
     - packages
     - personal
@@ -29,6 +31,13 @@ proactive:
   - id: notion_stale
     label: "Notion 동기화 지연"
     max_hours_without_sync: 24
+  - id: newsletter_paste
+    label: "뉴스레터 paste 팩"
+  - id: ctor_stale
+    label: "CTOR 실측 지연"
+    max_days: 7
+  - id: watch_telegram
+    label: "watch-telegram 중복"
 
 personal_bridge:
   inbox_file: content/personal/_inbox_candidates.json
@@ -58,7 +67,7 @@ intent_packs:
   publish:
     label: "채널 발행"
     aliases: ["/publish", "발행", "채널만"]
-    channels: [blog, instagram, linkedin]
+    channels: [blog, instagram, linkedin, newsletter]
     steps:
       - content_channel
       - validate_channel
@@ -128,8 +137,106 @@ intent_packs:
   approve:
     label: "HITL 발행 승인"
     aliases: ["/approve", "승인", "approve"]
-    channels: [blog, instagram, linkedin, newsletter, all]
+    channels: [blog, instagram, linkedin, newsletter, esp, all]
     sla_seconds: 90
+
+  blog:
+    label: "Blog M3 sub-pipeline"
+    aliases: ["/blog", "블로그 seo", "blog pipeline"]
+    steps:
+      - blog_seo
+      - blog_structure
+      - validate_blog
+    sla_seconds: 15
+
+  instagram:
+    label: "Instagram M3 sub-pipeline"
+    aliases: ["/instagram", "인스타", "인스타그램", "instagram"]
+    steps:
+      - instagram_analyze
+      - instagram_visual_spec
+      - instagram_draft
+      - validate_instagram
+    sla_seconds: 15
+
+  audit:
+    label: "Quality Auditor — DoD 일괄 감사"
+    aliases: ["/audit", "품질 감사", "audit", "검증"]
+    steps:
+      - brief_gate_check
+      - validate_all_channels
+      - write_audit_report
+    sla_seconds: 10
+
+  repurpose:
+    label: "Brief 인사이트 → 채널 재조립"
+    aliases: ["/repurpose", "재조립", "repurpose"]
+    channels: [blog, instagram, linkedin, newsletter]
+    steps:
+      - select_insight
+      - channel_reassemble
+      - validate_channel
+    sla_seconds: 15
+
+  schedule:
+    label: "HITL 발행 스케줄"
+    aliases: ["/schedule", "스케줄", "예약 발행", "schedule"]
+    channels: [blog, instagram, linkedin, newsletter]
+    steps:
+      - schedule_publish
+      - cron_hitl_notify
+      - approve_gate
+    sla_seconds: 5
+
+  supervised:
+    label: "Pipeline Supervisor — M1→M5 감독"
+    aliases: ["/supervised", "감독 파이프라인", "supervised"]
+    steps:
+      - m1_research
+      - brief_gate
+      - m2_content
+      - m2b_newsletter
+      - quality_audit
+      - m5_notion
+    sla_seconds: 120
+
+  wiki:
+    label: "Wiki Curator — seed/lint/ingest"
+    aliases: ["/wiki", "위키", "wiki"]
+    steps:
+      - wiki_status
+      - wiki_seed
+      - wiki_lint
+      - ingest_queue
+    sla_seconds: 15
+
+  squad:
+    label: "Research Squad — 심층 리서치"
+    aliases: ["/squad", "리서치 스쿼드", "research squad"]
+    steps:
+      - scout
+      - analyst
+      - curator
+      - archivist
+    sla_seconds: 30
+
+  watch:
+    label: "Competitive Watch — Brief Graph 감시"
+    aliases: ["/watch", "경쟁 감시", "competitive watch"]
+    steps:
+      - build_graph
+      - detect_new_topics
+      - entity_digest
+    sla_seconds: 10
+
+  coach:
+    label: "M4 Performance Coach"
+    aliases: ["/coach", "성과 코치", "m4 coach"]
+    steps:
+      - ctor_feedback
+      - channel_trait_score
+      - actionable_recommendations
+    sla_seconds: 15
 
 # Agent-native script commands (CLI · Telegram · Cursor parity)
 commands:
@@ -169,6 +276,66 @@ commands:
     args: ["{date}"]
     agent_cli: "hermes-agent.sh linkedin"
 
+  blog-pipeline:
+    label: "Blog M3 sub-pipeline"
+    script: run-blog-pipeline.sh
+    args: ["{date}", "--validate"]
+    agent_cli: "hermes-agent.sh blog --validate"
+
+  instagram-pipeline:
+    label: "Instagram M3 sub-pipeline"
+    script: run-instagram-pipeline.sh
+    args: ["{date}", "--validate"]
+    agent_cli: "hermes-agent.sh instagram --validate"
+
+  quality-audit:
+    label: "Quality Auditor — DoD 일괄 감사"
+    script: run-quality-audit.sh
+    args: ["{date}"]
+    agent_cli: "hermes-agent.sh audit"
+
+  repurpose:
+    label: "Brief 인사이트 → 채널 재조립"
+    script: run-repurpose.sh
+    args: ["{date}", "linkedin", "1"]
+    agent_cli: "hermes-agent.sh repurpose linkedin --index 1"
+
+  supervised-pipeline:
+    label: "Pipeline Supervisor M1→M5"
+    script: run-supervised-pipeline.sh
+    args: ["{date}"]
+    agent_cli: "hermes-agent.sh supervised --date {date}"
+
+  publish-schedule-cron:
+    label: "HITL 예약 cron 처리"
+    script: cron-publish-schedule.sh
+    args: []
+    agent_cli: "hermes-agent.sh schedule --process"
+
+  wiki-curator:
+    label: "Wiki Curator"
+    script: run-wiki-curator.sh
+    args: ["seed"]
+    agent_cli: "hermes-agent.sh wiki seed"
+
+  competitive-watch:
+    label: "Competitive Watch digest"
+    script: cron-competitive-watch.sh
+    args: []
+    agent_cli: "hermes-agent.sh watch --verbose"
+
+  agents-eval:
+    label: "Agents Eval A–D 통합"
+    script: agents-eval.sh
+    args: ["{date}"]
+    agent_cli: "hermes-agent.sh run agents-eval"
+
+  m4-coach:
+    label: "M4 Performance Coach"
+    script: run-m4-coach.sh
+    args: ["{date}"]
+    agent_cli: "hermes-agent.sh coach --date {date} --verbose"
+
   newsletter:
     label: "B2B 뉴스레터 생성"
     script: run-newsletter.sh
@@ -186,3 +353,15 @@ brief_graph:
   graph_file: content/research/_brief_graph.json
   window_days: 14
   diff_column: "이전 브리프와의 차이"
+
+wiki:
+  enabled: true
+  config: config/wiki.yaml
+  strategy: docs/LLM-WIKI-INTEGRATION.md
+  seed_script: scripts/wiki-seed.sh
+  seed_env: HERMES_WIKI_SEED
+  ingest_script: scripts/run-wiki-ingest.sh
+  ingest_env: HERMES_WIKI_INGEST
+  lint_script: scripts/run-wiki-lint.sh
+  lint_env: HERMES_WIKI_LINT
+  eval_script: scripts/wiki-lint-eval.sh

@@ -162,6 +162,12 @@ fi
 hermes gateway restart
 sleep 3
 
+# 8. PlayMCP quick_commands 라우팅 (OTT 연결 후 Commander 동등화)
+if [[ -x "$SCRIPT_DIR/setup-playmcp-routing.sh" ]]; then
+  echo "[8/8] PlayMCP 라우팅..."
+  "$SCRIPT_DIR/setup-playmcp-routing.sh" || echo "  ⚠️  playmcp-routing 수동: ./setup-playmcp-routing.sh"
+fi
+
 echo ""
 echo "=== PlayMCP Commander 연결 완료 ==="
 echo ""

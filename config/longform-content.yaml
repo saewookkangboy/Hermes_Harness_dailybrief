@@ -1,0 +1,45 @@
+# Longform Content — Blog · Newsletter 컨텍스트 엔지니어링 SoT
+# 결정적 assemble · 완결 문장 우선 · 중간 '…' 생략 금지
+
+version: "1.0.0"
+
+sentence_policy:
+  mid_ellipsis_forbidden: true
+  finish_at_punctuation: true
+  default_max_sentences: 4
+
+blog:
+  title_max_chars: 58
+  subtitle_max_chars: 90
+  meta_max_chars: 155
+  direct_answer_max_chars: 360
+  direct_answer_sentences: 3
+  insight_body_sentences: 6
+  geo_quote_max_chars: 240
+  min_h2_sections: 5
+  structure:
+    - h1_title
+    - subtitle
+    - aeo_direct_answer
+    - geo_quote
+    - why_now
+    - insight_deep_dive
+    - cross_cutting
+    - practical_steps
+    - faq
+    - sources
+
+newsletter:
+  tldr_bullet_sentences: 2
+  tldr_body_max_chars: 120
+  hero_sentences: 4
+  module_context_sentences: 4
+  module_context_max_chars: 420
+  module_apply_sentences: 2
+  module_apply_max_chars: 260
+
+seo_aeo_geo:
+  require_faq_jsonld: true
+  require_source_urls: true
+  require_geo_block: true
+  require_direct_answer_first: true

@@ -104,3 +104,24 @@ quick_commands:
   pending:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc pending
+  coach:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc coach
+  agents-eval:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc agents-eval
+  agents:
+    type: alias
+    target: /agents-eval
+  audit:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc audit
+  instagram:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc instagram
+  wiki:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc wiki
+  watch:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc watch

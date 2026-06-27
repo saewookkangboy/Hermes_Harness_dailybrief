@@ -202,10 +202,15 @@ parse_brief(brief.md) → Insight[]
 
 ### 3.7 Layer 6 — State · Memory (세컨드 브레인)
 
+**이중 메모리:** 일별 SoT + 누적 Wiki (`docs/LLM-WIKI-INTEGRATION.md`)
+
 | 경로 | 역할 |
 |------|------|
 | `content/research/{date}_brief.md` | **Brief SoT** — M2·대화형 Agent 공통 참조 |
 | `content/research/_search_context_{date}.json` | 원시 검색 (web_search 생략) |
+| `content/research/raw/` | 불변 클립·PDF (Wiki Ingest 입력) |
+| `content/wiki/` | 누적 개념·엔티티 · index-first `/ask` |
+| `content/wiki/index.md` · `log.md` | Query 카탈로그 · append-only 타임라인 |
 | `content/packages/*` | Notion 아카이브 입력 · 통합 컨텍스트 |
 | `content/.notion-archive-state.json` | hash · Permalink · tier |
 | `.harness/progress.md` | 세션 진행 |

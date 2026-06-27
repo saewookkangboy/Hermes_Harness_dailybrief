@@ -158,6 +158,16 @@ def build_m4_report(days: int = 7, *, stamp: str = "") -> dict[str, Any]:
     stages = aggregate_stages(records)
     notion = notion_tier_stats()
     cfg = load_harness_config()
+    analytics_mode = "simulation"
+    channel_metrics: dict[str, Any] = {}
+    try:
+        from lib.m4_channel_metrics import load_channel_metrics, m4_analytics_mode, sync_ctor_to_channel_metrics
+
+        sync_ctor_to_channel_metrics()
+        analytics_mode = m4_analytics_mode()
+        channel_metrics = load_channel_metrics()
+    except ImportError:
+        pass
     report: dict[str, Any] = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "window_days": days,
@@ -165,6 +175,8 @@ def build_m4_report(days: int = 7, *, stamp: str = "") -> dict[str, Any]:
         "stages": stages,
         "notion_tiers": notion,
         "harness_version": (cfg.get("harness") or {}).get("version", ""),
+        "analytics_mode": analytics_mode,
+        "channel_metrics": channel_metrics,
     }
     if stamp:
         report["newsletter"] = newsletter_kpis(stamp)

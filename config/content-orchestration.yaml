@@ -64,13 +64,24 @@ stages:
   M4:
     name: performance_analysis
     skill: harness-ops
-    mode: simulation  # campaign_data 없을 때
-    notes: "향후 analytics 연동"
+    mode: live_when_metrics  # channel-metrics.json · CTOR 실측 시 live
+    fallback: simulation
+    notes: "CTOR + channel-metrics import · m4-import-metrics.sh"
   M5:
     name: archive_reporting
     skill: notion-archive
     script: scripts/archive-to-notion.sh
     telegram_permalink: true
+  M1w:
+    name: wiki_seed
+    optional: true
+    skill: shared/wiki-maintainer
+    script: scripts/wiki-seed.sh
+    requires: [M1]
+    enable_env: HERMES_WIKI_SEED
+    output: content/wiki/concepts
+    deterministic: true
+    note: "Brief Graph → wiki concepts. M1 SLA 경로 밖. docs/LLM-WIKI-INTEGRATION.md"
 
 # 공통 5-Phase (채널 skill 내부)
 channel_phases:
@@ -122,6 +133,20 @@ linkedin_pipeline:
       output: content/linkedin/{date}_linkedin_*.md
     - id: validate
       validate: scripts/validate-output.sh linkedin
+
+# Instagram 전용: analyze → visual-spec → draft
+instagram_pipeline:
+  steps:
+    - id: analyze
+      skill: channels/instagram
+      input: [brief, search_context]
+      output: content/packages/{date}_instagram-analysis.md
+    - id: visual_spec
+      output: content/packages/{date}_instagram-visual-spec.md
+    - id: draft
+      output: content/instagram/{date}_instagram_*.md
+    - id: validate
+      validate: scripts/validate-output.sh instagram
 
 # B2B 뉴스레터: Brief SoT → md + HTML + A/B 제목 스코어
 newsletter_pipeline:

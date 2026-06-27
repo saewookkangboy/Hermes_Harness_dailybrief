@@ -73,6 +73,10 @@ def is_garbage_korean_title(title: str) -> bool:
         return True
     if re.search(r" — 실무\s*가이드\s*$", t) and latin > 10:
         return True
+    if re.search(r"\bOpenAI\s+News\s+OpenAI\b", t, re.I):
+        return True
+    if re.search(r"관련 AI·마케팅 신호입니다\.?\s*$", t):
+        return True
     return False
 
 
@@ -108,6 +112,8 @@ def localize_title(title: str) -> str:
         return "OpenAI 개발자 커뮤니티 동향"
     if "sk telecom" in tl or "nvidia" in tl:
         return "SK텔레콤·NVIDIA AI 인프라 협력"
+    if "openai.com/news" in tl or t.lower().startswith("openai news"):
+        return "OpenAI 주간 신호 — 마케팅·교육 활용"
     if "perplexity" in tl:
         return "Perplexity·AI 검색(AEO) 최적화 실무"
     if "gemini" in tl:
@@ -496,95 +502,17 @@ def build_faq_items(insights: list[Insight], summary: str) -> list[tuple[str, st
     return faqs
 
 
-def build_blog_html(stamp: str, summary: str, insights: list[Insight]) -> str:
-    primary = insights[0] if insights else None
-    topic = primary.korean_title if primary else "AI 마케팅 트렌드"
-    slug = slugify(topic)
-    title = truncate(f"{topic} — 실무 가이드", 58)
-    meta = truncate(summary, 155)
-    faqs = build_faq_items(insights, summary)
-    direct = truncate(summary, 320)
+def build_blog_html(
+    stamp: str,
+    summary: str,
+    insights: list[Insight],
+    *,
+    wiki_blurbs: list[str] | None = None,
+) -> str:
+    from lib.longform_context import build_blog_longform, render_blog_html
 
-    sections_html = (
-        f"<section><h2>왜 지금 이 주제인가?</h2>"
-        f"<p>2026년 B2B 마케팅은 AI 검색(AEO)과 에이전트 자동화가 "
-        f"동시에 요구돼요. {html.escape(humanize(direct, genre='blog').text)}</p></section>\n"
-    )
-    if insights:
-        items = "".join(
-            f"<li><strong>{html.escape(ins.korean_title)}</strong> — "
-            f"{html.escape(ins.context_blurb(max_chars=160, max_sentences=2))}</li>"
-            for ins in insights[:3]
-        )
-        sections_html += f"<section><h2>핵심 트렌드 3가지</h2><ul>{items}</ul></section>\n"
-    sections_html += (
-        "<section><h2>실무 적용 체크리스트</h2><ol>"
-        "<li>주간 리서치 브리프로 트렌드 5건 모으기</li>"
-        "<li>FAQ 3개 이상 구조화 + JSON-LD 적용</li>"
-        "<li>블로그 → 인스타 캐러셀 → 링크드인 재가공</li>"
-        "<li>출처 URL·날짜 명시 (GEO 신선도)</li>"
-        "</ol></section>\n"
-    )
-
-    faq_html = ""
-    for q, a in faqs:
-        faq_html += f"""
-      <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-        <h3 itemprop="name">{html.escape(q)}</h3>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">{html.escape(a)}</p>
-        </div>
-      </div>"""
-
-    sources_html = ""
-    for ins in insights[:3]:
-        if ins.url:
-            sources_html += f'<li><a href="{html.escape(ins.url)}">{html.escape(ins.korean_title)}</a></li>'
-
-    faq_jsonld = {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}}
-            for q, a in faqs
-        ],
-    }
-    article_jsonld = {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": title,
-        "datePublished": stamp,
-        "author": {"@type": "Organization", "name": "Hermes Content Studio"},
-        "description": meta,
-    }
-
-    template = read_template("templates/html/blog-post.html")
-    replacements = {
-        "{{TITLE}}": title,
-        "{{META_DESCRIPTION}}": meta,
-        "{{CANONICAL_URL}}": f"https://content-studio.local/blog/{stamp}_{slug}",
-        "{{DATE_ISO}}": stamp,
-        "{{DATE_DISPLAY}}": stamp,
-        "{{READ_TIME}}": "7",
-        "{{DIRECT_ANSWER}}": direct,
-        "{{SECTIONS}}": sections_html,
-        "{{FAQ_ITEMS}}": faq_html,
-        "{{SOURCES_LIST}}": sources_html or "<li>주간 리서치 브리프 참조</li>",
-        "{{TAGS}}": "AI, AEO, GEO, Agentic AI, Marketing, AX",
-        "{{FAQ_JSONLD}}": json.dumps(faq_jsonld, ensure_ascii=False, indent=2),
-        "{{ARTICLE_JSONLD}}": json.dumps(article_jsonld, ensure_ascii=False, indent=2),
-        "{{GEO_QUOTE}}": compress_sentences(
-            insights[0].context_blurb(max_chars=200, max_sentences=2)
-            if insights
-            else summary,
-            200,
-            max_sentences=2,
-        ),
-    }
-    result = template
-    for k, v in replacements.items():
-        result = result.replace(k, v)
-    return result
+    longform = build_blog_longform(stamp, summary, insights, wiki_blurbs=wiki_blurbs)
+    return render_blog_html(longform)
 
 
 def build_gemini_instagram_feed_prompt(
@@ -904,7 +832,13 @@ def build_linkedin_image_prompt(insights: list[Insight]) -> str:
     return build_gemini_linkedin_2x2_prompt(panels, topic)
 
 
-def build_instagram_md(stamp: str, summary: str, insights: list[Insight]) -> str:
+def build_instagram_md(
+    stamp: str,
+    summary: str,
+    insights: list[Insight],
+    *,
+    wiki_blurbs: list[str] | None = None,
+) -> str:
     topic, carousel_spec = instagram_carousel_spec(summary, insights)
     ins1 = insights[0] if insights else None
     hook = truncate(topic, 22)
@@ -936,6 +870,9 @@ def build_instagram_md(stamp: str, summary: str, insights: list[Insight]) -> str
         "- [x] 해시태그 5개",
         "",
     ]
+    wiki_lines = [b for b in (wiki_blurbs or []) if b.strip()]
+    if wiki_lines:
+        lines.extend(["## Wiki 맥락 (누적)", *wiki_lines[:3], ""])
 
     append_instagram_gemini_prompts(lines, carousel_spec, topic)
 
@@ -972,9 +909,18 @@ def build_instagram_md(stamp: str, summary: str, insights: list[Insight]) -> str
     return "\n".join(lines)
 
 
-def build_linkedin_md(stamp: str, summary: str, insights: list[Insight]) -> str:
+def build_linkedin_md(
+    stamp: str,
+    summary: str,
+    insights: list[Insight],
+    *,
+    wiki_blurbs: list[str] | None = None,
+) -> str:
     """LinkedIn: casual 해요체 포스트 + 1:1 2×2 웹툰 Gemini 프롬프트."""
     post = build_linkedin_post_text(summary, insights)
+    wiki_lines = [b for b in (wiki_blurbs or []) if b.strip()]
+    if wiki_lines:
+        post = post.rstrip() + "\n\n" + "\n".join(wiki_lines[:2])
     image_prompt = build_linkedin_image_prompt(insights)
     return "\n".join(
         [
@@ -1002,130 +948,63 @@ def _trim_to_chars(text: str, max_chars: int) -> str:
 
 
 def build_blog_article_md(stamp: str, summary: str, insights: list[Insight]) -> str:
-    """블로그: LinkedIn형 평문 · ~합니다/~입니다 · 출처 기반 확장 본문."""
-    primary = insights[0] if insights else None
-    topic = primary.korean_title if primary else "AI 마케팅 트렌드"
-    faqs = build_faq_items(insights, summary)
-    practical = build_practical_application(insights, summary)
+    """블로그 평문 — longform 컨텍스트와 HTML 동일 구조."""
+    from lib.longform_context import build_blog_longform, complete_text, load_longform_config
 
-    direct = humanize(truncate(summary, 320), genre="blog").text
-
-    intro = (
-        "2026년 B2B 마케팅 현장에서는 AI 검색(AEO)과 에이전트 자동화가 "
-        "동시에 요구됩니다. 이번 주 리서치를 바탕으로 "
-        f"{topic} 관점에서 무엇이 바뀌었는지, 현장에 어떻게 적용할 수 있는지 "
-        "정리했습니다. 아래 내용은 Top 7 인사이트와 심층 분석을 "
-        "하나의 아티클로 통합한 것입니다."
-    )
-    intro2 = (
-        "에이전트 자동화, AEO, AX 전환은 더 이상 별개의 주제가 아닙니다. "
-        "검색에서 답을 찾는 방식이 바뀌면서 FAQ와 Direct Answer가 필수가 되었고, "
-        "동시에 마케팅·운영 팀은 반복 업무를 에이전트로 넘기는 실험을 "
-        "본격화하고 있습니다. 한국 시장에서는 '선언형 AI'보다 "
-        "'실행 직전 가이드'와 교육·컨설팅 콘텐츠 수요가 더 크게 나타납니다."
-    )
-
-    body_parts: list[str] = [
-        f"## {topic}",
+    cfg = load_longform_config()
+    lf = build_blog_longform(stamp, summary, insights)
+    lines = [
+        f"# {lf.title}",
+        "",
+        f"**부제:** {lf.subtitle}",
+        f"**날짜:** {stamp}",
         "",
         "## 한 줄 요약",
-        direct,
+        lf.direct_answer,
         "",
-        intro,
-        "",
-        intro2,
+        "## GEO 인용",
+        lf.geo_quote,
         "",
     ]
-
-    if insights:
-        titles = " · ".join(truncate(ins.korean_title, 40) for ins in insights[:3])
-        body_parts.append(f"이번 주 핵심 축은 {titles} 세 가지로 읽힙니다.")
-        body_parts.append("")
-        for i, ins in enumerate(insights[:7], 1):
-            body_parts.append(f"### {ins.korean_title}")
-            body_parts.append("")
-            body_parts.append(humanize(expand_insight_body(ins, i), genre="blog").text)
-            body_parts.append("")
-            body_parts.append(
-                humanize(
-                    f"위 주제를 콘텐츠로 풀 때는 '{ins.korean_title}' 키워드로 "
-                    f"Direct Answer 한 문단, FAQ 2개, LinkedIn 불릿 1개를 "
-                    f"동일 메시지로 맞추는 것이 좋습니다. "
-                    f"{truncate(ins.opportunity or ins.korea_apply or ins.marketer_view, 120)}",
-                    genre="blog",
-                ).text
-            )
-            body_parts.append("")
-
-    cross = (
-        "세 축을 교차해 보면 공통 패턴이 보입니다. AX는 조직 전체의 AI 통합 "
-        "이야기이고, 에이전트는 팀 단위 자동화 실행 레이어이며, "
-        "AEO는 그 지식이 검색·AI 답변 엔진에 인용되도록 만드는 "
-        "배포 레이어입니다. 리서치를 한 번만 깊게 하고 "
-        "블로그(Direct Answer) → LinkedIn(훅·불릿) → Instagram(웹툰 캐러셀) "
-        "순으로 재가공하면 제작 시간 대비 도달 범위를 극대화할 수 있습니다. "
-        "특히 한국 B2B는 구매 전에 '우리 팀에 맞는지'를 FAQ와 사례로 "
-        "확인하려는 경향이 강하므로, PoC 성과만 강조하기보다 "
-        "교육·체크리스트·실습 과제를 함께 제공하는 편이 전환에 유리합니다. "
-        "브리프의 심층 분석처럼 에이전트 자동화 × AEO × AX 전환은 "
-        "2026년 B2B 마케팅의 공통 축입니다. 검색과 소셜을 분리하지 않고 "
-        "통합 컨텍스트로 한 번 리서치한 뒤 채널별 톤만 조정하는 것이 "
-        "효율적입니다. Primary 키워드(AI marketing, Agentic AI, AEO)와 "
-        "Long-tail(2026 B2B 콘텐츠 자동화, AI 검색 최적화)을 "
-        "FAQ 질문 문장에 자연스럽게 녹이면 SEO와 AEO를 동시에 "
-        "충족할 수 있습니다. GEO 관점에서는 출처 URL, 갱신일, "
-        "인용 가능한 요약 블록을 HTML·평문 아티클 모두에 "
-        "동일하게 유지해야 합니다."
-    )
-    body_parts.extend([cross, "", "## 실무 적용", ""])
-    for n, step in enumerate(practical, 1):
-        body_parts.append(f"{n}. {humanize(step, genre='blog').text}")
-    body_parts.append("")
-
-    body_parts.append("## FAQ")
-    body_parts.append("")
-    for q, a in faqs:
-        body_parts.extend(
-            [
-                f"Q. {q}",
-                f"A. {humanize(a, genre='blog').text}",
-                "",
-            ]
-        )
-
-    geo_quote = humanize(
-        compress_sentences(
-            insights[0].context_blurb(max_chars=240, max_sentences=2)
-            if insights
-            else summary,
-            240,
-            max_sentences=2,
-        ),
-        genre="blog",
-    ).text
-    body_parts.extend(
-        [
-            "## GEO 인용",
-            geo_quote,
-            "",
-            "## 출처",
-        ]
-    )
-    for ins in insights[:3]:
-        if ins.url:
-            body_parts.append(f"- {ins.korean_title}: {ins.url}")
-    body_parts.extend(
+    for section in lf.sections:
+        lines.append(f"## {section.heading}")
+        lines.append("")
+        for para in section.paragraphs:
+            if para.startswith("### "):
+                lines.extend(para.split("\n\n"))
+            else:
+                lines.append(para)
+            lines.append("")
+        for n, item in enumerate(section.list_items, 1):
+            lines.append(f"{n}. {item}")
+        if section.list_items:
+            lines.append("")
+    lines.extend(["## FAQ", ""])
+    for q, a in lf.faqs:
+        lines.extend([f"Q. {q}", f"A. {humanize(a, genre='blog').text}", ""])
+    lines.append("## 출처")
+    for title, url in lf.sources:
+        lines.append(f"- {title}: {url}")
+    lines.extend(
         [
             "",
-            f"Title tag: {truncate(topic + ' — 실무 가이드', 58)}",
-            f"Meta description: {truncate(summary, 155)}",
+            "## SEO · AEO · GEO 메모",
+            complete_text(
+                "본문은 완결 문장으로 작성되었으며 FAQ JSON-LD·Direct Answer·출처 URL·갱신일을 "
+                "HTML 아티클과 동기화합니다.",
+                200,
+                max_sentences=2,
+                cfg=cfg,
+            ),
+            "",
+            f"Title tag: {lf.title}",
+            f"Meta description: {lf.meta_description}",
             "Keywords: AEO, GEO, Agentic AI, AX, B2B Marketing",
-            "",
         ]
     )
+    return "\n".join(lines)
 
-    article = "\n".join(body_parts)
-    return _trim_to_chars(article, 15000)
+
 
 
 def build_instagram_context_md(stamp: str, summary: str, insights: list[Insight]) -> str:

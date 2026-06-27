@@ -31,8 +31,18 @@ content/personal/
 .harness/notify-dedupe.json
 .harness/m4-snapshot.json
 .harness/newsletter-ctor-metrics.json
+.harness/newsletter-ctor-feedback.json
+.harness/channel-metrics.json
+.harness/competitive-watch-state.json
+.harness/content-loop-runs.jsonl
+.harness/publish-schedule/
 
-# Research graph cache (regenerated)
+# Research squad raw (regenerated)
+content/research/raw/*
+
+# Generated wiki runtime
+content/wiki/_ingest_queue.json
+content/wiki/output/*
 content/research/_brief_graph.json
 
 # Generated newsletter outputs

@@ -18,6 +18,7 @@ from lib.content_quality import (  # noqa: E402
     parse_brief,
 )
 from lib.humanize_korean import humanize  # noqa: E402
+from lib.wiki_concepts import inject_wiki_blurbs  # noqa: E402
 
 
 def read_brief(stamp: str) -> tuple[Path, str]:
@@ -49,9 +50,10 @@ def main() -> int:
     ig_path = ig_dir / f"{stamp}_instagram_{slug}.md"
     li_path = li_dir / f"{stamp}_linkedin_{slug}.md"
 
-    blog_html.write_text(build_blog_html(stamp, summary, insights), encoding="utf-8")
-    ig_path.write_text(build_instagram_md(stamp, summary, insights), encoding="utf-8")
-    li_path.write_text(build_linkedin_md(stamp, summary, insights), encoding="utf-8")
+    wiki_blurbs = inject_wiki_blurbs(insights)
+    blog_html.write_text(build_blog_html(stamp, summary, insights, wiki_blurbs=wiki_blurbs), encoding="utf-8")
+    ig_path.write_text(build_instagram_md(stamp, summary, insights, wiki_blurbs=wiki_blurbs), encoding="utf-8")
+    li_path.write_text(build_linkedin_md(stamp, summary, insights, wiki_blurbs=wiki_blurbs), encoding="utf-8")
 
     notion_paths = build_notion_packages(stamp, text, summary, insights, pkg_dir)
 

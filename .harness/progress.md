@@ -1,5 +1,243 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+## 변경 요약 (2026-06-27, Content Loop P0-2 Supervised Pipeline)
+
+### Supervised Pipeline Cron (L2)
+- **`scripts/cron-supervised-pipeline.sh`:** M1→M2→(M2b)→Audit→M5 · triage 이후 10:00
+- **기본:** `HERMES_CRON_SKIP_NEWSLETTER=1` (rollout) · M5 sync ON
+- **`setup-commander-cron.sh`:** `cron-supervised-pipeline` 평일 10:00
+- **산출:** `content/logs/{date}_supervised-pipeline.md` · `.harness/handoffs/{date}_supervised-pipeline.json`
+
+### 검증
+```bash
+HERMES_CRON_SUPERVISED_DRY_RUN=1 ./scripts/cron-supervised-pipeline.sh
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh   # E2E ~18s exit 0
+SKIP_NEWSLETTER=1 SKIP_NOTION_ARCHIVE=1 ./scripts/run-supervised-pipeline.sh $(date +%Y-%m-%d)
+./scripts/setup-commander-cron.sh
+```
+
+### E2E (2026-06-27)
+- M1·GATE·M2 PASS · AUDIT WARN(linkedin/newsletter) · exit 0
+- **`pipeline_supervisor.success`:** WARN는 차단하지 않음 (FAIL만 실패)
+- **`_finish()`:** early return 시 handoff JSON 항상 기록 (버그 수정)
+
+### 전체 테스트 (2026-06-27)
+| 스위트 | 결과 |
+|--------|------|
+| init · harness-eval --quick | 14/14 ✅ |
+| agents-eval A–D | 39/39 ✅ |
+| wiki-lint · commander-integration | 9/9 · 28/28 ✅ |
+| harness-eval full | 14/14 ✅ (content SLA ⚠️ 회귀) |
+| daily-content-triage | ✅ |
+| supervised full (M2b+M5) | ✅ ~35s · AUDIT WARN(linkedin) |
+| loop-audit | 19/100 L0 (Hermes SoT — 참고용) |
+
+### LinkedIn audit fix (2026-06-27)
+- **`quality_auditor`:** feed `validate-output` + `packages/*_linkedin-context` 품질 평가 (마커 분리)
+- **`glob_linkedin_feed`:** repurpose `-iN` variant 우선 · supervisor 동기화
+- **검증:** `run-quality-audit.sh 2026-06-26` → PASS 7 · FAIL 0
+
+### Longform Blog · Newsletter (2026-06-27)
+- **`config/longform-content.yaml`:** 완결 문장·SEO/AEO/GEO 구조 SoT
+- **`lib/longform_context.py`:** `build_blog_longform` · `complete_text` · newsletter 모듈 확장
+- **`build_blog_html`:** H1·부제·H2×7 · insight deep dive · FAQ JSON-LD (~25KB)
+- **`newsletter_quality` / `newsletter_html`:** 모듈 본문 4문장 · Hero 완결형
+- **검증:** blog H2=8 · newsletter-eval 10/10 · audit PASS 7
+
+## 변경 요약 (2026-06-27, Content Loop P0-1 Daily Triage)
+
+### Daily Content Triage (L1)
+- **`scripts/cron-daily-content-triage.sh`:** Morning · Audit · Health (+ 월: Watch · Agents Eval)
+- **`docs/content-loops.md`:** 콘텐츠 루프 cadence · Human Gate · Verifier chain SoT
+- **`setup-commander-cron.sh`:** `cron-daily-triage` 평일 09:30
+- **Run log:** `.harness/content-loop-runs.jsonl`
+- **산출:** `content/logs/{date}_daily-triage.md`
+
+### 검증
+```bash
+HERMES_TRIAGE_SKIP_AGENTS_EVAL=1 ./scripts/cron-daily-content-triage.sh
+./scripts/setup-commander-cron.sh   # cron 등록
+cat docs/content-loops.md
+```
+
+## 변경 요약 (2026-06-27, M4 Performance Coach Phase D)
+
+### M4 Performance Coach
+- **`lib/m4_coach.py`:** CTOR 피드백 → newsletter·linkedin·blog·instagram trait 코칭
+- **`config/m4-coach.yaml`:** 채널 trait · propagation 규칙
+- **CLI:** `hermes-agent.sh coach --verbose` · `run-m4-coach.sh`
+- **산출:** `content/logs/{date}_m4-coach.md` · `.harness/handoffs/{date}_m4-coach.json`
+
+### 검증
+```bash
+./scripts/agents-eval.sh 2026-06-26          # A–D 통합
+./scripts/hermes-agent.sh coach --verbose
+./scripts/telegram-pipeline.sh qc coach      # Telegram /coach
+./scripts/telegram-pipeline.sh qc agents-eval
+```
+
+## Agent 로드맵 완료 (Phase A–D)
+| Phase | Agent | 상태 |
+|-------|-------|------|
+| A | Instagram M3 · Auditor · Repurpose | ✅ pipe-011 |
+| B | HITL Scheduler · Pipeline Supervisor | ✅ pipe-012 |
+| C | Wiki Curator · Research Squad · Watch | ✅ pipe-013 |
+| D | M4 Performance Coach | ✅ pipe-014 |
+
+## 변경 요약 (2026-06-26, 지식·리서치 Agent Phase C)
+
+### Wiki Curator
+- **`lib/wiki_curator.py`:** status · seed · lint · ingest 큐 (결정적)
+- **`run-wiki-curator.sh`:** `hermes-agent.sh wiki seed|lint|ingest|all`
+- **산출:** `content/logs/{date}_wiki-curator-lint.md` · `content/wiki/_ingest_queue.json`
+
+### Research Squad
+- **`lib/research_squad.py`:** Scout → Analyst → Curator → Archivist
+- **`/deep` 기본:** Research Squad ( `--quick` 시 memory_router만)
+- **산출:** `content/research/raw/{date}_squad_*.md`
+
+### Competitive Watch
+- **`lib/competitive_watch.py`:** Brief Graph · 엔티티별 신규/상승 streak
+- **`config/competitive-watch.yaml`** · **`cron-competitive-watch.sh`** (월 09:00)
+- **산출:** `content/logs/{date}_competitive-watch.md`
+
+### 검증
+```bash
+./scripts/content-knowledge-eval.sh 2026-06-26  # 12/12 PASS
+./scripts/hermes-agent.sh wiki lint
+./scripts/hermes-agent.sh squad 'AX 트렌드' --date 2026-06-26
+./scripts/hermes-agent.sh watch --verbose
+```
+
+## 변경 요약 (2026-06-26, 운영 Agent Phase B)
+
+### HITL Publish Scheduler
+- **`lib/publish_scheduler.py`:** 예약 생성 · due 시 HITL 카드 · 취소
+- **`cron-publish-schedule.sh`:** 15분 cron (`setup-commander-cron.sh`)
+- **CLI:** `hermes-agent.sh schedule linkedin --at 09:00` · `schedules` · `schedule --cancel --id ID`
+
+### Pipeline Supervisor
+- **`lib/pipeline_supervisor.py`:** M1 → gate → M2 → M2b → audit → M5 단계별 감독
+- **`run-supervised-pipeline.sh`:** 실패 시 blocked_at 반환 · handoff JSON
+- **산출:** `content/logs/{date}_supervised-pipeline.md`
+
+### 검증
+```bash
+./scripts/content-ops-eval.sh 2026-06-26
+./scripts/hermes-agent.sh schedule linkedin --at +30m --dry-run --date 2026-06-26
+SKIP_NEWSLETTER=1 SKIP_NOTION_ARCHIVE=1 ./scripts/run-supervised-pipeline.sh 2026-06-26
+```
+
+## 변경 요약 (2026-06-26, 콘텐츠 품질 Agent Phase A)
+
+### Instagram M3 Agent
+- **`lib/instagram_pipeline.py`:** analyze → visual-spec → draft (결정적)
+- **`run-instagram-pipeline.sh`:** `hermes-agent.sh instagram --validate`
+- **산출:** `packages/*_instagram-analysis.md` · `*_instagram-visual-spec.md` · `instagram/*.md`
+
+### Quality Auditor Agent
+- **`lib/quality_auditor.py`:** brief_gate + validate-output + newsletter_complete + notion_quality
+- **`run-quality-audit.sh`:** `hermes-agent.sh audit`
+- **산출:** `content/logs/{date}_audit-report.md`
+
+### Repurpose Agent
+- **`lib/repurpose_pipeline.py`:** Brief 인사이트 #N → blog|instagram|linkedin|newsletter 재조립
+- **`run-repurpose.sh`:** `hermes-agent.sh repurpose linkedin --index 3`
+
+### 검증
+```bash
+./scripts/content-quality-eval.sh 2026-06-26  # 12/12 PASS
+./scripts/hermes-agent.sh instagram --date 2026-06-26
+./scripts/hermes-agent.sh audit --date 2026-06-26
+./scripts/hermes-agent.sh repurpose linkedin --index 1 --date 2026-06-26
+```
+
+## 변경 요약 (2026-06-16, 우선순위 P1–P8 기능 패키지)
+
+### P1 — CTOR → 제목 스코어링 피드백
+- **`lib/newsletter_ctor_feedback.py`:** trait 가중치 · `score_subject_line` 보너스
+- **`newsletter_ctor.record_campaign`:** 피드백·M4 동기화 트리거
+- **산출:** `subject-scores.json` · `ctor_feedback` 필드
+
+### P2 — HITL newsletter 발행 통합
+- **`agent-commands.yaml`:** publish channels + newsletter
+- **`hermes-agent.sh publish newsletter`:** paste pack HITL 카드
+- **`publish_gate`:** newsletter validate + Notion `--notify-final`
+
+### P3 — Wiki → M2 concept 주입
+- **`lib/wiki_concepts.py`:** `inject_wiki_blurbs` → blog·instagram·linkedin
+- **`assemble-content-package.py`:** 결정적 wiki 맥락 블록
+
+### P4 — Proactive + 주간 Graph digest
+- **`proactive_triggers`:** newsletter_paste · ctor_stale · watch_telegram
+- **`brief_graph.format_weekly_digest`:** 반복·신규·공백 topic
+- **`cron-weekly-graph-digest.sh`:** 월 09:00 (`setup-commander-cron.sh`)
+
+### P5 — Blog M3 서브파이프라인
+- **`lib/blog_pipeline.py`:** seo → structure → validate
+- **`run-blog-pipeline.sh`:** `hermes-agent.sh blog`
+
+### P6 — M4 실측 1채널
+- **`lib/m4_channel_metrics.py`:** CTOR → channel-metrics · `m4-import-metrics.sh`
+- **`content-orchestration.yaml`:** M4 `live_when_metrics`
+
+### P7 — PlayMCP Commander
+- **`config/playmcp-routing.yaml`:** quick_commands 14개
+- **`setup-playmcp-routing.sh`:** `setup-playmcp.sh` [8/8] 연동
+- **`playmcp-integration-eval.sh`**
+
+### P8 — ESP controlled live
+- **`newsletter-send.sh`:** dry-run 기본 · `--live` HITL 필수
+- **`newsletter.yaml` esp:** `HERMES_ESP_APPROVED` + `RESEND_API_KEY`
+- **`hermes-agent.sh approve esp`**
+
+### 검증
+```bash
+./scripts/features-priority-eval.sh
+./scripts/playmcp-integration-eval.sh
+./scripts/hermes-agent.sh publish newsletter --dry-run --date YYYY-MM-DD
+```
+
+## 변경 요약 (2026-06-10, Newsletter Quality 강화 + Notion 동기화)
+
+### Newsletter 완성도
+- **`lib/newsletter_complete.py`:** 잘림·미완성 감사 (`audit_newsletter_md`)
+- **`newsletter_quality.py`:** `truncate` → `compress_sentences`/`finish_at_sentence` · `_newsletter_title`
+- **`newsletter_html.py`:** HTML 모듈 동일 완결 문장 정책
+- **`validate-output.sh` · `newsletter-eval.sh`:** completeness 게이트 추가
+- **`content_quality.py`:** garbage title 패턴 (OpenAI News 중복 등)
+
+### Notion M5
+- **`archive-to-notion.sh 2026-06-10 --force --notify-final`** — 8페이지 canonical score 100
+- Daily: https://app.notion.com/p/37bfb3b5e389811e8ebad3a3bb11794a
+
+### 검증
+- `newsletter-eval.sh 2026-06-10` — **10/10 PASS** (completeness_no_truncation 포함)
+
+## 변경 요약 (2026-06-10, LLM Wiki 부분 통합)
+
+### 결론
+- **일별 콘텐츠 공장(M1→M5) 유지** · **누적 wiki 계층**만 선택 도입 (전면 Wiki 교체 없음)
+
+### 선택 (도입)
+- **`memory_router`:** wiki index-first (`lib/wiki_router.py`)
+- **결정적 Seed:** Brief Graph → `content/wiki/concepts/` (`HERMES_WIKI_SEED=1` · `wiki-seed.sh`)
+- **LLM Ingest/Lint:** 비동기 옵션 (`HERMES_WIKI_INGEST=1` · `HERMES_WIKI_LINT=1`)
+
+### 유지
+- M1→M2→M2b→M5 결정적 SLA · `{date}_brief.md` SoT · validate · Notion Permalink
+
+### 신설
+- **`docs/LLM-WIKI-INTEGRATION.md`** · **`config/wiki.yaml`** · **`skills/shared/wiki-maintainer/`**
+- **`content/wiki/`** (index · log · concepts · output) · **`content/research/raw/`**
+- **`wiki-lint-eval.sh`** · feature **pipe-009**
+
+### 검증
+```bash
+./scripts/wiki-lint-eval.sh
+HERMES_WIKI_SEED=1 ./scripts/wiki-seed.sh
+```
+
 ## 변경 요약 (2026-06-08, Cursor Agent 리소스 Notion)
 
 - **로컬 MD:** `content/logs/2026-06-08_cursor-agent-resources.md` — Cursor transcript 기반 토큰·시간·스킬 맵

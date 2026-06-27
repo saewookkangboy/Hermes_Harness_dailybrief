@@ -1,0 +1,35 @@
+# LLM Wiki — 부분 통합 설정 (Karpathy 패턴)
+# 전략: docs/LLM-WIKI-INTEGRATION.md
+version: "1.0.0"
+
+enabled: true
+
+paths:
+  root: content/wiki
+  raw: content/research/raw
+  index: content/wiki/index.md
+  log: content/wiki/log.md
+  concepts: content/wiki/concepts
+  entities: content/wiki/entities
+  output: content/wiki/output
+
+runtime:
+  seed_env: HERMES_WIKI_SEED
+  ingest_env: HERMES_WIKI_INGEST
+  lint_env: HERMES_WIKI_LINT
+  # 일별 파이프라인 SLA 경로에 Ingest/Lint 끼워 넣지 않음
+  async_only: true
+
+memory_router:
+  index_first: true
+  min_score: 0.25
+  max_concept_hits: 4
+
+seed:
+  source: brief_graph
+  graph_file: content/research/_brief_graph.json
+  window_days: 14
+
+lint:
+  schedule: "0 9 * * 1"  # 월 09:00 (setup-commander-cron 수동 등록)
+  report_dir: content/logs

@@ -1,0 +1,37 @@
+# Competitive Watch — Brief Graph · 키워드 감시 (결정적)
+version: "1.0.0"
+
+schedule: "0 9 * * 1"  # 월 09:00 KST — cron-competitive-watch.sh
+
+window_days: 14
+
+# Brief Graph topic_key · 키워드 매칭
+watch_entities:
+  - id: openai
+    label: OpenAI / ChatGPT
+    keywords: [openai, chatgpt, gpt]
+  - id: anthropic
+    label: Anthropic / Claude
+    keywords: [anthropic, claude]
+  - id: google_ai
+    label: Google / Gemini
+    keywords: [gemini, google ai]
+  - id: perplexity
+    label: Perplexity
+    keywords: [perplexity]
+  - id: korea_ax
+    label: Korea AX
+    keywords: [korea_ax, korea_adoption, korea, ax, 한국]
+  - id: aeo
+    label: AEO
+    keywords: [aeo, answer engine]
+  - id: agent_marketing
+    label: Agent Marketing
+    keywords: [agent_marketing, hermes_agent, workspace_agents]
+  - id: harness
+    label: Harness Engineering
+    keywords: [harness_engineering, harness]
+
+alerts:
+  new_topic_streak_min: 2
+  rising_streak_delta: 1

@@ -121,12 +121,19 @@ def send_via_resend(manifest: dict[str, Any], *, api_key: str) -> dict[str, Any]
         raise RuntimeError(f"Resend API {e.code}: {detail}") from e
 
 
-def execute_send(stamp: str, *, live: bool = False, to: str = "") -> dict[str, Any]:
+def execute_send(stamp: str, *, live: bool = False, to: str = "", approved: bool = False) -> dict[str, Any]:
+    """dry-run 기본 · live는 HITL 승인 + RESEND_API_KEY 필수."""
     manifest = build_send_manifest(stamp)
     path = write_send_manifest(stamp)
     result: dict[str, Any] = {"stamp": stamp, "manifest_path": str(path), "mode": "dry_run"}
 
     if live:
+        if not approved and not __import__("os").environ.get("HERMES_ESP_APPROVED"):
+            queue_path = WORKDIR / ".harness" / "publish-queue" / f"{stamp}.json"
+            raise PermissionError(
+                "ESP live send requires HITL approval — "
+                "hermes-agent.sh approve esp 또는 HERMES_ESP_APPROVED=1"
+            )
         api_key = os.environ.get("RESEND_API_KEY", "").strip()
         if not api_key:
             raise EnvironmentError("RESEND_API_KEY required for --live")

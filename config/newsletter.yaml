@@ -75,3 +75,13 @@ delivery:
   paste_pack: "content/packages/{date}_newsletter-paste.md"
   workflow: "Notion 코드 블록 복사 → 외부 뉴스레터 플랫폼 문서 편집기 붙여넣기"
   esp_send: false
+
+esp:
+  provider: resend
+  from: "Hermes Studio <onboarding@resend.dev>"
+  test_recipient: ""
+  live_requires:
+    - HERMES_ESP_APPROVED=1
+    - RESEND_API_KEY
+  hitl_command: "hermes-agent.sh approve esp --date {date}"
+  dry_run_script: scripts/newsletter-send.sh

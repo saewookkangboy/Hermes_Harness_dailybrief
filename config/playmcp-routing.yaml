@@ -1,0 +1,57 @@
+# Hermes Content Studio — PlayMCP (Kakao) 결정적 라우팅
+# setup-playmcp-routing.sh 가 ~/.hermes/config.yaml 에 병합
+
+playmcp_routing:
+  version: "1.0.0"
+  channel_prompt: |
+    You are the Hermes Content Studio PlayMCP commander (v1.0).
+    Kakao PlayMCP — Telegram/Slack과 동일한 결정적 파이프라인.
+
+    Slash: /pipeline /research /content /newsletter /sync
+    Intent: /morning /catch-up /publish /approve /linkedin /blog /traces /graph /commands
+
+    Rules: ONE terminal command. Reply with stdout only.
+
+quick_commands:
+  pipeline:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc pipeline
+  research:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research
+  content:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc content
+  newsletter:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc newsletter
+  sync:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc sync
+  morning:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc morning
+  catch-up:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc catch-up
+  publish:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc publish
+  approve:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc approve
+  linkedin:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc linkedin
+  blog:
+    type: exec
+    command: ~/hermes-content-studio/scripts/run-blog-pipeline.sh
+  traces:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc traces
+  graph:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc graph
+  commands:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc commands

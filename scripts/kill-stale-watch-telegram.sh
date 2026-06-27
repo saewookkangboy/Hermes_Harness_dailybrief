@@ -6,6 +6,16 @@ WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
 LOCK="$WORKDIR/.harness/watch-telegram.lock"
 PID_FILE="/tmp/hermes-watch-telegram.pid"
 
+if [[ "${1:-}" == "--check" ]]; then
+  n=$(ps -ax -o pid=,command= 2>/dev/null | rg -c 'watch-telegram\.sh' || echo 0)
+  if [[ "$n" -gt 1 ]]; then
+    echo "DUPLICATE watch-telegram count=$n"
+    exit 0
+  fi
+  echo "OK watch-telegram count=$n"
+  exit 0
+fi
+
 count=0
 while read -r pid; do
   [[ -z "$pid" ]] && continue

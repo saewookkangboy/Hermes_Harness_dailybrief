@@ -90,10 +90,16 @@ def format_telegram_approval(stamp: str, queue: dict[str, Any] | None = None) ->
         lines.append("⏳ 대기: " + ", ".join(pending))
     if approved:
         lines.append("✅ 승인됨: " + ", ".join(approved))
+    if ch.get("newsletter") in ("pending", "approved"):
+        paste = WORKDIR / "content" / "packages" / f"{stamp}_newsletter-paste.md"
+        if paste.exists():
+            lines.append(f"📋 paste: `{paste.name}`")
+        else:
+            lines.append("📋 paste: (생성 필요 — run-newsletter.sh --validate)")
     lines.extend(
         [
             "",
-            "승인: /approve linkedin · /approve all",
+            "승인: /approve linkedin · /approve newsletter · /approve all",
             f"상태: /pending",
         ]
     )
@@ -169,6 +175,14 @@ def _run_channel_publish(stamp: str, channel: str) -> bool:
                 check=False,
                 env=env,
             )
+            pkg = paste
+        elif pkg.exists():
+            subprocess.run(
+                [str(SCRIPTS / "validate-output.sh"), "newsletter-context", str(pkg)],
+                check=False,
+                env=env,
+            )
+        return pkg.exists()
     else:
         subprocess.run([str(SCRIPTS / "run-content-package.sh"), stamp], check=False, env=env)
         pkg = WORKDIR / "content" / "packages" / f"{stamp}_{channel}-context.md"

@@ -58,7 +58,12 @@ class SubjectScore:
         }
 
 
-def score_subject_line(text: str, cfg: dict | None = None) -> SubjectScore:
+def score_subject_line(
+    text: str,
+    cfg: dict | None = None,
+    *,
+    apply_ctor_feedback: bool = True,
+) -> SubjectScore:
     """결정적 휴리스틱 — 오픈율 방향성 (MPP 이후 CTOR과 병행)."""
     c = cfg or _load_cfg()
     max_c, ideal_lo, ideal_hi = subject_limits(c)
@@ -101,6 +106,17 @@ def score_subject_line(text: str, cfg: dict | None = None) -> SubjectScore:
         score += 3
         reasons.append("날짜/태그 프리픽스 — 인지성")
 
+    if apply_ctor_feedback:
+        try:
+            from lib.newsletter_ctor_feedback import apply_ctor_feedback_bonus
+
+            bonus, fb_reasons = apply_ctor_feedback_bonus(line)
+            if bonus:
+                score += bonus
+                reasons.extend(fb_reasons[:2])
+        except ImportError:
+            pass
+
     score = max(0, min(100, score))
     return SubjectScore(text=line, score=score, reasons=reasons)
 
@@ -123,10 +139,20 @@ def save_subject_scores(stamp: str, ranked: list[SubjectScore], cfg: dict | None
     out_dir = WORKDIR / "content" / "newsletter"
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{stamp}_newsletter_subject-scores.json"
+    feedback_meta: dict = {}
+    try:
+        from lib.newsletter_ctor_feedback import compute_ctor_feedback, load_ctor_feedback
+
+        feedback_meta = load_ctor_feedback()
+        if not feedback_meta.get("applied"):
+            feedback_meta = compute_ctor_feedback()
+    except ImportError:
+        pass
     payload = {
         "stamp": stamp,
         "winner": ranked[0].to_dict() if ranked else None,
         "candidates": [s.to_dict() for s in ranked],
+        "ctor_feedback": feedback_meta,
     }
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return path

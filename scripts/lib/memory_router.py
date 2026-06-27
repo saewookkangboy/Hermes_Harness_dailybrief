@@ -9,6 +9,7 @@ from pathlib import Path
 from lib.brief_gate import brief_path
 from lib.brief_graph import load_brief_graph
 from lib.common import studio_today, truncate
+from lib.wiki_router import route_wiki
 
 WORKDIR = Path.home() / "hermes-content-studio"
 PACKAGES = WORKDIR / "content" / "packages"
@@ -213,10 +214,20 @@ def _search_notion_state(stamp: str) -> MemoryHit | None:
     return MemoryHit("notion_state", str(STATE_PATH.relative_to(WORKDIR)), snip, 0.5)
 
 
+def _search_wiki(query: str, min_score: float = 0.25) -> list[MemoryHit]:
+    hits: list[MemoryHit] = []
+    for wh in route_wiki(query, min_score=min_score):
+        src = wh.source if wh.source.startswith("wiki") else "wiki"
+        hits.append(MemoryHit(src, wh.path, wh.snippet, wh.score))
+    return hits
+
+
 def route_query(query: str, stamp: str | None = None, *, graph_days: int = 14) -> RouteResult:
     stamp = stamp or studio_today()
     tokens = _tokenize(query)
     result = RouteResult(query=query, stamp=stamp)
+
+    result.hits.extend(_search_wiki(query))
 
     brief_hit = _search_brief(stamp, tokens)
     if brief_hit and brief_hit.score >= 0.2:
@@ -259,8 +270,15 @@ def format_answer(result: RouteResult) -> str:
         f"web_search 생략: {'예' if result.skip_web_search else '아니오'}",
         "",
     ]
+    wiki_hits = [h for h in result.hits if h.source.startswith("wiki")]
     graph_hits = [h for h in result.hits if h.source == "brief_graph"]
-    other_hits = [h for h in result.hits if h.source != "brief_graph"]
+    other_hits = [
+        h for h in result.hits if h.source != "brief_graph" and not h.source.startswith("wiki")
+    ]
+    if wiki_hits:
+        lines.append("### Wiki (index-first)")
+        for h in wiki_hits[:3]:
+            lines.extend([f"- `{h.path}` (score {h.score:.2f})", h.snippet, ""])
     if graph_hits:
         lines.append("### Brief Graph 매칭")
         for h in graph_hits[:3]:

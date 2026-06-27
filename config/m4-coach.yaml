@@ -1,0 +1,34 @@
+# M4 Performance Coach — 전 채널 성과·trait 코칭 (결정적)
+version: "1.0.0"
+
+channels:
+  newsletter:
+    label: "B2B 뉴스레터"
+    metric: ctor_pct
+    target: "10-15%"
+    traits_source: newsletter_ctor_feedback
+  linkedin:
+    label: "LinkedIn"
+    metric: engagement_rate
+    post_max_chars: 1300
+    traits: [hook_question, hook_number, bullet_arrows, comment_cta, b2b_kw]
+  blog:
+    label: "Blog SEO"
+    metric: quality_score
+    traits: [title_length, h2_count, faq_jsonld, geo_block]
+  instagram:
+    label: "Instagram"
+    metric: save_proxy
+    traits: [caption_hook, hashtag_count, slide_count, alt_text]
+
+coaching:
+  min_ctor_records: 2
+  recommend_top_n: 5
+
+trait_propagation:
+  # CTOR 피드백 trait → 다른 채널 적용
+  question: [newsletter, linkedin, blog]
+  number: [newsletter, linkedin, blog]
+  b2b_kw: [newsletter, linkedin, blog, instagram]
+  short_ideal: [newsletter]
+  bracket_prefix: [newsletter]
