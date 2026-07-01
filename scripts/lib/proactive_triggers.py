@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -74,6 +73,10 @@ def check_newsletter_paste_missing(stamp: str) -> str | None:
 
 
 def check_ctor_stale(*, max_days: int = MAX_CTOR_STALE_DAYS) -> str | None:
+    today = datetime.now(timezone.utc).astimezone()
+    weekday = today.strftime("%a").lower()[:3]
+    if weekday not in SEND_DAYS:
+        return None
     if not METRICS_PATH.exists():
         return f"⚠️ CTOR 실측 {max_days}일 미기록 — newsletter-ctor-record.sh 권장"
     try:
@@ -93,25 +96,6 @@ def check_ctor_stale(*, max_days: int = MAX_CTOR_STALE_DAYS) -> str | None:
     return None
 
 
-def check_watch_telegram_duplicates() -> str | None:
-    script = WORKDIR / "scripts" / "kill-stale-watch-telegram.sh"
-    if not script.exists():
-        return None
-    try:
-        out = subprocess.run(
-            ["bash", str(script), "--check"],
-            capture_output=True,
-            text=True,
-            timeout=5,
-            check=False,
-        )
-        if "DUPLICATE" in (out.stdout or ""):
-            return "⚠️ watch-telegram 중복 프로세스 — kill-stale-watch-telegram.sh 실행 권장"
-    except (OSError, subprocess.TimeoutExpired):
-        pass
-    return None
-
-
 def run_proactive_checks(stamp: str | None = None) -> list[dict[str, str]]:
     stamp = stamp or studio_today()
     checks: list[tuple[str, str | None]] = [
@@ -119,7 +103,6 @@ def run_proactive_checks(stamp: str | None = None) -> list[dict[str, str]]:
         ("notion_stale", check_notion_stale(stamp)),
         ("newsletter_paste", check_newsletter_paste_missing(stamp)),
         ("ctor_stale", check_ctor_stale()),
-        ("watch_telegram", check_watch_telegram_duplicates()),
     ]
     alerts: list[dict[str, str]] = []
     for check_id, msg in checks:

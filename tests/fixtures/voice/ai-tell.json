@@ -1,0 +1,554 @@
+[
+  {
+    "id": "A-01",
+    "genre": "linkedin",
+    "before": "결론적으로, AX는 교육이 먼저다.",
+    "forbidden": [
+      "결론적으로"
+    ],
+    "must_contain": [
+      "교육"
+    ]
+  },
+  {
+    "id": "A-02",
+    "genre": "linkedin",
+    "before": "요약하면 에이전트 도입이 핵심이다.",
+    "forbidden": [
+      "요약하면"
+    ],
+    "must_contain": [
+      "에이전트"
+    ]
+  },
+  {
+    "id": "A-03",
+    "genre": "blog",
+    "before": "혁신적인 도구를 통해 업무를 확장한다.",
+    "forbidden": [
+      "혁신적인",
+      "를 통해"
+    ],
+    "must_contain": [
+      "업무"
+    ]
+  },
+  {
+    "id": "A-04",
+    "genre": "linkedin",
+    "before": "이 점에서 시사하는 바가 크다.",
+    "forbidden": [
+      "시사하는 바"
+    ],
+    "must_contain": [
+      "의미"
+    ]
+  },
+  {
+    "id": "A-05",
+    "genre": "linkedin",
+    "before": "본질적으로 마케팅은 데이터다.",
+    "forbidden": [
+      "본질적으로"
+    ],
+    "must_contain": [
+      "마케팅"
+    ]
+  },
+  {
+    "id": "B-01",
+    "genre": "linkedin",
+    "before": "PoC만 강조하면 구매가 차단됩니다.",
+    "forbidden": [
+      "차단됩니다"
+    ],
+    "must_contain": [
+      "차단돼요"
+    ]
+  },
+  {
+    "id": "B-02",
+    "genre": "linkedin",
+    "before": "파일럿 결과는 좋습니다.",
+    "forbidden": [
+      "좋습니다"
+    ],
+    "must_contain": [
+      "좋어요"
+    ]
+  },
+  {
+    "id": "B-03",
+    "genre": "blog",
+    "before": "AX 전환은 빠르게 진행됩니다.",
+    "forbidden": [
+      "돼요",
+      "해요"
+    ],
+    "must_contain": [
+      "진행"
+    ]
+  },
+  {
+    "id": "C-01",
+    "genre": "linkedin",
+    "before": "또한, 에이전트는 반복 업무부터 시작한다.",
+    "forbidden": [
+      "또한,"
+    ],
+    "must_contain": [
+      "에이전트"
+    ]
+  },
+  {
+    "id": "C-02",
+    "genre": "linkedin",
+    "before": "따라서 측정 지표를 먼저 잡는다.",
+    "forbidden": [
+      "따라서"
+    ],
+    "must_contain": [
+      "측정"
+    ]
+  },
+  {
+    "id": "D-01",
+    "genre": "linkedin",
+    "before": "할 수 있을 것으로 보인다.",
+    "forbidden": [
+      "보인다"
+    ],
+    "must_contain": [
+      "가능성"
+    ]
+  },
+  {
+    "id": "D-02",
+    "genre": "linkedin",
+    "before": "인 듯하다.",
+    "forbidden": [
+      "듯하다"
+    ],
+    "must_contain": [
+      "같아요"
+    ]
+  },
+  {
+    "id": "E-01",
+    "genre": "linkedin",
+    "before": "에 있어서 마케팅은 변화한다.",
+    "forbidden": [
+      "에 있어서"
+    ],
+    "must_contain": [
+      "마케팅"
+    ]
+  },
+  {
+    "id": "E-02",
+    "genre": "linkedin",
+    "before": "에 의해 결정된다.",
+    "forbidden": [
+      "에 의해"
+    ],
+    "must_contain": []
+  },
+  {
+    "id": "F-01",
+    "genre": "linkedin",
+    "before": "첫째, 프롬프트를 정리한다. 둘째, SOP를 만든다.",
+    "forbidden": [
+      "첫째",
+      "둘째"
+    ],
+    "must_contain": [
+      "우선",
+      "그다음"
+    ]
+  },
+  {
+    "id": "G-01",
+    "genre": "blog",
+    "before": "결론적으로 AEO는 중요합니다.",
+    "forbidden": [
+      "결론적으로"
+    ],
+    "must_contain": [
+      "AEO"
+    ]
+  },
+  {
+    "id": "G-02",
+    "genre": "blog",
+    "before": "핵심적으로 브랜드 신뢰가 필요합니다.",
+    "forbidden": [
+      "핵심적으로"
+    ],
+    "must_contain": [
+      "브랜드"
+    ]
+  },
+  {
+    "id": "H-01",
+    "genre": "linkedin",
+    "before": "가지고 있다.",
+    "forbidden": [
+      "가지고 있다"
+    ],
+    "must_contain": [
+      "있어요"
+    ]
+  },
+  {
+    "id": "H-02",
+    "genre": "linkedin",
+    "before": "되어진다.",
+    "forbidden": [
+      "되어진다"
+    ],
+    "must_contain": [
+      "돼요"
+    ]
+  },
+  {
+    "id": "I-01",
+    "genre": "linkedin",
+    "before": "다음과 같습니다. 팀 반복 업무 3개를 적는다.",
+    "forbidden": [
+      "다음과 같"
+    ],
+    "must_contain": [
+      "반복 업무"
+    ]
+  },
+  {
+    "id": "J-01",
+    "genre": "linkedin",
+    "before": "나아가 에이전트 도입을 검토한다.",
+    "forbidden": [
+      "나아가"
+    ],
+    "must_contain": [
+      "에이전트"
+    ]
+  },
+  {
+    "id": "J-02",
+    "genre": "linkedin",
+    "before": "게다가 측정도 필요하다.",
+    "forbidden": [
+      "게다가"
+    ],
+    "must_contain": [
+      "측정"
+    ]
+  },
+  {
+    "id": "J-03",
+    "genre": "linkedin",
+    "before": "더욱이 FAQ가 중요하다.",
+    "forbidden": [
+      "더욱이"
+    ],
+    "must_contain": [
+      "FAQ"
+    ]
+  },
+  {
+    "id": "J-04",
+    "genre": "linkedin",
+    "before": "즉, PoC부터 시작한다.",
+    "forbidden": [
+      "즉,"
+    ],
+    "must_contain": [
+      "PoC"
+    ]
+  },
+  {
+    "id": "J-05",
+    "genre": "linkedin",
+    "before": "이 관점에서 보면 AX가 핵심이다.",
+    "forbidden": [
+      "이 관점에서"
+    ],
+    "must_contain": [
+      "AX"
+    ]
+  },
+  {
+    "id": "J-06",
+    "genre": "blog",
+    "before": "획기적인 전략을 통해 성장한다.",
+    "forbidden": [
+      "획기적인",
+      "를 통해"
+    ],
+    "must_contain": [
+      "성장"
+    ]
+  },
+  {
+    "id": "J-07",
+    "genre": "blog",
+    "before": "파격적인 캠페인을 진행합니다.",
+    "forbidden": [
+      "파격적인"
+    ],
+    "must_contain": [
+      "캠페인"
+    ]
+  },
+  {
+    "id": "J-08",
+    "genre": "brief",
+    "before": "결론적으로 시장은 성숙기다.",
+    "forbidden": [
+      "결론적으로"
+    ],
+    "must_contain": [
+      "시장"
+    ]
+  },
+  {
+    "id": "J-09",
+    "genre": "brief",
+    "before": "요약하면 도입 속도가 빠르다.",
+    "forbidden": [
+      "요약하면"
+    ],
+    "must_contain": [
+      "도입"
+    ]
+  },
+  {
+    "id": "J-10",
+    "genre": "instagram",
+    "before": "혁신적인 파일럿을 시작합니다.",
+    "forbidden": [
+      "혁신적인",
+      "습니다"
+    ],
+    "must_contain": [
+      "파일럿"
+    ]
+  },
+  {
+    "id": "J-11",
+    "genre": "linkedin",
+    "before": "정리하면 팀 SOP가 먼저다.",
+    "forbidden": [
+      "정리하면"
+    ],
+    "must_contain": [
+      "SOP"
+    ]
+  },
+  {
+    "id": "J-12",
+    "genre": "linkedin",
+    "before": "와 관련하여 거버넌스가 필요하다.",
+    "forbidden": [
+      "와 관련하여"
+    ],
+    "must_contain": [
+      "거버넌스"
+    ]
+  },
+  {
+    "id": "J-13",
+    "genre": "linkedin",
+    "before": "에 대해서 설명드리겠습니다.",
+    "forbidden": [
+      "에 대해서"
+    ],
+    "must_contain": []
+  },
+  {
+    "id": "J-14",
+    "genre": "linkedin",
+    "before": "에 기반하여 전략을 세운다.",
+    "forbidden": [
+      "에 기반하여"
+    ],
+    "must_contain": [
+      "전략"
+    ]
+  },
+  {
+    "id": "J-15",
+    "genre": "blog",
+    "before": "또한 SEO도 유지합니다.",
+    "forbidden": [
+      "또한"
+    ],
+    "must_contain": [
+      "SEO"
+    ]
+  },
+  {
+    "id": "J-16",
+    "genre": "linkedin",
+    "before": "아울러 자동화를 검토한다.",
+    "forbidden": [
+      "아울러"
+    ],
+    "must_contain": [
+      "자동화"
+    ]
+  },
+  {
+    "id": "J-17",
+    "genre": "linkedin",
+    "before": "라는 점에서 차별화가 필요하다.",
+    "forbidden": [
+      "라는 점에서"
+    ],
+    "must_contain": [
+      "차별화"
+    ]
+  },
+  {
+    "id": "J-18",
+    "genre": "blog",
+    "before": "시사하는 바가 크다.",
+    "forbidden": [
+      "시사하는 바"
+    ],
+    "must_contain": [
+      "의미"
+    ]
+  },
+  {
+    "id": "J-19",
+    "genre": "brief",
+    "before": "본질적으로 데이터 거버넌스가 핵심이다.",
+    "forbidden": [
+      "본질적으로"
+    ],
+    "must_contain": [
+      "거버넌스"
+    ]
+  },
+  {
+    "id": "J-20",
+    "genre": "instagram",
+    "before": "에 있어 마케팅은 바뀐다.",
+    "forbidden": [
+      "에 있어"
+    ],
+    "must_contain": [
+      "마케팅"
+    ]
+  },
+  {
+    "id": "J-21",
+    "genre": "linkedin",
+    "before": "활용하라. 바로 시작하라.",
+    "forbidden": [
+      "활용하라"
+    ],
+    "must_contain": [
+      "활용해"
+    ]
+  },
+  {
+    "id": "J-22",
+    "genre": "linkedin",
+    "before": "필수입니다. 지금 시작하세요.",
+    "forbidden": [
+      "필수입니다"
+    ],
+    "must_contain": [
+      "필요해요"
+    ]
+  },
+  {
+    "id": "J-23",
+    "genre": "blog",
+    "before": "차별점이 돼요.",
+    "forbidden": [
+      "돼요"
+    ],
+    "must_contain": [
+      "됩니다"
+    ]
+  },
+  {
+    "id": "J-24",
+    "genre": "linkedin",
+    "before": "이어지고 있다.",
+    "forbidden": [
+      "이어지고 있다"
+    ],
+    "must_contain": [
+      "이어지고 있어요"
+    ]
+  },
+  {
+    "id": "J-25",
+    "genre": "linkedin",
+    "before": "요구된다.",
+    "forbidden": [
+      "요구된다"
+    ],
+    "must_contain": [
+      "요구돼요"
+    ]
+  },
+  {
+    "id": "J-26",
+    "genre": "brief",
+    "before": "핵심적으로 AX 예산이 늘고 있다.",
+    "forbidden": [
+      "핵심적으로"
+    ],
+    "must_contain": [
+      "AX"
+    ]
+  },
+  {
+    "id": "J-27",
+    "genre": "instagram",
+    "before": "정리했다. 다음 단계로 간다.",
+    "forbidden": [
+      "정리했다"
+    ],
+    "must_contain": [
+      "정리했어요"
+    ]
+  },
+  {
+    "id": "J-28",
+    "genre": "linkedin",
+    "before": "구조화한다.",
+    "forbidden": [
+      "구조화한다"
+    ],
+    "must_contain": [
+      "구조화해요"
+    ]
+  },
+  {
+    "id": "J-29",
+    "genre": "blog",
+    "before": "확장하면 돼요.",
+    "forbidden": [
+      "돼요"
+    ],
+    "must_contain": [
+      "됩니다"
+    ]
+  },
+  {
+    "id": "J-30",
+    "genre": "linkedin",
+    "before": "수요에 맞는다.",
+    "forbidden": [
+      "맞는다"
+    ],
+    "must_contain": [
+      "맞아요"
+    ]
+  }
+]

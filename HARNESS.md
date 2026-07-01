@@ -55,6 +55,64 @@ HERMES_ENHANCE=1 ./scripts/run-pipeline.sh  # LLM polish 추가
 
 Telegram 요청: Notion 100% 동기화 + Permalink 필수.
 
+## Voice · Naturalness · Budget (P4–P14)
+
+결정적 humanize는 cron 기본 ON (`HERMES_CRON_HUMANIZE=1`). LLM humanize는 수동만 (`cron_llm_humanize: false`).
+
+### 프로덕션 blocking (2026-07-01~)
+
+| 키 | yaml | 효과 |
+|----|------|------|
+| `voice_blocking` | `true` | VOICE FAIL → supervised blocked |
+| `naturalness_blocking` | `true` | naturalness 점수 FAIL → blocked |
+| `budget_blocking` | `false` | cap/kill 초과 → NATURALNESS **WARN** (FAIL 아님) |
+| `humanize_blocking` | `false` | HUMANIZE FAIL → WARN |
+
+`HERMES_SUPERVISED_STAGING=1` → `supervised.staging.*_blocking` 우선. 주간 `cron-staging-supervised` 토 11:00.
+
+### Env
+
+| 변수 | 기본 | 역할 |
+|------|------|------|
+| `HERMES_CRON_HUMANIZE` | `1` | supervised 결정적 polish |
+| `HERMES_HUMANIZE_LLM` | `0` | hermes-run humanize-korean (budget 연동) |
+| `HERMES_USE_CODEX` | `1` (LLM 시) | Codex 경로 (~100s linkedin) |
+| `HERMES_SUPERVISED_STAGING` | `0` | staging blocking 프로필 |
+| `HERMES_NATURALNESS_BLOCKING` | `0` | env로 naturalness FAIL 강제 |
+| `HERMES_LOOP_BUDGET_KILL` | `0` | LLM 경로 즉시 차단 |
+
+### Budget cap (`config/content-quality.yaml` `budget`)
+
+| 항목 | 값 | 근거 |
+|------|-----|------|
+| `daily_token_cap` | 600000 | Codex humanize LIVE ~275k/채널 × 2 + 여유 |
+| `path_daily_token_caps.HERMES_HUMANIZE_LLM` | 400000 | humanize 경로 단독 상한 |
+| `warn_threshold_pct` | 80 | `loop-budget-status.sh` 근접 경고 |
+| `daily_usd_cap` | 2.0 | included 구독 시 ledger usd=0 가능 |
+
+```bash
+./scripts/voice-style-eval.sh [DATE]
+./scripts/naturalness-eval.sh [DATE]
+./scripts/humanize-llm-eval.sh [DATE]
+HERMES_HUMANIZE_LLM_LIVE=1 ./scripts/humanize-llm-eval.sh [DATE]
+./scripts/loop-budget-eval.sh
+./scripts/loop-budget-status.sh
+./scripts/export-architecture-notion.sh
+./scripts/staging-supervised-eval.sh [DATE]
+HERMES_M5_E2E_LIVE=1 ./scripts/m5-notion-eval.sh [DATE]
+HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh
+```
+
+Notion 아키텍처 (Daily Archive 루트 하위, state: `content/.notion-architecture-state.json`):
+- [운영 리소스·기술 스펙](https://www.notion.so/379fb3b5e389810f9630cd8cbfed942b)
+- [의존성 다이어그램](https://www.notion.so/379fb3b5e38981c2a947ec8af87330b4)
+- [Cursor Agent 리소스 맵](https://www.notion.so/379fb3b5e38981a4ba83f2a9d3af9979)
+
+비용 원장: `.harness/cost-ledger.jsonl` — `lib/hermes_cost.py`가 TUI·Codex verbose(`Token usage`/`ResponseUsage`/`estimated_cost_usd`)·`sessions.json`에서 tokens/USD 파싱 · **per-run delta** (`parse_run_usage`).
+
+`HERMES_ENHANCE=1` (content-pipeline polish)와 `HERMES_HUMANIZE_LLM=1`은 별도 LLM 경로이며 동일 `budget` cap·`cost-ledger`를 공유한다.
+
 ## CAR 분해 (HarnessCard)
 
 - **Control:** AGENTS.md, feature_list, validate-output, deny_paths

@@ -1,5 +1,5 @@
 # Hermes Content Studio — 문체 (im-not-ai AI-tell + casual 해요체)
-# Reference: https://github.com/epoko77-ai/im-not-ai
+# SoT: config/content-quality.yaml (voice 섹션) — 본 파일은 호환용
 
 source: im-not-ai
 version: "2.1.0"

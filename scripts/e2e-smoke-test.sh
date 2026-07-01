@@ -100,7 +100,67 @@ else
 fi
 
 echo ""
-echo "--- 4/6 산출물 품질 검증 ---"
+echo "--- 3b/7 Supervised cron (L2) — config · stages ---"
+CRON_DRY=$(HERMES_CRON_SUPERVISED_DRY_RUN=1 "$DIR/cron-supervised-pipeline.sh" 2>&1) || true
+if echo "$CRON_DRY" | grep -q "HERMES_CRON_HUMANIZE=1"; then
+  pass "cron default HERMES_CRON_HUMANIZE=1"
+else
+  fail "cron default HERMES_CRON_HUMANIZE≠1"
+fi
+if echo "$CRON_DRY" | grep -q "SKIP_NEWSLETTER=0"; then
+  pass "cron default SKIP_NEWSLETTER=0 (M2b ON)"
+else
+  fail "cron default SKIP_NEWSLETTER≠0"
+fi
+HANDOFF="$WORKDIR/.harness/handoffs/${DATE}_supervised-pipeline.json"
+_handoff_ok() {
+  [[ -f "$HANDOFF" ]] || return 1
+  python3 -c "
+import json, sys
+from pathlib import Path
+d = json.loads(Path('$HANDOFF').read_text(encoding='utf-8'))
+ids = {s.get('id') for s in d.get('stages', [])}
+need = {'VOICE', 'HUMANIZE', 'NATURALNESS'}
+missing = need - ids
+if missing:
+    raise SystemExit('missing: ' + ','.join(sorted(missing)))
+for s in d.get('stages', []):
+    if s.get('id') in need and s.get('status') not in ('PASS', 'WARN'):
+        raise SystemExit(s.get('id') + ' status ' + str(s.get('status')))
+" 2>/dev/null
+}
+if _handoff_ok; then
+  pass "supervised handoff VOICE/HUMANIZE/NATURALNESS"
+else
+  echo "  ↻ handoff 갱신 — cron-supervised-pipeline (SKIP_NOTION)"
+  HERMES_CRON_SKIP_NOTION=1 "$DIR/cron-supervised-pipeline.sh" "$DATE" >/tmp/e2e-supervised-refresh.log 2>&1 || true
+  if _handoff_ok; then
+    pass "supervised handoff refreshed"
+  else
+    fail "supervised handoff stages"
+  fi
+fi
+
+echo ""
+echo "--- 3c/7 Humanize LLM · Loop budget (wiring) ---"
+if "$DIR/humanize-llm-eval.sh" "$DATE" >/tmp/e2e-humanize-llm.log 2>&1; then
+  pass "humanize-llm-eval (wiring)"
+else
+  fail "humanize-llm-eval (wiring)"
+fi
+if "$DIR/loop-budget-eval.sh" >/tmp/e2e-loop-budget.log 2>&1; then
+  pass "loop-budget-eval"
+else
+  fail "loop-budget-eval"
+fi
+if "$DIR/playmcp-routing-e2e.sh" >/tmp/e2e-playmcp-routing.log 2>&1; then
+  pass "playmcp-routing-e2e (wiring)"
+else
+  fail "playmcp-routing-e2e (wiring)"
+fi
+
+echo ""
+echo "--- 4/7 산출물 품질 검증 ---"
 for spec in \
   "research:$BRIEF" \
   "blog:$WORKDIR/content/blog/${DATE}_blog_" \

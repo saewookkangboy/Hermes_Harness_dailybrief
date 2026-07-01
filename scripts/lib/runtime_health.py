@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 
 from lib.proactive_triggers import run_proactive_checks
+from lib.watch_telegram_singleton import root_count
 
 WORKDIR = Path.home() / "hermes-content-studio"
 
@@ -22,16 +23,7 @@ def _pgrep(pattern: str) -> bool:
 
 
 def _watch_count() -> int:
-    try:
-        r = subprocess.run(
-            ["bash", "-lc", r"ps -ax -o command= | rg -c 'watch-telegram\.sh' || echo 0"],
-            capture_output=True,
-            text=True,
-            timeout=5,
-        )
-        return int((r.stdout or "0").strip() or "0")
-    except (ValueError, subprocess.TimeoutExpired, OSError):
-        return 0
+    return root_count()
 
 
 def check_gateway() -> str | None:

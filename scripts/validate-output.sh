@@ -38,9 +38,25 @@ for s in summaries:
         raise SystemExit(f"한국어 요약 부족: {s[:40]}")
 if views and all("재해석해 적용" in v for v in views):
     raise SystemExit("generic 마케터 관점 fallback만 존재")
+exec_m = re.search(r"## Executive Summary\n(.+?)\n\n##", text, re.S)
+if exec_m:
+    exec_text = exec_m.group(1).strip()
+    if "결론적으로" in exec_text or "혁신적인" in exec_text:
+        raise SystemExit("Executive Summary AI-tell 잔존")
+    if "21년차 디지털 마케터" in exec_text:
+        raise SystemExit("Executive Summary 페르소나 중복")
 insight_count = len(re.findall(r"^### \d+\.", text, re.M))
 if insight_count < 7:
     raise SystemExit(f"Top 7 미달: {insight_count}개")
+PY
+    python3 - <<PY || fail "brief naturalness 게이트"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.naturalness_audit import audit_research_brief_file
+issues = audit_research_brief_file(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues))
 PY
     pass "research brief OK: $FILE ($SIZE bytes)"
     ;;
@@ -52,6 +68,15 @@ PY
     CHARS=$(python3 -c "print(len(open('$FILE', encoding='utf-8').read()))")
     (( CHARS >= 2500 )) || warn "본문 확장 미달(2500자 미만): ${CHARS}"
     (( CHARS <= 15000 )) || warn "15000자 초과: ${CHARS}"
+    python3 - <<PY || fail "blog-article naturalness 게이트"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.naturalness_audit import audit_blog_article_md_naturalness
+issues = audit_blog_article_md_naturalness(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues))
+PY
     pass "blog article OK: $FILE (${CHARS} chars)"
     ;;
   blog)
@@ -64,6 +89,15 @@ PY
     H2_COUNT=$(grep -c "<h2" "$FILE" || true)
     (( H2_COUNT >= 3 )) || warn "H2 3개 미만 (SEO/AEO): $H2_COUNT"
     grep -qi "geo-quote\|GEO" "$FILE" || warn "GEO 인용 블록 없음"
+    python3 - <<PY || fail "blog naturalness 게이트"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.naturalness_audit import audit_blog_html_naturalness
+issues = audit_blog_html_naturalness(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues))
+PY
     pass "blog HTML OK: $FILE ($SIZE bytes, H2=$H2_COUNT)"
     ;;
   instagram)
@@ -84,6 +118,15 @@ if len(tags) < 5:
     raise SystemExit(f"해시태그 {len(tags)}개")
 PY
     grep -qi "캡션" "$FILE" || fail "캡션 섹션 없음"
+    python3 - <<PY || fail "Instagram 캡션 문체: 불완전 절단 또는 AI-tell"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.voice_style_audit import audit_instagram_file
+issues = audit_instagram_file(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues[:3]))
+PY
     SLIDE_COUNT=$(grep -c "^### Slide" "$FILE" || true)
     (( SLIDE_COUNT == 3 )) || warn "캐러셀 3장 권장: $SLIDE_COUNT"
     pass "instagram OK: $FILE ($SIZE bytes, slides=$SLIDE_COUNT)"
@@ -101,6 +144,15 @@ post=text.split('---')[0].strip()
 print(len(post))
 ")
     (( POST_CHARS <= 1300 )) || warn "포스트 본문 1300자 초과: ${POST_CHARS}"
+    python3 - <<PY || fail "LinkedIn 문체: 불완전 절단 또는 AI-tell"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.voice_style_audit import audit_linkedin_file
+issues = audit_linkedin_file(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues[:3]))
+PY
     pass "linkedin OK: $FILE ($SIZE bytes, post=${POST_CHARS} chars)"
     ;;
   instagram-context)
@@ -171,6 +223,15 @@ issues = audit_newsletter_md(text)
 if issues:
     raise SystemExit("; ".join(issues[:5]))
 PY
+    python3 - <<PY || fail "newsletter naturalness 게이트"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.naturalness_audit import audit_newsletter_file_naturalness
+issues = audit_newsletter_file_naturalness(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues))
+PY
     pass "newsletter OK: $FILE ($SIZE bytes, modules=$MOD_COUNT)"
     ;;
   newsletter-context)
@@ -184,6 +245,15 @@ PY
     grep -qi "이번 주 실습" "$FILE" || fail "CTA 모듈 없음"
     grep -qi "role=\"presentation\"" "$FILE" || fail "이메일 테이블 레이아웃 없음"
     grep -qi "{{" "$FILE" && fail "미치환 플레이스홀더 남음"
+    python3 - <<PY || fail "newsletter-html naturalness 게이트"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.naturalness_audit import audit_newsletter_html_naturalness
+issues = audit_newsletter_html_naturalness(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues))
+PY
     pass "newsletter HTML OK: $FILE ($SIZE bytes)"
     ;;
   newsletter-paste)
@@ -193,6 +263,15 @@ PY
     grep -qi "## §3 본문" "$FILE" || fail "§3 본문 섹션 없음"
     grep -qi "## §4 본문" "$FILE" || fail "§4 HTML 섹션 없음"
     grep -qi "## 30초 TLDR" "$FILE" || fail "본문 TLDR 코드블록 없음"
+    python3 - <<PY || fail "newsletter-paste naturalness 게이트"
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from pathlib import Path
+from lib.naturalness_audit import audit_newsletter_paste_naturalness
+issues = audit_newsletter_paste_naturalness(Path("$FILE"))
+if issues:
+    raise SystemExit("; ".join(issues))
+PY
     pass "newsletter paste OK: $FILE ($SIZE bytes)"
     ;;
   newsletter-subject-scores)

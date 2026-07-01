@@ -77,10 +77,8 @@ echo "=== 2/2 품질 검증 (Brief SoT + M2 채널) ==="
 
 if [[ "${HERMES_HUMANIZE:-0}" == "1" ]]; then
   echo ""
-  echo "=== Hermes humanize-korean (선택, im-not-ai) ==="
-  HERMES_TOOLSETS=hermes-cli HERMES_USE_CODEX=1 "$SCRIPTS/hermes-run.sh" \
-    "humanize-korean: ${BLOG_PKG} blog 문체 윤문. 의미·URL·구조 유지." \
-    --skills humanize-korean -t hermes-cli || true
+  echo "=== Hermes humanize polish (HERMES_HUMANIZE=1) ==="
+  HERMES_HUMANIZE=1 HERMES_HUMANIZE_LLM="${HERMES_HUMANIZE_LLM:-0}" "$SCRIPTS/run-humanize-polish.sh" "$DATE" || true
 fi
 
 if [[ "${HERMES_ENHANCE:-0}" == "1" ]]; then

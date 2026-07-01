@@ -1,0 +1,188 @@
+# Hermes Content Studio — 콘텐츠 품질 통합 SoT (Phase 2)
+# voice-style · longform · coach trait · sentence policy 단일 참조
+# Legacy: voice-style.yaml · longform-content.yaml · m4-coach.yaml (호환 유지)
+
+version: "2.0.0"
+reference: content-quality-unified
+
+sentence_policy:
+  mid_ellipsis_forbidden: true
+  finish_at_punctuation: true
+  default_max_sentences: 4
+
+voice:
+  source: im-not-ai
+  version: "2.1.0"
+  change_rate_max: 0.30
+  principles:
+    - meaning_invariant
+    - genre_preserved
+    - no_ai_tell
+    - blog_formal_linkedin_haeyo
+  genres:
+    blog:
+      register: formal_hamnida
+      avoid: ["결론적으로", "~를 통해 spam", "시사하는 바", "장황한 AI slop"]
+      prefer: ["~합니다", "출처 기반 확장 본문"]
+    linkedin:
+      register: casual_haeyo_personal
+      post_max_chars: 1300
+      avoid: ["본문 URL", "3인칭 템플릿"]
+      prefer: ["1인칭", "Hook 2줄", "→ 불릿", "~세요? CTA"]
+    instagram:
+      register: casual_haeyo
+      emoji: minimal
+    brief:
+      register: preserve
+      apply: [executive_summary, summary_ko, insight_derivation]
+  pipeline:
+    deterministic: scripts/lib/humanize_korean.py
+    llm_optional: humanize-korean
+    apply_to: [blog, linkedin, instagram, blog_html_prose, brief]
+  ai_tells:
+    - 결론적으로
+    - 요약하면
+    - 정리하면
+    - 혁신적인
+    - 획기적인
+    - 시사하는 바
+    - 본질적으로
+    - 핵심적으로
+
+longform:
+  blog:
+    title_max_chars: 58
+    subtitle_max_chars: 90
+    meta_max_chars: 155
+    direct_answer_max_chars: 360
+    direct_answer_sentences: 3
+    insight_body_sentences: 6
+    geo_quote_max_chars: 240
+    min_h2_sections: 5
+  newsletter:
+    tldr_bullet_sentences: 2
+    tldr_body_max_chars: 120
+    hero_sentences: 4
+    module_context_sentences: 4
+    module_context_max_chars: 420
+    module_apply_sentences: 2
+    module_apply_max_chars: 260
+  seo_aeo_geo:
+    require_faq_jsonld: true
+    require_source_urls: true
+    require_geo_block: true
+    require_direct_answer_first: true
+
+coach:
+  min_ctor_records: 2
+  recommend_top_n: 5
+  channels:
+    newsletter:
+      label: B2B 뉴스레터
+      metric: ctor_pct
+      target: "10-15%"
+      traits: [no_ai_tell, complete_sentences, naturalness_ok]
+    linkedin:
+      label: LinkedIn
+      metric: engagement_rate
+      traits: [hook_question, hook_number, bullet_arrows, comment_cta, b2b_kw, no_ai_tell, complete_sentences, naturalness_ok]
+    blog:
+      label: Blog SEO
+      metric: quality_score
+      traits: [title_length, h2_count, faq_jsonld, geo_block, no_ai_tell]
+    instagram:
+      label: Instagram
+      metric: save_proxy
+      traits: [caption_hook, hashtag_count, slide_count, alt_text, no_ai_tell, complete_sentences, naturalness_ok]
+  trait_propagation:
+    question: [newsletter, linkedin, blog]
+    number: [newsletter, linkedin, blog]
+    b2b_kw: [newsletter, linkedin, blog, instagram]
+
+supervised:
+  humanize_env: HERMES_HUMANIZE
+  humanize_stage: optional
+  humanize_blocking: false
+  voice_blocking: true
+  naturalness_blocking: true
+  budget_blocking: false
+  # 프로덕션 blocking: voice + naturalness (2026-07-01~)
+  staging:
+    naturalness_blocking: true
+    voice_blocking: false
+    humanize_blocking: false
+    budget_blocking: false
+  # 프로덕션 FAIL 전환: yaml naturalness_blocking: true 또는 HERMES_NATURALNESS_BLOCKING=1
+  cron_llm_humanize: false  # cron은 결정적 humanize만 — LLM은 수동 HERMES_HUMANIZE_LLM=1
+  # 평일 cron-supervised-pipeline.sh 기본값 (env로 override 가능)
+  cron_defaults:
+    humanize: true
+    skip_newsletter: false
+    skip_notion: false
+    skip_audit: false
+
+eval:
+  voice_fixtures_min: 50
+  naturalness_fixtures_min: 30
+  change_rate_max: 0.30
+  content_loop_target_score: 70
+
+naturalness:
+  target_score: 65
+  channels:
+    linkedin:
+      min_score: 60
+      signals:
+        - first_person
+        - question_cta
+        - bullet_arrows
+        - haeyo_register
+    instagram:
+      min_score: 55
+      signals:
+        - caption_hook
+        - haeyo_register
+        - minimal_emoji
+    brief:
+      min_score: 60
+      signals:
+        - no_persona_dup
+        - complete_sentences
+    blog:
+      min_score: 58
+      signals:
+        - formal_register
+        - no_haeyo_mix
+    newsletter:
+      min_score: 58
+      signals:
+        - haeyo_register
+        - no_garbage_title
+        - question_cta
+        - first_person
+
+humanize_llm:
+  use_codex: true
+  default_timeout_sec: 120
+  channel_timeouts:
+    linkedin: 120
+    instagram: 90
+    blog: 180
+    newsletter: 120
+
+budget:
+  llm_paths:
+    - /deep
+    - research_squad
+    - HERMES_WIKI_INGEST
+    - HERMES_WIKI_LINT
+    - HERMES_HUMANIZE_LLM
+    - HERMES_ENHANCE
+    - telegram-custom
+  # Codex humanize LIVE 실측 ~150–275k/채널(도구 호출 포함). 일 2회 humanize + eval 여유.
+  daily_token_cap: 600000
+  daily_usd_cap: 2.0
+  warn_threshold_pct: 80
+  path_daily_token_caps:
+    HERMES_HUMANIZE_LLM: 400000
+  kill_switch_env: HERMES_LOOP_BUDGET_KILL

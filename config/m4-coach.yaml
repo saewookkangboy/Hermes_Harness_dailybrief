@@ -1,4 +1,5 @@
 # M4 Performance Coach — 전 채널 성과·trait 코칭 (결정적)
+# SoT: config/content-quality.yaml (coach 섹션) — 본 파일은 호환용
 version: "1.0.0"
 
 channels:
@@ -7,19 +8,20 @@ channels:
     metric: ctor_pct
     target: "10-15%"
     traits_source: newsletter_ctor_feedback
+    traits: [no_ai_tell, complete_sentences]
   linkedin:
     label: "LinkedIn"
     metric: engagement_rate
     post_max_chars: 1300
-    traits: [hook_question, hook_number, bullet_arrows, comment_cta, b2b_kw]
+    traits: [hook_question, hook_number, bullet_arrows, comment_cta, b2b_kw, no_ai_tell, complete_sentences]
   blog:
     label: "Blog SEO"
     metric: quality_score
-    traits: [title_length, h2_count, faq_jsonld, geo_block]
+    traits: [title_length, h2_count, faq_jsonld, geo_block, no_ai_tell]
   instagram:
     label: "Instagram"
     metric: save_proxy
-    traits: [caption_hook, hashtag_count, slide_count, alt_text]
+    traits: [caption_hook, hashtag_count, slide_count, alt_text, no_ai_tell, complete_sentences]
 
 coaching:
   min_ctor_records: 2

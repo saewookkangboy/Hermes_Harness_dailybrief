@@ -4,6 +4,8 @@ set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 WATCH_PID_FILE="/tmp/hermes-watch-telegram.pid"
+# shellcheck source=lib/watch_telegram_singleton.sh
+source "$DIR/lib/watch_telegram_singleton.sh"
 
 echo "=== Hermes Content Studio — 서비스 시작 ==="
 
@@ -35,9 +37,9 @@ fi
 
 # 4. Telegram 모니터 (진행 표시 — Notion sync는 슬래시/파이프라인 담당)
 if [[ "${SKIP_WATCH_TELEGRAM:-0}" != "1" ]]; then
-  stale=$(ps -ax -o command= 2>/dev/null | rg -c 'watch-telegram\.sh' 2>/dev/null || echo 0)
+  stale=$(watch_telegram_root_count)
   stale="${stale:-0}"
-  if (( stale > 0 )); then
+  if (( stale > 1 )); then
     echo "[4/4] watch-telegram 중복 ${stale}건 정리..."
     SKIP_INIT=1 "$DIR/kill-stale-watch-telegram.sh" 2>/dev/null || true
     sleep 0.5

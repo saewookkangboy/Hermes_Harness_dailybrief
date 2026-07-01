@@ -24,6 +24,9 @@ hermes_should_use_codex() {
     *personal*|*automate*)
       return 0
       ;;
+    *humanize-korean*)
+      return 0
+      ;;
   esac
   return 1
 }

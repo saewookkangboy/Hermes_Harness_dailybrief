@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import time
 from dataclasses import dataclass, field
@@ -12,6 +13,10 @@ from lib.brief_gate import assert_brief_ready_for_content, brief_path
 from lib.common import studio_today
 from lib.harness import timed_stage
 from lib.quality_auditor import audit_stamp, glob_linkedin_feed
+from lib.naturalness_audit import naturalness_issues_for_stamp
+from lib.voice_style_audit import run_voice_audit_stamp
+from lib.content_quality_config import supervised_stage_blocking
+from lib.loop_budget import check_loop_budget
 
 WORKDIR = Path.home() / "hermes-content-studio"
 SCRIPTS = WORKDIR / "scripts"
@@ -74,6 +79,12 @@ def _validate_channel(vtype: str, pattern: str) -> tuple[bool, str]:
 NotifyFn = Callable[[str], None]
 
 
+def _quality_stage_status(*, has_issues: bool, blocking: bool) -> str:
+    if not has_issues:
+        return "PASS"
+    return "FAIL" if blocking else "WARN"
+
+
 def _finish(report: SupervisorReport, t0: float) -> SupervisorReport:
     report.elapsed_seconds = round(time.perf_counter() - t0, 2)
     _write_handoff(report)
@@ -88,10 +99,15 @@ def run_supervised_pipeline(
     skip_audit: bool = False,
     notify: NotifyFn | None = None,
 ) -> SupervisorReport:
-    """M1 research → brief_gate → M2 content → M2b newsletter → audit → M5 notion."""
+    """M1 research → brief_gate → M2 → M2b → audit → voice → humanize? → M5."""
     t0 = time.perf_counter()
     report = SupervisorReport(stamp=stamp)
-    total_steps = 5 if not skip_newsletter else 4
+    enable_humanize = os.environ.get("HERMES_HUMANIZE", "0") == "1"
+    total_steps = (5 if not skip_newsletter else 4) + (1 if not skip_audit else 0)
+    if enable_humanize and not skip_audit:
+        total_steps += 1
+    if not skip_audit:
+        total_steps += 1  # NATURALNESS
     step = 0
 
     def _progress(msg: str) -> None:
@@ -193,6 +209,66 @@ def run_supervised_pipeline(
             )
         )
         # Audit WARN는 차단하지 않음 — DoD 참고만
+
+        # Voice style (non-blocking WARN)
+        step += 1
+        _progress(f"[████░] {step}/{total_steps} Voice Style…")
+        t1 = time.perf_counter()
+        voice_issues = run_voice_audit_stamp(stamp)
+        elapsed = round(time.perf_counter() - t1, 2)
+        voice_blocking = supervised_stage_blocking("voice")
+        voice_st = _quality_stage_status(has_issues=bool(voice_issues), blocking=voice_blocking)
+        voice_detail = "; ".join(voice_issues[:3]) if voice_issues else "OK"
+        report.stages.append(
+            StageResult("VOICE", "voice_style", voice_st, elapsed, voice_detail)
+        )
+        if voice_st == "FAIL":
+            report.blocked_at = "VOICE"
+            return _finish(report, t0)
+
+        if enable_humanize:
+            step += 1
+            _progress(f"[████░] {step}/{total_steps} Humanize Polish…")
+            t1 = time.perf_counter()
+            rc, detail = _run_script(
+                [str(SCRIPTS / "run-humanize-polish.sh"), stamp],
+                env={"HERMES_HUMANIZE": "1", "HERMES_HUMANIZE_LLM": os.environ.get("HERMES_HUMANIZE_LLM", "0")},
+            )
+            elapsed = round(time.perf_counter() - t1, 2)
+            hum_fail = rc != 0
+            hum_blocking = supervised_stage_blocking("humanize")
+            hum_st = _quality_stage_status(has_issues=hum_fail, blocking=hum_blocking)
+            report.stages.append(
+                StageResult("HUMANIZE", "humanize_polish", hum_st, elapsed, detail[:120] or "OK")
+            )
+            if hum_st == "FAIL":
+                report.blocked_at = "HUMANIZE"
+                return _finish(report, t0)
+
+        # Naturalness (+ optional budget gate)
+        step += 1
+        _progress(f"[████░] {step}/{total_steps} Naturalness…")
+        t1 = time.perf_counter()
+        nat_issues = naturalness_issues_for_stamp(stamp)
+        budget = check_loop_budget()
+        elapsed = round(time.perf_counter() - t1, 2)
+        detail_parts = list(nat_issues[:3])
+        if not budget.ok:
+            detail_parts.append(f"budget: {budget.detail}")
+        nat_detail = "; ".join(detail_parts) if detail_parts else "OK"
+        content_has_issues = bool(nat_issues)
+        budget_has_issues = not budget.ok
+        nat_has_issues = content_has_issues or budget_has_issues
+        nat_blocking = (
+            content_has_issues and supervised_stage_blocking("naturalness")
+        ) or (budget_has_issues and supervised_stage_blocking("budget"))
+        nat_st = _quality_stage_status(has_issues=nat_has_issues, blocking=nat_blocking)
+        report.stages.append(
+            StageResult("NATURALNESS", "naturalness", nat_st, elapsed, nat_detail[:120])
+        )
+        if nat_st == "FAIL":
+            report.blocked_at = "NATURALNESS"
+            return _finish(report, t0)
 
     # M5
     if not skip_notion:

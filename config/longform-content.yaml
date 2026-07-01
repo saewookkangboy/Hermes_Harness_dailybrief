@@ -1,5 +1,5 @@
 # Longform Content — Blog · Newsletter 컨텍스트 엔지니어링 SoT
-# 결정적 assemble · 완결 문장 우선 · 중간 '…' 생략 금지
+# SoT: config/content-quality.yaml (longform 섹션) — 본 파일은 호환용
 
 version: "1.0.0"
 

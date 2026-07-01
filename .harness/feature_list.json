@@ -1,6 +1,6 @@
 {
   "project": "hermes-content-studio",
-  "last_updated": "2026-06-08T18:30:00+09:00",
+  "last_updated": "2026-07-01T22:00:00+09:00",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -195,6 +195,7 @@
       "verification": [
         "scripts/features-priority-eval.sh",
         "scripts/playmcp-integration-eval.sh",
+        "scripts/playmcp-routing-e2e.sh",
         "scripts/hermes-agent.sh publish newsletter --dry-run",
         "scripts/run-blog-pipeline.sh YYYY-MM-DD --validate"
       ],
@@ -205,7 +206,7 @@
         "scripts/lib/m4_channel_metrics.py",
         "config/playmcp-routing.yaml"
       ],
-      "notes": "설계 원칙 1–4 준수 · 결정적 우선 · Brief SoT · validate · Notion Permalink"
+      "notes": "P1–P8 · PlayMCP routing E2E 7/7 (OTT 갱신 시 LIVE) · playmcp-integration-eval 7/7"
     },
     {
       "id": "pipe-011",
@@ -293,6 +294,39 @@
         "scripts/lib/newsletter_ctor_feedback.py"
       ],
       "notes": "CTOR trait 전파 · channel-metrics import · content/logs m4-coach.md"
+    },
+    {
+      "id": "pipe-015",
+      "priority": 15,
+      "area": "quality",
+      "title": "Voice · Naturalness 품질 게이트",
+      "user_visible_behavior": "supervised cron voice+naturalness blocking · validate naturalness · loop budget cap 600k",
+      "status": "passing",
+      "depends_on": ["pipe-002", "pipe-008", "pipe-014"],
+      "verification": [
+        "scripts/voice-style-eval.sh YYYY-MM-DD",
+        "scripts/naturalness-eval.sh YYYY-MM-DD",
+        "scripts/loop-budget-eval.sh",
+        "scripts/loop-budget-status.sh",
+        "scripts/humanize-llm-eval.sh YYYY-MM-DD",
+        "HERMES_HUMANIZE_LLM_LIVE=1 scripts/humanize-llm-eval.sh YYYY-MM-DD",
+        "scripts/staging-supervised-eval.sh",
+        "scripts/m5-notion-eval.sh",
+        "HERMES_PLAYMCP_E2E_LIVE=1 scripts/playmcp-routing-e2e.sh",
+        "scripts/validate-output.sh research content/research/YYYY-MM-DD_brief.md",
+        "scripts/validate-output.sh newsletter content/newsletter/YYYY-MM-DD_newsletter_*.md",
+        "HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh"
+      ],
+      "evidence": [
+        "config/content-quality.yaml",
+        "scripts/lib/naturalness_audit.py",
+        "scripts/lib/humanize_polish.py",
+        "scripts/lib/hermes_cost.py",
+        "scripts/lib/loop_budget.py",
+        "content/logs/2026-07-01_naturalness-eval.md",
+        ".harness/cost-ledger.jsonl"
+      ],
+      "notes": "P4–P15 · voice+naturalness blocking · budget cap 600k · delta ledger · Notion architecture export"
     }
   ]
 }

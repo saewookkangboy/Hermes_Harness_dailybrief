@@ -203,12 +203,13 @@ def humanize(text: str, *, genre: str = "blog") -> HumanizeResult:
         change_count += formal.change_count
         if formal.change_count and "formal" not in patterns:
             patterns.append("formal")
-    elif genre in ("linkedin", "instagram"):
+    elif genre in ("linkedin", "instagram", "newsletter"):
         haeyo = apply_haeyo(result)
         result = haeyo.text
         change_count += haeyo.change_count
         if haeyo.change_count and "haeyo" not in patterns:
             patterns.append("haeyo")
+    # genre == "brief": AI-tell 제거만, register 유지
 
     return HumanizeResult(text=result.strip(), change_count=change_count, patterns=patterns)
 

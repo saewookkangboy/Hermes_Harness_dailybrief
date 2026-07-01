@@ -70,6 +70,16 @@ check_struct "State (progress)" "$WORKDIR/.harness/progress.md"
 check_struct "Verification (init.sh)" "$DIR/init.sh"
 check_struct "Verification (validate-output)" "$DIR/validate-output.sh"
 check_struct "Config (harness.yaml)" "$WORKDIR/config/harness.yaml"
+check_struct "Config (content-quality.yaml)" "$WORKDIR/config/content-quality.yaml"
+check_struct "Voice eval (voice-style-eval)" "$DIR/voice-style-eval.sh"
+check_struct "Naturalness eval (naturalness-eval)" "$DIR/naturalness-eval.sh"
+check_struct "Loop budget eval (loop-budget-eval)" "$DIR/loop-budget-eval.sh"
+check_struct "Loop budget status (loop-budget-status)" "$DIR/loop-budget-status.sh"
+check_struct "Humanize LLM eval (humanize-llm-eval)" "$DIR/humanize-llm-eval.sh"
+check_struct "M5 Notion eval (m5-notion-eval)" "$DIR/m5-notion-eval.sh"
+check_struct "Staging supervised eval" "$DIR/staging-supervised-eval.sh"
+check_struct "PlayMCP routing E2E" "$DIR/playmcp-routing-e2e.sh"
+check_struct "Content loop eval (content-loop-eval)" "$DIR/content-loop-eval.sh"
 check_struct "Newsletter pipeline (run-newsletter)" "$DIR/run-newsletter.sh"
 check_struct "Newsletter eval (newsletter-eval)" "$DIR/newsletter-eval.sh"
 check_struct "Newsletter config" "$WORKDIR/config/newsletter.yaml"
@@ -86,9 +96,45 @@ if command -v jq >/dev/null 2>&1; then
     echo "❌ feature pipe-008 (newsletter) — feature_list.json"
     FAIL=$((FAIL + 1))
   fi
+  if jq -e '.features[] | select(.id=="pipe-015" and .area=="quality")' \
+    "$WORKDIR/.harness/feature_list.json" >/dev/null 2>&1; then
+    echo "✅ feature pipe-015 (voice-naturalness)"
+    PASS=$((PASS + 1))
+  else
+    echo "❌ feature pipe-015 (voice-naturalness) — feature_list.json"
+    FAIL=$((FAIL + 1))
+  fi
 fi
 
 if [[ "$MODE" == "quick" ]]; then
+  if "$DIR/loop-budget-eval.sh" >/tmp/harness-loop-budget.log 2>&1; then
+    echo "✅ loop-budget-eval"
+    PASS=$((PASS + 1))
+  else
+    echo "❌ loop-budget-eval"
+    FAIL=$((FAIL + 1))
+  fi
+  if "$DIR/humanize-llm-eval.sh" >/tmp/harness-humanize-llm.log 2>&1; then
+    echo "✅ humanize-llm-eval (wiring)"
+    PASS=$((PASS + 1))
+  else
+    echo "❌ humanize-llm-eval (wiring)"
+    FAIL=$((FAIL + 1))
+  fi
+  if "$DIR/m5-notion-eval.sh" >/tmp/harness-m5-notion.log 2>&1; then
+    echo "✅ m5-notion-eval (wiring)"
+    PASS=$((PASS + 1))
+  else
+    echo "❌ m5-notion-eval (wiring)"
+    FAIL=$((FAIL + 1))
+  fi
+  if "$DIR/playmcp-routing-e2e.sh" >/tmp/harness-playmcp-routing.log 2>&1; then
+    echo "✅ playmcp-routing-e2e (wiring)"
+    PASS=$((PASS + 1))
+  else
+    echo "❌ playmcp-routing-e2e (wiring)"
+    FAIL=$((FAIL + 1))
+  fi
   echo ""
   echo "=== Quick eval: ✅ $PASS / ❌ $FAIL / ⚠️ $WARN ==="
   [[ "$FAIL" -eq 0 ]] && exit 0 || exit 1

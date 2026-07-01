@@ -2,12 +2,15 @@
 # 중복 watch-telegram 프로세스 정리 (Notion sync 2중 실행 방지)
 set -euo pipefail
 
+DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
 LOCK="$WORKDIR/.harness/watch-telegram.lock"
 PID_FILE="/tmp/hermes-watch-telegram.pid"
+# shellcheck source=lib/watch_telegram_singleton.sh
+source "$DIR/lib/watch_telegram_singleton.sh"
 
 if [[ "${1:-}" == "--check" ]]; then
-  n=$(ps -ax -o pid=,command= 2>/dev/null | rg -c 'watch-telegram\.sh' || echo 0)
+  n=$(watch_telegram_root_count)
   if [[ "$n" -gt 1 ]]; then
     echo "DUPLICATE watch-telegram count=$n"
     exit 0
@@ -20,7 +23,7 @@ count=0
 while read -r pid; do
   [[ -z "$pid" ]] && continue
   kill "$pid" 2>/dev/null && count=$((count + 1)) || true
-done < <(ps -ax -o pid=,command= 2>/dev/null | rg 'watch-telegram\.sh' | awk '{print $1}' || true)
+done < <(watch_telegram_root_pids)
 
 rm -f "$LOCK" "$PID_FILE" 2>/dev/null || true
 echo "watch-telegram 정리 완료 — 종료 ${count}건"

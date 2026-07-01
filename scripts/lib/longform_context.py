@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from lib.common import compress_sentences, finish_at_sentence, read_template, slugify
+from lib.content_quality_config import longform_config as load_content_quality_longform
 from lib.content_quality import (
     Insight,
     build_faq_items,
@@ -20,14 +21,18 @@ from lib.content_quality import (
 from lib.humanize_korean import humanize
 
 WORKDIR = Path.home() / "hermes-content-studio"
-CONFIG_PATH = WORKDIR / "config" / "longform-content.yaml"
+CONFIG_PATH = WORKDIR / "config" / "content-quality.yaml"
+LEGACY_CONFIG_PATH = WORKDIR / "config" / "longform-content.yaml"
 
 
 def load_longform_config() -> dict[str, Any]:
-    if not CONFIG_PATH.exists():
-        return {}
-    with CONFIG_PATH.open(encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    cfg = load_content_quality_longform()
+    if cfg:
+        return cfg
+    if LEGACY_CONFIG_PATH.exists():
+        with LEGACY_CONFIG_PATH.open(encoding="utf-8") as f:
+            return yaml.safe_load(f) or {}
+    return {}
 
 
 def complete_text(

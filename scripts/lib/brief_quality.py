@@ -6,8 +6,9 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
-from lib.common import compress_sentences
+from lib.common import compress_sentences, finish_at_sentence
 from lib.content_quality import localize_title, polish_display_title
+from lib.humanize_korean import humanize
 
 INSIGHT_LIMIT = 7
 CONFIG_PATH = Path.home() / "hermes-content-studio" / "config" / "research-brief.yaml"
@@ -237,6 +238,52 @@ def _persona_prefix() -> str:
     return PERSONA_INTRO
 
 
+_BRIEF_GARBAGE_PATTERNS = (
+    "관련 AI·마케팅 신호입니다",
+    "관련 신호입니다",
+    "재해석해 적용",
+)
+
+
+def polish_brief_prose(
+    text: str,
+    *,
+    max_chars: int = 320,
+    max_sentences: int = 3,
+) -> str:
+    """M1 brief 필드 — AI-tell 제거 + 완결 문장 (register 유지)."""
+    raw = re.sub(r"\s+", " ", (text or "").strip())
+    if not raw:
+        return ""
+    for garbage in _BRIEF_GARBAGE_PATTERNS:
+        raw = raw.replace(garbage, "").strip()
+    raw = re.sub(r"\s+", " ", raw).strip(" .")
+    polished = humanize(raw, genre="brief").text
+    out = compress_sentences(polished, max_chars, max_sentences=max_sentences)
+    if out and out[-1] not in ".!?。…":
+        out = finish_at_sentence(out, max_chars)
+    return out
+
+
+def build_executive_summary(
+    period_label: str,
+    enriched: list[dict],
+    categories: list[str],
+    themes: list[str],
+) -> str:
+    """Executive Summary — 페르소나 중복 없이 Top 축 요약."""
+    theme = themes[0] if themes else "AX·에이전트"
+    cats = ", ".join(categories[:5]) if categories else "AX·LLM·에이전트"
+    raw = (
+        f"일일 관측({period_label}) — 글로벌·대한민국 AI·마케팅 교차 신호입니다. "
+        f"오늘 Top {len(enriched)} 축은 {cats} 등입니다. "
+        f"특히 {theme}가 브랜드·콘텐츠·퍼포먼스·AX 로드맵에 연결됩니다. "
+        f"LLM 4사, AI 거버넌스·리터러시, 하네스·Hermes Agent 실무를 "
+        f"통합 컨텍스트로 정리했습니다."
+    )
+    return polish_brief_prose(raw, max_chars=480, max_sentences=4)
+
+
 def synthesize_korean_summary(title: str, snippet: str, query: str) -> str:
     """내용 요약 — 영문 스니펫 → 한국어 2~3문장."""
     key = classify_insight(title, snippet, query)
@@ -318,10 +365,14 @@ def synthesize_korean_summary(title: str, snippet: str, query: str) -> str:
             f"구매·교육 의사결정을 좌우합니다."
         ),
     }
-    return summaries.get(
-        key,
-        f"{ko_title} — 글로벌·국내 AI·마케팅 교차 신호입니다. "
-        f"브랜드·퍼포먼스·콘텐츠·AX 관점에서 재해석할 여지가 있습니다.",
+    return polish_brief_prose(
+        summaries.get(
+            key,
+            f"{ko_title} — 글로벌·국내 AI·마케팅 교차 신호입니다. "
+            f"브랜드·퍼포먼스·콘텐츠·AX 관점에서 재해석할 여지가 있습니다.",
+        ),
+        max_chars=280,
+        max_sentences=3,
     )
 
 

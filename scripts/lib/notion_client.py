@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -39,7 +40,8 @@ def save_state(state: dict) -> None:
     STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def setup_mcp():
+def setup_mcp(*, server_names: list[str] | None = None):
+    """Notion MCP registry — 기본은 notion만 연결 (PlayMCP 등 미사용 서버 스킵)."""
     sys.path.insert(0, str(HERMES_AGENT))
     from dotenv import load_dotenv
 
@@ -47,7 +49,37 @@ def setup_mcp():
     from tools import mcp_tool
     from tools.registry import registry
 
-    mcp_tool.discover_mcp_tools()
+    if os.environ.get("HERMES_MCP_DISCOVER_ALL", "0") == "1":
+        mcp_tool.discover_mcp_tools()
+        return registry
+
+    from tools.mcp_tool import _load_mcp_config, register_mcp_servers
+
+    allow = list(server_names or [])
+    if not allow:
+        env_allow = os.environ.get("HERMES_MCP_SERVERS", "").strip()
+        if env_allow:
+            allow = [s.strip() for s in env_allow.split(",") if s.strip()]
+    if not allow:
+        archive_cfg = load_config()
+        default_server = (archive_cfg.get("mcp") or {}).get("server", "notion")
+        if default_server:
+            allow = [str(default_server)]
+
+    all_servers = _load_mcp_config()
+    if allow:
+        filtered = {name: cfg for name, cfg in all_servers.items() if name in allow}
+        if not filtered and "notion" in all_servers:
+            log(f"MCP allowlist {allow} — notion fallback")
+            filtered = {"notion": all_servers["notion"]}
+    else:
+        filtered = all_servers
+
+    skipped = sorted(set(all_servers) - set(filtered))
+    if skipped:
+        log(f"MCP skip servers (notion-only): {', '.join(skipped)}")
+
+    register_mcp_servers(filtered)
     return registry
 
 

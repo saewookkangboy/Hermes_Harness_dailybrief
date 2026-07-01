@@ -6,7 +6,7 @@ import re
 # 문장·단어 중간 생략 부호 (허용: 문장 끝 …)
 _MID_ELLIPSIS = re.compile(r"[^\s.!?。…」』\"']\u2026")
 _GARBAGE_TITLE = re.compile(
-    r"(관련 AI·마케팅…|관련 AI·마케팅 신호입니다\.?$|OpenAI News OpenAI|—\s*실무\s*—)"
+    r"(관련 AI·마케팅…|관련 AI·마케팅 신호입니다\.?$|will put ads in|OpenAI News OpenAI|—\s*실무\s*—)"
 )
 
 

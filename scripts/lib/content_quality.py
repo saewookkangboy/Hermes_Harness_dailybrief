@@ -114,6 +114,8 @@ def localize_title(title: str) -> str:
         return "SK텔레콤·NVIDIA AI 인프라 협력"
     if "openai.com/news" in tl or t.lower().startswith("openai news"):
         return "OpenAI 주간 신호 — 마케팅·교육 활용"
+    if "openai" in tl and ("ad" in tl or "ads" in tl):
+        return "OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향"
     if "perplexity" in tl:
         return "Perplexity·AI 검색(AEO) 최적화 실무"
     if "gemini" in tl:
@@ -133,7 +135,10 @@ def localize_title(title: str) -> str:
         return f"2026 {keywords[0]} 실무 인사이트"
     words = re.sub(r"[^\w\s\-]", " ", t).split()[:5]
     if words:
-        return compress_sentences(f"{' '.join(words)} 관련 AI·마케팅 신호입니다.", 72, max_sentences=1)
+        candidate = " ".join(words).strip()
+        if not has_meaningful_korean(candidate):
+            return "2026 AI·마케팅 실무 인사이트"
+        return compress_sentences(f"{candidate} 관련 실무 신호입니다.", 72, max_sentences=1)
     return "2026 AI·마케팅 실무 인사이트"
 
 
@@ -779,6 +784,43 @@ def linkedin_webtoon_panels(insights: list[Insight]) -> list[tuple[str, str, str
     ]
 
 
+def _linkedin_bullet_detail(
+    ins: Insight | None,
+    *,
+    fallback: str = "",
+    max_chars: int = 96,
+) -> str:
+    """LinkedIn 불릿 보조 줄 — 완결 문장만 (중간 '…' 절단 금지)."""
+    if ins is not None:
+        detail = ins.context_blurb(max_chars=max_chars, max_sentences=1)
+        if detail:
+            if detail[-1] not in ".!?。…":
+                detail = finish_at_sentence(detail, max_chars)
+            return detail
+    text = (fallback or "").strip()
+    if not text:
+        return ""
+    out = compress_sentences(text, max_chars, max_sentences=1)
+    if out and out[-1] not in ".!?。…":
+        out = finish_at_sentence(out, max_chars)
+    return out
+
+
+def _trim_linkedin_post(post: str, max_chars: int = 1300) -> str:
+    """1300자 제한 — 문장 경계 절단 (해시태그 보존)."""
+    if len(post) <= max_chars:
+        return post
+    hashtag_m = re.search(r"\n\n(#[^\n]+)$", post)
+    hashtags = hashtag_m.group(1) if hashtag_m else ""
+    body = post[: hashtag_m.start()].rstrip() if hashtag_m else post
+    reserve = len(hashtags) + 2 if hashtags else 0
+    body_limit = max(400, max_chars - reserve)
+    trimmed = finish_at_sentence(body, body_limit)
+    if hashtags:
+        return f"{trimmed}\n\n{hashtags}"
+    return finish_at_sentence(post, max_chars)
+
+
 def build_linkedin_post_text(summary: str, insights: list[Insight]) -> str:
     """LinkedIn 포스트 본문만 (이미지 프롬프트 제외)."""
     topic = insights[0].korean_title if insights else "2026 AI 마케팅"
@@ -793,13 +835,14 @@ def build_linkedin_post_text(summary: str, insights: list[Insight]) -> str:
     ins0 = insights[0] if insights else None
     ins1 = insights[1] if len(insights) > 1 else None
     ins2 = insights[2] if len(insights) > 2 else None
-    fallbacks = [
-        ("AX는 PoC보다 교육·FAQ·사례로 끌어당기는 단계예요", (ins0.korean_summary[:60] if ins0 else "")),
-        ("에이전트는 반복 업무 3개부터 시작해요", (ins1.korean_summary[:60] if ins1 else "프롬프트·체크리스트·KPI 먼저")),
-        ("한국 시장은 실행 직전 가이드 수요가 커요", (ins2.korean_summary[:60] if ins2 else "선언형 AI보다 실무 프레임")),
+    fallbacks: list[tuple[str, Insight | None, str]] = [
+        ("AX는 PoC보다 교육·FAQ·사례로 끌어당기는 단계예요", ins0, ""),
+        ("에이전트는 반복 업무 3개부터 시작해요", ins1, "프롬프트·체크리스트·KPI부터 잡아보세요."),
+        ("한국 시장은 실행 직전 가이드 수요가 커요", ins2, "선언형 AI보다 실무 프레임이 먼저예요."),
     ]
-    for title_line, detail in fallbacks[:3]:
+    for title_line, ins, fb in fallbacks[:3]:
         bullets.append(f"→ {title_line}")
+        detail = _linkedin_bullet_detail(ins, fallback=fb)
         if detail:
             bullets.append(f"  {detail}")
     post_parts = [
@@ -821,15 +864,26 @@ def build_linkedin_post_text(summary: str, insights: list[Insight]) -> str:
         "#AIMarketing #AEO #AgenticAI #B2BMarketing #AX",
     ]
     post = humanize_linkedin_post("\n".join(post_parts)).text.strip()
-    while len(post) > 1300:
-        post = post[:1297] + "..."
-    return post
+    return _trim_linkedin_post(post)
 
 
 def build_linkedin_image_prompt(insights: list[Insight]) -> str:
     topic = insights[0].korean_title if insights else "2026 AI 마케팅"
     panels = linkedin_webtoon_panels(insights)
     return build_gemini_linkedin_2x2_prompt(panels, topic)
+
+
+def _instagram_prose(text: str, *, max_chars: int = 0, max_sentences: int = 2) -> str:
+    """Instagram 캡션·슬라이드 본문 — 해요체 + 완결 문장."""
+    raw = (text or "").strip()
+    if not raw:
+        return ""
+    limit = max_chars if max_chars > 0 else len(raw) + 1
+    compressed = compress_sentences(raw, limit, max_sentences=max_sentences)
+    result = humanize(compressed, genre="instagram").text
+    if result and result[-1] not in ".!?。…":
+        result = finish_at_sentence(result, limit)
+    return result
 
 
 def build_instagram_md(
@@ -841,10 +895,10 @@ def build_instagram_md(
 ) -> str:
     topic, carousel_spec = instagram_carousel_spec(summary, insights)
     ins1 = insights[0] if insights else None
-    hook = truncate(topic, 22)
+    hook_short = compress_sentences(topic, 28, max_sentences=1)
     insight_title = carousel_spec[1][1]
     hashtags = build_instagram_hashtags(ins1)
-    caption_hook = f"💬 {hook} — 2026 B2B 마케팅, AEO와 에이전트가 동시에 요구돼요."
+    caption_hook = f"💬 {_instagram_prose(f'{hook_short} — 2026 B2B 마케팅, AEO와 에이전트가 동시에 요구돼요.', max_sentences=2)}"
 
     lines = [
         f"# 인스타그램 캐러셀 — {topic}",
@@ -876,7 +930,19 @@ def build_instagram_md(
 
     append_instagram_gemini_prompts(lines, carousel_spec, topic)
 
-    takeaway = ins1.korean_summary[:140] if ins1 else summary[:140]
+    takeaway = ""
+    if ins1:
+        takeaway = _instagram_prose(ins1.context_blurb(max_chars=140, max_sentences=2), max_chars=140)
+    else:
+        takeaway = _instagram_prose(summary, max_chars=140, max_sentences=2)
+
+    insight_bullet = (
+        f"→ {insight_title}"
+        if ins1
+        else f"→ {_instagram_prose(summary, max_chars=50, max_sentences=1)}"
+    )
+    if not insight_bullet.rstrip().endswith((".", "!", "?", "。")):
+        insight_bullet = f"{insight_bullet.rstrip()}."
 
     lines.extend(
         [
@@ -884,15 +950,19 @@ def build_instagram_md(
             "",
             caption_hook,
             "",
-            "2026년 B2B 마케팅, AI 검색(AEO)과 에이전트 자동화가 동시에 요구되고 있어요.",
+            _instagram_prose(
+                "2026년 B2B 마케팅, AI 검색(AEO)과 에이전트 자동화가 동시에 요구되고 있어요.",
+                max_sentences=1,
+            ),
             "",
-            f"📌 이번 핵심",
-            f"→ {insight_title}" if ins1 else f"→ {truncate(summary, 50)}",
+            "📌 이번 핵심",
+            insight_bullet,
             "",
             "💡 한 줄 정리",
             takeaway,
             "",
             "👉 캐러셀 저장해두고 팀과 공유해 보세요.",
+            "어떤 슬라이드가 가장 와닿았나요?",
             "프로필 링크에서 전체 가이드를 확인할 수 있어요.",
             "",
             "---",

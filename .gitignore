@@ -36,6 +36,9 @@ content/personal/
 .harness/competitive-watch-state.json
 .harness/content-loop-runs.jsonl
 .harness/publish-schedule/
+.harness/content-loop-rubric.json
+.harness/cost-ledger.jsonl
+.harness/watch-telegram-ensure.lock
 
 # Research squad raw (regenerated)
 content/research/raw/*

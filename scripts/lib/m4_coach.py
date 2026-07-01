@@ -13,13 +13,17 @@ from lib.brief_graph import load_brief_graph
 from lib.common import studio_today, truncate
 from lib.m4_analytics import build_m4_report, notion_tier_stats
 from lib.m4_channel_metrics import format_channel_metrics_block, load_channel_metrics, sync_ctor_to_channel_metrics
+from lib.content_quality_config import coach_config
 from lib.newsletter_ctor_feedback import apply_ctor_feedback_bonus, compute_ctor_feedback, load_ctor_feedback
 from lib.newsletter_subject import score_subject_line
+from lib.voice_style_audit import voice_trait_flags
+from lib.naturalness_audit import score_naturalness
 
 WORKDIR = Path.home() / "hermes-content-studio"
 LOGS_DIR = WORKDIR / "content" / "logs"
 HANDOFF_DIR = WORKDIR / ".harness" / "handoffs"
-CONFIG_PATH = WORKDIR / "config" / "m4-coach.yaml"
+CONFIG_PATH = WORKDIR / "config" / "content-quality.yaml"
+LEGACY_CONFIG_PATH = WORKDIR / "config" / "m4-coach.yaml"
 
 
 @dataclass
@@ -43,10 +47,13 @@ class CoachReport:
 
 
 def _load_cfg() -> dict:
-    if not CONFIG_PATH.exists():
-        return {}
-    with CONFIG_PATH.open(encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+    cfg = coach_config()
+    if cfg:
+        return cfg
+    if LEGACY_CONFIG_PATH.exists():
+        with LEGACY_CONFIG_PATH.open(encoding="utf-8") as f:
+            return yaml.safe_load(f) or {}
+    return {}
 
 
 def _glob_channel_file(stamp: str, pattern: str) -> Path | None:
@@ -69,6 +76,40 @@ def _score_text_traits(text: str, weights: dict[str, int]) -> tuple[int, list[st
     base = score_subject_line(text, apply_ctor_feedback=False)
     score = min(100, max(0, base.score + bonus))
     return score, reasons + base.reasons[:2], traits
+
+
+def _apply_naturalness_trait(coach: ChannelCoach, text: str, *, channel: str) -> None:
+    ns = score_naturalness(text, channel=channel)
+    coach.traits["naturalness_ok"] = ns.passed
+    coach.traits.update({f"nat_{k}": v for k, v in ns.flags.items()})
+    if ns.passed:
+        coach.score = min(100, coach.score + 6)
+    else:
+        coach.recommendations.append(
+            f"자연스러움 {ns.score}점 — 1인칭·해요체·CTA·AI-tell 점검"
+        )
+        coach.score = max(0, coach.score - 6)
+
+
+def _apply_voice_traits(
+    coach: ChannelCoach,
+    text: str,
+    *,
+    channel: str,
+    score_bonus: int = 10,
+) -> None:
+    flags = voice_trait_flags(text, channel=channel)
+    coach.traits.update(flags)
+    if flags.get("no_ai_tell"):
+        coach.score = min(100, coach.score + score_bonus // 2)
+    else:
+        coach.recommendations.append("AI-tell 패턴 제거 — 결론적으로·혁신적인 등")
+        coach.score = max(0, coach.score - 8)
+    if flags.get("complete_sentences"):
+        coach.score = min(100, coach.score + score_bonus // 2)
+    else:
+        coach.recommendations.append("완결 문장 미달 — 중간 '…'·불완전 불릿 점검")
+        coach.score = max(0, coach.score - 10)
 
 
 def _coach_newsletter(stamp: str, weights: dict[str, int]) -> ChannelCoach:
@@ -104,6 +145,16 @@ def _coach_newsletter(stamp: str, weights: dict[str, int]) -> ChannelCoach:
         )
     if nl_path:
         coach.artifact = coach.artifact or str(nl_path)
+        try:
+            nl_body = nl_path.read_text(encoding="utf-8", errors="replace")
+            hero_m = re.search(r"## 오늘의 1가지.*?\n\n(.+?)\n\n", nl_body, re.S)
+            voice_text = hero_m.group(1).strip() if hero_m else nl_body[:800]
+            _apply_voice_traits(coach, voice_text, channel="newsletter", score_bonus=8)
+            tldr_m = re.search(r"## 30초 TLDR\n(.+?)\n\n##", nl_body, re.S)
+            nat_text = f"{voice_text}\n{tldr_m.group(1).strip()}" if tldr_m else voice_text
+            _apply_naturalness_trait(coach, nat_text[:2000], channel="newsletter")
+        except OSError:
+            pass
     return coach
 
 
@@ -136,7 +187,6 @@ def _coach_linkedin(stamp: str, weights: dict[str, int]) -> ChannelCoach:
     coach.score = min(100, score)
     coach.traits = traits
     coach.artifact = str(path)
-    coach.status = "PASS" if coach.score >= 55 else "WARN"
     coach.recommendations.insert(0, f"Hook score {coach.score} — {', '.join(reasons[:2])}")
 
     ch_metrics = load_channel_metrics().get("channels", {}).get("linkedin") or {}
@@ -148,6 +198,9 @@ def _coach_linkedin(stamp: str, weights: dict[str, int]) -> ChannelCoach:
         )
     if weights.get("question", 0) > 0 and not traits.get("question"):
         coach.recommendations.append("CTOR 피드백: 질문형 hook·CTA 추가 (+question trait)")
+    _apply_voice_traits(coach, post, channel="linkedin", score_bonus=10)
+    _apply_naturalness_trait(coach, post, channel="linkedin")
+    coach.status = "PASS" if coach.score >= 55 else "WARN"
     return coach
 
 
@@ -187,7 +240,10 @@ def _coach_blog(stamp: str, weights: dict[str, int]) -> ChannelCoach:
     coach.score = score
     coach.traits = traits
     coach.artifact = str(path)
-    coach.status = "PASS" if score >= 60 else "WARN"
+    if title:
+        _apply_voice_traits(coach, title, channel="blog", score_bonus=6)
+        _apply_naturalness_trait(coach, title, channel="blog")
+    coach.status = "PASS" if coach.score >= 60 else "WARN"
     ch_metrics = load_channel_metrics().get("channels", {}).get("blog") or {}
     if ch_metrics.get("mode") != "live":
         coach.recommendations.append("Blog 실측 없음 — GA4/search console JSON import 가능")
@@ -232,7 +288,10 @@ def _coach_instagram(stamp: str, weights: dict[str, int]) -> ChannelCoach:
     coach.score = score
     coach.traits = traits
     coach.artifact = str(path)
-    coach.status = "PASS" if score >= 55 else "WARN"
+    if caption:
+        _apply_voice_traits(coach, caption, channel="instagram", score_bonus=8)
+        _apply_naturalness_trait(coach, caption, channel="instagram")
+    coach.status = "PASS" if coach.score >= 55 else "WARN"
     return coach
 
 

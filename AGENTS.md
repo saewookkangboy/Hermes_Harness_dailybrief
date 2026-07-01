@@ -79,6 +79,27 @@ cat ~/hermes-content-studio/.harness/progress.md
 
 # Notion 일자별 아카이브
 ~/hermes-content-studio/scripts/archive-to-notion.sh [YYYY-MM-DD]
+
+# Studio 아키텍처 → Notion (운영 리소스·의존성·Cursor 맵)
+~/hermes-content-studio/scripts/export-architecture-notion.sh
+
+# Voice · Naturalness (결정적 품질 게이트)
+~/hermes-content-studio/scripts/voice-style-eval.sh [YYYY-MM-DD]
+~/hermes-content-studio/scripts/naturalness-eval.sh [YYYY-MM-DD]
+~/hermes-content-studio/scripts/loop-budget-eval.sh
+~/hermes-content-studio/scripts/loop-budget-status.sh
+~/hermes-content-studio/scripts/humanize-llm-eval.sh [YYYY-MM-DD]
+HERMES_HUMANIZE_LLM_LIVE=1 ~/hermes-content-studio/scripts/humanize-llm-eval.sh [YYYY-MM-DD]
+HERMES_M5_E2E_LIVE=1 ~/hermes-content-studio/scripts/m5-notion-eval.sh [YYYY-MM-DD]
+HERMES_SUPERVISED_STAGING=1 ~/hermes-content-studio/scripts/staging-supervised-eval.sh [YYYY-MM-DD]
+HERMES_PLAYMCP_E2E_LIVE=1 ~/hermes-content-studio/scripts/playmcp-routing-e2e.sh
+# 주간 staging cron: setup-commander-cron.sh → cron-staging-supervised 토 11:00
+# 프로덕션 blocking: voice + naturalness ON (budget cap 초과는 WARN, budget_blocking=false)
+HERMES_HUMANIZE=1 ~/hermes-content-studio/scripts/run-humanize-polish.sh [YYYY-MM-DD]
+HERMES_HUMANIZE=1 HERMES_HUMANIZE_LLM=1 HERMES_HUMANIZE_LLM_CHANNELS=linkedin \
+  ~/hermes-content-studio/scripts/run-humanize-polish.sh [YYYY-MM-DD]
+HERMES_CRON_HUMANIZE=1 ~/hermes-content-studio/scripts/cron-supervised-pipeline.sh
+# Notion archive: playmcp 스킵 (기본) · HERMES_MCP_DISCOVER_ALL=1 전체 MCP
 ```
 
 Telegram에서 요청 보낼 때 **별도 Terminal**에서 `watch-telegram.sh` 실행:
@@ -89,7 +110,7 @@ Telegram에서 요청 보낼 때 **별도 Terminal**에서 `watch-telegram.sh` �
 |------|------|------|
 | Telegram | Bot Token (Gateway) | connected — `/pipeline` `setup-telegram-routing.sh` |
 | Slack | Bot Token (Gateway) | `/pipeline` — `setup-slack.sh` + `setup-slack-routing.sh` |
-| PlayMCP (Kakao) | MCP-Gateway | OTT 필요 → `scripts/setup-playmcp.sh` |
+| PlayMCP (Kakao) | MCP-Gateway | **connected** — `setup-playmcp.sh` · LIVE E2E 7/7 |
 
 두 채널 모두 동일한 커맨더 역할: 리서치·콘텐츠·강의 파이프라인 트리거.
 
@@ -160,6 +181,8 @@ HERMES_WIKI_LINT=1 ~/hermes-content-studio/scripts/run-wiki-lint.sh
 - 강의: getdesign.md 프리셋, HTML + PPTX
 - 출처 URL 필수
 - `scripts/validate-output.sh` 통과
+- **Voice · Naturalness (P4–P14):** `voice_blocking` + `naturalness_blocking` 프로덕션 ON · `budget_blocking: false` (cap 초과 WARN)
+- **Budget:** `daily_token_cap: 600000` · `path_daily_token_caps.HERMES_HUMANIZE_LLM: 400000` — `loop-budget-status.sh`
 
 ## 실행 추가
 

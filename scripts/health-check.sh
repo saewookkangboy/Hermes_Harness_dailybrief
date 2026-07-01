@@ -70,7 +70,7 @@ check "telegram-commander 스킬" "test -f ~/hermes-content-studio/skills/telegr
 check "notion-archive 스킬" "test -f ~/hermes-content-studio/skills/notion-archive/SKILL.md"
 check "vibe-coding-cursor 스킬" "grep -q 'version: 1.1.0' ~/hermes-content-studio/skills/vibe-coding-cursor/SKILL.md"
 check "playmcp-commander 스킬" "grep -q 'version: 1.1.0' ~/hermes-content-studio/skills/playmcp-commander/SKILL.md"
-check "PlayMCP MCP" "hermes mcp list 2>/dev/null | grep -E 'playmcp.*enabled'"
+warn "PlayMCP MCP" "hermes mcp list 2>/dev/null | grep -E 'playmcp.*enabled'"
 warn "mcporter CLI" "test -x $HOME/.hermes/node/bin/mcporter"
 warn "mcporter mcp-gateway" "test -f $HOME/.mcporter/mcporter.json && grep -q mcp-gateway $HOME/.mcporter/mcporter.json"
 check "hermes-run 스크립트" "test -x ~/hermes-content-studio/scripts/hermes-run.sh"

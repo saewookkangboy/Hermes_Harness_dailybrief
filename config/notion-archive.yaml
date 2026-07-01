@@ -113,6 +113,7 @@ hygiene:
 
 mcp:
   server: notion
+  discover_all: false
   create_tool: mcp_notion_notion_create_pages
   update_tool: mcp_notion_notion_update_page
   move_tool: mcp_notion_notion_move_pages

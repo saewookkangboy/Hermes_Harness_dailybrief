@@ -8,7 +8,7 @@ from pathlib import Path
 import yaml
 
 from lib.common import compress_sentences, finish_at_sentence, slugify
-from lib.content_quality import Insight, parse_brief, polish_display_title
+from lib.content_quality import Insight, parse_brief, polish_display_title, is_garbage_korean_title
 from lib.humanize_korean import humanize
 from lib.newsletter_html import build_newsletter_html
 from lib.newsletter_subject import (
@@ -35,11 +35,11 @@ def _nl_short(text: str, max_chars: int, *, max_sentences: int = 2) -> str:
 
 def _newsletter_title(ins: Insight) -> str:
     """뉴스레터용 완결 제목 — garbage·localize 폴백."""
-    for raw in (ins.korean_title, ins.title):
+    for raw in (ins.title, ins.summary, ins.marketer_view):
         t = polish_display_title(raw or "")
-        if t and "신호입니다" not in t and "OpenAI News OpenAI" not in t:
+        if t and not is_garbage_korean_title(t) and "신호입니다" not in t:
             return t
-    return polish_display_title(ins.title or ins.korean_title or "AI 마케팅 주간")
+    return polish_display_title(ins.title or ins.summary or "AI 마케팅 주간")
 
 
 def _nl_label(text: str, max_chars: int) -> str:

@@ -13,6 +13,7 @@ from lib.brief_quality import (
     PERSONA_INTRO,
     build_coverage_table,
     build_engineering_highlights,
+    build_executive_summary,
     build_llm_platform_pulse,
     enrich_insight,
     is_usable_search_result,
@@ -106,15 +107,7 @@ def build_brief(ctx: dict) -> str:
     themes = [i["korean_title"] for i in enriched[:3]]
     categories = list(dict.fromkeys(i["research_category"] for i in enriched))
 
-    summary = (
-        f"일일 관측({period_label}) — 글로벌·대한민국 AI·마케팅 교차 신호입니다. "
-        f"{PERSONA_INTRO} "
-        f"오늘 Top {len(enriched)} 축은 {', '.join(categories[:5])} 등입니다. "
-        f"특히 {themes[0] if themes else 'AX·에이전트'}가 "
-        f"브랜드·콘텐츠·퍼포먼스·AX 로드맵에 연결됩니다. "
-        f"LLM 4사, AI 거버넌스·리터러시, 하네스·Hermes Agent 실무를 "
-        f"통합 컨텍스트로 정리했습니다."
-    )
+    summary = build_executive_summary(period_label, enriched, categories, themes)
 
     lines = [
         "# 일일 AI·마케팅 리서치 브리프",

@@ -5,8 +5,22 @@ set -euo pipefail
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
 HERMES_SCRIPTS="$HOME/.hermes/scripts"
 DELIVER="${CRON_DELIVER:-telegram}"
+SCRIPTS_DIR="$WORKDIR/scripts"
 
 echo "=== Commander Cron (결정적, LLM 없음) ==="
+
+_py_cron_defaults() {
+  python3 -c "
+import json, sys
+sys.path.insert(0, '${SCRIPTS_DIR}')
+from lib.content_quality_config import supervised_cron_defaults
+print(json.dumps(supervised_cron_defaults(), indent=2))
+"
+}
+
+echo "supervised cron defaults (content-quality.yaml):"
+_py_cron_defaults | sed 's/^/  /'
+echo ""
 
 mkdir -p "$HERMES_SCRIPTS"
 chmod +x "$WORKDIR/scripts/cron-morning-brief.sh" "$WORKDIR/scripts/cron-health-alert.sh" \
@@ -70,5 +84,17 @@ cp "$WORKDIR/scripts/cron-competitive-watch.sh" "$HERMES_SCRIPTS/cron-competitiv
 chmod +x "$HERMES_SCRIPTS/cron-competitive-watch.sh"
 _create "cron-competitive-watch" "0 9 * * 1" "cron-competitive-watch.sh"
 
+chmod +x "$WORKDIR/scripts/cron-staging-supervised.sh"
+cp "$WORKDIR/scripts/cron-staging-supervised.sh" "$HERMES_SCRIPTS/cron-staging-supervised.sh"
+chmod +x "$HERMES_SCRIPTS/cron-staging-supervised.sh"
+_create "cron-staging-supervised" "0 11 * * 6" "cron-staging-supervised.sh"
+
 echo ""
-hermes cron list 2>/dev/null | grep -E "cron-morning|cron-daily-triage|cron-supervised|cron-health|cron-weekly|cron-publish|cron-competitive" || echo "⚠️  Commander cron 미표시 — hermes cron list 확인"
+echo "cron-supervised-pipeline env (script 내 config SoT — hermes cron은 env 미지원):"
+echo "  HERMES_CRON_HUMANIZE=1 · HERMES_CRON_SKIP_NEWSLETTER=0 (기본, yaml)"
+echo "  naturalness_blocking: true (프로덕션 yaml, 2026-07-01~)"
+echo "  주간 staging: cron-staging-supervised 토 11:00 (HERMES_SUPERVISED_STAGING=1)"
+echo "  LLM humanize: cron 미포함 — HERMES_HUMANIZE_LLM=1 수동 (yaml cron_llm_humanize: false)"
+echo "  override: HERMES_CRON_SKIP_NEWSLETTER=1 ./scripts/cron-supervised-pipeline.sh"
+echo ""
+hermes cron list 2>/dev/null | grep -E "cron-morning|cron-daily-triage|cron-supervised|cron-staging|cron-health|cron-weekly|cron-publish|cron-competitive" || echo "⚠️  Commander cron 미표시 — hermes cron list 확인"

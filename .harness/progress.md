@@ -1,5 +1,470 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+## 통합 현황 (2026-07-01, P4→P14)
+
+Voice·Naturalness·Budget·PlayMCP 품질 스택 완료. 프로덕션 supervised는 **voice + naturalness blocking ON**, budget cap은 **WARN** (hard FAIL은 `budget_blocking: true` 시).
+
+### 프로덕션 SoT (`config/content-quality.yaml`)
+
+| 영역 | 설정 | 비고 |
+|------|------|------|
+| Blocking | `voice_blocking: true` · `naturalness_blocking: true` | P10·P13 |
+| Budget gate | `budget_blocking: false` | cap 초과 → NATURALNESS **WARN** (P14) |
+| 일일 token cap | `600000` | Codex humanize LIVE ~275k/채널 (P14) |
+| 경로 cap | `HERMES_HUMANIZE_LLM: 400000` | humanize 단독 상한 |
+| LLM humanize | `humanize_llm.use_codex: true` · linkedin timeout **120s** | P11 |
+| Cron LLM | `cron_llm_humanize: false` | 결정적 humanize만 cron |
+| Staging | `HERMES_SUPERVISED_STAGING=1` · 토 11:00 `cron-staging-supervised` | P5·P10 |
+
+### 단계별 변경 (요약)
+
+| Phase | 핵심 |
+|-------|------|
+| **P4** B1→A1 | LLM 중복 제거 · `hermes_cost.py` · m5-notion-eval · staging blocking |
+| **P5–P9** | staging-eval · validate naturalness 게이트 · brief Top7 polish · health PlayMCP WARN |
+| **P10** | `naturalness_blocking` 프로덕션 · Instagram 96 · `cron-staging-supervised` |
+| **P11** | Codex timeout 120s · commander cron 재등록 · e2e telegram **23/23** |
+| **P12** | Codex `Token usage` 파싱 · LIVE **275,687 tokens** ledger |
+| **P13** | `playmcp-routing-e2e` **7/7** · `voice_blocking` 프로덕션 |
+| **P14** | token cap **120k→600k** · path cap · `loop-budget-status.sh` · budget/naturalness 분리 |
+
+### 신규·강화 스크립트
+
+| 스크립트 | 역할 |
+|----------|------|
+| `lib/hermes_cost.py` | TUI·Codex·sessions.json 토큰/USD 파싱 |
+| `lib/loop_budget.py` | 일일·경로별 cap · kill switch |
+| `m5-notion-eval.sh` | M5 archive E2E (`HERMES_M5_E2E_LIVE=1`) |
+| `staging-supervised-eval.sh` | staging blocking 검증 |
+| `cron-staging-supervised.sh` | 주간 staging cron (토 11:00) |
+| `humanize-llm-eval.sh` | LLM humanize wiring + LIVE |
+| `playmcp-routing-e2e.sh` | PlayMCP Kakao 라우팅 E2E |
+| `loop-budget-eval.sh` | kill switch · daily/path cap E2E |
+| `loop-budget-status.sh` | 오늘 ledger vs cap 요약 |
+
+### 검증 기준선 (2026-07-01)
+
+```bash
+./scripts/harness-eval.sh --quick                          # struct 20 + pipe-015 wiring
+./scripts/e2e-smoke-test.sh 2026-07-01 --telegram          # 23/23
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh  # 8/8
+./scripts/voice-style-eval.sh 2026-07-01                   # 5/5
+./scripts/naturalness-eval.sh 2026-07-01                   # 2/2
+./scripts/loop-budget-eval.sh                              # 4/4
+./scripts/loop-budget-status.sh                            # ledger vs cap
+HERMES_HUMANIZE_LLM_LIVE=1 HERMES_USE_CODEX=1 \
+  ./scripts/humanize-llm-eval.sh 2026-07-01                # 14/14
+HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh # 7/7
+HERMES_SUPERVISED_STAGING=1 ./scripts/staging-supervised-eval.sh 2026-07-01  # 2/2
+```
+
+### 잔여 (우선순위)
+
+1. ~~PlayMCP OTT 갱신~~ ✅ Connected · LIVE E2E 7/7
+2. ~~Codex USD `estimated_cost_usd`~~ ✅ P15 (`hermes_cost_parse_codex_usd`)
+3. ~~per-run delta ledger~~ ✅ P15 (`parse_run_usage` delta)
+4. `humanize_blocking` 프로덕션 전환 (선택)
+5. `budget_blocking: true` hard gate (선택)
+6. Notion 아키텍처: `./scripts/export-architecture-notion.sh` (P15 갱신)
+
+---
+
+## 변경 요약 (2026-07-01, P15)
+
+### 잔여 진행 + Notion 아키텍처 갱신
+- **`hermes_cost.py`:** Codex `estimated_cost_usd` 파싱 · `parse_run_usage` session **delta** ledger
+- **`humanize_polish`:** per-channel `snapshot_sessions_map` → delta cost 기록
+- **`generate-architecture-md.py`:** 운영 리소스·의존성·Cursor 맵 MD 자동 생성
+- **`export-architecture-notion.sh`:** generate → Notion replace (3페이지 **2026-07-01**)
+- **Notion:**
+  - [운영 리소스·기술 스펙](https://www.notion.so/379fb3b5e389810f9630cd8cbfed942b)
+  - [의존성 다이어그램](https://www.notion.so/379fb3b5e38981c2a947ec8af87330b4)
+  - [Cursor Agent 리소스 맵](https://www.notion.so/379fb3b5e38981a4ba83f2a9d3af9979)
+- **PlayMCP:** `playmcp-integration-eval` **7/7** · `hermes mcp test playmcp` ✅ (P15b OTT 갱신)
+
+### 검증
+```bash
+./scripts/generate-architecture-md.py
+./scripts/export-architecture-notion.sh
+./scripts/humanize-llm-eval.sh 2026-07-01                    # 12/12
+./scripts/playmcp-integration-eval.sh                        # 7/7
+HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh   # 7/7
+```
+
+### 잔여
+- ~~PlayMCP OTT~~ ✅ P15b
+
+---
+
+## 변경 요약 (2026-07-01, P15b PlayMCP OTT)
+
+- **`setup-playmcp.sh`** — OTT 교환 · mcporter · Gateway 재시작 · 라우팅 병합
+- **`hermes mcp test playmcp`** Connected
+- **`playmcp-integration-eval`** 7/7 · **`HERMES_PLAYMCP_E2E_LIVE=1 playmcp-routing-e2e`** 7/7
+
+---
+
+## 변경 요약 (2026-07-01, P14)
+
+### cost-ledger token cap 조정
+- **`content-quality.yaml`:** `daily_token_cap` **120k → 600k** (Codex humanize LIVE 실측 ~275k/채널)
+- **`path_daily_token_caps.HERMES_HUMANIZE_LLM: 400000`** — humanize 경로 단독 상한
+- **`warn_threshold_pct: 80`** — `loop-budget-status.sh` 근접 경고
+- **`lib/loop_budget.py`:** 경로별 spend 집계 · path cap 검사
+- **`pipeline_supervisor.py`:** budget 초과는 `budget_blocking: true`일 때만 FAIL (naturalness와 분리)
+- **`loop-budget-eval.sh`:** yaml cap 정합 · path cap E2E
+- **`loop-budget-status.sh`** — 오늘 ledger vs cap 요약
+
+### 검증
+```bash
+./scripts/loop-budget-eval.sh          # 4/4
+./scripts/loop-budget-status.sh        # 275,687 / 600,000 OK
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh  # 8/8
+```
+
+## 변경 요약 (2026-07-01, P13)
+
+### PlayMCP Kakao 라우팅 E2E
+- **`playmcp-routing-e2e.sh`** — wiring + `HERMES_PLAYMCP_E2E_LIVE=1` (routing merge · qc · channel_prompt)
+- **`setup-playmcp-routing.sh`** 재실행 · quick_commands 14개 병합
+- **LIVE 7/7** — qc commands/morning OK · MCP 401 → `mcp_routing_ok_token_stale` (OTT 갱신: `setup-playmcp.sh`)
+- **harness-eval / e2e-smoke** playmcp-routing-e2e 연동
+
+### voice_blocking 프로덕션 전환
+- **`content-quality.yaml`** `voice_blocking: true` (naturalness와 동시 ON)
+- **supervised cron** VOICE · NATURALNESS PASS (8/8, budget ledger 정상 시)
+- **참고:** budget cap 초과는 `budget_blocking: true`일 때만 FAIL (P14)
+
+### 검증
+```bash
+./scripts/setup-playmcp-routing.sh
+./scripts/playmcp-routing-e2e.sh                           # 2/2 wiring
+HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh  # 7/7
+./scripts/voice-style-eval.sh 2026-07-01                   # 5/5
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh  # 8/8
+./scripts/harness-eval.sh --quick                          # 28/28
+```
+
+### 잔여
+- ~~PlayMCP OTT~~ ✅ P15b
+
+## 변경 요약 (2026-07-01, P12)
+
+### P12 cost-ledger Codex 파싱
+- **`lib/hermes_cost.py`:** Codex `Token usage` · `ResponseUsage(total_tokens=)` 합산 · session id → `sessions.json`
+- **`humanize-llm-eval.sh`:** `hermes_cost_parse_codex` · LIVE `cost_ledger_tokens_measured`
+- **실측:** linkedin Codex LIVE **275,687 tokens** · ledger `usd: 0` (Codex included 구독)
+
+### 검증
+```bash
+./scripts/humanize-llm-eval.sh 2026-07-01                    # 10/10
+HERMES_HUMANIZE_LLM_LIVE=1 HERMES_USE_CODEX=1 \
+  ./scripts/humanize-llm-eval.sh 2026-07-01                  # 14/14
+```
+
+### 잔여 (P13)
+- Codex USD `estimated_cost_usd` (included 구독 시 0 유지)
+- PlayMCP Kakao 라우팅 실운영 E2E
+
+## 변경 요약 (2026-07-01, P11)
+
+### P11-2 Commander cron 재등록
+- **`setup-commander-cron.sh`** — `cron-staging-supervised` 토 11:00 등록 완료
+
+### P11-1 LLM timeout 튜닝
+- **`content-quality.yaml`** `humanize_llm` — `use_codex: true` · 채널별 timeout (linkedin **120s**)
+- **`humanize_polish`** — Codex 라우팅 · `humanize_llm_timeout(channel)`
+- **`hermes-codex.sh`** — `humanize-korean` Codex 스킬
+- **LIVE:** `humanize_llm_completed` **~98s** (90s timeout → 120s 조정 후 PASS)
+
+### P11-3 PlayMCP
+- **`playmcp-integration-eval.sh`** — **7/7** (mcp_enabled PASS)
+
+### P11-4 E2E Telegram
+- **`e2e-smoke-test.sh --telegram`** — **23/23** (Notion 8건 17s · blocking ON)
+
+### 검증
+```bash
+./scripts/setup-commander-cron.sh
+HERMES_HUMANIZE_LLM_LIVE=1 HERMES_USE_CODEX=1 ./scripts/humanize-llm-eval.sh 2026-07-01  # 13/13
+./scripts/playmcp-integration-eval.sh   # 7/7
+./scripts/e2e-smoke-test.sh 2026-07-01 --telegram  # 23/23
+hermes cron list | grep cron-staging-supervised
+```
+
+## 변경 요약 (2026-07-01, P10)
+
+### P10-2 Instagram 재생성
+- **`HERMES_SKIP_RESEARCH=1 HERMES_HUMANIZE=1 run-content-package`** — 캡션 question CTA 반영
+- **naturalness:** instagram **90→96** · linkedin **88→100**
+
+### P10-1 프로덕션 blocking
+- **`content-quality.yaml`** `naturalness_blocking: true` (프로덕션)
+- **supervised cron** NATURALNESS PASS (blocking ON · 8/8)
+
+### P10-3 cost-ledger LIVE
+- **`HERMES_HUMANIZE_LLM_LIVE=1 humanize-llm-eval`** — 12/12 (linkedin timeout 300s · ledger entry OK)
+- **`budget.llm_paths`:** `HERMES_ENHANCE` 추가
+
+### P10-6 주간 staging cron
+- **`cron-staging-supervised.sh`** — 토 11:00 (`setup-commander-cron.sh`)
+
+### 검증
+```bash
+HERMES_SKIP_RESEARCH=1 HERMES_HUMANIZE=1 ./scripts/run-content-package.sh 2026-07-01
+./scripts/naturalness-eval.sh 2026-07-01              # instagram 96
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh  # blocking ON 8/8
+HERMES_HUMANIZE_LLM_LIVE=1 ./scripts/humanize-llm-eval.sh 2026-07-01  # 12/12
+./scripts/harness-eval.sh --quick                     # 26/26
+```
+
+### 잔여 (P11)
+- PlayMCP Commander OTT (`setup-playmcp.sh`)
+- LLM humanize linkedin timeout 튜닝 (`HERMES_HUMANIZE_LLM_TIMEOUT` · Codex 경로)
+
+## 변경 요약 (2026-07-01, P5–P9)
+
+### P8 인프라
+- **`health-check.sh`:** PlayMCP MCP → WARN (OTT 미설정 시 FAIL 방지)
+- **`e2e-smoke-test.sh`:** handoff HUMANIZE 누락 시 `cron-supervised-pipeline` 자동 갱신
+
+### P5 게이트·스테이징
+- **`staging-supervised-eval.sh`:** `HERMES_SUPERVISED_STAGING=1` + naturalness blocking 검증
+- **`HERMES_NATURALNESS_BLOCKING=1`:** 프로덕션 yaml 없이 FAIL 강제 env
+- **`validate-output.sh`:** newsletter-html · newsletter-paste naturalness 게이트 추가
+- **`content-quality.yaml`:** `cron_llm_humanize: false` 명시
+
+### P7 품질 튜닝
+- **`humanize_polish`:** brief Top7 `마케터 관점`·`Insight 도출`·`활용 방법` polish
+- **`validate-output.sh`:** blog-article md naturalness 게이트
+- **`naturalness_audit`:** instagram question_cta · html/paste/md 감사 함수
+- **`content_quality`:** Instagram 캡션 질문 CTA 한 줄 추가 (신규 assemble 시)
+
+### P6 비용·LLM
+- **`hermes_cost.py`:** Input/Output 토큰 합산 · sessions.json fallback
+- **`setup-commander-cron.sh`:** cron LLM 미포함 · staging/prod blocking 안내
+
+### P9 문서
+- **`HARNESS.md`:** Voice·Naturalness·Budget env 표
+- **`docs/content-loops.md`:** staging · blocking · HERMES_* env 확장
+- **`AGENTS.md`:** m5-notion-eval · staging-supervised-eval
+
+### 검증 (2026-07-01)
+```bash
+./scripts/harness-eval.sh --quick                    # 26/26
+./scripts/staging-supervised-eval.sh 2026-07-01      # 2/2
+./scripts/naturalness-eval.sh 2026-07-01             # 2/2
+./scripts/e2e-smoke-test.sh 2026-07-01               # 18/18
+./scripts/validate-output.sh newsletter-html content/newsletter/2026-07-01_newsletter_*.html
+./scripts/validate-output.sh newsletter-paste content/packages/2026-07-01_newsletter-paste.md
+./scripts/validate-output.sh blog-article content/packages/2026-07-01_blog-article.md
+```
+
+## 변경 요약 (2026-07-01, P4 B1→A1)
+
+### B1 LLM 중복 제거
+- **`run-content-package.sh`:** blog 단독 `hermes-run humanize-korean` 블록 제거 → `run-humanize-polish.sh` 단일 경로
+
+### B4 cost-ledger 실측
+- **`lib/hermes_cost.py`:** `parse_hermes_log_usage()` — hermes verbose log에서 tokens/USD 파싱
+- **`humanize_polish._run_llm_polish`:** `HERMES_RUN_LOG` 캡처 후 ledger에 실측 기록
+
+### C1/C2 eval 연동
+- **`harness-eval.sh --quick`:** humanize-llm-eval · m5-notion-eval · pipe-015 (**25/25**)
+- **`e2e-smoke-test.sh`:** 3c humanize-llm-eval + loop-budget-eval
+
+### A3 M5 E2E
+- **`m5-notion-eval.sh`:** wiring + `HERMES_M5_E2E_LIVE=1` archive `--force` (8건+ · PlayMCP 노이즈 없음)
+
+### A1 blocking 스테이징
+- **`content-quality.yaml`** `supervised.staging.naturalness_blocking: true`
+- **`HERMES_SUPERVISED_STAGING=1`** → staging `*_blocking` 우선 (프로덕션은 false 유지)
+
+### 검증 (2026-07-01)
+```bash
+./scripts/harness-eval.sh --quick                    # 25/25
+./scripts/humanize-llm-eval.sh 2026-07-01            # 7/7 wiring
+HERMES_M5_E2E_LIVE=1 ./scripts/m5-notion-eval.sh 2026-07-01  # 6/6
+./scripts/naturalness-eval.sh 2026-07-01             # 2/2 · 42 fixtures
+./scripts/voice-style-eval.sh 2026-07-01             # 5/5
+./scripts/content-loop-eval.sh 2026-07-01            # 115/115
+./scripts/e2e-smoke-test.sh 2026-07-01               # 18/18
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh  # 8/8 HUMANIZE 포함
+./scripts/validate-output.sh research content/research/2026-07-01_brief.md
+./scripts/validate-output.sh newsletter content/newsletter/2026-07-01_newsletter_ax-faq.md
+```
+
+## 변경 요약 (2026-07-01, Voice Phase 3)
+
+### P3-1 Naturalness rubric + eval
+- **`config/content-quality.yaml`:** `naturalness` · `budget` 섹션
+- **`lib/naturalness_audit.py`** · **`scripts/naturalness-eval.sh`**
+- **`tests/fixtures/voice/naturalness.json`** — good/bad 쌍 38건
+- **`score_naturalness()`** — brief/instagram bad-case 페널티 (AI-tell·페르소나·합니다체)
+
+### P3-2 Supervisor NATURALNESS + loop budget
+- **`pipeline_supervisor.py`:** `NATURALNESS` WARN 단계 (non-blocking)
+- **`lib/loop_budget.py`:** `cost-ledger.jsonl` cap · `HERMES_LOOP_BUDGET_KILL`
+- **`m4_coach.py`:** `_apply_naturalness_trait` (LinkedIn · Instagram · Blog)
+
+### P3-3 Cron · harness 연동
+- **`cron-supervised-pipeline.sh`:** `HERMES_CRON_HUMANIZE` dry-run 출력
+- **`harness-eval.sh --quick`:** naturalness-eval 체크 추가
+- **`content_loop_rubric.py`:** naturalness L3 항목 (+5 → **110/110**)
+
+### 검증
+```bash
+./scripts/naturalness-eval.sh 2026-07-01          # 2/2 PASS (fixtures 38/38)
+./scripts/content-loop-eval.sh 2026-07-01          # 110/110 L3
+./scripts/harness-eval.sh --quick                  # 18/18
+SKIP_NEWSLETTER=1 SKIP_NOTION_ARCHIVE=1 \
+  python3 -c "import sys; sys.path.insert(0,'scripts'); from lib.pipeline_supervisor import run_supervised_pipeline; run_supervised_pipeline('2026-07-01', skip_newsletter=True, skip_notion=True)"
+# VOICE · HUMANIZE · NATURALNESS PASS
+./scripts/content-performance-eval.sh 2026-07-01   # 7/7
+```
+
+### 실운영 테스트 (2026-07-01 20:56 KST)
+```bash
+HERMES_CRON_HUMANIZE=1 ./scripts/cron-supervised-pipeline.sh
+./scripts/e2e-smoke-test.sh 2026-07-01 --telegram
+```
+- **Supervised cron:** 7/7 단계 OK · 65.96s · `HERMES_CRON_HUMANIZE=1` → blog/linkedin/instagram polish
+- **VOICE · HUMANIZE · NATURALNESS · M5 Notion** 전부 PASS
+- **content-loop-runs.jsonl** `status: OK` 기록
+- **E2E --telegram:** 18/18 PASS (파이프라인 35s · Notion 8건 25s · Telegram notify)
+- **voice-style-eval** 5/5 · **naturalness-eval** 2/2 · validate linkedin/instagram OK
+
+### P0 운영 반영 (2026-07-01)
+- **`config/content-quality.yaml`** `supervised.cron_defaults` — humanize ON · newsletter ON
+- **`lib/content_quality_config.py`** `supervised_cron_defaults()`
+- **`cron-supervised-pipeline.sh`** yaml SoT 기본값 · `content-loop-runs.jsonl` `humanize` 필드
+- **`e2e-smoke-test.sh`** 3b — cron dry-run + handoff VOICE/HUMANIZE/NATURALNESS
+- **`setup-commander-cron.sh`** 재등록 + 기본 env 안내
+- **검증:** dry-run `HUMANIZE=1` `SKIP_NEWSLETTER=0` · supervised **8/8** (M2b 포함, 42.84s) · e2e 3b **3/3 PASS**
+- **잔여:** `validate newsletter` TLDR 영문 잔존 — 콘텐츠 품질 (P1)
+
+### P1 채널·코치 커버리지 (2026-07-01)
+- **`humanize_polish.py`:** brief · newsletter polish 추가 (`_polish_brief_file` · `_polish_newsletter_file`)
+- **`localize_title` / `_newsletter_title`:** 영문+garbage 제목 폴백 수정 (OpenAI ads 등)
+- **`naturalness_audit.py`:** newsletter 채널 스코어 · instagram hook/CTA 개선 (83→90)
+- **`m4_coach.py`:** newsletter `_apply_naturalness_trait`
+- **`naturalness.json`:** newsletter fixture 4건 (42 total)
+- **`content-quality.yaml`:** newsletter naturalness min 58 · coach `naturalness_ok`
+
+### 검증
+```bash
+HERMES_HUMANIZE=1 python3 -c "from lib.humanize_polish import run_humanize_polish; print(run_humanize_polish('2026-07-01').channels)"
+# ['blog','linkedin','instagram','newsletter']
+./scripts/naturalness-eval.sh 2026-07-01    # 42/42 · newsletter 96
+./scripts/e2e-smoke-test.sh 2026-07-01      # 16/16
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh  # 8/8 OK
+```
+
+### P2 게이트 강도 (2026-07-01)
+- **`supervised.*_blocking`** — voice/humanize/naturalness/budget (기본 WARN, yaml로 FAIL 전환)
+- **`validate-output.sh`** — research · blog · newsletter **naturalness FAIL** 게이트
+- **`loop-budget-eval.sh`** — kill switch · token cap E2E
+- **`harness-eval.sh --quick`** — loop-budget-eval 포함
+
+### P3 문서·SoT (2026-07-01)
+- **`AGENTS.md`** — voice/naturalness/cron env
+- **`feature_list.json`** — `pipe-015` Voice·Naturalness
+- **`content_loop_rubric`** — HUMANIZE stage (+5)
+- **`content-loop-runs.jsonl`** — `voice` · `naturalness` 필드
+- **`docs/content-loops.md`** — blocking 표 · run log 필드
+
+### 검증
+```bash
+./scripts/loop-budget-eval.sh
+./scripts/harness-eval.sh --quick
+./scripts/content-loop-eval.sh 2026-07-01
+./scripts/e2e-smoke-test.sh 2026-07-01
+```
+
+### 검증
+```bash
+./scripts/humanize-llm-eval.sh 2026-07-01
+HERMES_HUMANIZE_LLM_LIVE=1 ./scripts/humanize-llm-eval.sh 2026-07-01
+```
+
+### PlayMCP 노이즈 억제 + HERMES_HUMANIZE_LLM (2026-07-01)
+- **`notion_client.setup_mcp`:** notion-only (`register_mcp_servers`) · `HERMES_MCP_DISCOVER_ALL=1`로 전체 복원
+- **`humanize-llm-eval.sh`:** wiring 5/5 · PlayMCP connection 실패 로그 없음
+- **`humanize_polish`:** budget kill · `HERMES_HUMANIZE_LLM_CHANNELS` · timeout · cost-ledger
+
+## 변경 요약 (2026-07-01, Voice Phase 2)
+
+### P2-1 content-quality.yaml 통합 SoT
+- **`config/content-quality.yaml`** · **`lib/content_quality_config.py`**
+- `longform_context` · `m4_coach` · `voice_style_audit` 단일 로더
+
+### P2-2 Golden fixture 50 + change_rate
+- **`ai-tell.json` 50건** · **`run_change_rate_eval`** (≤30%)
+- **`voice-style-eval.sh`** — 5/5 PASS
+
+### P2-3 HERMES_HUMANIZE supervised
+- **`humanize_polish.py`** · **`run-humanize-polish.sh`**
+- Supervisor **`HUMANIZE`** 단계 (opt-in · non-blocking)
+
+### P2-4 Content Loop rubric
+- **`content-loop-eval.sh`** — **105/105 L3** (target ≥70)
+
+### 검증
+```bash
+./scripts/voice-style-eval.sh 2026-07-01
+./scripts/content-loop-eval.sh 2026-07-01
+./scripts/harness-eval.sh --quick
+HERMES_HUMANIZE=1 ./scripts/run-humanize-polish.sh 2026-07-01
+```
+
+## 변경 요약 (2026-07-01, Voice Style Q1–Q5)
+
+### Q-01 LinkedIn 불릿 완결 문장
+- **`lib/content_quality.py`:** `_linkedin_bullet_detail` · `_trim_linkedin_post` — `[:60]`·`...` 절단 제거
+- **`context_blurb` + `compress_sentences`** 로 불릿 보조줄 완결
+
+### Q-02 Voice Style Eval
+- **`scripts/voice-style-eval.sh`** · **`lib/voice_style_audit.py`**
+- **`tests/fixtures/voice/ai-tell.json`** — AI-tell·register fixture 20건
+
+### Q-03 validate-output 문체 게이트
+- **`validate-output.sh linkedin`:** `audit_linkedin_file` — mid-ellipsis·AI-tell·불완전 불릿 FAIL
+
+### Q-04 산출물 재생성
+- **`2026-07-01`** M2 재생성 · agents-eval **39/39** · voice-style-eval **4/4**
+
+### Q-05 Instagram humanize
+- **`_instagram_prose`** — 캡션·takeaway `humanize(genre=instagram)` + 완결 문장
+
+### 검증
+```bash
+HERMES_SKIP_RESEARCH=1 ./scripts/run-content-package.sh 2026-07-01
+./scripts/voice-style-eval.sh 2026-07-01          # 4/4 (LinkedIn+Instagram)
+./scripts/validate-output.sh linkedin content/linkedin/2026-07-01_linkedin_ax-faq.md
+./scripts/validate-output.sh instagram content/instagram/2026-07-01_instagram_ax-faq.md
+SKIP_NEWSLETTER=1 SKIP_NOTION_ARCHIVE=1 ./scripts/run-supervised-pipeline.sh 2026-07-01  # VOICE PASS
+./scripts/hermes-agent.sh coach --date 2026-07-01 --verbose
+./scripts/agents-eval.sh 2026-07-01
+```
+
+## 변경 요약 (2026-07-01, Voice Phase 1)
+
+### M1 Brief light humanize
+- **`polish_brief_prose` · `build_executive_summary`** (`brief_quality.py`) — AI-tell 제거 · 페르소나 중복 제거
+- **`humanize_korean.py`:** `genre=brief` (register 유지)
+- **`assemble-research-brief.py`:** Executive Summary·요약 필드 polish
+
+### M4 Coach voice trait
+- **`config/m4-coach.yaml`:** `no_ai_tell` · `complete_sentences` 전 채널
+- **`m4_coach.py`:** `_apply_voice_traits` + `voice_style_audit.voice_trait_flags`
+
+### Supervised VOICE stage
+- **`pipeline_supervisor.py`:** AUDIT 이후 `VOICE` WARN 단계 (non-blocking)
+
+### Instagram validate 문체 게이트
+- **`validate-output.sh instagram`:** `audit_instagram_file`
+- **`voice-style-eval.sh`:** instagram_artifact 추가
+
 ## 변경 요약 (2026-06-27, Content Loop P0-2 Supervised Pipeline)
 
 ### Supervised Pipeline Cron (L2)
@@ -267,6 +732,27 @@ HERMES_WIKI_SEED=1 ./scripts/wiki-seed.sh
   - [운영 리소스·기술 스펙](https://app.notion.com/p/379fb3b5e389810f9630cd8cbfed942b)
   - [의존성 다이어그램](https://app.notion.com/p/379fb3b5e38981c2a947ec8af87330b4)
 - **재동기화:** `scripts/export-architecture-notion.sh` · state `content/.notion-architecture-state.json`
+
+## 변경 요약 (2026-06-27, cron-health-alert watch-telegram 오탐 수정)
+
+### 근본 원인
+- `watch-telegram\.sh` 패턴이 `kill-stale-watch-telegram.sh` 경로까지 매칭 → **중복 프로세스 오탐**
+- 단일 `watch-telegram` 인스턴스가 `status_loop`·`tail` subshell로 ps에 3건 노출 → **미실행+중복 동시 알림**
+- `watch-telegram` 미기동 시 cron이 알림만 보내고 자동 복구 없음
+
+### 수정
+- **`lib/watch_telegram_singleton.sh`** · **`lib/watch_telegram_singleton.py`:** 루트 PID만 카운트
+- **`kill-stale-watch-telegram.sh`** · **`start-services.sh`** · **`runtime_health.py`:** 공용 singleton 감지
+- **`cron-health-alert.sh`:** `ensure_watch_telegram` 자동 기동 (macOS mkdir lock)
+- **`proactive_triggers.py`:** watch 중복 알림 제거(runtime_health와 중복) · CTOR stale은 화·수 발송일만
+
+### 운영
+```bash
+~/hermes-content-studio/scripts/kill-stale-watch-telegram.sh --check  # OK count=0|1
+~/hermes-content-studio/scripts/cron-health-alert.sh                   # watch 자동 복구 후 무음
+# CTOR 실측 갱신 (화·수 발송 전):
+~/hermes-content-studio/scripts/newsletter-ctor-record.sh YYYY-MM-DD --delivered N --opens N --clicks N
+```
 
 ## 변경 요약 (2026-06-08, Commander Phases 1–4)
 

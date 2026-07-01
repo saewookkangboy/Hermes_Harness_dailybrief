@@ -22,7 +22,8 @@ stages:
     hermes_channels: [blog, instagram, linkedin]
     skill: content-orchestration
     script: scripts/run-content-package.sh
-    voice: config/voice-style.yaml
+    voice: config/content-quality.yaml
+    voice_legacy: config/voice-style.yaml
     humanize: scripts/lib/humanize_korean.py
     outputs:
       blog: content/blog/{date}_blog_*.html
