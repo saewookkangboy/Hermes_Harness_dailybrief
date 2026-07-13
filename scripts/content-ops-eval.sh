@@ -32,6 +32,9 @@ from lib.pipeline_supervisor import run_supervised_pipeline, SupervisorReport
 
 [[ -x "$DIR/run-supervised-pipeline.sh" ]] && record PASS "supervisor_script" || record FAIL "supervisor_script"
 [[ -x "$DIR/cron-publish-schedule.sh" ]] && record PASS "schedule_cron" || record FAIL "schedule_cron"
+# Hermes cron은 ~/.hermes/scripts + cwd=scripts — lib 경로 회귀 방지
+( cd "$HOME/.hermes/scripts" && bash cron-publish-schedule.sh >/dev/null 2>&1 ) \
+  && record PASS "cron_publish_hermes_scripts_cwd" || record FAIL "cron_publish_hermes_cwd"
 
 grep -q "schedule:" "$WORKDIR/config/agent-commands.yaml" && record PASS "yaml_schedule" || record FAIL "yaml_schedule"
 grep -q "supervised:" "$WORKDIR/config/agent-commands.yaml" && record PASS "yaml_supervised" || record FAIL "yaml_supervised"

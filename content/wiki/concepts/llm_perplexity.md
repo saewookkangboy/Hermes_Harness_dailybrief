@@ -1,18 +1,18 @@
 ---
 topic_key: llm_perplexity
-updated_at: 2026-06-10
-source_count: 2
+updated_at: 2026-07-13
+source_count: 10
 streak_days: 2
 ---
 
-# Perplexity
+# Perplexity·AI 검색(AEO) 최적화 실무
 
 ## 최신 요약
-Perplexity
+Perplexity·AI 검색(AEO) 최적화 실무
 
 ## 출처
-- 2026-06-08: [Perplexity](https://www.perplexity.ai/)
-- 2026-06-07: [Perplexity's Search as Code: Rethinking Searc — 실무 가이드](https://explainx.ai/blog/perplexity-search-as-code-agentic-search-2026)
+- 2026-07-13: [Perplexity·AI 검색(AEO) 최적화 실무](https://www.perplexity.ai/)
+- 2026-07-06: [Perplexity·AI 검색(AEO) 최적화 실무](https://fatjoe.com/blog/perplexity-ai-stats/)
 
 ## 관련
-[[aeo]] · [[agent_marketing]] · [[ai_ide]] · [[general]]
+[[ai_ide]] · [[general]] · [[korea_ax]] · [[llm_anthropic]]

@@ -62,18 +62,12 @@ def _glob_one(pattern: str) -> Path | None:
     return matches[0] if matches else None
 
 
+from lib.channel_artifacts import glob_linkedin_feed as _canonical_linkedin_feed
+
+
 def glob_linkedin_feed(stamp: str) -> Path | None:
-    """Feed 포스트 — repurpose `-iN` variant 우선 (context 패키지와 쌍)."""
-    matches = list(WORKDIR.glob(f"content/linkedin/{stamp}_linkedin_*.md"))
-    if not matches:
-        return None
-
-    def _rank(p: Path) -> tuple[int, float]:
-        m = re.search(r"-i(\d+)$", p.stem)
-        idx = int(m.group(1)) if m else 0
-        return (idx, p.stat().st_mtime)
-
-    return max(matches, key=_rank)
+    """Feed 포스트 — canonical slug + repurpose `-iN` variant 우선."""
+    return _canonical_linkedin_feed(stamp)
 
 
 def linkedin_context_path(stamp: str, feed_path: Path) -> Path | None:

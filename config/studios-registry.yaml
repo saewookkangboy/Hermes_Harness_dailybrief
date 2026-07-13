@@ -1,0 +1,71 @@
+# Hermes Multi-Studio Registry
+# 부트스트랩: scripts/bootstrap-hermes-studios.sh
+
+version: "1.0.0"
+parent_studio: hermes-content-studio
+shared_lib: ~/hermes-content-studio/scripts/lib
+commander: ~/hermes-content-studio/scripts/hermes-agent.sh
+
+studios:
+  - id: course
+    dir: ~/hermes-course-studio
+    name: Hermes Course Factory
+    tier: 1
+    pipeline_script: run-course-pipeline.sh
+    primary_output: content/syllabus/{date}_syllabus.md
+    upstream_brief: ~/hermes-content-studio/content/research/{date}_brief.md
+
+  - id: intel
+    dir: ~/hermes-intel-studio
+    name: Hermes Competitive Intel
+    tier: 1
+    pipeline_script: run-intel-pipeline.sh
+    primary_output: content/intel/{date}_intel_brief.md
+    wiki_entities: ~/hermes-content-studio/content/wiki/concepts
+
+  - id: seo
+    dir: ~/hermes-seo-studio
+    name: Hermes SEO/AEO Monitor
+    tier: 1
+    pipeline_script: run-seo-pipeline.sh
+    primary_output: content/seo/{date}_seo_audit.md
+    upstream_blog: ~/hermes-content-studio/content/blog
+
+  - id: personal
+    dir: ~/hermes-personal-studio
+    name: Hermes Personal Ops
+    tier: 2
+    pipeline_script: run-personal-pipeline.sh
+    primary_output: content/personal/{date}_inbox_digest.md
+    migrate_from: ~/hermes-content-studio/content/personal
+
+  - id: wiki
+    dir: ~/hermes-wiki-studio
+    name: Hermes Wiki Curator
+    tier: 2
+    pipeline_script: run-wiki-pipeline.sh
+    primary_output: content/wiki-reports/{date}_wiki_lint.md
+    shared_wiki: ~/hermes-content-studio/content/wiki
+
+  - id: dev
+    dir: ~/hermes-dev-studio
+    name: Hermes Dev Handoff
+    tier: 2
+    pipeline_script: run-dev-pipeline.sh
+    primary_output: content/specs/{date}_spec.md
+    handoff_dir: content/handoff
+
+  - id: delivery
+    dir: ~/hermes-delivery-studio
+    name: Hermes Client Delivery
+    tier: 3
+    pipeline_script: run-delivery-pipeline.sh
+    primary_output: content/client/{date}_client_brief.md
+
+  - id: social
+    dir: ~/hermes-social-studio
+    name: Hermes Social Listener
+    tier: 3
+    pipeline_script: run-social-pipeline.sh
+    primary_output: content/social/{date}_social_pulse.md
+    upstream_linkedin: ~/hermes-content-studio/content/linkedin

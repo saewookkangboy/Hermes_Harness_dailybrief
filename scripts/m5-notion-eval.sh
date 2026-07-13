@@ -32,16 +32,45 @@ else
   record FAIL "archive-to-notion.sh missing"
 fi
 
+if RUN_PY - <<PY >/dev/null 2>&1
+import sys
+sys.path.insert(0, "$DIR")
+from lib.notion_oauth import check_notion_oauth_status
+status = check_notion_oauth_status()
+if status.code == "expiring_soon":
+    print(status.detail, file=sys.stderr)
+raise SystemExit(0 if status.ok else 1)
+PY
+then
+  record PASS "notion_oauth_preflight"
+else
+  record FAIL "notion_oauth_preflight"
+  RUN_PY - <<PY 2>&1 | tail -5
+import sys
+sys.path.insert(0, "$DIR")
+from lib.notion_oauth import check_notion_oauth_status, format_oauth_alert
+print(format_oauth_alert(check_notion_oauth_status()))
+PY
+fi
+
 MCP_NOISE=$(RUN_PY - <<PY 2>&1
 import sys
 sys.path.insert(0, "$DIR")
-from lib.notion_client import setup_mcp
-setup_mcp()
+from lib.notion_client import load_config, setup_mcp_verified
+try:
+    setup_mcp_verified(cfg=load_config())
+    print("verified")
+except Exception as exc:
+    print(f"VERIFY_FAIL: {exc}")
+    raise
 PY
-)
-if echo "$MCP_NOISE" | grep -qiE "MCP server 'playmcp'|playmcp.*failed|unhandled errors"; then
+) || MCP_NOISE="VERIFY_FAIL"
+if echo "$MCP_NOISE" | grep -qiE "VERIFY_FAIL|authorization required|tool not found"; then
+  record FAIL "m5_mcp_tools_registered"
+elif echo "$MCP_NOISE" | grep -qiE "MCP server 'playmcp'|playmcp.*failed|unhandled errors"; then
   record FAIL "m5_mcp_playmcp_noise"
 else
+  record PASS "m5_mcp_tools_registered"
   record PASS "m5_mcp_playmcp_suppressed"
 fi
 

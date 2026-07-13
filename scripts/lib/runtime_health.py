@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 
 from lib.proactive_triggers import run_proactive_checks
+from lib.notion_oauth_watch import evaluate_notion_oauth_watch
 from lib.watch_telegram_singleton import root_count
 
 WORKDIR = Path.home() / "hermes-content-studio"
@@ -58,9 +59,20 @@ def check_watch_singleton() -> str | None:
     return None
 
 
+def check_notion_oauth() -> str | None:
+    result = evaluate_notion_oauth_watch(respect_cooldown=True, try_refresh=False)
+    if result.severity == "ok":
+        return None
+    if result.severity in {"fail", "critical"}:
+        return result.message
+    if result.should_alert:
+        return result.message
+    return None
+
+
 def run_runtime_checks(stamp: str | None = None) -> list[str]:
     issues: list[str] = []
-    for fn in (check_gateway, check_ollama, check_watch_singleton):
+    for fn in (check_gateway, check_ollama, check_watch_singleton, check_notion_oauth):
         msg = fn()
         if msg:
             issues.append(msg)

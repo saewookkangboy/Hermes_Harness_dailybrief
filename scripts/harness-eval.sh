@@ -79,6 +79,11 @@ check_struct "Humanize LLM eval (humanize-llm-eval)" "$DIR/humanize-llm-eval.sh"
 check_struct "M5 Notion eval (m5-notion-eval)" "$DIR/m5-notion-eval.sh"
 check_struct "Staging supervised eval" "$DIR/staging-supervised-eval.sh"
 check_struct "PlayMCP routing E2E" "$DIR/playmcp-routing-e2e.sh"
+check_struct "JARVIS memory eval" "$DIR/jarvis-memory-eval.sh"
+check_struct "MCP EasyTool eval" "$DIR/mcp-easytool-eval.sh"
+check_struct "Pipeline integrity eval" "$DIR/pipeline-integrity-eval.sh"
+check_struct "JARVIS.md" "$WORKDIR/JARVIS.md"
+check_struct "Commander EasyTool config" "$WORKDIR/config/commander-easytool.yaml"
 check_struct "Content loop eval (content-loop-eval)" "$DIR/content-loop-eval.sh"
 check_struct "Newsletter pipeline (run-newsletter)" "$DIR/run-newsletter.sh"
 check_struct "Newsletter eval (newsletter-eval)" "$DIR/newsletter-eval.sh"
@@ -135,6 +140,15 @@ if [[ "$MODE" == "quick" ]]; then
     echo "❌ playmcp-routing-e2e (wiring)"
     FAIL=$((FAIL + 1))
   fi
+  for ev in jarvis-memory-eval mcp-easytool-eval pipeline-integrity-eval; do
+    if "$DIR/${ev}.sh" >/tmp/harness-${ev}.log 2>&1; then
+      echo "✅ ${ev}"
+      PASS=$((PASS + 1))
+    else
+      echo "❌ ${ev}"
+      FAIL=$((FAIL + 1))
+    fi
+  done
   echo ""
   echo "=== Quick eval: ✅ $PASS / ❌ $FAIL / ⚠️ $WARN ==="
   [[ "$FAIL" -eq 0 ]] && exit 0 || exit 1

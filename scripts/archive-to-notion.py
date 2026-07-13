@@ -33,7 +33,7 @@ from lib.notion_client import (  # noqa: E402
     mcp_call,
     notion_page_id_to_url,
     save_state,
-    setup_mcp,
+    setup_mcp_verified,
 )
 from lib.notion_hygiene import hygiene_enabled, resolve_sync_parent, run_day_hygiene  # noqa: E402
 from lib.common import studio_today  # noqa: E402
@@ -314,7 +314,7 @@ def archive_date(
     state = load_state()
 
     if hygiene_only:
-        registry = setup_mcp()
+        registry = setup_mcp_verified(cfg=cfg)
         hygiene_report = run_day_hygiene(registry, cfg, state, stamp)
         save_state(state)
         return {"stamp": stamp, "hygiene": hygiene_report, "count": 0}
@@ -333,7 +333,7 @@ def archive_date(
 
     if not pending:
         log(f"No new/changed content for {stamp}")
-        registry = setup_mcp()
+        registry = setup_mcp_verified(cfg=cfg)
         hygiene_report = None
         if hygiene_enabled(cfg):
             hygiene_report = run_day_hygiene(registry, cfg, state, stamp)
@@ -369,7 +369,7 @@ def archive_date(
             format_progress(2, "Notion 페이지 동기화", f"{total}건", stamp=stamp),
         )
 
-    registry = setup_mcp()
+    registry = setup_mcp_verified(cfg=cfg)
     day_id, day_url = ensure_day_page(registry, cfg, state, stamp)
     synced_pages: list[dict] = []
     count = 0

@@ -8,6 +8,7 @@ from pathlib import Path
 
 from lib.brief_gate import brief_path, needs_daily_research
 from lib.common import studio_today
+from lib.notion_oauth_watch import proactive_oauth_message
 
 WORKDIR = Path.home() / "hermes-content-studio"
 STATE_PATH = WORKDIR / "content" / ".notion-archive-state.json"
@@ -48,6 +49,10 @@ def check_brief_freshness(stamp: str) -> str | None:
     if needs_daily_research(stamp):
         return f"⚠️ {stamp} Brief 신선도 미달 — M1 재수집 권장"
     return None
+
+
+def check_notion_oauth_watch() -> str | None:
+    return proactive_oauth_message()
 
 
 def check_notion_stale(stamp: str, *, max_hours: int = MAX_NOTION_STALE_HOURS) -> str | None:
@@ -100,6 +105,7 @@ def run_proactive_checks(stamp: str | None = None) -> list[dict[str, str]]:
     stamp = stamp or studio_today()
     checks: list[tuple[str, str | None]] = [
         ("brief_freshness", check_brief_freshness(stamp)),
+        ("notion_oauth_watch", check_notion_oauth_watch()),
         ("notion_stale", check_notion_stale(stamp)),
         ("newsletter_paste", check_newsletter_paste_missing(stamp)),
         ("ctor_stale", check_ctor_stale()),

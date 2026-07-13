@@ -123,3 +123,13 @@ mcp:
 telegram:
   notify_on_sync: true
   progress_steps: 5
+
+# OAuth 지속 감시 — cron-notion-oauth-watch.sh (2h) · proactive · archive preflight
+oauth_watch:
+  enabled: true
+  warn_before_hours: 24
+  critical_before_hours: 6
+  alert_cooldown_hours: 4
+  refresh_cooldown_hours: 1
+  auto_refresh: true
+  verify_tools_on_critical: true

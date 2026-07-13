@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from lib.m4_analytics import format_m4_report
+from lib.omm import format_omm_block
 from lib.session_sot import load_session
 
 WORKDIR = Path.home() / "hermes-content-studio"
@@ -96,7 +97,7 @@ def build_handoff_markdown(session_id: str = "cli", m4_days: int = 7) -> str:
     ]
     for c in next_cmds:
         lines.append(f"./scripts/{c}" if not c.startswith("archive") else f"./scripts/{c}")
-    lines.extend(["```", "", "## M4 Performance (최근 7일)", "", "```", m4_block, "```", ""])
+    lines.extend(["```", "", "## OMM (실수 방어선)", "", format_omm_block(5), "", "## M4 Performance (최근 7일)", "", "```", m4_block, "```", ""])
     lines.extend(
         [
             "## Phase 2 체크",

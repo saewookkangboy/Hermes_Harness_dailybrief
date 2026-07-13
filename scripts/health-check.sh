@@ -76,6 +76,13 @@ warn "mcporter mcp-gateway" "test -f $HOME/.mcporter/mcporter.json && grep -q mc
 check "hermes-run 스크립트" "test -x ~/hermes-content-studio/scripts/hermes-run.sh"
 check "watch-telegram" "test -x ~/hermes-content-studio/scripts/watch-telegram.sh"
 check "archive-to-notion" "test -x ~/hermes-content-studio/scripts/archive-to-notion.sh"
+check "Notion OAuth" "$HOME/.hermes/hermes-agent/venv/bin/python -c \"
+import sys
+sys.path.insert(0, '$HOME/hermes-content-studio/scripts')
+from lib.notion_oauth import check_notion_oauth_status
+s = check_notion_oauth_status()
+raise SystemExit(0 if s.ok else 1)
+\""
 check "telegram-notify" "test -x ~/hermes-content-studio/scripts/telegram-notify.sh"
 check "telegram-pipeline" "test -x ~/hermes-content-studio/scripts/telegram-pipeline.sh"
 check "telegram-custom" "test -x ~/hermes-content-studio/scripts/telegram-custom.sh"
@@ -117,6 +124,10 @@ warn "Cursor Agent CLI" "test -x $HOME/.local/bin/cursor-agent"
 warn "Cursor IDE CLI" "test -x $HOME/.local/bin/cursor || test -x /Applications/Cursor.app/Contents/Resources/app/bin/cursor"
 check "run-cursor-handoff" "test -x ~/hermes-content-studio/scripts/run-cursor-handoff.sh"
 check "install-cursor-cli" "test -x ~/hermes-content-studio/scripts/install-cursor-cli.sh"
+check "JARVIS.md" "test -f ~/hermes-content-studio/JARVIS.md"
+check "jarvis-memory-eval" "test -x ~/hermes-content-studio/scripts/jarvis-memory-eval.sh"
+check "mcp-easytool-eval" "test -x ~/hermes-content-studio/scripts/mcp-easytool-eval.sh"
+check "pipeline-integrity-eval" "test -x ~/hermes-content-studio/scripts/pipeline-integrity-eval.sh"
 warn "Node.js" "node --version"
 warn "Python markitdown" "python3 -m markitdown --help"
 
@@ -125,6 +136,7 @@ echo "--- Cron ---"
 hermes cron list 2>/dev/null | grep -E "weekly|research|content|lecture" || echo "⚠️  주간 cron 미설정"
 warn "Commander cron (morning)" "hermes cron list 2>/dev/null | grep -q cron-morning-brief"
 warn "Commander cron (health)" "hermes cron list 2>/dev/null | grep -q cron-health-alert"
+warn "Commander cron (notion oauth)" "hermes cron list 2>/dev/null | grep -q cron-notion-oauth-watch"
 
 echo ""
 echo "=== 결과: ✅ $PASS / ❌ $FAIL / ⚠️ $WARN ==="

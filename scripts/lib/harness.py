@@ -13,7 +13,16 @@ from typing import Any, Generator
 
 import yaml
 
-WORKDIR = Path.home() / "hermes-content-studio"
+def get_workdir() -> Path:
+    import os
+
+    raw = os.environ.get("HERMES_WORKDIR", "").strip()
+    if raw:
+        return Path(raw).expanduser().resolve()
+    return Path.home() / "hermes-content-studio"
+
+
+WORKDIR = get_workdir()
 HARNESS_DIR = WORKDIR / ".harness"
 CONFIG_PATH = WORKDIR / "config" / "harness.yaml"
 

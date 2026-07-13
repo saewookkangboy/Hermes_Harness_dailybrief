@@ -10,9 +10,10 @@ from pathlib import Path
 from typing import Any, Callable
 
 from lib.brief_gate import assert_brief_ready_for_content, brief_path
+from lib.channel_artifacts import archive_stale_artifacts, glob_channel_artifact, glob_linkedin_feed
 from lib.common import studio_today
 from lib.harness import timed_stage
-from lib.quality_auditor import audit_stamp, glob_linkedin_feed
+from lib.quality_auditor import audit_stamp
 from lib.naturalness_audit import naturalness_issues_for_stamp
 from lib.voice_style_audit import run_voice_audit_stamp
 from lib.content_quality_config import supervised_stage_blocking
@@ -67,13 +68,35 @@ def _run_script(args: list[str], *, env: dict[str, str] | None = None) -> tuple[
     return int(proc.returncode or 0), out[-500:] if len(out) > 500 else out
 
 
-def _validate_channel(vtype: str, pattern: str) -> tuple[bool, str]:
-    matches = sorted(WORKDIR.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
-    if not matches:
-        return False, f"산출물 없음: {pattern}"
-    path = matches[0]
+def _validate_channel(vtype: str, pattern: str, *, path: Path | None = None) -> tuple[bool, str]:
+    if path is None:
+        matches = sorted(WORKDIR.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
+        if not matches:
+            return False, f"산출물 없음: {pattern}"
+        path = matches[0]
     rc, out = _run_script([str(SCRIPTS / "validate-output.sh"), vtype, str(path)])
-    return rc == 0, out.splitlines()[-1] if out else ("OK" if rc == 0 else "FAIL")
+    tail = out.splitlines()[-1] if out else ("OK" if rc == 0 else "FAIL")
+    rel = path.relative_to(WORKDIR)
+    if rc == 0:
+        return True, f"✅ {rel} · {tail}"
+    return False, f"❌ {rel} · {tail}"
+
+
+def _format_m2_detail(
+    *,
+    blog_ok: bool,
+    blog_msg: str,
+    ig_ok: bool,
+    ig_msg: str,
+    li_ok: bool,
+    li_msg: str,
+    script_rc: int,
+    script_detail: str,
+) -> str:
+    parts = [f"blog={blog_msg}", f"ig={ig_msg}", f"li={li_msg}"]
+    if script_rc != 0:
+        parts.append(f"run-content-package rc={script_rc}: {script_detail[:120]}")
+    return "; ".join(parts)
 
 
 NotifyFn = Callable[[str], None]
@@ -143,6 +166,12 @@ def run_supervised_pipeline(
     # M2
     step += 1
     _progress(f"[██░░░] {step}/{total_steps} M2 콘텐츠 패키지…")
+    stale_moves = archive_stale_artifacts(stamp)
+    if stale_moves:
+        log_note = "; ".join(stale_moves[:2])
+        if len(stale_moves) > 2:
+            log_note += f" (+{len(stale_moves) - 2})"
+        report.stages.append(StageResult("M2a", "stale_slug", "PASS", 0.0, log_note))
     with timed_stage("supervised_m2"):
         t1 = time.perf_counter()
         rc, detail = _run_script(
@@ -150,13 +179,23 @@ def run_supervised_pipeline(
             env={"SKIP_INIT": "1", "HERMES_SKIP_RESEARCH": "1"},
         )
         elapsed = round(time.perf_counter() - t1, 2)
-    blog_ok, blog_msg = _validate_channel("blog", f"content/blog/{stamp}_blog_*.html")
-    ig_ok, ig_msg = _validate_channel("instagram", f"content/instagram/{stamp}_instagram_*.md")
+    blog_path = glob_channel_artifact(stamp, "blog")
+    ig_path = glob_channel_artifact(stamp, "instagram")
     li_feed = glob_linkedin_feed(stamp)
+    blog_ok, blog_msg = (
+        _validate_channel("blog", f"content/blog/{stamp}_blog_*.html", path=blog_path)
+        if blog_path
+        else (False, f"산출물 없음: content/blog/{stamp}_blog_*.html")
+    )
+    ig_ok, ig_msg = (
+        _validate_channel("instagram", f"content/instagram/{stamp}_instagram_*.md", path=ig_path)
+        if ig_path
+        else (False, f"산출물 없음: content/instagram/{stamp}_instagram_*.md")
+    )
     if li_feed:
-        li_ok, li_msg = _validate_channel("linkedin", str(li_feed.relative_to(WORKDIR)))
+        li_ok, li_msg = _validate_channel("linkedin", str(li_feed.relative_to(WORKDIR)), path=li_feed)
     else:
-        li_ok, li_msg = _validate_channel("linkedin", f"content/linkedin/{stamp}_linkedin_*.md")
+        li_ok, li_msg = (False, f"산출물 없음: content/linkedin/{stamp}_linkedin_*.md")
     m2_ok = rc == 0 and blog_ok and ig_ok and li_ok
     report.stages.append(
         StageResult(
@@ -164,7 +203,16 @@ def run_supervised_pipeline(
             "content",
             "PASS" if m2_ok else "FAIL",
             elapsed,
-            f"blog={blog_msg}; ig={ig_msg}; li={li_msg}",
+            _format_m2_detail(
+                blog_ok=blog_ok,
+                blog_msg=blog_msg,
+                ig_ok=ig_ok,
+                ig_msg=ig_msg,
+                li_ok=li_ok,
+                li_msg=li_msg,
+                script_rc=rc,
+                script_detail=detail,
+            ),
         )
     )
     if not m2_ok:
@@ -182,7 +230,12 @@ def run_supervised_pipeline(
                 env={"SKIP_INIT": "1"},
             )
             elapsed = round(time.perf_counter() - t1, 2)
-        nl_ok, nl_msg = _validate_channel("newsletter", f"content/newsletter/{stamp}_newsletter_*.md")
+        nl_path = glob_channel_artifact(stamp, "newsletter")
+        nl_ok, nl_msg = (
+            _validate_channel("newsletter", f"content/newsletter/{stamp}_newsletter_*.md", path=nl_path)
+            if nl_path
+            else (False, f"산출물 없음: content/newsletter/{stamp}_newsletter_*.md")
+        )
         st = "PASS" if rc == 0 and nl_ok else "FAIL"
         report.stages.append(StageResult("M2b", "newsletter", st, elapsed, nl_msg or detail))
         if st == "FAIL":
@@ -335,8 +388,9 @@ def format_supervisor_report(report: SupervisorReport) -> str:
     ]
     for s in report.stages:
         sym = {"PASS": "✅", "WARN": "⚠️", "FAIL": "❌", "SKIP": "⏭"}.get(s.status, s.status)
+        detail_limit = 180 if s.status == "FAIL" else 80
         lines.append(
-            f"| {s.stage_id} {s.label} | {sym} | {s.elapsed_seconds}s | {s.detail[:60]} |"
+            f"| {s.stage_id} {s.label} | {sym} | {s.elapsed_seconds}s | {s.detail[:detail_limit]} |"
         )
     lines.append(f"\n📋 `content/logs/{report.stamp}_supervised-pipeline.md`")
     return "\n".join(lines)

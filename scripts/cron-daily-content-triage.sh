@@ -11,10 +11,11 @@
 # hermes cron --no-agent · stdout → Telegram deliver
 set -euo pipefail
 
-DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+# shellcheck source=lib/cron_bootstrap.sh
+source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 # shellcheck source=lib/studio-date.sh
-source "$DIR/lib/studio-date.sh"
+source "$SCRIPTS_DIR/lib/studio-date.sh"
 
 DATE="$(studio_commander_date)"
 STAMP="$DATE"
@@ -26,18 +27,12 @@ LOG="$WORKDIR/content/logs/${STAMP}_daily-triage.md"
 RUNS="$WORKDIR/.harness/content-loop-runs.jsonl"
 mkdir -p "$(dirname "$LOG")" "$(dirname "$RUNS")"
 
-run_py() {
-  if [[ -x "$HOME/.hermes/hermes-agent/venv/bin/python" ]]; then
-    "$HOME/.hermes/hermes-agent/venv/bin/python" "$@"
-  else
-    python3 "$@"
-  fi
-}
+run_py() { cron_run_py "$@"; }
 
 section_morning() {
   echo "## 1. Morning Pack"
   echo ""
-  "$DIR/hermes-agent.sh" morning --date "$STAMP" --session "$SESSION" 2>&1 || echo "⚠️ Morning pack 실패"
+  "$SCRIPTS_DIR/hermes-agent.sh" morning --date "$STAMP" --session "$SESSION" 2>&1 || echo "⚠️ Morning pack 실패"
 }
 
 section_audit() {
@@ -45,7 +40,7 @@ section_audit() {
   echo "## 2. Quality Audit"
   echo ""
   local out rc=0
-  out=$("$DIR/run-quality-audit.sh" "$STAMP" 2>&1) || rc=$?
+  out=$("$SCRIPTS_DIR/run-quality-audit.sh" "$STAMP" 2>&1) || rc=$?
   echo "$out"
   if [[ "$rc" -ne 0 ]]; then
     echo ""
@@ -61,7 +56,7 @@ section_health() {
   local issues
   issues=$(run_py -c "
 import sys
-sys.path.insert(0, '${DIR}')
+sys.path.insert(0, '${SCRIPTS_DIR}')
 from lib.runtime_health import run_runtime_checks
 issues = run_runtime_checks('${STAMP}')
 print(chr(10).join(issues) if issues else '✅ runtime OK')
@@ -76,7 +71,7 @@ section_watch() {
   echo ""
   run_py -c "
 import sys
-sys.path.insert(0, '${DIR}')
+sys.path.insert(0, '${SCRIPTS_DIR}')
 from lib.competitive_watch import run_competitive_watch, format_watch_summary
 r = run_competitive_watch(write_report=True)
 print(format_watch_summary(r))
@@ -90,7 +85,7 @@ section_agents_eval() {
   echo "## 5. Agents Eval A–D (월)"
   echo ""
   local out rc=0
-  out=$("$DIR/agents-eval.sh" "$STAMP" 2>&1) || rc=$?
+  out=$("$SCRIPTS_DIR/agents-eval.sh" "$STAMP" 2>&1) || rc=$?
   echo "$out"
   if [[ "$rc" -ne 0 ]]; then
     echo ""
@@ -126,8 +121,8 @@ append_run_log() {
 
 # Telegram/Slack digest (cron deliver + explicit notify)
 SUMMARY=$(head -40 "$LOG")
-if [[ -x "$DIR/lib/commander_notify.sh" ]]; then
-  bash "$DIR/lib/commander_notify.sh" notify "$SUMMARY"
+if [[ -x "$SCRIPTS_DIR/lib/commander_notify.sh" ]]; then
+  bash "$SCRIPTS_DIR/lib/commander_notify.sh" notify "$SUMMARY"
 fi
 
 append_run_log "OK"

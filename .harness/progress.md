@@ -1,5 +1,121 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+## Tier 3 Upstream 연동 (2026-07-13)
+
+| Studio | Upstream | 검증 |
+|--------|----------|------|
+| **Delivery** | brief + 콘텐츠 캘린더 + channel-metrics | ✅ `studios-tier3-upstream-eval` |
+| **Social** | LinkedIn post + context + brief M3 | ✅ |
+
+**eval:** `scripts/studios-tier3-upstream-eval.sh` · `scripts/studios-all-upstream-eval.sh`
+
+```bash
+~/hermes-content-studio/scripts/studios-all-upstream-eval.sh 2026-07-12
+```
+
+## Tier 2 Upstream 연동 (2026-07-13)
+
+| Studio | Upstream | 검증 |
+|--------|----------|------|
+| **Personal** | `_inbox_candidates.json` + mail-digest fallback | ✅ `studios-tier2-upstream-eval` |
+| **Wiki** | `wiki_curator` lint/seed + brief graph | ✅ 9 concepts · 5 lint issues |
+| **Dev** | `feature_list` + `progress` + brief → spec/HANDOFF | ✅ vibe-coding-navigator |
+
+**eval:** `scripts/studios-tier2-upstream-eval.sh`
+
+```bash
+~/hermes-content-studio/scripts/studios-tier2-upstream-eval.sh 2026-07-12
+HERMES_WORKDIR=~/hermes-personal-studio ~/hermes-personal-studio/scripts/run-personal-pipeline.sh
+HERMES_WORKDIR=~/hermes-wiki-studio ~/hermes-wiki-studio/scripts/run-wiki-pipeline.sh
+HERMES_WORKDIR=~/hermes-dev-studio ~/hermes-dev-studio/scripts/run-dev-pipeline.sh
+```
+
+## Tier 1 Upstream 연동 (2026-07-12)
+
+| Studio | Upstream | 검증 |
+|--------|----------|------|
+| **Course** | `{date}_brief.md` → syllabus/lab/quiz | ✅ `studios-tier1-upstream-eval` |
+| **Intel** | brief + `wiki/concepts` → intel/matrix + snapshot diff | ✅ |
+| **SEO** | `content/blog/{date}_blog_*.html` → audit/patch | ✅ score 100 |
+
+**공유 lib:** `scripts/lib/studio_upstream.py`  
+**eval:** `scripts/studios-tier1-upstream-eval.sh` **4/4** (2026-07-12)
+
+```bash
+~/hermes-content-studio/scripts/studios-tier1-upstream-eval.sh 2026-07-12
+HERMES_WORKDIR=~/hermes-course-studio ~/hermes-course-studio/scripts/run-course-pipeline.sh
+HERMES_WORKDIR=~/hermes-intel-studio ~/hermes-intel-studio/scripts/run-intel-pipeline.sh
+HERMES_WORKDIR=~/hermes-seo-studio ~/hermes-seo-studio/scripts/run-seo-pipeline.sh
+```
+
+## Multi-Studio 부트스트랩 (2026-07-12, Tier 1–3)
+
+| Tier | Studio | 경로 | 파이프라인 | 상태 |
+|------|--------|------|-----------|------|
+| **1** | Course Factory | `~/hermes-course-studio` | `run-course-pipeline.sh` | ✅ scaffold + validate |
+| **1** | Competitive Intel | `~/hermes-intel-studio` | `run-intel-pipeline.sh` | ✅ |
+| **1** | SEO/AEO Monitor | `~/hermes-seo-studio` | `run-seo-pipeline.sh` | ✅ |
+| **2** | Personal Ops | `~/hermes-personal-studio` | `run-personal-pipeline.sh` | ✅ |
+| **2** | Wiki Curator | `~/hermes-wiki-studio` | `run-wiki-pipeline.sh` | ✅ |
+| **2** | Dev Handoff | `~/hermes-dev-studio` | `run-dev-pipeline.sh` | ✅ |
+| **3** | Client Delivery | `~/hermes-delivery-studio` | `run-delivery-pipeline.sh` | ✅ |
+| **3** | Social Listener | `~/hermes-social-studio` | `run-social-pipeline.sh` | ✅ |
+
+**신규:** `config/studios-registry.yaml` · `docs/MULTI-STUDIO-ARCHITECTURE.md` · `scripts/bootstrap-hermes-studios.sh` · `scripts/studios-eval.sh` · `scripts/lib/studio_assemble_templates.py`  
+**공유:** `scripts/lib/harness.py` (`HERMES_WORKDIR`) · lib symlink · Commander(parent)
+
+```bash
+~/hermes-content-studio/scripts/bootstrap-hermes-studios.sh   # 8 Studio 재생성
+~/hermes-content-studio/scripts/studios-eval.sh 2026-07-12    # 전체 smoke
+export HERMES_WORKDIR=~/hermes-course-studio && $HERMES_WORKDIR/scripts/run-course-pipeline.sh
+```
+
+## JARVIS 메모리 · EasyTool · 파일럿 (2026-07-12)
+
+| 단계 | 항목 | 상태 | 검증 |
+|------|------|------|------|
+| **1** | `JARVIS.md` + OMM | ✅ | `jarvis-memory-eval.sh` **5/5** |
+| **2** | EasyTool 커맨더 프롬프트 | ✅ **적용됨** | `setup-telegram-routing.sh` · chat 893 chars · Gateway 재시작 |
+| **3** | JARVIS CODE macOS 파일럿 | ✅ **설치됨** | `~/.local/bin/jarvis` · doctor OK (bge-m3·torch WARN — 아래 참고) |
+| **5** | M1~M5 파이프라인 무결성 | ✅ | `pipeline-integrity-eval.sh` **17/17** · assemble 미변경 |
+
+**신규:** `JARVIS.md` · `.harness/omm.jsonl` · `lib/omm.py` · `config/commander-easytool.yaml` · `lib/easytool_prompt.py`  
+**eval:** `jarvis-memory-eval.sh` · `mcp-easytool-eval.sh` · `jarvis-code-pilot.sh` · `pipeline-integrity-eval.sh`  
+**Telegram:** `HERMES_EASYTOOL=1`(기본) → compact prompt **893 chars** (`~/.hermes/config.yaml`)  
+**JARVIS CODE:** `~/.local/bin/jarvis` · install `npm_config_allow_remote=true` 필요  
+**JARVIS doctor WARN:** bge-m3 미다운로드(`NO_MODEL_PRELOAD=1`) · torch 2.2.2(Intel) — recall 시 `jarvis doctor --preload-embedder`  
+**JARVIS CODE 설치(재실행):** `JARVIS_CODE_PILOT_INSTALL=1 JARVIS_CODE_NO_MODEL_PRELOAD=1 ./scripts/jarvis-code-pilot.sh`
+
+```bash
+./scripts/jarvis-memory-eval.sh
+./scripts/mcp-easytool-eval.sh
+./scripts/pipeline-integrity-eval.sh
+./scripts/harness-eval.sh --quick   # 37/37
+```
+
+## Notion Sync 복구 (2026-07-09, P0→P3)
+
+| 우선 | 항목 | 상태 | 비고 |
+|------|------|------|------|
+| **P0** | Notion OAuth 재인증 | ⏳ 수동 | `scripts/reauth-notion-mcp.sh` (대화형 TTY) |
+| **P0** | 07-06~09 백필 | ✅ 완료 | 8페이지/일 · check-notion-status 전체 OK · m5 LIVE **8/8** |
+| **P0** | 중복 slug 정리 | ✅ 코드 | `lib/channel_artifacts.py` · supervised M2 전 자동 `_stale/` 이동 |
+| **P1** | M2 validate 상세 | ✅ | `pipeline_supervisor` 채널별 경로·실패 메시지 |
+| **P1** | canonical slug SoT | ✅ | `unified-context` 경로 우선 |
+| **P2** | OAuth preflight | ✅ | `lib/notion_oauth.py` · `setup_mcp_verified` · archive M5 |
+| **P2** | OAuth 지속 감시 | ✅ | `cron-notion-oauth-watch` 2h · silent refresh · cooldown 알림 |
+| **P2** | m5-notion-eval | ✅ | oauth + tools 등록 스모크 |
+| **P3** | 복구 스크립트 | ✅ | `reauth-notion-mcp.sh` · `backfill-notion-archive.sh` |
+
+**루트코인:** `~/.hermes/mcp-tokens/notion.json` 만료 (2026-07-05) → cron 비대화형 OAuth 실패 → MCP 툴 미등록.
+
+**즉시 실행 (로컬 Terminal):**
+```bash
+~/hermes-content-studio/scripts/reauth-notion-mcp.sh
+~/hermes-content-studio/scripts/backfill-notion-archive.sh 2026-07-06 2026-07-09
+HERMES_M5_E2E_LIVE=1 ~/hermes-content-studio/scripts/m5-notion-eval.sh 2026-07-09
+```
+
 ## 통합 현황 (2026-07-01, P4→P14)
 
 Voice·Naturalness·Budget·PlayMCP 품질 스택 완료. 프로덕션 supervised는 **voice + naturalness blocking ON**, budget cap은 **WARN** (hard FAIL은 `budget_blocking: true` 시).
@@ -93,6 +209,26 @@ HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh   # 7/7
 
 ### 잔여
 - ~~PlayMCP OTT~~ ✅ P15b
+
+---
+
+## 변경 요약 (2026-07-01, P15c Full System Test)
+
+### 전체 시스템 강력 테스트 — **20/20 PASS** (~3m18s)
+
+| 레이어 | 스위트 | 결과 |
+|--------|--------|------|
+| Bootstrap | init · health-check | 76/0/1 (markitdown 선택 WARN) |
+| Harness | harness-eval --quick | **29/29** |
+| Quality | voice 5/5 · naturalness 2/2 · humanize-llm 12/12 · content-loop **115/115** |
+| Budget | loop-budget 4/4 · ledger 275,687/600,000 OK |
+| Staging | staging-supervised 4/4 | blocking 검증 |
+| Commander | commander-integration 7/7 · PlayMCP integration 7/7 · routing LIVE **7/7** |
+| Agents | agents-eval **39/39** (A–D) · wiki-lint 9/9 |
+| Factory | supervised cron **8/8** (27s) · validate research/newsletter |
+| E2E | e2e-smoke --telegram **24/24** · 파이프라인 **23s** · Notion 8건 22s |
+
+로그: `/tmp/hermes-full-system-test-2026-07-01.log`
 
 ---
 
@@ -732,6 +868,29 @@ HERMES_WIKI_SEED=1 ./scripts/wiki-seed.sh
   - [운영 리소스·기술 스펙](https://app.notion.com/p/379fb3b5e389810f9630cd8cbfed942b)
   - [의존성 다이어그램](https://app.notion.com/p/379fb3b5e38981c2a947ec8af87330b4)
 - **재동기화:** `scripts/export-architecture-notion.sh` · state `content/.notion-architecture-state.json`
+
+## 변경 요약 (2026-06-27, cron-publish-schedule lib import 수정)
+
+### 근본 원인
+- Hermes cron `--no-agent` 가 `~/.hermes/scripts/` 에서 실행 (`cwd=path.parent`)
+- `sys.path.insert(0, '$DIR')` → `~/.hermes/scripts` (lib 없음) → `ModuleNotFoundError: lib`
+
+### 수정
+- **`lib/cron_bootstrap.sh`:** `SCRIPTS_DIR=$WORKDIR/scripts` · `cron_run_py`
+- **cron-*.sh 전체:** bootstrap + 워크스페이스 scripts 경로 SoT
+- **`content-ops-eval.sh`:** `~/.hermes/scripts` cwd 회귀 테스트
+- **`~/.hermes/scripts/`** 복사본 갱신
+
+### 수정 (2차 — cron-publish-schedule 재발)
+- **`cron_bootstrap.sh`** → `~/.hermes/scripts/cron_bootstrap.sh` 동반 복사 (source 경로 회귀)
+- **`cron_resolve_workdir`:** `HERMES_HOME/config.yaml` terminal.cwd · `PYTHONPATH` 설정
+- **`setup-commander-cron.sh`:** `_deploy_cron_script` · bootstrap + cron 전체 일괄 배포
+
+### 운영
+```bash
+~/hermes-content-studio/scripts/setup-commander-cron.sh   # 필수: bootstrap 복사 + cron 재등록
+cd ~/.hermes/scripts && bash cron-publish-schedule.sh      # no due schedules
+```
 
 ## 변경 요약 (2026-06-27, cron-health-alert watch-telegram 오탐 수정)
 

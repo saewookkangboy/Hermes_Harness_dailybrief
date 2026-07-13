@@ -19,10 +19,11 @@
 # hermes cron --no-agent · stdout → Telegram deliver
 set -euo pipefail
 
-DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+# shellcheck source=lib/cron_bootstrap.sh
+source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 # shellcheck source=lib/studio-date.sh
-source "$DIR/lib/studio-date.sh"
+source "$SCRIPTS_DIR/lib/studio-date.sh"
 
 DATE="$(studio_commander_date)"
 STAMP="$DATE"
@@ -30,9 +31,9 @@ export DATE
 
 _py_cron_default() {
   local field="$1"
-  python3 -c "
+  cron_run_py -c "
 import sys
-sys.path.insert(0, '${DIR}')
+sys.path.insert(0, '${SCRIPTS_DIR}')
 from lib.content_quality_config import supervised_cron_defaults
 d = supervised_cron_defaults()
 field = sys.argv[1]
@@ -94,8 +95,8 @@ print(by_id.get('VOICE', ''), by_id.get('NATURALNESS', ''))
 
 notify_report() {
   local msg="$1"
-  if [[ -x "$DIR/lib/commander_notify.sh" ]]; then
-    bash "$DIR/lib/commander_notify.sh" notify "$msg"
+  if [[ -x "$SCRIPTS_DIR/lib/commander_notify.sh" ]]; then
+    bash "$SCRIPTS_DIR/lib/commander_notify.sh" notify "$msg"
   fi
 }
 
@@ -109,7 +110,7 @@ export HERMES_HUMANIZE="$CRON_HUMANIZE"
 
 PIPE_OUT=""
 PIPE_RC=0
-PIPE_OUT=$("$DIR/run-supervised-pipeline.sh" "$STAMP" 2>&1) || PIPE_RC=$?
+PIPE_OUT=$("$SCRIPTS_DIR/run-supervised-pipeline.sh" "$STAMP" 2>&1) || PIPE_RC=$?
 
 {
   echo "# Supervised Pipeline Cron · ${STAMP}"

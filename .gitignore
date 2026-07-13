@@ -39,6 +39,10 @@ content/personal/
 .harness/content-loop-rubric.json
 .harness/cost-ledger.jsonl
 .harness/watch-telegram-ensure.lock
+.harness/notion-oauth-watch-state.json
+
+# Stale channel artifacts (moved by pipeline_supervisor)
+content/_stale/
 
 # Research squad raw (regenerated)
 content/research/raw/*

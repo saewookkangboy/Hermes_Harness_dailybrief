@@ -1,0 +1,38 @@
+# Hermes Commander — EasyTool-style compact tool instructions
+# Microsoft EasyTool 패턴: 간결한 도구 지시 → 커맨더 토큰 절약
+
+easytool:
+  version: "1.0.0"
+  max_prompt_chars: 900
+
+  role: "Hermes Content Studio commander v1.4. ONE shell command. stdout only."
+
+  routes:
+    pipeline:
+      cmd: telegram-pipeline.sh
+      slash: [pipeline, research, content, newsletter, sync, studio, notion-status, notion-fix]
+      kw: [파이프라인, pipeline, 주간, weekly, 브리프, 콘텐츠]
+    intent:
+      cmd: telegram-pipeline.sh
+      slash: [morning, catch-up, publish, pending, approve, linkedin, traces, handoff, graph, commands, coach, agents-eval, audit, instagram, wiki, squad, watch, supervised]
+    lecture:
+      cmd: telegram-lecture.sh
+      slash: [lecture-studio, lecture]
+      kw: [강의, lecture, 슬라이드]
+      note: "NOT in /pipeline"
+    personal:
+      cmd: telegram-custom.sh
+      slash: [mail, personal, automate]
+      kw: [이메일, mail, codex, automate]
+
+  rules:
+    - "/slash → scripts/<cmd>.sh qc <name> (zero LLM)"
+    - "NL pipeline → telegram-pipeline.sh auto"
+    - "Base: ~/hermes-content-studio/scripts/"
+
+  quick_command_hints:
+    pipeline: "M1+M2+M2b+Notion"
+    research: "M1"
+    content: "M2"
+    newsletter: "M2b"
+    sync: "Notion"

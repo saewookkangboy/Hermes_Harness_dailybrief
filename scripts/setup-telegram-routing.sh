@@ -47,7 +47,7 @@ run_python() {
   fi
 }
 
-run_python - "$ROUTING_YAML" "$CONFIG" "$CHAT_ID" <<'PY'
+run_python - "$ROUTING_YAML" "$CONFIG" "$CHAT_ID" "${HERMES_EASYTOOL:-1}" <<'PY'
 import sys
 from pathlib import Path
 
@@ -57,9 +57,10 @@ except ImportError:
     print("❌ PyYAML 필요: pip install pyyaml")
     sys.exit(1)
 
-routing_path, config_path, chat_id = sys.argv[1], sys.argv[2], sys.argv[3]
+routing_path, config_path, chat_id, easytool_flag = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
 routing = yaml.safe_load(Path(routing_path).read_text(encoding="utf-8"))
 config_path = Path(config_path)
+use_easytool = easytool_flag not in ("0", "false", "False")
 
 if config_path.exists():
     config = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
@@ -74,6 +75,17 @@ print(f"[1/2] quick_commands: {', '.join(qc.keys())}")
 # channel_prompts (DM)
 if chat_id:
     prompt = routing.get("telegram_routing", {}).get("channel_prompt", "")
+    if use_easytool:
+        sys.path.insert(0, str(Path(routing_path).resolve().parent.parent / "scripts"))
+        try:
+            from lib.easytool_prompt import build_compact_channel_prompt
+
+            compact = build_compact_channel_prompt()
+            if compact:
+                prompt = compact
+                print(f"[easytool] compact prompt: {len(prompt)} chars")
+        except Exception as exc:
+            print(f"[easytool] fallback verbose: {exc}")
     if prompt:
         tg = config.setdefault("telegram", {})
         cp = tg.setdefault("channel_prompts", {})

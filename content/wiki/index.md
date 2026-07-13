@@ -7,15 +7,13 @@
 
 | topic_key | 요약 | 갱신 |
 |-----------|------|------|
-| aeo | 2026 AEO(Answer Engine Optimization) 실무 가이드 | 2026-06-06 (streak 1d) |
-| agent_marketing | 2026 AI 에이전트 실무 인사이트 | 2026-06-05 (streak 1d) |
-| ai_ide | Cursor vs Windsurf — 2026 AI IDE 선택 가이드 | 2026-06-06 (streak 2d) |
-| general | 2026 마케팅 실무 인사이트 | 2026-06-08 (streak 1d) |
-| korea_ax | AxManager Plugins - Download 2026 — 실무 가이드 — 실무 가이드 | 2026-06-08 (streak 1d) |
-| llm_anthropic | Introducing Claude Opus 4.8 \ Anthropic — 실무 — 실무 가이드 | 2026-06-08 (streak 2d) |
-| llm_google | Gemini Ads 2026: What Outsourced Teams Need t — 실무 가이드 | 2026-06-07 (streak 1d) |
-| llm_perplexity | Perplexity | 2026-06-08 (streak 2d) |
-| workspace_agents | ChatGPT Sites Terms - OpenAI — 실무 가이드 — 실무 가이드 | 2026-06-07 (streak 2d) |
+| ai_ide | 2026 AI·마케팅 실무 인사이트 | 2026-07-11 (streak 1d) |
+| general | 국내 B2B AI 도입·예산 승인 | 2026-07-13 (streak 5d) |
+| korea_ax | 한국 AX 전환 — 교육·FAQ·사례 중심 | 2026-07-13 (streak 1d) |
+| llm_anthropic | Claude 엔터프라이즈 — 거버넌스·컨텍스트 | 2026-07-13 (streak 14d) |
+| llm_google | Google Gemini 업데이트 — AEO·Workspace 연동 | 2026-07-13 (streak 5d) |
+| llm_perplexity | Perplexity·AI 검색(AEO) 최적화 실무 | 2026-07-13 (streak 2d) |
+| workspace_agents | 2026 AI·마케팅 실무 인사이트 | 2026-07-13 (streak 6d) |
 
 ## Entities
 

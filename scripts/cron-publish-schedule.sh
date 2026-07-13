@@ -2,20 +2,18 @@
 # HITL Publish Scheduler cron — due 예약 → HITL 카드 전송 (결정적)
 set -euo pipefail
 
-DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+_CRON_DIR="$(cd "$(dirname "$0")" && pwd)"
+if [[ -f "$_CRON_DIR/cron_bootstrap.sh" ]]; then
+  # shellcheck source=cron_bootstrap.sh
+  source "$_CRON_DIR/cron_bootstrap.sh"
+else
+  # shellcheck source=lib/cron_bootstrap.sh
+  source "$_CRON_DIR/lib/cron_bootstrap.sh"
+fi
 
-run_py() {
-  if [[ -x "$HOME/.hermes/hermes-agent/venv/bin/python" ]]; then
-    "$HOME/.hermes/hermes-agent/venv/bin/python" "$@"
-  else
-    python3 "$@"
-  fi
-}
-
-OUT=$(run_py -c "
+OUT=$(cron_run_py -c "
 import sys
-sys.path.insert(0, '$DIR')
+sys.path.insert(0, '${SCRIPTS_DIR}')
 from lib.publish_scheduler import process_due_schedules
 done = process_due_schedules(notify=True)
 if not done:

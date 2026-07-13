@@ -2,20 +2,13 @@
 # Competitive Watch cron — Brief Graph 감시 digest (결정적)
 set -euo pipefail
 
-DIR="$(cd "$(dirname "$0")" && pwd)"
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+# shellcheck source=lib/cron_bootstrap.sh
+source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 
-run_py() {
-  if [[ -x "$HOME/.hermes/hermes-agent/venv/bin/python" ]]; then
-    "$HOME/.hermes/hermes-agent/venv/bin/python" "$@"
-  else
-    python3 "$@"
-  fi
-}
-
-MSG=$(run_py -c "
+MSG=$(cron_run_py -c "
 import sys
-sys.path.insert(0, '$DIR')
+sys.path.insert(0, '${SCRIPTS_DIR}')
 from lib.competitive_watch import run_competitive_watch, format_watch_summary
 r = run_competitive_watch(write_report=True)
 print(format_watch_summary(r))
@@ -27,9 +20,8 @@ LOG="$WORKDIR/content/logs/$(date +%Y-%m-%d)_competitive-watch-cron.md"
 mkdir -p "$(dirname "$LOG")"
 printf '%s\n' "$MSG" > "$LOG"
 
-if [[ -x "$DIR/lib/commander_notify.sh" ]]; then
-  SUMMARY=$(echo "$MSG" | head -12)
-  bash "$DIR/lib/commander_notify.sh" notify "$SUMMARY"
+if [[ -x "$SCRIPTS_DIR/lib/commander_notify.sh" ]]; then
+  bash "$SCRIPTS_DIR/lib/commander_notify.sh" notify "$MSG"
 fi
 
 echo "$MSG"

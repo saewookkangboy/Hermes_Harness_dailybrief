@@ -9,6 +9,14 @@ from pathlib import Path
 
 import yaml
 
+from lib.notion_oauth import assert_notion_oauth_ready, check_notion_oauth_status, required_notion_tools
+from lib.notion_oauth_watch import (
+    load_watch_config,
+    load_watch_state,
+    save_watch_state,
+    try_silent_refresh,
+)
+
 WORKDIR = Path.home() / "hermes-content-studio"
 CONFIG_PATH = WORKDIR / "config" / "notion-archive.yaml"
 STATE_PATH = WORKDIR / "content" / ".notion-archive-state.json"
@@ -83,6 +91,22 @@ def setup_mcp(*, server_names: list[str] | None = None):
     return registry
 
 
+def setup_mcp_verified(*, server_names: list[str] | None = None, cfg: dict | None = None):
+    """setup_mcp + OAuth·필수 툴 preflight (+ 임박 시 silent refresh)."""
+    archive_cfg = cfg or load_config()
+    watch = load_watch_config()
+    if watch.get("auto_refresh", True):
+        warn_h = float(watch.get("warn_before_hours", 24))
+        pre_status = check_notion_oauth_status(warn_before_hours=warn_h)
+        if pre_status.code == "expiring_soon":
+            state = load_watch_state()
+            try_silent_refresh(watch, state)
+            save_watch_state(state)
+    registry = setup_mcp(server_names=server_names)
+    assert_notion_oauth_ready(archive_cfg, registry=registry, blocking=True)
+    return registry
+
+
 def normalize_mcp_result(data) -> dict:
     if isinstance(data, str):
         try:
@@ -109,7 +133,18 @@ def normalize_mcp_result(data) -> dict:
 def mcp_call(registry, tool_name: str, args: dict) -> dict:
     entry = registry.get_entry(tool_name)
     if not entry:
-        raise RuntimeError(f"MCP tool not found: {tool_name}")
+        cfg = load_config()
+        oauth = check_notion_oauth_status(
+            required_tools=required_notion_tools(cfg),
+            registry=registry,
+        )
+        if not oauth.ok:
+            hint = oauth.recovery_hint()
+            raise RuntimeError(f"{oauth.detail}. {hint}".strip())
+        raise RuntimeError(
+            f"MCP tool not found: {tool_name}. "
+            f"복구: 대화형 터미널에서 `hermes mcp login notion` 후 `hermes mcp test notion`"
+        )
     raw = entry.handler(args)
     try:
         data = json.loads(raw)

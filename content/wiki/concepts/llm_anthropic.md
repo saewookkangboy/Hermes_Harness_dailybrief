@@ -1,18 +1,19 @@
 ---
 topic_key: llm_anthropic
-updated_at: 2026-06-10
-source_count: 2
-streak_days: 2
+updated_at: 2026-07-13
+source_count: 14
+streak_days: 14
 ---
 
-# Introducing Claude Opus 4.8 \ Anthropic — 실무 — 실무 가이드
+# Claude 엔터프라이즈 — 거버넌스·컨텍스트
 
 ## 최신 요약
-Introducing Claude Opus 4.8 \ Anthropic — 실무 — 실무 가이드
+Claude 엔터프라이즈 — 거버넌스·컨텍스트
 
 ## 출처
-- 2026-06-08: [Introducing Claude Opus 4.8 \ Anthropic — 실무 — 실무 가이드](https://www.anthropic.com/news/claude-opus-4-8)
-- 2026-06-07: [Claude Opus 4.7 \ Anthropic — 실무 가이드 — 실무 가이드](https://www.anthropic.com/claude/opus?hl=en-IN)
+- 2026-07-13: [Claude 엔터프라이즈 — 거버넌스·컨텍스트](https://www.anthropic.com/news)
+- 2026-07-12: [Claude 엔터프라이즈 — 거버넌스·컨텍스트](https://releasebot.io/updates/anthropic/claude)
+- 2026-07-11: [Claude 엔터프라이즈 — 거버넌스·컨텍스트](https://intuitionlabs.ai/articles/claude-enterprise-deployment-training-guide-2026)
 
 ## 관련
-[[aeo]] · [[agent_marketing]] · [[ai_ide]] · [[general]]
+[[ai_ide]] · [[general]] · [[korea_ax]] · [[llm_google]]
