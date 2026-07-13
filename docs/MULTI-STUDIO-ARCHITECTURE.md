@@ -1,6 +1,7 @@
 # Hermes Multi-Studio Architecture
 
-> Parent: `hermes-content-studio` · Harness v1.2 · 8 sibling studios
+> Parent: `hermes-content-studio` · Harness v2.0 · 8 sibling studios  
+> 전체 시스템 로직: [architecture/SYSTEM-LOGIC.md](./architecture/SYSTEM-LOGIC.md)
 
 ## Studio 목록
 

@@ -96,13 +96,29 @@ def build_resources_spec(date: str) -> str:
         "content_quality_config",
         "pipeline_supervisor",
         "voice_style_audit",
+        "studio_upstream",
+        "wiki_curator",
+        "research_squad",
+        "notion_oauth",
+        "channel_artifacts",
+        "m4_coach",
+        "omm",
+        "easytool_prompt",
     ]
     libs_extra = [m for m in quality_libs if m in libs]
     cron = _cron_lines()
 
     return f"""# Hermes Studio — 운영 리소스·기술 스펙 ({date})
 
-> Harness v1.4 · Brief SoT Top 7 · 결정적 파이프라인 우선 · Voice/Naturalness/Budget (P4–P14)
+> Harness v2.0 · Brief SoT Top 7 · Multi-Studio · JARVIS · Voice/Naturalness/Budget · Notion OAuth watch
+
+## 0. 아키텍처 SoT
+
+| 문서 | 역할 |
+|------|------|
+| `docs/architecture/SYSTEM-LOGIC.md` | **현행** v2.0 시스템 로직 + Mermaid |
+| `docs/architecture/README.md` | 버전 타임라인 · archive 인덱스 |
+| `docs/architecture/archive/v*.md` | 구현 단계별 동결 스냅샷 |
 
 ## 1. 런타임 개요
 
@@ -141,10 +157,21 @@ def build_resources_spec(date: str) -> str:
 
 | 채널 | 라우팅 | 상태 |
 |------|--------|------|
-| Telegram | `setup-telegram-routing.sh` · `/pipeline` | connected |
-| Slack | `setup-slack-routing.sh` · `/pipeline` | connected |
-| PlayMCP (Kakao) | `setup-playmcp.sh` + `playmcp-routing-e2e.sh` | OTT 갱신 필요 시 401 |
+| Telegram | `setup-telegram-routing.sh` · EasyTool | connected |
+| Slack | `setup-slack-routing.sh` · intent pack | connected |
+| PlayMCP (Kakao) | `setup-playmcp.sh` · `playmcp-routing-e2e.sh` | LIVE E2E 7/7 |
 | Hermes CLI | `hermes-run.sh` · `hermes-agent.sh` | 로컬 |
+| JARVIS | `JARVIS.md` · `lib/omm.py` | ON |
+
+## 4b. Multi-Studio (8 siblings)
+
+| Tier | Studio | upstream |
+|------|--------|----------|
+| 1 | course · intel · seo | brief · wiki · blog HTML |
+| 2 | personal · wiki · dev | inbox · wiki · HANDOFF |
+| 3 | delivery · social | calendar · linkedin |
+
+`config/studios-registry.yaml` · `studios-all-upstream-eval.sh`
 
 ## 5. Config SoT
 
@@ -157,8 +184,11 @@ def build_resources_spec(date: str) -> str:
 | `config/telegram-routing.yaml` | Telegram quick_commands |
 | `config/slack-routing.yaml` | Slack intent |
 | `config/playmcp-routing.yaml` | PlayMCP Kakao commands |
+| `config/studios-registry.yaml` | 8 sibling studios |
+| `config/commander-easytool.yaml` | EasyTool compact prompt |
+| `JARVIS.md` | 프로젝트 메모리 NOW/LAW/BAN |
 
-## 6. Domain lib ({len(libs)} modules)
+## 6. Domain lib
 
 품질·비용 스택: {", ".join(f"`{m}`" for m in libs_extra)}
 
@@ -168,12 +198,13 @@ def build_resources_spec(date: str) -> str:
 
 ```bash
 ./scripts/harness-eval.sh --quick
-./scripts/e2e-smoke-test.sh {date} --telegram          # 23/23
-HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh  # 8/8
-./scripts/loop-budget-eval.sh                          # 4/4
-./scripts/loop-budget-status.sh
-HERMES_HUMANIZE_LLM_LIVE=1 ./scripts/humanize-llm-eval.sh {date}
+./scripts/e2e-smoke-test.sh {date} --telegram
+./scripts/pipeline-integrity-eval.sh
+./scripts/studios-all-upstream-eval.sh {date}
+./scripts/jarvis-memory-eval.sh
+HERMES_CRON_SKIP_NOTION=1 ./scripts/cron-supervised-pipeline.sh
 HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh
+HERMES_M5_E2E_LIVE=1 ./scripts/m5-notion-eval.sh {date}
 ```
 
 ## 8. Cron (hermes)
@@ -200,32 +231,73 @@ HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh
 def build_dependency_diagrams(date: str) -> str:
     return f"""# Hermes Studio — 의존성 다이어그램 ({date})
 
-> P4–P14 품질 스택 · supervised · cost-ledger · PlayMCP 라우팅 반영
+> v2.0 · Multi-Studio · JARVIS · Content Loops · Quality P4–P15 · Notion OAuth  
+> SoT: `docs/architecture/SYSTEM-LOGIC.md` · archive: `docs/architecture/archive/`
 
-## 1. Commander → Pipeline
+## 0. Version Timeline
+
+```mermaid
+timeline
+  title Implementation Versions
+  section v1.0 : 2026-06-07 M1 Top7
+  section v1.1 : 2026-06-08 Telegram Notion
+  section v1.2 : 2026-06-08 Newsletter hermes-agent
+  section v1.3 : 2026-06-27 Content Loops Agents
+  section v1.4 : 2026-07-01 Voice Budget PlayMCP
+  section v2.0 : 2026-07-13 Multi-Studio JARVIS OAuth
+```
+
+## 1. Master Architecture (v2.0)
+
+```mermaid
+flowchart TB
+  subgraph L0["Commander"]
+    TG["Telegram"] & SL["Slack"] & PM["PlayMCP"] & CRON["cron"] & HA["hermes-agent"]
+  end
+  subgraph L1["Orchestration"]
+    SP["supervised-pipeline"] & DT["daily-triage"] & TP["telegram-pipeline"]
+  end
+  subgraph L2["M1-M5"]
+    M1["M1 brief"] --> GATE["brief_gate"] --> M2["M2 content"]
+    M2 --> M2b["M2b newsletter"] --> M5["M5 Notion"]
+  end
+  subgraph Q["Quality"]
+    AUD["audit"] --> V["VOICE"] --> H["humanize"] --> N["NATURALNESS"] --> B["budget"]
+  end
+  subgraph MS["Multi-Studio x8"]
+    S1["Tier1"] & S2["Tier2"] & S3["Tier3"]
+  end
+  L0 --> L1 --> L2
+  M2b --> Q --> M5
+  M2 -.-> MS
+```
+
+## 2. Commander → Pipeline
 
 ```mermaid
 flowchart TB
   subgraph COMMANDER["Layer 0 · Commander"]
-    TG["Telegram"] & SL["Slack"] & PM["PlayMCP Kakao"] & CLI["Hermes CLI"]
+    TG["Telegram"] & SL["Slack"] & PM["PlayMCP Kakao"] & CLI["hermes-agent.sh"]
   end
   subgraph ORCH["Layer 1 · Orchestration"]
     SP["cron-supervised-pipeline"]
     SS["cron-staging-supervised"]
+    DT["cron-daily-content-triage"]
     TP["telegram-pipeline.sh"]
   end
-  subgraph QUALITY["Quality Stack P4-P14"]
+  subgraph QUALITY["Quality Stack"]
     VS["voice_style_audit"]
     HP["humanize_polish"]
     NA["naturalness_audit"]
     LB["loop_budget / cost-ledger"]
   end
   COMMANDER --> ORCH
-  SP --> M1["M1 brief"] --> M2["M2 content"] --> QUALITY --> M5["M5 Notion"]
+  SP --> M1["M1 brief"] --> M2["M2 content"] --> M2b["M2b newsletter"]
+  M2b --> QUALITY --> M5["M5 Notion"]
   SS -.->|HERMES_SUPERVISED_STAGING=1| QUALITY
 ```
 
-## 2. Brief SoT → Channels
+## 3. Brief SoT → Channels
 
 ```mermaid
 flowchart LR
@@ -239,7 +311,7 @@ flowchart LR
   PKG & BRIEF --> NOTION["Notion Daily Archive"]
 ```
 
-## 3. Supervised Pipeline 단계
+## 4. Supervised Pipeline 단계
 
 ```mermaid
 flowchart LR
@@ -255,7 +327,37 @@ flowchart LR
   B -->|FAIL only if budget_blocking| M5
 ```
 
-## 4. LLM 경로 · Budget
+## 5. Multi-Studio + JARVIS
+
+```mermaid
+flowchart TB
+  PARENT["hermes-content-studio"]
+  REG["studios-registry.yaml"]
+  JAR["JARVIS.md + OMM"]
+  PARENT --> REG
+  PARENT -->|brief| T1["Tier1 course intel seo"]
+  PARENT -->|wiki blog| T2["Tier2 personal wiki dev"]
+  PARENT -->|linkedin| T3["Tier3 delivery social"]
+  JAR -.-> PARENT
+```
+
+## 6. Notion OAuth Resilience
+
+```mermaid
+sequenceDiagram
+  participant ARC as archive-to-notion
+  participant OAUTH as notion_oauth
+  participant MCP as Notion MCP
+  ARC->>OAUTH: preflight
+  alt valid
+    OAUTH->>MCP: sync pages
+  else expired
+    OAUTH-->>ARC: archived ancestor
+    Note over ARC: reauth-notion-mcp.sh
+  end
+```
+
+## 7. LLM 경로 · Budget
 
 ```mermaid
 flowchart TB
@@ -274,7 +376,7 @@ flowchart TB
   EN --> LEDGER
 ```
 
-## 5. lib 의존성 (품질·M5)
+## 8. lib 의존성 (품질·M5·Studio)
 
 | lib | 소비자 | 역할 |
 |-----|--------|------|
@@ -287,7 +389,11 @@ flowchart TB
 | `notion_client.py` | archive-to-notion | MCP create/update |
 | `notify_format.py` | telegram · slack | Permalink · progress |
 
-## 6. External
+| `studio_upstream.py` | bootstrap studios | brief/blog/wiki paths |
+| `notion_oauth.py` | archive-to-notion | OAuth preflight |
+| `channel_artifacts.py` | pipeline_supervisor | stale slug → _stale/ |
+
+## 9. External
 
 | 서비스 | 용도 |
 |--------|------|

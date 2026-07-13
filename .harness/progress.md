@@ -1,5 +1,18 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+## 변경 요약 (2026-07-13, System Logic v2.0 · 버전 아카이브)
+
+### 아키텍처 문서 SoT
+- **현행:** `docs/architecture/SYSTEM-LOGIC.md` (v2.0) — 마스터 Mermaid · M1–M5 · Multi-Studio · JARVIS · OAuth
+- **인덱스:** `docs/architecture/README.md` — 구현 버전 타임라인
+- **아카이브:** `docs/architecture/archive/v1.0` ~ `v2.0` 동결 스냅샷
+- **자동 생성:** `generate-architecture-md.py` v2.0 갱신 → `export-architecture-notion.sh`
+
+```bash
+./scripts/generate-architecture-md.py
+./scripts/export-architecture-notion.sh
+```
+
 ## Tier 3 Upstream 연동 (2026-07-13)
 
 | Studio | Upstream | 검증 |

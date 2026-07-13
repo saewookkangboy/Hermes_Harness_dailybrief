@@ -90,14 +90,23 @@ Telegram 요청: Notion 100% 동기화 + Permalink 필수.
 | `warn_threshold_pct` | 80 | `loop-budget-status.sh` 근접 경고 |
 | `daily_usd_cap` | 2.0 | included 구독 시 ledger usd=0 가능 |
 
+## 아키텍처 문서
+
+| 문서 | 역할 |
+|------|------|
+| `docs/architecture/SYSTEM-LOGIC.md` | **v2.0** 현행 시스템 로직 + Mermaid |
+| `docs/architecture/README.md` | 버전 타임라인 · archive 인덱스 |
+| `docs/architecture/archive/` | v1.0–v2.0 구현 단계 동결 스냅샷 |
+
 ```bash
+./scripts/generate-architecture-md.py
+./scripts/export-architecture-notion.sh
 ./scripts/voice-style-eval.sh [DATE]
 ./scripts/naturalness-eval.sh [DATE]
 ./scripts/humanize-llm-eval.sh [DATE]
 HERMES_HUMANIZE_LLM_LIVE=1 ./scripts/humanize-llm-eval.sh [DATE]
 ./scripts/loop-budget-eval.sh
 ./scripts/loop-budget-status.sh
-./scripts/export-architecture-notion.sh
 ./scripts/staging-supervised-eval.sh [DATE]
 HERMES_M5_E2E_LIVE=1 ./scripts/m5-notion-eval.sh [DATE]
 HERMES_PLAYMCP_E2E_LIVE=1 ./scripts/playmcp-routing-e2e.sh
