@@ -130,6 +130,13 @@ quick_commands:
   wiki:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc wiki
+  squad:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc squad
   watch:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc watch
+  supervised:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc supervised
+  # end slack quick_commands
