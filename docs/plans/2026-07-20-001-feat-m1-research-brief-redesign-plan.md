@@ -39,7 +39,7 @@ Slack can trigger `/research`, but keyword-driven research does not reliably rew
 - **NL collision avoidance:** Bare 「승인」/ `/approve` stays **publish-only**. Research approve NL is 「리서치 승인」 / `/research-approve` only.
 - **Keyword delivery:** Fixed `quick_commands.research` cannot carry args — keyword mode uses `telegram-pipeline.sh auto "<message>"` and/or `HERMES_RESEARCH_KEYWORDS` + flags env; `qc research` with argv when Hermes forwards trailing args (detect and support both).
 - **channel_hooks P1 vs P1b:** P1 emits + validates hooks on Brief; M2 structured consume is U4b in same P1 release train (Success Criteria requires U4b before claiming channel consumption).
-- **PlayMCP:** Same `qc` spine — include `config/playmcp-routing.yaml` in P1 commander parity (pending Step-3 confirm to defer).
+- **PlayMCP:** Same `qc` spine — include `config/playmcp-routing.yaml` in P1 commander parity (**confirmed 3-A**).
 
 ### Actors
 
@@ -178,7 +178,7 @@ Slack can trigger `/research`, but keyword-driven research does not reliably rew
 **Deferred to Implementation (non-blocking)**
 
 - Exact title-token overlap threshold after first eval failures (start ≥ 0.55).
-- Confirm PlayMCP routing updates ship in P1 vs deferred (plan default: **include in P1**).
+- PlayMCP P1 parity: **confirmed include** (3-A).
 
 ### Sources / Research
 
@@ -197,7 +197,7 @@ Slack can trigger `/research`, but keyword-driven research does not reliably rew
 - **KTD4 — channel_hooks:** Deterministic templates in `brief_quality.enrich_insight`; Brief markdown emit + validate in U1; structured M2 consume in U4b (`parse_brief_insights` / assemblers).
 - **KTD5 — Backup:** Before overwrite copy `{date}_brief.md` → `{date}_brief.prev.md`; on validate failure restore prev and exit non-zero. Commit of Brief(+evidence) is all-or-nothing (temp write + rename).
 - **KTD6 — P2 cutover:** Feature flag `HERMES_EVIDENCE=1` (default off until eval green); when on, assemble reads `_evidence_{date}.json` only.
-- **KTD7 — Commander parity:** Same P1 change set updates `telegram-pipeline.sh`, `config/telegram-routing.yaml`, `config/slack-routing.yaml`, and `config/playmcp-routing.yaml` (unless Step-3 defers PlayMCP).
+- **KTD7 — Commander parity:** Same P1 change set updates `telegram-pipeline.sh`, `config/telegram-routing.yaml`, `config/slack-routing.yaml`, and `config/playmcp-routing.yaml` (PlayMCP in P1, confirmed 3-A).
 - **KTD8 — Keyword argv gap:** Prefer `telegram-pipeline.sh auto "<full message>"` for keyword+flags; also accept env injection; support `qc research -- …` if Hermes forwards args.
 
 ### Sequencing
