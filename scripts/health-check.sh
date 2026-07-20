@@ -129,7 +129,7 @@ check "jarvis-memory-eval" "test -x ~/hermes-content-studio/scripts/jarvis-memor
 check "mcp-easytool-eval" "test -x ~/hermes-content-studio/scripts/mcp-easytool-eval.sh"
 check "pipeline-integrity-eval" "test -x ~/hermes-content-studio/scripts/pipeline-integrity-eval.sh"
 warn "Node.js" "node --version"
-warn "Python markitdown" "python3 -m markitdown --help"
+warn "Python markitdown" "$HOME/.hermes/hermes-agent/venv/bin/python -m markitdown --help"
 
 echo ""
 echo "--- Cron ---"

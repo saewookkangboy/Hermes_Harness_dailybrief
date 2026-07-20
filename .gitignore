@@ -71,6 +71,8 @@ content/drafts/**/*
 
 # Search context cache (regenerated daily)
 content/research/_search_context_*
+content/research/_runs/
+content/research/*.prev.md
 
 # Cron exports
 cron-exports/*
