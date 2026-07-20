@@ -255,6 +255,10 @@ def main() -> int:
     }
     json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     md_path.write_text(to_markdown(results, today, today), encoding="utf-8")
+    # Snapshot daily (non-keyword) context for later keyword merge/replace
+    if not (os.environ.get("HERMES_RESEARCH_KEYWORDS") or "").strip():
+        daily_path = OUTPUT_DIR / f"_search_context_{stamp}.daily.json"
+        daily_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(json_path)
     print(md_path)

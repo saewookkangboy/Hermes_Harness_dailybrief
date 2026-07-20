@@ -180,15 +180,23 @@ run_research_keyword() {
     return
   fi
   notify "[██░░░] 키워드 리서치: $keywords"
-  local start end elapsed
+  local start end elapsed rc
   start=$(date +%s)
+  set +e
   HERMES_RESEARCH_KEYWORDS="$keywords" \
   HERMES_RESEARCH_REPLACE="$replace" \
   HERMES_RESEARCH_APPROVE="$approve" \
   HERMES_RESEARCH_FORCE="${HERMES_RESEARCH_FORCE:-1}" \
     SKIP_INIT=1 "$DIR/run-research-brief.sh" >>"$LOG" 2>&1
+  rc=$?
+  set -e
   end=$(date +%s)
   elapsed=$(( end - start ))
+  if [[ $rc -ne 0 ]]; then
+    echo "❌ 키워드 리서치 실패 (${elapsed}s) — 로그: $LOG"
+    tail -20 "$LOG" 2>/dev/null || true
+    return "$rc"
+  fi
   if [[ "$approve" == "1" ]]; then
     echo "✅ 키워드 리서치 staging (${elapsed}s) — /research-pending · /research-approve"
   elif [[ "$replace" == "1" ]] && python3 -c "import sys; sys.path.insert(0,'$DIR'); from lib.research_merge import require_approve_on_replace; raise SystemExit(0 if require_approve_on_replace() else 1)"; then

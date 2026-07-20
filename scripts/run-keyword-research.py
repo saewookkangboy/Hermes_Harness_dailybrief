@@ -70,25 +70,59 @@ def main() -> int:
         return 0
 
     base_path = RESEARCH / f"_search_context_{stamp}.json"
+    daily_path = RESEARCH / f"_search_context_{stamp}.daily.json"
     base_ctx = None
-    if base_path.exists():
+    if daily_path.exists():
+        base_ctx = json.loads(daily_path.read_text(encoding="utf-8"))
+    elif base_path.exists():
         base_ctx = json.loads(base_path.read_text(encoding="utf-8"))
+        if int(base_ctx.get("query_count") or 0) >= 5 or int(base_ctx.get("count") or 0) >= 10:
+            daily_path.write_text(
+                json.dumps(base_ctx, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
 
     # Keyword-only gather into a side file (gather always writes main name — swap)
+    # Expand one keyword into several queries for denser gather (esp. replace)
+    kw_parts = [p.strip() for p in re.split(r"[|\n]+", keywords) if p.strip()]
+    expanded: list[str] = []
+    for p in kw_parts:
+        expanded.extend(
+            [
+                p,
+                f"{p} 2026",
+                f"{p} marketing",
+                f"{p} enterprise AI",
+            ]
+        )
+    # de-dupe preserve order
+    seen_q: set[str] = set()
+    kw_query = []
+    for q in expanded:
+        if q.lower() not in seen_q:
+            seen_q.add(q.lower())
+            kw_query.append(q)
+    keywords_env = "|".join(kw_query)
+
     kw_env = {
-        "HERMES_RESEARCH_KEYWORDS": keywords,
-        "HERMES_RESEARCH_KEYWORD_ONLY": "1",
+        "HERMES_RESEARCH_KEYWORDS": keywords_env,
+        # replace: keyword-first but keep daily queries if keyword hits are thin
+        "HERMES_RESEARCH_KEYWORD_ONLY": "1" if replace else "1",
     }
     _run(_py() + [str(SCRIPTS / "gather-web-research.py"), stamp], env=kw_env)
     kw_ctx = json.loads(base_path.read_text(encoding="utf-8"))
     write_context(stamp, kw_ctx, ".kw")
 
+    # Prefer keyword-only; if too thin OR would lack diversity, fold prior daily hits
+    min_hits = 7
     if mode == "merge" and base_ctx is not None:
         write_context(stamp, merge_contexts(base_ctx, kw_ctx))
-    elif mode == "merge" and base_ctx is None:
-        write_context(stamp, kw_ctx)  # first brief of day
+    elif len(kw_ctx.get("results") or []) < min_hits and base_ctx is not None:
+        write_context(stamp, merge_contexts(base_ctx, kw_ctx))
+    elif mode == "replace" and base_ctx is not None:
+        # Keyword-weighted replace candidate (keyword wins on collisions)
+        write_context(stamp, merge_contexts(base_ctx, kw_ctx))
     else:
-        write_context(stamp, kw_ctx)  # replace candidate context
+        write_context(stamp, kw_ctx)
 
     live = RESEARCH / f"{stamp}_brief.md"
     backup_brief(stamp)

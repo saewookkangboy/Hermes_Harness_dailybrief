@@ -765,9 +765,15 @@ def enrich_insight(item: dict, used_views: set[str] | None = None) -> dict:
     summary_ko = synthesize_korean_summary(title, snippet, query)
     marketer_view = synthesize_marketer_view(topic_key, title, channel)
     if used_views is not None:
-        if marketer_view in used_views:
-            suffix = compress_sentences(polish_display_title(title), 40, max_sentences=1)
-            marketer_view = f"{marketer_view} ({suffix} 맥락에서 우선순위를 재정렬합니다.)"
+        base_view = marketer_view
+        n = 0
+        while marketer_view in used_views:
+            n += 1
+            suffix = compress_sentences(polish_display_title(title), 36, max_sentences=1)
+            marketer_view = f"{base_view} ({suffix} · 우선순위 {n})"
+            if n > 5:
+                marketer_view = f"{base_view} (출처 차별 · {urlparse(url).netloc or n})"
+                break
         used_views.add(marketer_view)
 
     korean_title = TITLE_BY_TOPIC.get(topic_key) or polish_display_title(title)
