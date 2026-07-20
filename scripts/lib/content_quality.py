@@ -28,6 +28,7 @@ class Insight:
     utilization: str = ""
     guides_tips: str = ""
     research_category: str = ""
+    channel_hooks: dict[str, str] | None = None
 
     @property
     def korean_title(self) -> str:
@@ -215,9 +216,17 @@ def parse_brief(text: str) -> tuple[str, list[Insight]]:
         guides_m = re.search(r"- \*\*가이드·팁:\*\* (.+)", block)
         cat_m = re.search(r"- \*\*리서치 영역:\*\* (.+)", block)
         ko_title_m = re.search(r"- \*\*한국어 제목:\*\* (.+)", block)
+        hooks_m = re.search(r"- \*\*채널 훅:\*\* (.+)", block)
         ko_raw = ko_title_m.group(1).strip() if ko_title_m else ""
         display_title = ko_raw if ko_raw and not is_garbage_korean_title(ko_raw) else title
         raw_summary = (summary_m.group(1) if summary_m else title).strip()
+        hooks: dict[str, str] = {}
+        if hooks_m:
+            for part in hooks_m.group(1).split("|"):
+                part = part.strip()
+                if "=" in part:
+                    k, _, v = part.partition("=")
+                    hooks[k.strip()] = v.strip()
         insights.append(
             Insight(
                 title=display_title,
@@ -232,6 +241,7 @@ def parse_brief(text: str) -> tuple[str, list[Insight]]:
                 utilization=(util_m.group(1) if util_m else "")[:300],
                 guides_tips=(guides_m.group(1) if guides_m else "")[:300],
                 research_category=(cat_m.group(1) if cat_m else "")[:80],
+                channel_hooks=hooks or None,
             )
         )
     return summary, insights
@@ -824,11 +834,18 @@ def _trim_linkedin_post(post: str, max_chars: int = 1300) -> str:
 def build_linkedin_post_text(summary: str, insights: list[Insight]) -> str:
     """LinkedIn 포스트 본문만 (이미지 프롬프트 제외)."""
     topic = insights[0].korean_title if insights else "2026 AI 마케팅"
+    hook_from_brief = ""
+    if insights and insights[0].channel_hooks:
+        hook_from_brief = (insights[0].channel_hooks or {}).get("linkedin") or ""
     hook1 = (
-        f"한국 B2B, {truncate(topic, 35)} — "
-        f"‘언제’보다 ‘어디서’ 손대느냐가 더 중요해요."
-        if insights
-        else "2026 AI 마케팅, 뭐가 바뀌었는지부터 짚어볼게요."
+        hook_from_brief
+        if hook_from_brief
+        else (
+            f"한국 B2B, {truncate(topic, 35)} — "
+            f"‘언제’보다 ‘어디서’ 손대느냐가 더 중요해요."
+            if insights
+            else "2026 AI 마케팅, 뭐가 바뀌었는지부터 짚어볼게요."
+        )
     )
     hook2 = "에이전트 도구 고르기 전에 프롬프트·SOP·측정 3가지만 잡아도 속도가 달라져요."
     bullets: list[str] = []

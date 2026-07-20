@@ -1,6 +1,6 @@
 {
   "project": "hermes-content-studio",
-  "last_updated": "2026-07-01T22:00:00+09:00",
+  "last_updated": "2026-07-20T23:50:00+09:00",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -26,7 +26,9 @@
         "scripts/run-research-brief.sh",
         "scripts/validate-output.sh research content/research/YYYY-MM-DD_brief.md"
       ],
-      "evidence": ["content/research/2026-06-05_brief.md"],
+      "evidence": [
+        "content/research/2026-06-05_brief.md"
+      ],
       "notes": "병렬 ddgs 4 workers, assemble-research-brief.py"
     },
     {
@@ -42,7 +44,11 @@
         "scripts/validate-output.sh instagram",
         "scripts/validate-output.sh linkedin"
       ],
-      "evidence": ["content/blog/", "content/instagram/", "content/linkedin/"],
+      "evidence": [
+        "content/blog/",
+        "content/instagram/",
+        "content/linkedin/"
+      ],
       "notes": "assemble-content-package.py 결정적 조립"
     },
     {
@@ -55,7 +61,9 @@
       "verification": [
         "scripts/run-lecture-slides.sh --from-brief YYYY-MM-DD"
       ],
-      "evidence": ["content/lectures/"],
+      "evidence": [
+        "content/lectures/"
+      ],
       "notes": "claude-design 모드는 선택 (2-5min)"
     },
     {
@@ -68,7 +76,9 @@
       "verification": [
         "scripts/archive-to-notion.sh YYYY-MM-DD --force"
       ],
-      "evidence": ["content/.notion-archive-state.json"],
+      "evidence": [
+        "content/.notion-archive-state.json"
+      ],
       "notes": "Telegram 요청 시 필수"
     },
     {
@@ -82,7 +92,9 @@
         "scripts/harness-eval.sh",
         "scripts/harness-eval.sh --record"
       ],
-      "evidence": [".harness/eval-results.json"],
+      "evidence": [
+        ".harness/eval-results.json"
+      ],
       "notes": "awesome-harness-engineering 기반 v1.2.0 — research 11s, content 0s, full 11s"
     },
     {
@@ -133,7 +145,9 @@
       "title": "B2B 뉴스레터 파이프라인 (결정적)",
       "user_visible_behavior": "run-newsletter.sh 실행 시 Brief SoT → md + HTML 이메일 + A/B 제목 스코어 + context 생성 (~10s)",
       "status": "passing",
-      "depends_on": ["pipe-001"],
+      "depends_on": [
+        "pipe-001"
+      ],
       "verification": [
         "scripts/run-newsletter.sh YYYY-MM-DD --validate",
         "scripts/newsletter-eval.sh YYYY-MM-DD",
@@ -169,7 +183,9 @@
       "title": "LLM Wiki 계층 (부분 통합)",
       "user_visible_behavior": "wiki-lint-eval PASS · HERMES_WIKI_SEED=1 시 Brief Graph→concepts · /ask index-first",
       "status": "passing",
-      "depends_on": ["pipe-001"],
+      "depends_on": [
+        "pipe-001"
+      ],
       "verification": [
         "scripts/wiki-lint-eval.sh",
         "HERMES_WIKI_SEED=1 scripts/wiki-seed.sh",
@@ -191,7 +207,10 @@
       "title": "우선순위 P1–P8 기능 패키지",
       "user_visible_behavior": "CTOR 피드백·HITL newsletter·Wiki M2·Proactive·Blog M3·M4 live·PlayMCP·ESP HITL",
       "status": "passing",
-      "depends_on": ["pipe-001", "pipe-008"],
+      "depends_on": [
+        "pipe-001",
+        "pipe-008"
+      ],
       "verification": [
         "scripts/features-priority-eval.sh",
         "scripts/playmcp-integration-eval.sh",
@@ -215,7 +234,10 @@
       "title": "콘텐츠 품질 Agent (Instagram M3 · Auditor · Repurpose)",
       "user_visible_behavior": "hermes-agent.sh instagram/audit/repurpose 로 채널 M3·DoD 감사·인사이트 재조립",
       "status": "passing",
-      "depends_on": ["pipe-001", "pipe-002"],
+      "depends_on": [
+        "pipe-001",
+        "pipe-002"
+      ],
       "verification": [
         "scripts/content-quality-eval.sh YYYY-MM-DD",
         "scripts/hermes-agent.sh instagram --date YYYY-MM-DD",
@@ -237,7 +259,9 @@
       "title": "운영 Agent (HITL Scheduler · Pipeline Supervisor)",
       "user_visible_behavior": "hermes-agent.sh schedule/supervised 로 예약 발행 + M1→M5 감독 파이프라인",
       "status": "passing",
-      "depends_on": ["pipe-011"],
+      "depends_on": [
+        "pipe-011"
+      ],
       "verification": [
         "scripts/content-ops-eval.sh YYYY-MM-DD",
         "scripts/hermes-agent.sh schedule linkedin --at +30m --dry-run --date YYYY-MM-DD",
@@ -259,7 +283,10 @@
       "title": "지식·리서치 Agent (Wiki Curator · Research Squad · Competitive Watch)",
       "user_visible_behavior": "hermes-agent.sh wiki/squad/watch · deep→Research Squad 기본",
       "status": "passing",
-      "depends_on": ["pipe-009", "pipe-012"],
+      "depends_on": [
+        "pipe-009",
+        "pipe-012"
+      ],
       "verification": [
         "scripts/content-knowledge-eval.sh YYYY-MM-DD",
         "scripts/hermes-agent.sh wiki status",
@@ -281,7 +308,10 @@
       "title": "M4 Performance Coach — 전 채널 trait 코칭",
       "user_visible_behavior": "hermes-agent.sh coach 로 CTOR 피드백 → newsletter/linkedin/blog/instagram 코칭",
       "status": "passing",
-      "depends_on": ["pipe-010", "pipe-013"],
+      "depends_on": [
+        "pipe-010",
+        "pipe-013"
+      ],
       "verification": [
         "scripts/content-performance-eval.sh YYYY-MM-DD",
         "scripts/agents-eval.sh YYYY-MM-DD",
@@ -302,7 +332,11 @@
       "title": "Voice · Naturalness 품질 게이트",
       "user_visible_behavior": "supervised cron voice+naturalness blocking · validate naturalness · loop budget cap 600k",
       "status": "passing",
-      "depends_on": ["pipe-002", "pipe-008", "pipe-014"],
+      "depends_on": [
+        "pipe-002",
+        "pipe-008",
+        "pipe-014"
+      ],
       "verification": [
         "scripts/voice-style-eval.sh YYYY-MM-DD",
         "scripts/naturalness-eval.sh YYYY-MM-DD",
@@ -327,6 +361,29 @@
         ".harness/cost-ledger.jsonl"
       ],
       "notes": "P4–P15 · voice+naturalness blocking · budget cap 600k · delta ledger · Notion architecture export"
+    },
+    {
+      "id": "pipe-016",
+      "priority": 16,
+      "area": "research",
+      "title": "M1 keyword research · trust gates · staging",
+      "user_visible_behavior": "Slack/TG/PlayMCP 키워드 리서치 merge/replace + research-pending/approve · channel_hooks · research-trust-eval",
+      "status": "in_progress",
+      "depends_on": [
+        "pipe-001"
+      ],
+      "verification": [
+        "scripts/research-trust-eval.sh YYYY-MM-DD",
+        "scripts/research-keyword-eval.sh",
+        "scripts/validate-output.sh research content/research/YYYY-MM-DD_brief.md"
+      ],
+      "evidence": [
+        "docs/plans/2026-07-20-001-feat-m1-research-brief-redesign-plan.md",
+        "scripts/lib/research_merge.py",
+        "scripts/lib/research_staging.py",
+        "content/logs/2026-07-20_research-trust-eval-report.md"
+      ],
+      "notes": "P1 gates + keyword path; Evidence Pack P2 deferred (HERMES_EVIDENCE)"
     }
   ]
 }

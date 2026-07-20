@@ -8,6 +8,8 @@
 from __future__ import annotations
 
 import json
+import os
+import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -59,7 +61,22 @@ def expand_query(template: str, today: date) -> str:
 def _load_queries(today: date) -> list[str]:
     cfg = _load_brief_config()
     raw = cfg.get("search_queries") or DEFAULT_QUERIES
-    return [expand_query(str(q), today) for q in raw]
+    queries = [expand_query(str(q), today) for q in raw]
+    extra = (os.environ.get("HERMES_RESEARCH_KEYWORDS") or "").strip()
+    if extra:
+        # Treat as one or more queries separated by | or newlines
+        parts = [p.strip() for p in re.split(r"[|\n]+", extra) if p.strip()]
+        # Prefer keyword queries first
+        queries = parts + [q for q in queries if q not in parts]
+    keyword_only = (os.environ.get("HERMES_RESEARCH_KEYWORD_ONLY") or "").strip() in (
+        "1",
+        "true",
+        "True",
+    )
+    if keyword_only and extra:
+        parts = [p.strip() for p in re.split(r"[|\n]+", extra) if p.strip()]
+        return parts or queries
+    return queries
 
 
 def _min_results() -> int:
@@ -234,6 +251,7 @@ def main() -> int:
         "query_count": len(queries),
         "count": len(results),
         "results": results,
+        "keywords": (os.environ.get("HERMES_RESEARCH_KEYWORDS") or "").strip(),
     }
     json_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     md_path.write_text(to_markdown(results, today, today), encoding="utf-8")

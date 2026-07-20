@@ -2,6 +2,7 @@
 # Hermes Content Studio — 일일 리서치 브리프 (Top 7) · Brief SoT
 #
 # gather(일일 최신) → assemble → validate
+# HERMES_RESEARCH_KEYWORDS set → run-keyword-research.py (merge/replace/staging)
 # HERMES_ENHANCE=1: assemble 후 Hermes polish (선택)
 #
 # Usage: ./run-research-brief.sh [YYYY-MM-DD]
@@ -27,6 +28,16 @@ run_python() {
     python3 "$@"
   fi
 }
+
+if [[ -n "${HERMES_RESEARCH_KEYWORDS:-}" ]]; then
+  echo "=== Keyword research (merge/replace/staging) ==="
+  run_python "$SCRIPTS/run-keyword-research.py" "$DATE"
+  if [[ -f "$OUTPUT" ]]; then
+    echo "📄 Brief SoT: $OUTPUT"
+  fi
+  echo "📎 Search: $SEARCH_JSON"
+  exit 0
+fi
 
 echo "=== 1/3 일일 웹 검색 수집 (Brief SoT) ==="
 run_python "$SCRIPTS/gather-web-research.py" "$DATE"
