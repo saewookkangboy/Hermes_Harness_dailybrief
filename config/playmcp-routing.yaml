@@ -9,6 +9,8 @@ playmcp_routing:
 
     Slash: /pipeline /research /content /newsletter /sync
     Intent: /morning /catch-up /publish /approve /linkedin /blog /traces /graph /commands
+    Research: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
+    (승인 alone = publish; 리서치 승인 = research-approve)
 
     Rules: ONE terminal command. Reply with stdout only.
 
@@ -19,6 +21,12 @@ quick_commands:
   research:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research
+  research-pending:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research-pending
+  research-approve:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research-approve
   content:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc content

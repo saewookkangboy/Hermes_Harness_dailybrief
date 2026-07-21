@@ -48,6 +48,16 @@ if exec_m:
 insight_count = len(re.findall(r"^### \d+\.", text, re.M))
 if insight_count < 7:
     raise SystemExit(f"Top 7 미달: {insight_count}개")
+hooks = re.findall(r"- \*\*채널 훅:\*\* (.+)", text)
+if len(hooks) < insight_count:
+    raise SystemExit(f"채널 훅 미달: {len(hooks)}/{insight_count}")
+for h in hooks:
+    for key in ("blog=", "linkedin=", "instagram=", "newsletter="):
+        if key not in h:
+            raise SystemExit(f"채널 훅 필드 누락 ({key}): {h[:60]}")
+trusts = re.findall(r"- \*\*신뢰도:\*\* (.+)", text)
+if len(trusts) < insight_count:
+    raise SystemExit(f"신뢰도 필드 미달: {len(trusts)}/{insight_count}")
 PY
     python3 - <<PY || fail "brief naturalness 게이트"
 import sys

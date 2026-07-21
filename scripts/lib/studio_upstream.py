@@ -27,6 +27,7 @@ class BriefInsight:
     channel: str
     source_url: str
     marketer_view: str = ""
+    channel_hooks: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -76,6 +77,21 @@ def _field(block: str, label: str) -> str:
     return match.group(1).strip() if match else ""
 
 
+def _parse_channel_hooks(line: str) -> dict[str, str]:
+    hooks: dict[str, str] = {}
+    if not line:
+        return hooks
+    for part in line.split("|"):
+        part = part.strip()
+        if "=" not in part:
+            continue
+        key, _, val = part.partition("=")
+        key, val = key.strip(), val.strip()
+        if key:
+            hooks[key] = val
+    return hooks
+
+
 def parse_brief_insights(text: str) -> list[BriefInsight]:
     section = text
     marker = "## Top 7 인사이트"
@@ -103,6 +119,7 @@ def parse_brief_insights(text: str) -> list[BriefInsight]:
                 channel=_field(body, "콘텐츠 소재"),
                 source_url=_field(body, "출처"),
                 marketer_view=_field(body, "마케터 관점"),
+                channel_hooks=_parse_channel_hooks(_field(body, "채널 훅")),
             )
         )
     return insights

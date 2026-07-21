@@ -15,9 +15,11 @@ from lib.brief_quality import (
     build_engineering_highlights,
     build_executive_summary,
     build_llm_platform_pulse,
+    canonicalize_url,
     enrich_insight,
     is_usable_search_result,
     load_priority_query_order,
+    title_token_overlap,
 )
 
 WORKDIR = Path.home() / "hermes-content-studio"
@@ -55,15 +57,25 @@ def channel_for_query(query: str) -> str:
 
 
 def pick_insights(results: list[dict], limit: int = INSIGHT_LIMIT) -> list[dict]:
-    """Top N — priority query 다양성 우선 (LLM 4사·거버넌스·하네스 포함)."""
+    """Top N — priority query 다양성 우선 + URL/제목 중복 컷."""
     usable = [r for r in results if is_usable_search_result(r)]
     picked: list[dict] = []
     seen_urls: set[str] = set()
     used_queries: set[str] = set()
+    overlap_threshold = 0.55
+
+    def is_near_dup(row: dict) -> bool:
+        title = row.get("title") or ""
+        for existing in picked:
+            if title_token_overlap(title, existing.get("title") or "") >= overlap_threshold:
+                return True
+        return False
 
     def try_add(row: dict) -> bool:
-        url = row.get("url", "")
+        url = canonicalize_url(row.get("url", "")) or (row.get("url") or "")
         if not url or url in seen_urls:
+            return False
+        if is_near_dup(row):
             return False
         seen_urls.add(url)
         picked.append({**row, "channel": channel_for_query(row.get("query", ""))})
@@ -145,6 +157,7 @@ def build_brief(ctx: dict) -> str:
                 f"- **활용 방법:** {item['utilization']}",
                 f"- **가이드·팁:** {item['guides_tips']}",
                 f"- **콘텐츠 소재:** {item['channel']}",
+                f"- **채널 훅:** {item.get('channel_hooks_line') or ''}",
                 f"- **출처:** {item['url']}",
                 f"- **시장 영향:** {item['market_impact']}",
                 f"- **한국 적용:** {item['korea_apply']}",

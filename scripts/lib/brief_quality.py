@@ -234,6 +234,51 @@ def assess_trust(url: str) -> str:
     return "low"
 
 
+def canonicalize_url(url: str) -> str:
+    """Strip tracking params for merge/dedupe."""
+    raw = (url or "").strip()
+    if not raw:
+        return ""
+    try:
+        from urllib.parse import parse_qsl, urlencode, urlunparse
+
+        parts = urlparse(raw)
+        drop = {"utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid", "gclid"}
+        query = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if k.lower() not in drop]
+        return urlunparse(
+            (parts.scheme.lower(), parts.netloc.lower(), parts.path.rstrip("/"), "", urlencode(query), "")
+        )
+    except Exception:  # noqa: BLE001
+        return raw.lower().rstrip("/")
+
+
+def title_tokens(text: str) -> set[str]:
+    return {t for t in re.findall(r"[a-z0-9가-힣]{2,}", (text or "").lower()) if t}
+
+
+def title_token_overlap(a: str, b: str) -> float:
+    ta, tb = title_tokens(a), title_tokens(b)
+    if not ta or not tb:
+        return 0.0
+    return len(ta & tb) / max(len(ta | tb), 1)
+
+
+def build_channel_hooks(korean_title: str, topic_key: str) -> dict[str, str]:
+    """Deterministic per-channel one-liners for M2 handoff."""
+    base = compress_sentences(polish_display_title(korean_title), 42, max_sentences=1) or topic_key
+    return {
+        "blog": f"{base} — 실무 체크리스트",
+        "linkedin": f"{base}: 팀에서 바로 쓸 한 가지",
+        "instagram": f"{base} 한 컷 요약",
+        "newsletter": f"이번 주: {base}",
+    }
+
+
+def format_channel_hooks(hooks: dict[str, str]) -> str:
+    order = ("blog", "linkedin", "instagram", "newsletter")
+    return " | ".join(f"{k}={hooks.get(k, '')}" for k in order)
+
+
 def _persona_prefix() -> str:
     return PERSONA_INTRO
 
@@ -720,16 +765,24 @@ def enrich_insight(item: dict, used_views: set[str] | None = None) -> dict:
     summary_ko = synthesize_korean_summary(title, snippet, query)
     marketer_view = synthesize_marketer_view(topic_key, title, channel)
     if used_views is not None:
-        if marketer_view in used_views:
-            suffix = compress_sentences(polish_display_title(title), 40, max_sentences=1)
-            marketer_view = f"{marketer_view} ({suffix} 맥락에서 우선순위를 재정렬합니다.)"
+        base_view = marketer_view
+        n = 0
+        while marketer_view in used_views:
+            n += 1
+            suffix = compress_sentences(polish_display_title(title), 36, max_sentences=1)
+            marketer_view = f"{base_view} ({suffix} · 우선순위 {n})"
+            if n > 5:
+                marketer_view = f"{base_view} (출처 차별 · {urlparse(url).netloc or n})"
+                break
         used_views.add(marketer_view)
 
+    korean_title = TITLE_BY_TOPIC.get(topic_key) or polish_display_title(title)
+    hooks = build_channel_hooks(korean_title, topic_key)
     return {
         **item,
         "topic_key": topic_key,
         "research_category": research_category_label(topic_key),
-        "korean_title": TITLE_BY_TOPIC.get(topic_key) or polish_display_title(title),
+        "korean_title": korean_title,
         "summary_ko": summary_ko,
         "insight_derivation": synthesize_insight_derivation(topic_key, title, summary_ko),
         "marketer_view": marketer_view,
@@ -739,4 +792,6 @@ def enrich_insight(item: dict, used_views: set[str] | None = None) -> dict:
         "market_impact": synthesize_market_impact(topic_key, channel),
         "opportunity": synthesize_opportunity(topic_key, channel),
         "trust": assess_trust(url),
+        "channel_hooks": hooks,
+        "channel_hooks_line": format_channel_hooks(hooks),
     }

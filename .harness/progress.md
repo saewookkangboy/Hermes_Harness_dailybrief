@@ -1,5 +1,88 @@
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
+
+## M1 Research Brief Redesign — P1 구현 (2026-07-20)
+
+- Plan: `docs/plans/2026-07-20-001-feat-m1-research-brief-redesign-plan.md` (PlayMCP 3-A confirmed)
+- Branch: `feat/m1-research-brief-redesign`
+- Shipped P1: channel_hooks · diversity · research-trust-eval · keyword merge/replace · research-pending/approve (≠ publish HITL) · TG/Slack/PlayMCP routing
+- Verify: `research-trust-eval.sh` 8/8 · `research-keyword-eval.sh` 7/7 · validate research OK
+- Deferred: Evidence Pack P2 (`HERMES_EVIDENCE`)
+
+```bash
+scripts/research-trust-eval.sh
+scripts/research-keyword-eval.sh
+# keyword: HERMES_RESEARCH_KEYWORDS='RAG' scripts/run-research-brief.sh
+# or: scripts/telegram-pipeline.sh qc research RAG 평가
+```
+
+## 선택 항목 판단 · 적용 (2026-07-20)
+
+### 판정 요약
+
+| 항목 | 판정 | 근거 | 조치 |
+|------|------|------|------|
+| **cryptography** HIGH (→48.0.1+) | **보류 (승인 거부)** | hermes exact pin `==46.0.7` (타 CVE용). override 시 `hermes-agent` metadata conflict. 로컬 단일 사용자 · wheel OpenSSL A:H | upstream pin 대기 |
+| **mcp** HIGH ×3 (→1.27.2/1.28.1) | **보류 (승인 거부)** | pin `==1.26.0`. Studio는 MCP **client**(playmcp/notion). `hermes mcp serve`는 stdio-only·미기동. `enable_tasks` 미사용 → 다수 CVE 공격면 비활성 | upstream pin 대기 |
+| **starlette** HIGH ×2 | **보류 (승인 거부)** | pin `==1.0.1`(BadHost 대응). Windows UNC/SSRF는 **macOS N/A**. form DoS는 공개 HTTP 서버 전제 | upstream pin 대기 |
+| **Pillow** (→12.3.0) | **보류** | exact pin `==12.2.0` | upstream 대기 |
+| **idna / pip / tornado / httplib2 / pydantic-settings** | **승인·적용** | exact pin 없음 · pip check OK | ✅ 상향 완료 |
+| **markitdown WARN** | **승인·적용** | 시스템 py3.9는 0.1.6 미지원. health-check를 Hermes venv로 정렬(ddgs/Notion과 동일) | ✅ `health-check.sh` |
+
+### 적용 결과
+- health-check: **83 pass / 0 fail / 0 warn** (markitdown ✅)
+- `hermes security` HIGH: 6건 유지(의도적 pin) · MODERATE: idna/pip/tornado/pydantic-settings **제거**
+- `hermes doctor` All checks passed · MCP notion/playmcp 연결 유지
+
+### PlayMCP 재인증 (2026-07-20)
+- OTT 교환 via `setup-playmcp.sh` → **Connected** · Tools **27**
+- `playmcp-integration-eval` **7/7** · Gateway restarted · routing 14 commands merged
+
+```bash
+hermes security | grep HIGH
+~/hermes-content-studio/scripts/health-check.sh
+hermes mcp test playmcp
+```
+
+## Hermes Agent 시스템 업데이트 (2026-07-20)
+
+| 항목 | Before | After | 상태 |
+|------|--------|-------|------|
+| Hermes Agent | v0.15.1 (`9af54b2f8`) | **v0.18.2** (`3d7e1c5f`) | ✅ Up to date |
+| Config schema | v27 + deprecated `tool_progress_overrides` | **v33** · platforms(telegram/slack/discord) | ✅ `hermes config migrate` + doctor |
+| Gateway launchd | stale vs install | **정의 재등록** · supervised | ✅ `hermes gateway start` |
+| Lazy backends | import 실패(갱신 중) | vertex/slack/teams/stt 갱신 · matrix WARN(미사용) | ✅ |
+| Telegram/Slack routing | 유지 필요 | **재적용** (EasyTool 893 chars · QC 35) | ✅ |
+| 선택 deps | markitdown WARN | Hermes venv 기준으로 health-check 수정 | ✅ |
+| Security soft-patch | multipart/PyNaCl/Pygments + idna/pip/tornado/httplib2/pydantic-settings | `cryptography`/`mcp`/`starlette`/`Pillow` pin 유지 | ✅ 판단 문서화 |
+
+**검증**
+- `hermes doctor` — All checks passed
+- `harness-eval.sh --quick` — **37/37**
+- `commander-integration-eval.sh` — **28/28**
+- `pipeline-integrity-eval.sh` — **17/17**
+- `health-check.sh` — **83 pass / 0 fail / 0 warn**
+
+### 누락 재점검 (2026-07-20 23:20)
+
+| 점검 | 결과 |
+|------|------|
+| Hermes / config / gateway | ✅ Up to date · v33 · supervised |
+| PlayMCP + Notion MCP | ✅ Connected (27 / 20 tools) |
+| LIVE `playmcp-routing-e2e` | ✅ **7/7** (재인증 후 재실행) |
+| agent-browser (업데이트 시 postinstall 차단) | ✅ approve + install · doctor OK |
+| Slack MCP disabled | ℹ️ 의도적 — Bot Token 커맨더 경로 사용 중 |
+| feature_list 15/15 passing | ✅ (메타 `last_updated` 07-01은 문서 스탬프만 구식) |
+| HIGH pin (crypto/mcp/starlette/Pillow) | ⏳ upstream 대기 (의도적 보류) |
+
+```bash
+hermes --version
+hermes update --check
+~/hermes-content-studio/scripts/harness-eval.sh --quick
+~/hermes-content-studio/scripts/commander-integration-eval.sh
+HERMES_PLAYMCP_E2E_LIVE=1 ~/hermes-content-studio/scripts/playmcp-routing-e2e.sh
+```
+
 ## 변경 요약 (2026-07-13, System Logic v2.0 · 버전 아카이브)
 
 ### 아키텍처 문서 SoT

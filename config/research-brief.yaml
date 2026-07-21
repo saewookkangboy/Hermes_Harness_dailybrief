@@ -83,6 +83,12 @@ freshness:
 
 insight_limit: 7
 
+# Keyword research / staging (M1 redesign)
+keyword_research:
+  require_approve_on_replace: true
+  title_overlap_threshold: 0.55
+  merge_default: true
+
 schedule:
   mode: daily
   cron: "0 8 * * *"   # 매일 08:00 Asia/Seoul

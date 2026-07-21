@@ -140,6 +140,16 @@ intent_packs:
     channels: [blog, instagram, linkedin, newsletter, esp, all]
     sla_seconds: 90
 
+  research-pending:
+    label: "리서치 스테이징 목록"
+    aliases: ["/research-pending", "리서치 대기", "research-pending"]
+    sla_seconds: 5
+
+  research-approve:
+    label: "리서치 스테이징 승인"
+    aliases: ["/research-approve", "리서치 승인", "research-approve"]
+    sla_seconds: 90
+
   blog:
     label: "Blog M3 sub-pipeline"
     aliases: ["/blog", "블로그 seo", "blog pipeline"]

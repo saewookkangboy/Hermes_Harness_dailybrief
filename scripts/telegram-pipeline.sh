@@ -79,6 +79,15 @@ detect_action() {
   local lower
   lower=$(echo "$msg" | tr '[:upper:]' '[:lower:]')
 
+  if echo "$lower" | grep -qE '리서치.?승인|/research-approve|research-approve'; then
+    echo "research-approve"
+    return
+  fi
+  if echo "$lower" | grep -qE '리서치.?대기|/research-pending|research-pending'; then
+    echo "research-pending"
+    return
+  fi
+
   if echo "$lower" | grep -qE '^/(morning|catch-up|catchup|publish|approve|deep|ask|linkedin|blog|instagram|audit|repurpose|schedule|schedules|supervised|wiki|squad|watch|coach|agents-eval|agents|traces|handoff|graph|commands|newsletter)\b'; then
     echo "intent-pack"
     return
@@ -94,7 +103,7 @@ detect_action() {
     echo "sync"
   elif echo "$lower" | grep -qE '강의|lecture|slide|슬라이드|pptx|claude.?design'; then
     echo "lecture_hint"
-  elif echo "$lower" | grep -qE '리서치|research|brief|브리프|트렌드'; then
+  elif echo "$lower" | grep -qE '리서치|research|brief|브리프|트렌드|키워드'; then
     echo "research"
   elif echo "$lower" | grep -qE '콘텐츠|content|blog|블로그|instagram|인스타|linkedin|링크드인|소셜'; then
     echo "content"
@@ -109,6 +118,31 @@ detect_action() {
   fi
 }
 
+# Parse natural-language / slash research message → args for run_research_keyword
+parse_research_args() {
+  local msg="${1:-}"
+  local args=()
+  echo "$msg" | grep -qiE '(--replace|교체)' && args+=(--replace)
+  echo "$msg" | grep -qiE '(--approve|승인 후|스테이징)' && args+=(--approve)
+  # Strip command verbs / flags; keep keyword phrase
+  local kw
+  kw=$(echo "$msg" | sed -E \
+    -e 's/^[[:space:]]*\/research[[:space:]]*//I' \
+    -e 's/^[[:space:]]*(키워드[[:space:]]*)?리서치[[:space:]]*(해줘|해주세요|부탁)?[[:space:]]*[:：]?[[:space:]]*//I' \
+    -e 's/^[[:space:]]*research[[:space:]]*//I' \
+    -e 's/--replace//Ig' \
+    -e 's/--approve//Ig' \
+    -e 's/교체로?//g' \
+    -e 's/승인 후(에)?( 반영)?//g' \
+    -e 's/스테이징//g' \
+    -e 's/키워드[[:space:]]*리서치[[:space:]]*//g')
+  kw=$(echo "$kw" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+  if [[ -n "$kw" ]]; then
+    args+=("$kw")
+  fi
+  printf '%s\n' "${args[@]}"
+}
+
 run_research() {
   studio_refresh_date
   local start end elapsed
@@ -120,6 +154,102 @@ run_research() {
   studio_refresh_date
   echo "✅ 리서치 완료 (${elapsed}s)"
   echo "📄 $WORKDIR/content/research/${DATE}_brief.md"
+}
+
+# Keyword research: args after "research" or env HERMES_RESEARCH_*
+# Usage: run_research_keyword "RAG 평가" [--replace] [--approve]
+run_research_keyword() {
+  studio_refresh_date
+  local keywords="" replace=0 approve=0 token
+  for token in "$@"; do
+    case "$token" in
+      --replace) replace=1 ;;
+      --approve) approve=1 ;;
+      *)
+        if [[ -n "$keywords" ]]; then
+          keywords="$keywords $token"
+        else
+          keywords="$token"
+        fi
+        ;;
+    esac
+  done
+  keywords="$(echo "$keywords" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+  if [[ -z "$keywords" ]]; then
+    run_research
+    return
+  fi
+  notify "[██░░░] 키워드 리서치: $keywords"
+  local start end elapsed rc
+  start=$(date +%s)
+  set +e
+  HERMES_RESEARCH_KEYWORDS="$keywords" \
+  HERMES_RESEARCH_REPLACE="$replace" \
+  HERMES_RESEARCH_APPROVE="$approve" \
+  HERMES_RESEARCH_FORCE="${HERMES_RESEARCH_FORCE:-1}" \
+    SKIP_INIT=1 "$DIR/run-research-brief.sh" >>"$LOG" 2>&1
+  rc=$?
+  set -e
+  end=$(date +%s)
+  elapsed=$(( end - start ))
+  if [[ $rc -ne 0 ]]; then
+    echo "❌ 키워드 리서치 실패 (${elapsed}s) — 로그: $LOG"
+    tail -20 "$LOG" 2>/dev/null || true
+    return "$rc"
+  fi
+  if [[ "$approve" == "1" ]]; then
+    echo "✅ 키워드 리서치 staging (${elapsed}s) — /research-pending · /research-approve"
+  elif [[ "$replace" == "1" ]] && python3 -c "import sys; sys.path.insert(0,'$DIR'); from lib.research_merge import require_approve_on_replace; raise SystemExit(0 if require_approve_on_replace() else 1)"; then
+    echo "✅ 키워드 replace staging (${elapsed}s) — /research-pending · /research-approve"
+  else
+    echo "✅ 키워드 반영 완료 (${elapsed}s) — 다운스트림 재실행"
+    HERMES_SKIP_RESEARCH=1 run_content
+    if [[ "${SKIP_NEWSLETTER:-0}" != "1" ]]; then
+      run_newsletter
+    fi
+  fi
+  echo "📄 $WORKDIR/content/research/${DATE}_brief.md"
+}
+
+run_research_pending() {
+  python3 - <<'PY'
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+from lib.research_staging import format_pending_status
+print(format_pending_status())
+PY
+}
+
+run_research_approve() {
+  studio_refresh_date
+  local target="${1:-}"
+  HERMES_RESEARCH_APPROVE_TARGET="$target" python3 - <<'PY'
+import os
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+from lib.research_staging import approve
+target = (os.environ.get("HERMES_RESEARCH_APPROVE_TARGET") or "").strip()
+if target == "all":
+    paths = approve(all_pending=True)
+elif target:
+    paths = approve(run_id=target)
+else:
+    paths = approve(all_pending=False)  # first pending
+if not paths:
+    print("research staging: nothing to approve")
+    sys.exit(0)
+for p in paths:
+    print(f"committed: {p}")
+PY
+  if ls "$WORKDIR/content/research/${DATE}_brief.md" >/dev/null 2>&1; then
+    SKIP_INIT=1 "$DIR/validate-output.sh" research "$WORKDIR/content/research/${DATE}_brief.md" || true
+    HERMES_SKIP_RESEARCH=1 run_content
+    if [[ "${SKIP_NEWSLETTER:-0}" != "1" ]]; then
+      run_newsletter
+    fi
+  fi
 }
 
 run_content() {
@@ -289,8 +419,21 @@ case "$MODE" in
         run_pipeline_qc
         ;;
       research)
-        notify "[█░░░░] 1/5 리서치 시작"
-        run_research
+        # qc research [keywords…] [--replace] [--approve]
+        shift 2 || true
+        if [[ $# -gt 0 ]]; then
+          run_research_keyword "$@"
+        else
+          notify "[█░░░░] 1/5 리서치 시작"
+          run_research
+        fi
+        ;;
+      research-pending)
+        run_research_pending
+        ;;
+      research-approve)
+        shift 2 || true
+        run_research_approve "${1:-}"
         ;;
       content)
         notify "[█░░░░] 1/5 콘텐츠 시작"
@@ -414,7 +557,20 @@ case "$MODE" in
       agents-eval)
         "$DIR/agents-eval.sh" "$DATE"
         ;;
-      research) run_research ;;
+      research-approve)
+        run_research_approve
+        ;;
+      research-pending)
+        run_research_pending
+        ;;
+      research)
+        mapfile -t RARGS < <(parse_research_args "$MSG")
+        if [[ ${#RARGS[@]} -gt 0 ]]; then
+          run_research_keyword "${RARGS[@]}"
+        else
+          run_research
+        fi
+        ;;
       content)  run_content ;;
       pipeline) run_pipeline ;;
       sync)     run_sync ;;

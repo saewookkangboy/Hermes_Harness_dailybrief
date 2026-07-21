@@ -14,6 +14,8 @@ slack_routing:
     Command: ~/hermes-content-studio/scripts/telegram-pipeline.sh auto "<message>"
     Slash: /pipeline (M1+M2+M2b+Notion) /research /content /newsletter /sync /studio /notion-status
     Slash (intent): /morning /catch-up /publish /pending /approve /linkedin /traces /handoff /graph /commands
+    Research keyword: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
+    (bare 승인 = publish HITL only; 리서치 승인 = /research-approve)
 
     ## B) Lecture (separate — NOT in /pipeline)
     Keywords: 강의, lecture, 슬라이드, outline, HTML 덱
@@ -35,6 +37,12 @@ quick_commands:
   research:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research
+  research-pending:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research-pending
+  research-approve:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research-approve
   content:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc content
@@ -122,6 +130,13 @@ quick_commands:
   wiki:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc wiki
+  squad:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc squad
   watch:
     type: exec
     command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc watch
+  supervised:
+    type: exec
+    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc supervised
+  # end slack quick_commands
