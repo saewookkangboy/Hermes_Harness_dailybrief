@@ -1,16 +1,18 @@
 # Hermes Content Studio
 
 > **Hermes Harness Daily Brief** — Intel Mac 자체호스팅 AI 마케팅·교육 콘텐츠 스튜디오  
-> [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering) · Harness v2.0 · [시스템 로직](docs/architecture/SYSTEM-LOGIC.md)
+> [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering) · Harness v1.3 / System Logic **v2.1** · [시스템 로직](docs/architecture/SYSTEM-LOGIC.md)
 
-일일 리서치 브리프(Top 7)를 **Brief SoT**(`{date}_brief.md`)로 두고, 블로그·인스타그램·링크드인·B2B 뉴스레터를 **결정적 파이프라인(M1→M5)** 으로 생성·검증·Notion 아카이브합니다. Telegram·Slack·PlayMCP Commander, Content Loops(cron triage·supervised pipeline), Voice/Naturalness 품질 게이트, 8개 sibling studio upstream 연동, JARVIS 프로젝트 메모리를 포함합니다.
+일일 리서치 브리프(Top 7)를 **Brief SoT**(`{date}_brief.md`)로 두고, 블로그·인스타그램·링크드인·B2B 뉴스레터를 **결정적 파이프라인(M1→M5)** 으로 생성·검증·Notion 아카이브합니다. Telegram·Slack·PlayMCP Commander, Content Loops, Voice/Naturalness 품질 게이트, **Wiki Graph · 토큰 SLA · Playbook 학습 루프**, 8개 sibling studio upstream 연동, JARVIS 프로젝트 메모리를 포함합니다.
 
 | 영역 | 설명 |
 |------|------|
 | **파이프라인** | M1 Research → GATE → M2 Content → M2b Newsletter → Quality → M5 Notion |
 | **Commander** | Telegram · Slack · PlayMCP · `hermes-agent.sh` · cron |
-| **품질** | `validate-output.sh` · voice/naturalness blocking · loop budget |
-| **확장** | Multi-Studio ×8 · Wiki · Research Squad · Cursor 핸드오프 |
+| **품질·비용** | validate · voice/naturalness blocking · **token_gate** · cost-report |
+| **지식** | Wiki · **graph.db** · `/ask` graph_first (−87% tok) |
+| **학습** | SKILL STABLE/LEARNED · reflect/curate playbook |
+| **확장** | Multi-Studio ×8 · Research Squad · Cursor 핸드오프 |
 | **문서** | [`docs/architecture/`](docs/architecture/) · `HARNESS.md` · `AGENTS.md` |
 
 Intel Mac (MacBook Pro) 자체호스팅 Hermes Agent 기반 **마케팅·교육 콘텐츠 스튜디오**.
@@ -70,7 +72,7 @@ hermes-content-studio/
 └── scripts/                  # 셋업·운영 스크립트
 ```
 
-## Harness Engineering (v2.0)
+## Harness Engineering (v1.3 / System Logic v2.1)
 
 [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering) 기반 5-Subsystem 하네스:
 
@@ -82,7 +84,7 @@ hermes-content-studio/
 | Scope | feature_list 단일 활성 기능 |
 | Lifecycle | `session-handoff.md`, init → 작업 → 핸드오프 |
 
-아키텍처: [`docs/architecture/SYSTEM-LOGIC.md`](docs/architecture/SYSTEM-LOGIC.md) · 버전 아카이브: [`docs/architecture/archive/`](docs/architecture/archive/)
+아키텍처: [`docs/architecture/SYSTEM-LOGIC.md`](docs/architecture/SYSTEM-LOGIC.md) (v2.1) · 상세: [`archive/v2.1-graph-token-playbook.md`](docs/architecture/archive/v2.1-graph-token-playbook.md) · 인덱스: [`docs/architecture/archive/`](docs/architecture/archive/)
 
 ```bash
 # 세션 시작

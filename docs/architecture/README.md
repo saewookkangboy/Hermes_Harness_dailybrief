@@ -6,7 +6,7 @@
 
 | 문서 | 버전 | 기간 | 설명 |
 |------|------|------|------|
-| [SYSTEM-LOGIC.md](./SYSTEM-LOGIC.md) | **v2.0** | 2026-07-12 ~ | Multi-Studio · JARVIS · Notion OAuth · EasyTool |
+| [SYSTEM-LOGIC.md](./SYSTEM-LOGIC.md) | **v2.1** | 2026-07-20 ~ | Graph · Token gates · Playbook · M1 redesign |
 
 자동 생성 (Notion 동기화용):
 
@@ -26,9 +26,10 @@
 | v1.2 | [archive/v1.2-newsletter-commander.md](./archive/v1.2-newsletter-commander.md) | 2026-06-08 | B2B Newsletter P0–P6 · hermes-agent CLI |
 | v1.3 | [archive/v1.3-content-loops-agents.md](./archive/v1.3-content-loops-agents.md) | 2026-06-27 | Content Loops L1/L2 · Agent A–D · Wiki |
 | v1.4 | [archive/v1.4-quality-stack.md](./archive/v1.4-quality-stack.md) | 2026-07-01 | Voice/Naturalness/Budget P4–P15 |
-| v2.0 | [archive/v2.0-multi-studio-jarvis.md](./archive/v2.0-multi-studio-jarvis.md) | 2026-07-13 | 8 Studio · JARVIS · OAuth watch (스냅샷) |
+| v2.0 | [archive/v2.0-multi-studio-jarvis.md](./archive/v2.0-multi-studio-jarvis.md) | 2026-07-13 | 8 Studio · JARVIS · OAuth watch |
+| **v2.1** | [archive/v2.1-graph-token-playbook.md](./archive/v2.1-graph-token-playbook.md) | 2026-07-20~26 | Wiki Graph · Token SLA · Ask graph-first · Playbook · M1 redesign P1 |
 
-> **규칙:** major 버전 bump 시 이전 `SYSTEM-LOGIC.md` 내용을 `archive/v{X.Y}-*.md`로 복사한 뒤 현행 문서를 갱신한다.
+> **규칙:** major/minor 버전 bump 시 상세 변경을 `archive/v{X.Y}-*.md`에 동결하고, `SYSTEM-LOGIC.md`는 현행 요약+다이어그램만 유지한다.
 
 ## 관련 문서
 
@@ -37,6 +38,7 @@
 | [HERMES-CONVERSATIONAL-AGENT-MODEL.md](../HERMES-CONVERSATIONAL-AGENT-MODEL.md) | 대화형 Agent · CAR 매핑 |
 | [content-loops.md](../content-loops.md) | L1/L2/L3 루프 cadence |
 | [MULTI-STUDIO-ARCHITECTURE.md](../MULTI-STUDIO-ARCHITECTURE.md) | 8 Studio registry · upstream |
-| [LLM-WIKI-INTEGRATION.md](../LLM-WIKI-INTEGRATION.md) | Wiki 이중 메모리 |
+| [LLM-WIKI-INTEGRATION.md](../LLM-WIKI-INTEGRATION.md) | Wiki · Graph 이중 메모리 |
 | [JARVIS.md](../../JARVIS.md) | 프로젝트 메모리 · OMM |
-| [HARNESS.md](../../HARNESS.md) | 5-Subsystem · Voice/Budget |
+| [HARNESS.md](../../HARNESS.md) | 5-Subsystem · Voice/Budget · Playbook |
+| `.harness/progress.md` | 세션 진행 SoT (F1–F4 · retest) |

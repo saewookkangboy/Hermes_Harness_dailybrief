@@ -110,14 +110,15 @@ def build_resources_spec(date: str) -> str:
 
     return f"""# Hermes Studio — 운영 리소스·기술 스펙 ({date})
 
-> Harness v2.0 · Brief SoT Top 7 · Multi-Studio · JARVIS · Voice/Naturalness/Budget · Notion OAuth watch
+> Harness v1.3 / System Logic **v2.1** · Brief SoT · Wiki Graph · Token gates · Playbook · Multi-Studio · JARVIS
 
 ## 0. 아키텍처 SoT
 
 | 문서 | 역할 |
 |------|------|
-| `docs/architecture/SYSTEM-LOGIC.md` | **현행** v2.0 시스템 로직 + Mermaid |
+| `docs/architecture/SYSTEM-LOGIC.md` | **현행** v2.1 시스템 로직 + Mermaid |
 | `docs/architecture/README.md` | 버전 타임라인 · archive 인덱스 |
+| `docs/architecture/archive/v2.1-graph-token-playbook.md` | F1–F4 · M1 redesign 상세 |
 | `docs/architecture/archive/v*.md` | 구현 단계별 동결 스냅샷 |
 
 ## 1. 런타임 개요
@@ -231,7 +232,7 @@ HERMES_M5_E2E_LIVE=1 ./scripts/m5-notion-eval.sh {date}
 def build_dependency_diagrams(date: str) -> str:
     return f"""# Hermes Studio — 의존성 다이어그램 ({date})
 
-> v2.0 · Multi-Studio · JARVIS · Content Loops · Quality P4–P15 · Notion OAuth  
+> v2.1 · Wiki Graph · Token gates · Playbook · Multi-Studio · JARVIS · Quality P4–P15 · Notion OAuth  
 > SoT: `docs/architecture/SYSTEM-LOGIC.md` · archive: `docs/architecture/archive/`
 
 ## 0. Version Timeline
@@ -245,9 +246,10 @@ timeline
   section v1.3 : 2026-06-27 Content Loops Agents
   section v1.4 : 2026-07-01 Voice Budget PlayMCP
   section v2.0 : 2026-07-13 Multi-Studio JARVIS OAuth
+  section v2.1 : 2026-07-26 Graph Token Playbook M1
 ```
 
-## 1. Master Architecture (v2.0)
+## 1. Master Architecture (v2.1)
 
 ```mermaid
 flowchart TB
@@ -264,11 +266,16 @@ flowchart TB
   subgraph Q["Quality"]
     AUD["audit"] --> V["VOICE"] --> H["humanize"] --> N["NATURALNESS"] --> B["budget"]
   end
+  subgraph K["Graph Token Playbook"]
+    WG["wiki-graph"] & ASK["ask graph_first"] & TGATE["token_gate"] & PB["playbook"]
+  end
   subgraph MS["Multi-Studio x8"]
     S1["Tier1"] & S2["Tier2"] & S3["Tier3"]
   end
   L0 --> L1 --> L2
   M2b --> Q --> M5
+  M1 -.-> WG --> ASK
+  L2 --> TGATE
   M2 -.-> MS
 ```
 

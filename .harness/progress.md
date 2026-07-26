@@ -1,5 +1,14 @@
 # Harness Progress — v1.3.0 Graph / Token / Playbook
 
+## 변경 요약 (2026-07-26, Architecture Docs v2.1)
+
+- **현행 SoT:** `docs/architecture/SYSTEM-LOGIC.md` → **v2.1**
+- **상세 아카이브:** `docs/architecture/archive/v2.1-graph-token-playbook.md`
+- **인덱스:** `docs/architecture/README.md` (v1.0–v2.1 타임라인)
+- F1–F4 · M1 redesign · Hermes v0.18.2 · 성능 후속 · Full Retest를 버전 문서로 동결
+
+---
+
 ## Full System Retest (2026-07-26 22:30)
 
 리포트: `content/logs/2026-07-26_full-system-retest.md`
@@ -10,12 +19,52 @@
 
 ---
 
-## F1–F4 시스템 보완 (2026-07-26)
+## F1–F4 시스템 보완 (2026-07-26) — 상세
 
-핸드오프: `content/drafts/cursor-handoff/HANDOFF-00`~`04`
+핸드오프: `content/drafts/cursor-handoff/HANDOFF-00`~`04`  
+커밋: `9967c8d` · 브랜치 `feat/m1-research-brief-redesign`  
+상세 기록: `docs/architecture/archive/v2.1-graph-token-playbook.md`
 
-| Feature | 상태 | 증거 |
-|---------|------|------|
+| Feature | ID | 상태 | 핵심 산출 | 검증 |
+|---------|-----|------|-----------|------|
+| **F1** Token Budget Gates | `token-budget-gates` | ✅ passing | `sla.tokens_*` · `token_gate` · `skill-index.yaml` · `ledger.py` · `cost-report.sh` | token-gate PASS · Level1=360/400 |
+| **F2** Wiki Graph v1 | `wiki-graph-v1` | ✅ passing | `schemas/graph.sql` · `graph.db` · `build-graph.py` · `wiki-graph.sh` | ~605 nodes · incr ~260ms · lint 13/0 |
+| **F3** Ask Graph Context | `ask-graph-context` | ✅ passing | `graph_context.py` · `ask.mode=graph_first` · `ask-eval.sh` | 토큰 −87.9% · 시드0=0 |
+| **F4** Playbook Loop | `playbook-loop` | 🟡 infra · promote 수동 | STABLE/LEARNED · `reflect.sh` · `curate-playbook.sh` · `delta.schema.json` | dry-run/shadow OK · `--promote` 잔여 |
+
+### F1 — Token Budget
+- `config/harness.yaml` `sla.*`에 tokens_in/out · deterministic 플래그
+- `token_gate.mode=warn` · tolerance 15% · 결정적 경로 tokens=0 강제
+- Progressive skill load: `config/skill-index.yaml` (Level1 cap 400)
+- `scripts/lib/token_budget.py` · `ledger.py` · `cost-report.sh --since 7d`
+
+### F2 — Wiki Graph
+- bi-temporal SQLite (`valid_to` invalidation) · LLM 0
+- incremental SLA 3s · rebuild SLA 10s (`config/wiki.yaml` `graph`)
+- M1/seed 후 `wiki-graph.sh` 증분 갱신 → `/ask` 소비
+
+### F3 — Ask Graph-First
+- 브리프 전문 로드 제거 → 서브그래프 digest (`budget_tokens: 3000`, hops 2)
+- `ask-eval.sh --compare` + `config/ask-eval-questions.yaml`
+- fallback: `index_first`
+
+### F4 — Playbook
+- SKILL.md STABLE(사람) / LEARNED(append-only + tombstone)
+- Reflector(주간 클라우드) → Curator dry-run → shadow 5 → **수동 promote** → verify
+- 롤백: `HERMES_PLAYBOOK=stable` · `HERMES_WIKI_GRAPH=0` · `HERMES_ASK_GRAPH=0`
+
+```bash
+./scripts/cost-report.sh --since 7d
+./scripts/token-gate-eval.sh
+./scripts/wiki-graph.sh --force --rebuild
+./scripts/ask-eval.sh --compare
+./scripts/reflect.sh --week --signals-only
+./scripts/curate-playbook.sh --dry-run
+```
+
+다음: Reflector LLM → 수동 `--promote` · ask 품질 baseline 판정 · F5 보류
+
+---
 
 ## 성능 후속 P1–P3 적용 (2026-07-26)
 
@@ -38,29 +87,11 @@
 |------|------|
 | full_pipeline | ✅ 30–35s (SLA 60) |
 | research | ✅ 17s |
-| content | ⚠️ 17s (SLA 10 / baseline 5) |
+| content | ⚠️ 17s (SLA 10 / baseline 5) → 후속 **2s** |
 | newsletter | ✅ 1s |
-| wiki-graph rebuild/incr | ✅ 7s / ⚠️ 4–5s |
+| wiki-graph rebuild/incr | ✅ 7s / 후속 **~260ms** |
 | ask-eval | ✅ −87.9% |
 | token gate | ✅ PASS (det tokens=0) |
-
----
-
-| F1 token-budget-gates | 구현·검증 | sla tokens · cost-report · Level1=360/400 · token-gate PASS |
-| F2 wiki-graph-v1 | 구현·검증 | graph.db 605 nodes · rebuild ~6s · wiki-lint 13/0 |
-| F3 ask-graph-context | 구현·검증 | ask-eval 토큰 -87.9% · graph-first |
-| F4 playbook-loop | infra 완료 | 16 skills STABLE/LEARNED · reflect/curate dry-run/shadow (promote는 수동) |
-
-```bash
-./scripts/cost-report.sh --since 7d
-./scripts/token-gate-eval.sh
-./scripts/wiki-graph.sh --force --rebuild
-./scripts/ask-eval.sh --compare
-./scripts/reflect.sh --week --signals-only
-./scripts/curate-playbook.sh --dry-run
-```
-
-다음: Reflector LLM → 수동 `--promote` · ask 품질 baseline · F5 보류
 
 ---
 
