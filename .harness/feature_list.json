@@ -1,6 +1,6 @@
 {
   "project": "hermes-content-studio",
-  "last_updated": "2026-07-20T23:50:00+09:00",
+  "last_updated": "2026-07-26T22:30:00+09:00",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -368,7 +368,7 @@
       "area": "research",
       "title": "M1 keyword research · trust gates · staging",
       "user_visible_behavior": "Slack/TG/PlayMCP 키워드 리서치 merge/replace + research-pending/approve · channel_hooks · research-trust-eval",
-      "status": "in_progress",
+      "status": "passing",
       "depends_on": [
         "pipe-001"
       ],
@@ -383,7 +383,94 @@
         "scripts/lib/research_staging.py",
         "content/logs/2026-07-20_research-trust-eval-report.md"
       ],
-      "notes": "P1 gates + keyword path; Evidence Pack P2 deferred (HERMES_EVIDENCE)"
+      "notes": "P1 gates + keyword path; Evidence Pack P2 deferred (HERMES_EVIDENCE) · P1 shipped 2026-07-20"
+    },
+    {
+      "id": "token-budget-gates",
+      "priority": 17,
+      "area": "performance",
+      "title": "단계별 토큰 예산 게이트 + 비용 집계 + 스킬 3단계 로딩",
+      "handoff": "content/drafts/cursor-handoff/HANDOFF-01-token-budget-gates.md",
+      "active": false,
+      "status": "passing",
+      "verification": [
+        "./scripts/harness-eval.sh --quick",
+        "./scripts/cost-report.sh --since 7d",
+        "./scripts/token-gate-eval.sh"
+      ],
+      "evidence": [
+        "scripts/lib/ledger.py",
+        "scripts/lib/token_budget.py",
+        "scripts/cost-report.sh",
+        "config/skill-index.yaml"
+      ]
+    },
+    {
+      "id": "wiki-graph-v1",
+      "priority": 18,
+      "area": "wiki",
+      "title": "content/wiki/graph.db — bi-temporal 누적 개념 그래프 (결정적, LLM 0)",
+      "handoff": "content/drafts/cursor-handoff/HANDOFF-02-wiki-graph-v1.md",
+      "active": false,
+      "status": "passing",
+      "depends_on": [
+        "token-budget-gates"
+      ],
+      "verification": [
+        "./scripts/wiki-graph.sh --force --dry-run --rebuild",
+        "./scripts/graph-query.sh stats",
+        "./scripts/wiki-lint-eval.sh"
+      ],
+      "evidence": [
+        "schemas/graph.sql",
+        "scripts/build-graph.py",
+        "scripts/wiki-graph.sh",
+        "scripts/graph-query.sh"
+      ]
+    },
+    {
+      "id": "ask-graph-context",
+      "priority": 19,
+      "area": "wiki",
+      "title": "/ask 서브그래프 컨텍스트 조립 — 브리프 전문 로드 제거",
+      "handoff": "content/drafts/cursor-handoff/HANDOFF-03-ask-graph-context.md",
+      "active": false,
+      "status": "passing",
+      "depends_on": [
+        "wiki-graph-v1"
+      ],
+      "verification": [
+        "./scripts/ask-eval.sh --compare"
+      ],
+      "evidence": [
+        "scripts/lib/graph_context.py",
+        "scripts/ask-eval.sh",
+        "config/ask-eval-questions.yaml"
+      ]
+    },
+    {
+      "id": "playbook-loop",
+      "priority": 20,
+      "area": "self-improvement",
+      "title": "SKILL.md STABLE/LEARNED 분할 + Reflector/Curator 학습 루프",
+      "handoff": "content/drafts/cursor-handoff/HANDOFF-04-playbook-loop.md",
+      "active": true,
+      "status": "in_progress",
+      "depends_on": [
+        "token-budget-gates",
+        "wiki-graph-v1"
+      ],
+      "verification": [
+        "./scripts/reflect.sh --week --signals-only",
+        "./scripts/harness-eval.sh --quick"
+      ],
+      "evidence": [
+        "scripts/lib/playbook.py",
+        "scripts/lib/reflect.py",
+        "scripts/lib/curator.py",
+        "schemas/delta.schema.json"
+      ],
+      "notes": "승격(--promote)은 수동. F5 subject-gepa 보류."
     }
   ]
 }

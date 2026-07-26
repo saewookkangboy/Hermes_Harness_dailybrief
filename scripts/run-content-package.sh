@@ -23,26 +23,22 @@ run_python() {
 BRIEF="$WORKDIR/content/research/${DATE}_brief.md"
 TODAY="$(studio_today)"
 
-# Brief SoT: M2 진입 전 일일 최신 리서치 선행
+# Brief SoT: M2 진입 전 — 없거나 신선도 미달일 때만 리서치 (today 강제 재실행 제거)
 if [[ "${HERMES_SKIP_RESEARCH:-0}" != "1" ]]; then
   NEED=0
   if [[ "${HERMES_FORCE_RESEARCH:-0}" == "1" ]]; then NEED=1; fi
   if [[ ! -f "$BRIEF" ]]; then NEED=1; fi
-  if [[ "$DATE" == "$TODAY" ]]; then NEED=1; fi
-  if [[ "$NEED" == "1" ]]; then
-    echo "=== 0/2 Brief SoT — 일일 최신 리서치 (gather → brief Top 7) ==="
-    "$SCRIPTS/run-research-brief.sh" "$DATE"
-  else
+  if [[ "$NEED" != "1" ]]; then
     run_python - <<PY || NEED=1
 import sys
 sys.path.insert(0, "$SCRIPTS")
 from lib.brief_gate import needs_daily_research
 raise SystemExit(0 if not needs_daily_research("$DATE") else 1)
 PY
-    if [[ "$NEED" == "1" ]]; then
-      echo "=== 0/2 Brief SoT — 신선도 미달, 리서치 재실행 ==="
-      "$SCRIPTS/run-research-brief.sh" "$DATE"
-    fi
+  fi
+  if [[ "$NEED" == "1" ]]; then
+    echo "=== 0/2 Brief SoT — 리서치 실행 (누락·신선도·FORCE) ==="
+    "$SCRIPTS/run-research-brief.sh" "$DATE"
   fi
 fi
 

@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: content-studio-slides
 description: "Getdesign.md 기반 강의 슬라이드: 기획→HTML→pptx 템플릿 제작."
@@ -143,3 +150,7 @@ python -m markitdown ~/Desktop/교육_강의_자료/02_강의안_교육자료/*.
 - 핵심 메시지 1문장
 - 전환 멘트
 - 예상 Q&A 1개
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

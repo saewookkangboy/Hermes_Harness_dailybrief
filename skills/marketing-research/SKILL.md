@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: marketing-research
 description: "M1 콘텐츠 전략: 주간 리서치 브리프 — channels/research 위임."
@@ -58,3 +65,7 @@ metadata:
 hermes chat -q "..." -s marketing-research -t hermes-cli
 # 권장: content-orchestration 또는 channels/research
 ```
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

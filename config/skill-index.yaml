@@ -1,0 +1,52 @@
+# Level 1 스킬 인덱스 — 항상 로드. 1줄 트리거만.
+# 상세는 skills/{path}/SKILL.md (Level 2), 템플릿은 templates/ (Level 3)
+version: 1
+skills:
+  harness-ops:
+    path: skills/harness-ops
+    trigger: "세션 초기화 · eval · 성능 게이트 · SLA 확인"
+  content-orchestration:
+    path: skills/content-orchestration
+    trigger: "M1~M5 전체 마케팅 파이프라인 오케스트레이션 (마스터)"
+  content-pipeline:
+    path: skills/content-pipeline
+    trigger: "주간 라우터 — content-orchestration에 위임"
+  telegram-commander:
+    path: skills/telegram-commander
+    trigger: "Telegram 요청 처리 + Notion Permalink 회신"
+  channels-research:
+    path: skills/channels/research
+    trigger: "M1 리서치 브리프 작성"
+  channels-linkedin:
+    path: skills/channels/linkedin
+    trigger: "M2+M3 링크드인 포스트 작성"
+  channels-blog:
+    path: skills/channels/blog
+    trigger: "블로그 HTML SEO/AEO 작성"
+  channels-instagram:
+    path: skills/channels/instagram
+    trigger: "인스타 캐러셀 슬라이드 작성"
+  channels-newsletter:
+    path: skills/channels/newsletter
+    trigger: "B2B 뉴스레터 md+HTML+제목"
+  marketing-research:
+    path: skills/marketing-research
+    trigger: "M1 alias (하위 호환) — 신규 호출은 channels-research 사용"
+  content-studio-slides:
+    path: skills/content-studio-slides
+    trigger: "강의 슬라이드 HTML + PPTX 생성"
+  notion-archive:
+    path: skills/notion-archive
+    trigger: "M5 Notion 동기화 · 아카이브"
+  playmcp-commander:
+    path: skills/playmcp-commander
+    trigger: "PlayMCP(Kakao) 커맨더 채널 요청"
+  vibe-coding-cursor:
+    path: skills/vibe-coding-cursor
+    trigger: "코드 구현 요청 → Cursor HANDOFF 패키지 생성"
+  wiki-maintainer:
+    path: skills/shared/wiki-maintainer
+    trigger: "위키 Ingest · /ask 질의 · Lint (옵션)"
+  personal-assistant:
+    path: skills/personal-assistant
+    trigger: "개인 비서 · 메일·일정 요약"

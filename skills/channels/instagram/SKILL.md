@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: channel-instagram
 description: "M2 Instagram: 3슬라이드 정보형 캐러셀(4:5) + Nano Banana Pro 2 + 캡션."
@@ -50,3 +57,7 @@ metadata:
 - 이미지 프롬pt 없이 캡션만
 - 해시태그 8개 이상
 - Pretendard (Instagram 채널은 나눔고딕)
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

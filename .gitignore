@@ -40,6 +40,11 @@ content/personal/
 .harness/cost-ledger.jsonl
 .harness/watch-telegram-ensure.lock
 .harness/notion-oauth-watch-state.json
+.harness/deltas/
+.harness/shadow/
+.harness/playbook-log.jsonl
+.harness/token-baseline.jsonl
+.harness/signals-*.json
 
 # Stale channel artifacts (moved by pipeline_supervisor)
 content/_stale/
@@ -47,9 +52,16 @@ content/_stale/
 # Research squad raw (regenerated)
 content/research/raw/*
 
+# Skill migration backups
+skills/**/*.md.pre-split
+skills/**/*.pre-split
+
 # Generated wiki runtime
 content/wiki/_ingest_queue.json
 content/wiki/output/*
+content/wiki/graph.db
+content/wiki/graph.db-*
+content/wiki/graph-stats.json
 content/research/_brief_graph.json
 
 # Generated newsletter outputs

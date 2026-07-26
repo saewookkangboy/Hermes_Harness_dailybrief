@@ -49,6 +49,18 @@ if [[ "${SKIP_NOTION_ARCHIVE:-0}" != "1" ]]; then
     || echo "⚠️  Notion archive skipped (see content-studio.log)"
 fi
 
+# ── 그래프 증분 빌드 (F2 신규, 결정적, ~2s) ──────────────
+if [[ "${HERMES_WIKI_GRAPH:-0}" == "1" ]]; then
+  "$DIR/wiki-graph.sh" || echo "⚠️  그래프 빌드 실패 (파이프라인 계속)"
+fi
+
+# 결정적 파이프라인 원장 기록 (F1 tokens=0 게이트)
+PYTHONPATH="$DIR" python3 -c "
+import sys; sys.path.insert(0,'$DIR')
+from lib.ledger import CostEntry, append
+append(CostEntry.now('full_pipeline', deterministic=True, run_id='pipeline', note='run-pipeline.sh'))
+" 2>/dev/null || true
+
 PIPELINE_END=$(date +%s)
 PIPELINE_ELAPSED=$(( PIPELINE_END - PIPELINE_START ))
 echo ""

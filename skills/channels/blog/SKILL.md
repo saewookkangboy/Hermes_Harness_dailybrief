@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: channel-blog
 description: "M2 블로그: SEO/AEO/GEO HTML + blog-article 패키지."
@@ -56,3 +63,7 @@ metadata:
 - FAQ schema 없이 "완료"
 - 출처 URL 없음
 - LLM으로 HTML 전체 재생성 (assemble 우선)
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

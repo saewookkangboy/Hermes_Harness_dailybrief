@@ -1,0 +1,39 @@
+# /ask 회귀 평가용 고정 질문 세트. 변경하면 기준선이 무효가 된다.
+version: 1
+questions:
+  - id: q01
+    text: "최근 3개월 AX 전환 관련 핵심 수치는?"
+    expect: [출처URL, 수치]
+  - id: q02
+    text: "링크드인에서 저장률이 높았던 앵글은?"
+    expect: [앵글, 성과수치]
+  - id: q03
+    text: "뉴스레터 CTOR 10% 미달한 회차의 공통점은?"
+    expect: [회차, 원인]
+  - id: q04
+    text: "생성형 검색(GEO) 관련해 우리가 인용한 출처 목록"
+    expect: [출처URL]
+  - id: q05
+    text: "3개월 이상 다루지 않은 개념 중 재활용할 만한 것"
+    expect: [개념, 최근언급일]
+  - id: q06
+    text: "국내 기업 AI 도입률 최신 수치와 출처"
+    expect: [수치, 출처URL]
+  - id: q07
+    text: "블로그 SEO/AEO 게이트를 통과하지 못한 사례 원인"
+    expect: [원인]
+  - id: q08
+    text: "인스타 캐러셀에서 반응이 좋았던 슬라이드 구성"
+    expect: [구성]
+  - id: q09
+    text: "강의 자료에 반복 등장하는 프레임워크"
+    expect: [프레임워크]
+  - id: q10
+    text: "무효화된 주장을 아직 인용하고 있는 발행물"
+    expect: [발행물경로]
+  - id: q11
+    text: "마케팅 자동화 관련 우리 브리프의 시계열 변화"
+    expect: [시점, 변화]
+  - id: q12
+    text: "책임있는 AI 주제에서 우리가 취한 입장"
+    expect: [입장, 출처URL]

@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: channel-linkedin
 description: "M2+M3 LinkedIn: analyze→strategy→draft 파이프 + 피드 알고리즘 최적화."
@@ -84,3 +91,7 @@ hermes chat -q "..." -s channel-linkedin -t hermes-cli
 
 - 사용자 제공 텍스트·brief·search_context만 분석
 - 자동 피드 수집·API 연동 없음 (로컬 결정적 + 선택 LLM)
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

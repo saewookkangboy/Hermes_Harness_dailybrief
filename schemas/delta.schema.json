@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Playbook Learning Delta",
+  "type": "object",
+  "required": ["generated_at", "window", "deltas"],
+  "properties": {
+    "generated_at": { "type": "string" },
+    "window": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" }
+      }
+    },
+    "deltas": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["skill", "op", "id", "evidence"],
+        "properties": {
+          "skill": {
+            "type": "string",
+            "description": "config/skill-index.yaml 의 키"
+          },
+          "op": { "enum": ["ADD", "BUMP", "DEPRECATE"] },
+          "id": {
+            "type": "string",
+            "pattern": "^L-[0-9]{4}$"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 400,
+            "description": "ADD 시 필수. 관찰된 규칙 1~3문장."
+          },
+          "signal": {
+            "enum": ["helpful", "harmful"],
+            "description": "BUMP 시 필수"
+          },
+          "evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "expected": {
+            "type": "object",
+            "required": ["metric", "delta"],
+            "properties": {
+              "metric": {
+                "enum": ["ctor", "open_rate", "save_rate", "sla_sec",
+                         "validate_pass_rate", "tokens_in"]
+              },
+              "delta": {
+                "type": "string",
+                "pattern": "^[+-][0-9]+(\\.[0-9]+)?%?$"
+              }
+            }
+          },
+          "rationale": { "type": "string", "maxLength": 300 }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "op": { "const": "ADD" } } },
+            "then": { "required": ["text", "expected"] }
+          },
+          {
+            "if": { "properties": { "op": { "const": "BUMP" } } },
+            "then": { "required": ["signal"] }
+          }
+        ]
+      }
+    }
+  }
+}

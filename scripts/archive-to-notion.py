@@ -108,7 +108,7 @@ def page_key(day: str, category: str, filename: str = "", *, one_per_category: b
 
 def update_page_content(registry, cfg: dict, page_id: str, content: str) -> str:
     """Notion 페이지 본문 전체 교체 (replace_content)."""
-    tool = cfg["mcp"].get("update_tool", "mcp_notion_notion_update_page")
+    tool = cfg["mcp"].get("update_tool", "mcp__notion__notion_update_page")
     payload = {
         "page_id": page_id,
         "command": "replace_content",

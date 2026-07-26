@@ -77,6 +77,30 @@ cat ~/hermes-content-studio/.harness/progress.md
 ~/hermes-content-studio/scripts/run-cursor-handoff.sh --latest
 # /automate → Codex HANDOFF → run-cursor-handoff --background (HERMES_CURSOR_AUTO=1)
 
+
+# 비용·토큰 (F1)
+~/hermes-content-studio/scripts/cost-report.sh --since 7d
+~/hermes-content-studio/scripts/token-gate-eval.sh
+
+# 누적 개념 그래프 (F2, 결정적, LLM 없음)
+HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
+~/hermes-content-studio/scripts/wiki-graph.sh --force --rebuild
+~/hermes-content-studio/scripts/graph-query.sh stale-citations
+~/hermes-content-studio/scripts/graph-query.sh top-concepts
+~/hermes-content-studio/scripts/graph-query.sh recycle-candidates
+
+# /ask graph-first (F3)
+PYTHONPATH=scripts python3 -m lib.graph_context "<질문>" --budget 3000
+~/hermes-content-studio/scripts/ask-eval.sh --compare
+
+# 학습 루프 (F4)
+~/hermes-content-studio/scripts/reflect.sh --week
+~/hermes-content-studio/scripts/reflect.sh --week --signals-only
+~/hermes-content-studio/scripts/curate-playbook.sh --dry-run
+~/hermes-content-studio/scripts/curate-playbook.sh --shadow --runs 5
+~/hermes-content-studio/scripts/curate-playbook.sh --promote
+~/hermes-content-studio/scripts/curate-playbook.sh --verify
+
 # Notion 일자별 아카이브
 ~/hermes-content-studio/scripts/archive-to-notion.sh [YYYY-MM-DD]
 
@@ -146,6 +170,10 @@ HERMES_WIKI_LINT=1 ~/hermes-content-studio/scripts/run-wiki-lint.sh
 ```
 
 ## 스킬 우선순위
+
+각 SKILL.md 는 `## STABLE`(사람 전용) / `## LEARNED`(Curator 전용) 로 나뉩니다.
+LEARNED 를 직접 편집하지 말고 `curate-playbook.sh` 를 사용하세요.
+
 
 0. `harness-ops` — init·eval·성능 게이트
 1. `content-orchestration` — M1~M5 마케팅 오케스트레이션 (마스터)

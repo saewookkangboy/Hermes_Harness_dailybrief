@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: channel-research
 description: "M1 콘텐츠 전략: 일일 리서치 브리프 수집·분석·handoff (Top 7)."
@@ -113,3 +120,7 @@ M2 실행 제안:
 ```bash
 ~/hermes-content-studio/scripts/run-content-package.sh
 ```
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+
