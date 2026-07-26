@@ -1,13 +1,13 @@
 # LLM Wiki 통합 전략 — Hermes Content Studio
 
 > [Karpathy LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 패턴을 **부분 반영**한 운영 SoT  
-> Harness v1.2 · 결정적 파이프라인 우선 · 이중 메모리
+> Harness v1.3 · 결정적 파이프라인 우선 · 이중 메모리 · **Wiki Graph v1 (2026-07-26)**
 
 ---
 
 ## 결론 (한 줄)
 
-**일별 콘텐츠 공장(M1→M5)은 그대로 두고**, Commander·장기 리서치·개인 메모를 위해 **누적 wiki 계층**을 선택적으로 쌓는다. 전면 Wiki 교체는 SLA·재현성·validate 게이트를 훼손하므로 하지 않는다.
+**일별 콘텐츠 공장(M1→M5)은 그대로 두고**, Commander·장기 리서치·개인 메모를 위해 **누적 wiki + graph.db** 계층을 선택적으로 쌓는다. 전면 Wiki 교체는 SLA·재현성·validate 게이트를 훼손하므로 하지 않는다.
 
 ---
 
@@ -16,23 +16,39 @@
 | 계층 | 역할 | 런타임 | 갱신 주기 |
 |------|------|--------|----------|
 | **일별 SoT** | `{date}_brief.md` → M2 채널 | 결정적 (`assemble-*.py`) | 매일 08:00 |
-| **누적 Wiki** | `content/wiki/` 개념·엔티티·합성 | Seed(결정적) + Ingest/Lint(LLM, 옵션) | M1 후 / 주간 / `/ask` 후 |
+| **누적 Wiki** | `content/wiki/` 개념·엔티티 | Seed(결정적) + Ingest/Lint(LLM, 옵션) | M1 후 / 주간 / `/ask` 후 |
+| **Wiki Graph** | `content/wiki/graph.db` bi-temporal | 결정적 `build-graph.py` (LLM 0) | 증분 ~260ms · rebuild ~6s |
 
 ```mermaid
 flowchart LR
   RAW["research/raw · _search_context"]
   BRIEF["{date}_brief.md · SoT"]
   WIKI["content/wiki · 누적"]
+  GRAPH[("graph.db")]
   M2["M2 blog · IG · LI · newsletter"]
   NOTION["Notion Daily Archive"]
-  ASK["/ask · memory_router"]
+  ASK["/ask · graph_first"]
 
   RAW --> BRIEF
   BRIEF --> M2 --> NOTION
   BRIEF -.->|HERMES_WIKI_SEED=1| WIKI
-  WIKI -.->|index-first| ASK
+  WIKI --> GRAPH
+  GRAPH -->|서브그래프 digest| ASK
+  WIKI -.->|index_first fallback| ASK
   WIKI -.->|개념 참조| M2
 ```
+
+### Graph · Ask (v2.1)
+
+| 항목 | 설정/명령 |
+|------|-----------|
+| SoT | `config/wiki.yaml` `graph` · `ask` |
+| 빌드 | `./scripts/wiki-graph.sh` · `--force --rebuild` |
+| 질의 | `/ask` · `graph_context.py` · budget 3000 tok · hops 2 |
+| eval | `./scripts/ask-eval.sh --compare` (−87.9% tokens) |
+| 롤백 | `HERMES_WIKI_GRAPH=0` · `HERMES_ASK_GRAPH=0` |
+
+상세: `docs/architecture/archive/v2.1-graph-token-playbook.md`
 
 ---
 

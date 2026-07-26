@@ -1,7 +1,9 @@
 # Hermes Content Studio — Agent Context
 
 Intel Mac 자체호스팅 마케팅·교육 콘텐츠 스튜디오.
-Harness v1.2.0 — [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering)
+Harness v1.3.0 (System Logic **v2.1**) — [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering)
+
+아키텍처: `docs/architecture/SYSTEM-LOGIC.md` · 변경 기록: `docs/architecture/archive/v2.1-graph-token-playbook.md`
 
 ## 세션 시작 (필수)
 

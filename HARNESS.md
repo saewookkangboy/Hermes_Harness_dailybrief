@@ -101,13 +101,18 @@ Telegram 요청: Notion 100% 동기화 + Permalink 필수.
 
 | 문서 | 역할 |
 |------|------|
-| `docs/architecture/SYSTEM-LOGIC.md` | **v2.0** 현행 시스템 로직 + Mermaid |
+| `docs/architecture/SYSTEM-LOGIC.md` | **v2.1** 현행 시스템 로직 + Mermaid |
 | `docs/architecture/README.md` | 버전 타임라인 · archive 인덱스 |
-| `docs/architecture/archive/` | v1.0–v2.0 구현 단계 동결 스냅샷 |
+| `docs/architecture/archive/` | v1.0–**v2.1** 구현 단계 동결 스냅샷 |
+| `docs/architecture/archive/v2.1-graph-token-playbook.md` | F1–F4 · M1 redesign 상세 |
 
 ```bash
 ./scripts/generate-architecture-md.py
 ./scripts/export-architecture-notion.sh
+./scripts/cost-report.sh --since 7d
+./scripts/token-gate-eval.sh
+./scripts/wiki-graph.sh --force --rebuild
+./scripts/ask-eval.sh --compare
 ./scripts/voice-style-eval.sh [DATE]
 ./scripts/naturalness-eval.sh [DATE]
 ./scripts/humanize-llm-eval.sh [DATE]
@@ -131,9 +136,9 @@ Notion 아키텍처 (Daily Archive 루트 하위, state: `content/.notion-archit
 
 ## CAR 분해 (HarnessCard)
 
-- **Control:** AGENTS.md, feature_list, validate-output, deny_paths
-- **Agency:** deterministic_pipeline, tool_masking, context_backpressure
-- **Runtime:** init.sh, traces, session_handoff, health_gates
+- **Control:** AGENTS.md, feature_list, validate-output, deny_paths, STABLE section guard
+- **Agency:** deterministic_pipeline, tool_masking, context_backpressure, **graph_context**
+- **Runtime:** init.sh, traces, session_handoff, health_gates, **cost_ledger**, **playbook_log**
 
 ## 검증 워크플로
 
@@ -148,16 +153,18 @@ Notion 아키텍처 (Daily Archive 루트 하위, state: `content/.notion-archit
 ./scripts/validate-output.sh research content/research/YYYY-MM-DD_brief.md
 ```
 
-## SLA (초)
+## SLA (초 · 토큰)
 
-| 단계 | SLA | 기준선 |
-|------|-----|--------|
-| research | 30 | 20 |
-| content | 10 | 5 |
-| full_pipeline | 60 | 45 |
-| claude-design | 300 | — |
+| 단계 | SLA sec | baseline | tokens (in/out) | det |
+|------|---------|----------|-----------------|-----|
+| research | 30 | 20 | 6000/2500 | false |
+| content | 10 | 3 | 0/0 | true |
+| full_pipeline | 60 | 45 | 0/0 | true |
+| wiki_graph | 3 | 2 | 0/0 | true |
+| ask | 20 | — | 3000/1200 | false |
+| claude-design | 300 | — | 40000/12000 | false |
 
-설정: `config/harness.yaml`
+설정: `config/harness.yaml` (`performance.sla_seconds` + `sla.*` + `token_gate`)
 
 ## 참고 자료
 
