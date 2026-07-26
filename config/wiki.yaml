@@ -33,3 +33,35 @@ seed:
 lint:
   schedule: "0 9 * * 1"  # 월 09:00 (setup-commander-cron 수동 등록)
   report_dir: content/logs
+
+graph:
+  enabled: true
+  db: content/wiki/graph.db
+  ddl: schemas/graph.sql
+  build:
+    mode: incremental
+    sla_sec_incremental: 3
+    sla_sec_rebuild: 10
+    deterministic: true
+  extract:
+    concepts_from: [h2, h3, bold]
+    claim_requires_numeric: true
+    max_urls_per_block: 3
+    digest_max_chars: 200
+  invalidation:
+    strategy: valid_to
+    conservative: true
+  ctor_ledger:
+    - .harness/ctor-ledger.jsonl
+    - content/newsletter/ctor-ledger.jsonl
+
+ask:
+  mode: graph_first
+  budget_tokens: 3000
+  hops: 2
+  seeds: 5
+  live_only: true
+  require_sources: true
+  fallback: index_first
+  max_assets_shown: 8
+  max_concepts_shown: 15

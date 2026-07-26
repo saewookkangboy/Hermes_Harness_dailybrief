@@ -95,11 +95,14 @@ def _usage_from_sessions_json(session_id: str | None = None) -> dict[str, int | 
             if isinstance(row, dict) and str(row.get("session_id") or "") == session_id:
                 return _usage_from_sessions_row(row)
 
+    dict_rows = [row for row in data.values() if isinstance(row, dict)]
+    if not dict_rows:
+        return {"tokens": 0, "usd": 0.0}
     latest = max(
-        data.values(),
-        key=lambda row: str((row or {}).get("updated_at") or (row or {}).get("created_at") or ""),
+        dict_rows,
+        key=lambda row: str(row.get("updated_at") or row.get("created_at") or ""),
     )
-    return _usage_from_sessions_row(latest if isinstance(latest, dict) else {})
+    return _usage_from_sessions_row(latest)
 
 
 def _sum_codex_usd_lines(text: str) -> float:

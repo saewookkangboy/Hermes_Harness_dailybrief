@@ -114,11 +114,12 @@ hygiene:
 mcp:
   server: notion
   discover_all: false
-  create_tool: mcp_notion_notion_create_pages
-  update_tool: mcp_notion_notion_update_page
-  move_tool: mcp_notion_notion_move_pages
-  search_tool: mcp_notion_notion_search
-  fetch_tool: mcp_notion_notion_fetch
+  # Hermes MCP registry naming (2026-07): mcp__{server}__{tool}
+  create_tool: mcp__notion__notion_create_pages
+  update_tool: mcp__notion__notion_update_page
+  move_tool: mcp__notion__notion_move_pages
+  search_tool: mcp__notion__notion_search
+  fetch_tool: mcp__notion__notion_fetch
 
 telegram:
   notify_on_sync: true

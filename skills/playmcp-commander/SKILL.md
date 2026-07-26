@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: playmcp-commander
 description: "PlayMCP(Kakao) MCP-Gateway 커맨더: Slack과 동일한 명령·대화 채널 역할."
@@ -68,3 +75,7 @@ ONE_TIME_TOKEN=새OTT ~/hermes-content-studio/scripts/setup-playmcp.sh
 - [ ] 도구함에 콘텐츠 파이프라인에 필요한 MCP 서버 등록
 - [ ] 산출물은 `content/` 채널 폴더에 저장
 - [ ] Getdesign.md 톤·레이아웃 준수
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

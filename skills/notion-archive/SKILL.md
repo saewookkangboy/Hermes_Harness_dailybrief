@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: notion-archive
 description: "Hermes Content Studio 산출물을 Notion 일자별·카테고리별 아카이브."
@@ -51,3 +58,7 @@ Telegram Permalink 형식으로 사용자에게 전달.
 `watch-telegram.sh` 실행 중이면 자동 동기화·Permalink 전송됨.
 
 Markdown 보존: `scripts/lib/markdown_notion.py` — 헤딩·코드블록·리스트 유지
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

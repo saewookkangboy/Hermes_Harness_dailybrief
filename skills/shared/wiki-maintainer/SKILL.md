@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: wiki-maintainer
 description: "LLM Wiki 유지보수 — Ingest · Query · Lint. Karpathy 패턴, Hermes 이중 메모리 계층."
@@ -64,7 +71,26 @@ streak_days: 2
 
 **금지:** M1 `run-research-brief.sh` 동기 경로에서 Ingest 실행.
 
-## Workflow: Query (`/ask`)
+## Workflow: Query (`/ask`) — graph-first
+
+`HERMES_ASK_GRAPH=1` 일 때:
+
+1. `scripts/lib/graph_context.py` 로 컨텍스트를 조립한다.
+   ```bash
+   PYTHONPATH=scripts python3 -m lib.graph_context "<질문>" --budget 3000
+   ```
+2. 조립된 컨텍스트 **만** 사용해 답한다. **브리프 파일 전문을 추가로 읽지 않는다.**
+3. 원문이 필요하면 `body_uri`를 사용자에게 경로로 제시한다 (직접 로드 금지).
+4. `## ⚠ 무효화 경고` 블록이 있으면 해당 수치를 인용하지 않는다.
+5. 모든 수치 주장에 `출처:` URL을 붙인다. 출처가 `(없음)`인 근거는 인용하지 않는다.
+6. 시드 0건이면 `config/wiki.yaml` `ask.fallback` (`index_first`) 경로로 내려간다.
+
+금지:
+- `content/research/*.md` 전문 로드 (그래프 조립을 우회하는 행위)
+- `digest` 이외의 본문을 컨텍스트에 넣기
+- 무효화된 claim 인용
+
+레거시 (`HERMES_ASK_GRAPH=0`):
 
 1. `wiki/index.md` 읽기 → 관련 페이지 목록
 2. concepts · entities · brief fallback 순 읽기
@@ -93,9 +119,22 @@ HERMES_WIKI_LINT=1 ~/hermes-content-studio/scripts/run-wiki-lint.sh
 
 # 구조 eval
 ~/hermes-content-studio/scripts/wiki-lint-eval.sh
+
+# 누적 그래프 (결정적)
+HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
+~/hermes-content-studio/scripts/wiki-graph.sh --force --rebuild
+~/hermes-content-studio/scripts/graph-query.sh stale-citations
+
+# /ask graph-first
+PYTHONPATH=scripts python3 -m lib.graph_context "<질문>" --budget 3000
+~/hermes-content-studio/scripts/ask-eval.sh --compare
 ```
 
 ## 도구
 
 - `-t hermes-cli` only (콘텐츠 파이프라인과 동일 tool masking)
 - `web_search`는 wiki miss + brief miss 시에만
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

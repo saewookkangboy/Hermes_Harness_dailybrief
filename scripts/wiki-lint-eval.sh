@@ -86,6 +86,48 @@ else
   record FAIL "wiki_router" "$WR"
 fi
 
+# ── 그래프 무결성 (F2 신규) ────────────────────────────────
+if [[ -f "$WORKDIR/content/wiki/graph.db" ]]; then
+  echo "── graph integrity ──"
+  DB="$WORKDIR/content/wiki/graph.db"
+
+  ORPHAN=$(sqlite3 "$DB" "
+    SELECT COUNT(*) FROM edge e
+     WHERE NOT EXISTS (SELECT 1 FROM node WHERE id=e.src)
+        OR NOT EXISTS (SELECT 1 FROM node WHERE id=e.dst);")
+  if [[ "$ORPHAN" == "0" ]]; then
+    record PASS "graph_orphan_edges" "0"
+  else
+    record FAIL "graph_orphan_edges" "$ORPHAN"
+  fi
+
+  UNTRACED=$(sqlite3 "$DB" "
+    SELECT COUNT(*) FROM edge
+     WHERE valid_to IS NOT NULL AND (invalidated_by IS NULL OR invalidated_by='');")
+  if [[ "$UNTRACED" == "0" ]]; then
+    record PASS "graph_invalidation_trace" "0"
+  else
+    record FAIL "graph_invalidation_trace" "$UNTRACED"
+  fi
+
+  LONG=$(sqlite3 "$DB" "SELECT COUNT(*) FROM node WHERE LENGTH(digest) > 200;")
+  if [[ "$LONG" == "0" ]]; then
+    record PASS "graph_digest_len" "0"
+  else
+    record FAIL "graph_digest_len" "$LONG"
+  fi
+
+  DIFF=$(sqlite3 "$DB" "
+    SELECT (SELECT COUNT(*) FROM node) - (SELECT COUNT(*) FROM node_fts);")
+  if [[ "$DIFF" == "0" ]]; then
+    record PASS "graph_fts_sync" "0"
+  else
+    record FAIL "graph_fts_sync" "$DIFF"
+  fi
+else
+  record PASS "graph_db_optional" "not built (HERMES_WIKI_GRAPH=0)"
+fi
+
 {
   echo "# Wiki Lint Eval — $STAMP"
   echo ""

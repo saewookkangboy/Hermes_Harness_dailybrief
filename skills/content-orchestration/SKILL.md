@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: content-orchestration
 description: "M1~M5 마케팅 콘텐츠 오케스트레이션: 전략→실행→최적화→아카이브. marketing-ai-orchestration-harness + harness-100 패턴."
@@ -113,3 +120,7 @@ Handoff skill: `shared/handoff`
 세션 시작: `scripts/init.sh` → `.harness/progress.md`
 성능 eval: `scripts/harness-eval.sh --quick`
 도구 마스킹: `-t hermes-cli` (MCP·브라우저 제외)
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

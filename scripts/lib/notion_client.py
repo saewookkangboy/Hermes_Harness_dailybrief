@@ -130,8 +130,28 @@ def normalize_mcp_result(data) -> dict:
     return data if isinstance(data, dict) else {"raw": data}
 
 
+def resolve_mcp_tool(registry, preferred: str, *fallbacks: str) -> str:
+    """Return first registered tool name among preferred + fallbacks."""
+    candidates = (preferred,) + fallbacks
+    for name in candidates:
+        if name and registry.get_entry(name):
+            return name
+    return preferred
+
+
 def mcp_call(registry, tool_name: str, args: dict) -> dict:
     entry = registry.get_entry(tool_name)
+    if not entry:
+        # Legacy Hermes naming (mcp_notion_*) → current (mcp__notion__*)
+        alt = None
+        if tool_name.startswith("mcp_notion_"):
+            alt = "mcp__notion__" + tool_name[len("mcp_notion_") :]
+        elif tool_name.startswith("mcp__notion__"):
+            alt = "mcp_notion_" + tool_name[len("mcp__notion__") :]
+        if alt:
+            entry = registry.get_entry(alt)
+            if entry:
+                tool_name = alt
     if not entry:
         cfg = load_config()
         oauth = check_notion_oauth_status(
@@ -162,12 +182,12 @@ def notion_page_id_to_url(page_id: str) -> str:
 
 
 def fetch_page(registry, cfg: dict, page_id: str) -> dict:
-    tool = cfg["mcp"].get("fetch_tool", "mcp_notion_notion_fetch")
+    tool = cfg["mcp"].get("fetch_tool", "mcp__notion__notion_fetch")
     return mcp_call(registry, tool, {"id": page_id})
 
 
 def move_pages(registry, cfg: dict, page_ids: list[str], parent_id: str) -> dict:
-    tool = cfg["mcp"].get("move_tool", "mcp_notion_notion_move_pages")
+    tool = cfg["mcp"].get("move_tool", "mcp__notion__notion_move_pages")
     return mcp_call(
         registry,
         tool,
@@ -206,7 +226,7 @@ def create_page(
 
 def update_page_content(registry, cfg: dict, page_id: str, content: str) -> str:
     """Notion 페이지 본문 전체 교체 (replace_content)."""
-    tool = cfg["mcp"].get("update_tool", "mcp_notion_notion_update_page")
+    tool = cfg["mcp"].get("update_tool", "mcp__notion__notion_update_page")
     payload = {
         "page_id": page_id,
         "command": "replace_content",

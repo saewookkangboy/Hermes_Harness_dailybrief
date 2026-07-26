@@ -1,4 +1,4 @@
-# Hermes Content Studio — Harness Engineering
+# Hermes Content Studio — Harness Engineering (v1.3.0)
 
 > [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering) 기반 성능·신뢰성 하네스
 
@@ -8,7 +8,7 @@
 |-----------|---------|------|
 | Instructions | `AGENTS.md`, `HARNESS.md` | 시작 경로, 규칙, 완료 정의 |
 | State | `.harness/feature_list.json`, `.harness/progress.md` | 진행·범위·다음 단계 |
-| Verification | `scripts/init.sh`, `scripts/validate-output.sh`, `scripts/harness-eval.sh` | 완료 전 필수 검증 |
+| Verification | `scripts/init.sh`, `scripts/validate-output.sh`, `scripts/harness-eval.sh`, `scripts/token-gate-eval.sh`, `scripts/ask-eval.sh` | 완료 전 필수 검증 |
 | Scope | `feature_list.json` 단일 활성 기능 | 과잉 작업 방지 |
 | Lifecycle | `init.sh` → 작업 → `session-handoff.md` | 세션 재개 |
 
@@ -41,12 +41,19 @@ HERMES_ENHANCE=1 ./scripts/run-pipeline.sh  # LLM polish 추가
 - **파일시스템 메모리:** `.harness/` + `content/research/_search_context_*.md`
 - **이중 메모리 (선택):** 일별 `{date}_brief.md` SoT + 누적 `content/wiki/` — `docs/LLM-WIKI-INTEGRATION.md`
   - 결정적 Seed: `HERMES_WIKI_SEED=1 wiki-seed.sh` · LLM Ingest/Lint는 비동기만
+  - **누적 그래프:** `content/wiki/graph.db` (bi-temporal, 결정적, LLM 0)
+    * `HERMES_WIKI_GRAPH=1 wiki-graph.sh` · 질의 `graph-query.sh`
+    * 무효화는 `valid_to` 세팅만 — DELETE 금지
+  - **/ask graph-first:** `HERMES_ASK_GRAPH=1` — 브리프 전문 대신 2홉 digest (`graph_context.py`)
 
 ### 3. 관측성 (Runtime)
 
 - **트레이스:** `.harness/traces/trace-YYYYMMDD.jsonl`
 - **비용 원장:** `.harness/cost-ledger.jsonl`
 - **성능 eval:** `scripts/harness-eval.sh --record`
+- **비용 리포트:** `scripts/cost-report.sh --since 7d`
+- **토큰 예산 게이트:** `config/harness.yaml` `sla.*.tokens_*` + `token_gate.mode`
+- **토큰 기준선:** `.harness/token-baseline.jsonl`
 
 ### 4. 가드레일
 
@@ -157,3 +164,19 @@ Notion 아키텍처 (Daily Archive 루트 하위, state: `content/.notion-archit
 - [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)
 - [12 Factor Agents](https://www.humanlayer.dev/blog/12-factor-agents)
 - [learn-harness-engineering](https://github.com/walkinglabs/learn-harness-engineering)
+
+
+## 학습 루프 (Self-Improvement, v1.3.0)
+
+| 단계 | 스크립트 | 주기 | LLM |
+|---|---|---|---|
+| 신호 수집 | `reflect.sh --signals-only` | 주 1회 | 0회 |
+| delta 생성 | `reflect.sh --week` | 주 1회 | 1회 (클라우드) |
+| 검토 | `curate-playbook.sh --dry-run` | 수동 | 0회 |
+| shadow | `curate-playbook.sh --shadow --runs 5` | 수동 | 파이프라인 기준 |
+| 승격 | `curate-playbook.sh --promote` | 수동 | 0회 |
+| 검증 | `curate-playbook.sh --verify` | 주 1회 | 0회 |
+
+원칙: LEARNED append-only + tombstone · STABLE 사람 전용 · expected 없는 delta 무효
+
+롤백: `HERMES_PLAYBOOK=stable` · `HERMES_WIKI_GRAPH=0` · `HERMES_ASK_GRAPH=0`

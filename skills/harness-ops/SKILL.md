@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: harness-ops
 description: "Harness engineering 운영: init, eval, 성능 게이트, 세션 핸드오프. awesome-harness-engineering 기반."
@@ -74,3 +81,7 @@ HERMES_ENHANCE=1 ~/hermes-content-studio/scripts/run-pipeline.sh
 
 - `HARNESS.md` — 전체 스펙
 - `config/harness.yaml` — SLA·가드레일
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

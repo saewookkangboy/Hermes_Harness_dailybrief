@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: telegram-commander
 description: "Telegram 커맨더: 결정적 파이프라인 + Instagram 4:5 캐러셀 + Notion Permalink."
@@ -141,3 +148,7 @@ Gemini API: model=gemini-3-pro-image-preview (Nano Banana Pro 2), aspect_ratio=4
 - Instagram 채널: `skills/channels/instagram/SKILL.md`
 - 템플릿: `templates/social/instagram-carousel.md`
 - 가이드: `config/content-guidelines.yaml#instagram`
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

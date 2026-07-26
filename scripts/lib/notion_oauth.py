@@ -127,9 +127,9 @@ def check_notion_oauth_status(
 def required_notion_tools(cfg: dict) -> list[str]:
     mcp = cfg.get("mcp") or {}
     names = [
-        mcp.get("create_tool", "mcp_notion_notion_create_pages"),
-        mcp.get("update_tool", "mcp_notion_notion_update_page"),
-        mcp.get("fetch_tool", "mcp_notion_notion_fetch"),
+        mcp.get("create_tool", "mcp__notion__notion_create_pages"),
+        mcp.get("update_tool", "mcp__notion__notion_update_page"),
+        mcp.get("fetch_tool", "mcp__notion__notion_fetch"),
     ]
     return [str(n) for n in names if n]
 

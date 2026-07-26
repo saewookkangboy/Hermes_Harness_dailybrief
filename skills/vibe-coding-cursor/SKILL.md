@@ -1,3 +1,10 @@
+<!--
+이 파일은 두 섹션으로 나뉩니다.
+  ## STABLE   — 브랜드 규칙·품질 게이트. 사람만 편집.
+  ## LEARNED  — 경험적 학습. scripts/curate-playbook.sh 만 편집.
+                append-only + tombstone. 삭제 금지.
+-->
+
 ---
 name: vibe-coding-cursor
 description: "Cursor 바이브 코딩 핸드오프: 프롬프트·컨텍스트 패키지 생성 및 실행 가이드."
@@ -110,3 +117,7 @@ const result = await Agent.prompt(handoffPrompt, {
 - Cursor Agent는 클라우드/로컬 모델 선택 가능 — 복잡한 구현은 클라우드 권장
 - Hermes(Ollama)로 기획 → Cursor로 구현 분업이 효율적
 - `marketers-brain` 등 Next.js 프로젝트: `npm run dev` 로컬 검증
+
+## LEARNED
+<!-- Curator 전용. 사람이 직접 편집하지 말 것. -->
+

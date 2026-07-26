@@ -1,3 +1,69 @@
+# Harness Progress — v1.3.0 Graph / Token / Playbook
+
+## Full System Retest (2026-07-26 22:30)
+
+리포트: `content/logs/2026-07-26_full-system-retest.md`
+
+**종합: PASS** — quick 40/0 · record 31/0 · pipeline 29s · ask −82.3%/시드0=0 · commander 28/0 · humanize 12/0
+
+수정: `hermes_cost.py` sessions.json non-dict 방어 (quick/commander 회귀 해소)
+
+---
+
+## F1–F4 시스템 보완 (2026-07-26)
+
+핸드오프: `content/drafts/cursor-handoff/HANDOFF-00`~`04`
+
+| Feature | 상태 | 증거 |
+|---------|------|------|
+
+## 성능 후속 P1–P3 적용 (2026-07-26)
+
+리포트: `content/logs/2026-07-26_perf-followup-p1-p3.md`
+
+| 항목 | Before → After |
+|------|----------------|
+| content (eval) | 17s → **2s** (SKIP_RESEARCH + baseline 3s) |
+| wiki-graph 증분 | 4–5s → **~260ms** |
+| ask 시드 0건 | 4/12 → **0/12** (−82.2% 토큰) |
+| full_pipeline | 35s → **24s** · harness-eval 31/0/0 |
+
+---
+
+## 성능 테스트 스위트 (2026-07-26 22:20)
+
+리포트: `content/logs/2026-07-26_perf-suite-report.md`
+
+| 항목 | 결과 |
+|------|------|
+| full_pipeline | ✅ 30–35s (SLA 60) |
+| research | ✅ 17s |
+| content | ⚠️ 17s (SLA 10 / baseline 5) |
+| newsletter | ✅ 1s |
+| wiki-graph rebuild/incr | ✅ 7s / ⚠️ 4–5s |
+| ask-eval | ✅ −87.9% |
+| token gate | ✅ PASS (det tokens=0) |
+
+---
+
+| F1 token-budget-gates | 구현·검증 | sla tokens · cost-report · Level1=360/400 · token-gate PASS |
+| F2 wiki-graph-v1 | 구현·검증 | graph.db 605 nodes · rebuild ~6s · wiki-lint 13/0 |
+| F3 ask-graph-context | 구현·검증 | ask-eval 토큰 -87.9% · graph-first |
+| F4 playbook-loop | infra 완료 | 16 skills STABLE/LEARNED · reflect/curate dry-run/shadow (promote는 수동) |
+
+```bash
+./scripts/cost-report.sh --since 7d
+./scripts/token-gate-eval.sh
+./scripts/wiki-graph.sh --force --rebuild
+./scripts/ask-eval.sh --compare
+./scripts/reflect.sh --week --signals-only
+./scripts/curate-playbook.sh --dry-run
+```
+
+다음: Reflector LLM → 수동 `--promote` · ask 품질 baseline · F5 보류
+
+---
+
 # Harness Progress — v1.4 통합 컨텍스트 + Notion 구조
 
 
@@ -193,7 +259,7 @@ export HERMES_WORKDIR=~/hermes-course-studio && $HERMES_WORKDIR/scripts/run-cour
 
 | 우선 | 항목 | 상태 | 비고 |
 |------|------|------|------|
-| **P0** | Notion OAuth 재인증 | ⏳ 수동 | `scripts/reauth-notion-mcp.sh` (대화형 TTY) |
+| **P0** | Notion OAuth 재인증 | ✅ 2026-07-25 | Cursor MCP + Hermes `hermes mcp login` · 툴명 `mcp__notion__*` 갱신 |
 | **P0** | 07-06~09 백필 | ✅ 완료 | 8페이지/일 · check-notion-status 전체 OK · m5 LIVE **8/8** |
 | **P0** | 중복 slug 정리 | ✅ 코드 | `lib/channel_artifacts.py` · supervised M2 전 자동 `_stale/` 이동 |
 | **P1** | M2 validate 상세 | ✅ | `pipeline_supervisor` 채널별 경로·실패 메시지 |

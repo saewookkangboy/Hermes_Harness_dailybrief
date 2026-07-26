@@ -30,7 +30,7 @@ run_python() {
   fi
 }
 
-echo "=== Harness Eval (v1.2.0) ==="
+echo "=== Harness Eval (v1.3.0) ==="
 echo "모드: $MODE"
 echo ""
 
@@ -38,6 +38,7 @@ PASS=0
 FAIL=0
 WARN=0
 RESULTS=()
+EVAL_FAILED=0
 
 check_struct() {
   local name="$1" path="$2"
@@ -149,6 +150,82 @@ if [[ "$MODE" == "quick" ]]; then
       FAIL=$((FAIL + 1))
     fi
   done
+  # ── 토큰 예산 게이트 (F1) ─────────────────────────────
+  if [[ -x "$DIR/token-gate-eval.sh" ]]; then
+    if "$DIR/token-gate-eval.sh" "${TOKEN_SINCE:-7d}"; then
+      echo "✅ token-gate"
+      PASS=$((PASS + 1))
+    else
+      echo "❌ token-gate"
+      FAIL=$((FAIL + 1))
+      EVAL_FAILED=1
+    fi
+  fi
+
+  # Level 1 스킬 인덱스 상한
+  if [[ -f "$WORKDIR/config/skill-index.yaml" ]]; then
+    if PYTHONPATH="$DIR" run_python -m lib.skill_loader >/tmp/hermes-skill-loader.out 2>&1; then
+      echo "✅ skill-index-level1"
+      PASS=$((PASS + 1))
+    else
+      echo "❌ skill-index-level1"
+      FAIL=$((FAIL + 1))
+      cat /tmp/hermes-skill-loader.out || true
+    fi
+  fi
+
+  # ── 플레이북 무결성 (F4) ──────────────────────────────
+  if [[ -f "$WORKDIR/config/skill-index.yaml" ]]; then
+    echo "── playbook integrity ──"
+    if PYTHONPATH="$DIR" run_python - <<'PY'
+import sys
+from lib import playbook as P
+from lib.token_budget import load_yaml_flat
+
+idx = load_yaml_flat(P.STUDIO / "config" / "skill-index.yaml")
+failed = False
+for key in (idx.get("skills") or {}):
+    try:
+        stable, entries = P.load(key)
+    except (KeyError, FileNotFoundError):
+        continue
+    h = P.health(entries)
+    text = P.skill_path(key).read_text(encoding="utf-8")
+    if "## LEARNED" not in text:
+        print(f"✗ {key}: LEARNED 섹션 없음 — split-skill.py 미실행")
+        failed = True
+    if h["deprecated"] and h["total"] == h["active"]:
+        print(f"✗ {key}: deprecated 항목이 파일에서 제거됨")
+        failed = True
+    if h["unverified"] > 6:
+        print(f"⚠ {key}: 미검증 엔트리 {h['unverified']}건 — curate --verify 실행 권장")
+    print(f"  {key:<24} total={h['total']} active={h['active']} "
+          f"deprecated={h['deprecated']} net+={h['net_positive']}")
+raise SystemExit(1 if failed else 0)
+PY
+    then
+      echo "✅ playbook-integrity"
+      PASS=$((PASS + 1))
+    else
+      echo "❌ playbook-integrity"
+      FAIL=$((FAIL + 1))
+    fi
+  fi
+
+  if [[ "${RECORD:-0}" == "1" ]] || [[ "$RECORD" == "1" ]]; then
+    PYTHONPATH="$DIR" run_python -c "
+import json, sys
+sys.path.insert(0, 'scripts')
+from lib import ledger
+from datetime import datetime, timezone
+snap = {'ts': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'agg': ledger.aggregate('7d')}
+open('.harness/token-baseline.jsonl','a',encoding='utf-8').write(
+    json.dumps(snap, ensure_ascii=False)+'\n')
+print('token-baseline recorded')
+" 2>/dev/null || true
+  fi
+
   echo ""
   echo "=== Quick eval: ✅ $PASS / ❌ $FAIL / ⚠️ $WARN ==="
   [[ "$FAIL" -eq 0 ]] && exit 0 || exit 1
@@ -168,11 +245,13 @@ echo "리서치: ${RESEARCH_ELAPSED}s"
 RESULTS+=("research:${RESEARCH_ELAPSED}")
 
 # Content timing
+# content 단계는 assemble+validate 만 측정 (리서치는 위에서 이미 별도 계측).
+# HERMES_SKIP_RESEARCH 없으면 today brief 강제 재실행으로 17s+ 이중 계측됨.
 CONTENT_START=$(date +%s)
-"$DIR/run-content-package.sh" "$DATE" >/tmp/harness-eval-content.log 2>&1
+HERMES_SKIP_RESEARCH=1 "$DIR/run-content-package.sh" "$DATE" >/tmp/harness-eval-content.log 2>&1
 CONTENT_END=$(date +%s)
 CONTENT_ELAPSED=$(( CONTENT_END - CONTENT_START ))
-echo "콘텐츠: ${CONTENT_ELAPSED}s"
+echo "콘텐츠: ${CONTENT_ELAPSED}s (skip-research)"
 RESULTS+=("content:${CONTENT_ELAPSED}")
 
 NEWSLETTER_START=$(date +%s)
@@ -218,6 +297,31 @@ echo "$REGRESSION_JSON" | grep -E '^(✅|⚠️|Recorded)' || true
 if echo "$REGRESSION_JSON" | grep -q '"regression": true'; then
   WARN=$((WARN + 1))
   echo "⚠️  성능 회귀 감지 — config/harness.yaml eval.baseline_seconds 확인"
+fi
+
+# ── 토큰 예산 게이트 (F1 신규) ─────────────────────────────
+if [[ -x "$DIR/token-gate-eval.sh" ]]; then
+  if ! "$DIR/token-gate-eval.sh" "${TOKEN_SINCE:-7d}"; then
+    echo "✗ 토큰 예산 게이트 실패"
+    FAIL=$((FAIL + 1))
+    EVAL_FAILED=1
+  else
+    PASS=$((PASS + 1))
+  fi
+fi
+
+if [[ "$RECORD" == "1" ]]; then
+  PYTHONPATH="$DIR" run_python -c "
+import json, sys
+sys.path.insert(0, 'scripts')
+from lib import ledger
+from datetime import datetime, timezone
+snap = {'ts': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+        'agg': ledger.aggregate('7d')}
+open('.harness/token-baseline.jsonl','a',encoding='utf-8').write(
+    json.dumps(snap, ensure_ascii=False)+'\n')
+print('token-baseline recorded')
+" 2>/dev/null || true
 fi
 
 echo ""
