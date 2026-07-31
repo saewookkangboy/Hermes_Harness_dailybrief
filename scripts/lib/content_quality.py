@@ -29,6 +29,7 @@ class Insight:
     guides_tips: str = ""
     research_category: str = ""
     channel_hooks: dict[str, str] | None = None
+    source_title: str = ""  # brief ### heading (often English) — title integrity
 
     @property
     def korean_title(self) -> str:
@@ -218,6 +219,7 @@ def parse_brief(text: str) -> tuple[str, list[Insight]]:
         ko_title_m = re.search(r"- \*\*한국어 제목:\*\* (.+)", block)
         hooks_m = re.search(r"- \*\*채널 훅:\*\* (.+)", block)
         ko_raw = ko_title_m.group(1).strip() if ko_title_m else ""
+        source_title = title.strip()
         display_title = ko_raw if ko_raw and not is_garbage_korean_title(ko_raw) else title
         raw_summary = (summary_m.group(1) if summary_m else title).strip()
         hooks: dict[str, str] = {}
@@ -242,6 +244,7 @@ def parse_brief(text: str) -> tuple[str, list[Insight]]:
                 guides_tips=(guides_m.group(1) if guides_m else "")[:300],
                 research_category=(cat_m.group(1) if cat_m else "")[:80],
                 channel_hooks=hooks or None,
+                source_title=source_title,
             )
         )
     return summary, insights

@@ -43,6 +43,23 @@ if [[ "$VALIDATE" -eq 1 ]]; then
   "$DIR/validate-output.sh" newsletter-subject-scores "$SCORES"
   UNIFIED="$WORKDIR/content/packages/${STAMP}_unified-context.md"
   [[ -f "$UNIFIED" ]] && "$DIR/validate-output.sh" unified-newsletter "$UNIFIED"
+  LI="$WORKDIR/content/linkedin/${STAMP}_newsletter-article.md"
+  IMG="$WORKDIR/content/newsletter/${STAMP}_title-image-16x9.md"
+  [[ -f "$LI" ]] && "$DIR/validate-output.sh" newsletter-linkedin "$LI"
+  [[ -f "$IMG" ]] && "$DIR/validate-output.sh" newsletter-title-image "$IMG"
+  PUB="$WORKDIR/content/packages/${STAMP}_newsletter-publish.json"
+  python3 - "$WORKDIR" "$STAMP" <<'PY' || exit 1
+import json, sys
+from pathlib import Path
+workdir, stamp = Path(sys.argv[1]), sys.argv[2]
+sys.path.insert(0, str(workdir / "scripts"))
+from lib.newsletter_gates import write_publish_status, publish_status_path
+write_publish_status(stamp)
+data = json.loads(publish_status_path(stamp).read_text(encoding="utf-8"))
+print("publishable=", data.get("publishable"), "failures=", data.get("failures"))
+if not data.get("publishable"):
+    raise SystemExit(1)
+PY
 fi
 
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"

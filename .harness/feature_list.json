@@ -143,7 +143,7 @@
       "priority": 8,
       "area": "newsletter",
       "title": "B2B 뉴스레터 파이프라인 (결정적)",
-      "user_visible_behavior": "run-newsletter.sh 실행 시 Brief SoT → md + HTML 이메일 + A/B 제목 스코어 + context 생성 (~10s)",
+      "user_visible_behavior": "run-newsletter.sh 실행 시 Brief SoT → md + HTML 이메일 + LinkedIn 장문 + 16:9 이미지 프롬프트 + A/B 제목 스코어 + paste 팩 생성 (~10s), 품질 게이트 실패 시 publishable:false로 Notion 차단",
       "status": "passing",
       "depends_on": [
         "pipe-001"
@@ -151,9 +151,12 @@
       "verification": [
         "scripts/run-newsletter.sh YYYY-MM-DD --validate",
         "scripts/newsletter-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-freshness-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-gate-b-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-gate-c-eval.sh YYYY-MM-DD",
+        "scripts/newsletter-gate-d-eval.sh YYYY-MM-DD",
         "scripts/newsletter-p2-eval.sh YYYY-MM-DD",
         "scripts/newsletter-p3-eval.sh YYYY-MM-DD",
-        "scripts/newsletter-p4-eval.sh YYYY-MM-DD",
         "scripts/newsletter-p4-eval.sh YYYY-MM-DD",
         "scripts/newsletter-p6-eval.sh YYYY-MM-DD",
         "scripts/newsletter-ctor-dashboard.sh YYYY-MM-DD",
@@ -167,14 +170,16 @@
         "scripts/archive-to-notion.sh YYYY-MM-DD --force"
       ],
       "evidence": [
-        "content/newsletter/2026-06-08_newsletter_2026.md",
-        "content/newsletter/2026-06-08_newsletter_2026.html",
-        "content/newsletter/2026-06-08_newsletter_subject-scores.json",
-        "content/packages/2026-06-08_newsletter-context.md",
-        "content/logs/2026-06-08_newsletter-eval-report.md",
-        "content/.notion-archive-state.json (2026-06-08/newsletter, newsletter_html)"
+        "content/newsletter/2026-07-27_newsletter_aeoai.md",
+        "content/newsletter/2026-07-27_newsletter_aeoai.html",
+        "content/newsletter/2026-07-27_title-image-16x9.md",
+        "content/linkedin/2026-07-27_newsletter-article.md",
+        "content/packages/2026-07-27_newsletter-paste.md",
+        "content/packages/2026-07-27_newsletter-publish.json",
+        "content/newsletter/issue-ledger.jsonl",
+        "content/logs/2026-07-27_newsletter-eval-report.md"
       ],
-      "notes": "lib/newsletter_quality · newsletter_subject · newsletter_html · Notion newsletter+newsletter_html · CTOR 10–15% 구조"
+      "notes": "Gate A 4/0 · B 16/0 · C 11/0 · D 19/0+E2E 5/5 (2026-07-27) · lib/newsletter_select · issue_ledger · prose · cta · linkedin · image_prompt · gates · CTOR 시드 제외 학습(R24-R27)"
     },
     {
       "id": "pipe-009",

@@ -19,8 +19,8 @@ echo "=== Newsletter Eval — $STAMP ==="
 T0=$(date +%s)
 GEN=$("$DIR/run-newsletter.sh" "$STAMP" --validate 2>&1)
 ELAPSED=$(( $(date +%s) - T0 ))
-NL=$(ls -1 "$WORKDIR/content/newsletter/${STAMP}"_newsletter_*.md 2>/dev/null | head -1)
-HTML=$(ls -1 "$WORKDIR/content/newsletter/${STAMP}"_newsletter_*.html 2>/dev/null | head -1)
+NL=$(ls -1t "$WORKDIR/content/newsletter/${STAMP}"_newsletter_*.md 2>/dev/null | head -1)
+HTML=$(ls -1t "$WORKDIR/content/newsletter/${STAMP}"_newsletter_*.html 2>/dev/null | head -1)
 CTX="$WORKDIR/content/packages/${STAMP}_newsletter-context.md"
 SCORES="$WORKDIR/content/newsletter/${STAMP}_newsletter_subject-scores.json"
 

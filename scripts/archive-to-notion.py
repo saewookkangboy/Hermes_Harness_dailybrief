@@ -184,7 +184,21 @@ def pending_with_content(
     one_per = (cfg.get("rules") or {}).get("one_page_per_category", False)
     result: dict[str, list[tuple[Path, str, str, str]]] = {}
 
+    nl_cats = {"newsletter", "newsletter_html", "newsletter_paste"}
+    nl_blocked = False
+    try:
+        from lib.newsletter_gates import is_publishable, publish_status_path
+
+        pub = publish_status_path(stamp)
+        if pub.exists() and not is_publishable(stamp):
+            nl_blocked = True
+            log(f"Skip newsletter Notion sync — not publishable ({stamp})")
+    except Exception:
+        nl_blocked = False
+
     for cat_key, paths in files_for_date(stamp, cfg).items():
+        if nl_blocked and cat_key in nl_cats:
+            continue
         if one_per and paths:
             paths = [sorted(paths, key=lambda p: p.name)[-1]]
 

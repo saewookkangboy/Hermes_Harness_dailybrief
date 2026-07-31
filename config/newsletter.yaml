@@ -55,9 +55,81 @@ subject_templates:
   - "AX 실무, 3분이면 돼요"
   - "[{stamp}] B2B AI 주간 신호"
 
+subject_patterns:
+  - id: question
+    template: "{topic} — 지금 손댈 곳은?"
+  - id: number
+    template: "{topic}, 3분이면 돼요"
+  - id: contrast
+    template: "{topic} — PoC가 아니라 FAQ"
+  - id: noun
+    template: "{topic} 체크리스트"
+
+freshness:
+  lookback_issues: 7
+  max_topic_reuse: 0
+  max_subject_pattern_streak: 1
+  ledger_path: content/newsletter/issue-ledger.jsonl
+
+safety:
+  block_url_substrings:
+    - undress
+    - undresser
+    - nsfw
+    - deepnude
+  block_title_substrings:
+    - Undress
+    - NSFW
+
+title_integrity:
+  prefer_source_when_korean_mismatch: true
+  stale_korean_titles:
+    - "한국 AX 전환 — 교육·FAQ·사례 중심"
+    - "ChatGPT Workspace Agents 실무 검토"
+    - "Claude 엔터프라이즈 — 거버넌스·컨텍스트"
+    - "2026 AI·마케팅 실무 인사이트"
+
+boilerplate_ban:
+  - "SEO·AEO·GEO 인용"
+  - "맥롽"
+  - "블로그·Notion 통합 컨텍스트에서 전문"
+  - "통합 컨텍스트에서 전문 확인"
+  - "블로그 Direct Answer + SEO/AEO/GEO 통합"
+  - "에 대해 정리해요"
+  - "에 대해 정리합니다"
+  - "번째 인사이트"
+  - "통합 컨텍스트 → 채널 재가공"
+  - "Direct Answer·AEO"
+  - "실무 실무"
+  - "2026 AI·마케팅 실무 인사이트"
+  - "브랜드·퍼포먼스·콘텐츠·AX 관점에서 재해석"
+  - "글로벌·국내 AI·마케팅 교차 신호"
+  - "글로벌·대한민국 AI·마케팅 교차 신호"
+
 scoring:
   min_winner_score: 40
   ideal_subject_chars: [28, 45]
+
+# 성과 학습 — 평가용 시드는 실측으로 취급하지 않음 (R24-R27)
+learning:
+  min_real_records: 3
+  seed_markers:
+    - "p4-eval-seed"
+    - "seed:true"
+    - "eval-seed"
+    - "gate-d-eval"
+  targets:
+    ctor_min_pct: 10.0
+    ctr_min_pct: 2.0
+    ctr_max_pct: 3.0
+    reply_min_pct: 1.0
+    unsub_max_pct: 0.5
+  weights:
+    strong: 8
+    good: 4
+    weak: -6
+  pattern:
+    min_records_per_pattern: 2
 
 send_window:
   days: [tue, wed]
@@ -75,6 +147,11 @@ delivery:
   paste_pack: "content/packages/{date}_newsletter-paste.md"
   workflow: "Notion 코드 블록 복사 → 외부 뉴스레터 플랫폼 문서 편집기 붙여넣기"
   esp_send: false
+  public_blog_base: ""
+
+length_targets:
+  email_words: [600, 1200]
+  linkedin_words: [800, 1500]
 
 esp:
   provider: resend

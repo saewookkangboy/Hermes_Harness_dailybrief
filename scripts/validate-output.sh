@@ -3,7 +3,7 @@
 set -euo pipefail
 
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
-TYPE="${1:?Usage: validate-output.sh research|blog|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|lecture FILE}"
+TYPE="${1:?Usage: validate-output.sh research|blog|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|newsletter-linkedin|newsletter-title-image|lecture FILE}"
 FILE="${2:?Missing file path}"
 
 fail() { echo "❌ $1" >&2; exit 1; }
@@ -220,7 +220,8 @@ body = text.split("## 30초 TLDR", 1)[-1]
 chars = len(re.sub(r"\s+", " ", body))
 if chars < 600:
     raise SystemExit(f"본문 너무 짧음: {chars}")
-if chars > 4500:
+# Longform email band (Gate B/C) — previous 4500 cap blocked 600–1200 word issues
+if chars > 12000:
     raise SystemExit(f"본문 너무 김(완독 저하): {chars}")
 PY
     python3 - "$FILE" <<'PY' || fail "뉴스레터 완성도·잘림 게이트"
@@ -233,6 +234,18 @@ issues = audit_newsletter_md(text)
 if issues:
     raise SystemExit("; ".join(issues[:5]))
 PY
+    python3 - "$FILE" <<'PY' || fail "뉴스레터 신선도·보일러플레이트 게이트"
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path.home() / "hermes-content-studio/scripts"))
+from lib.newsletter_gates import assert_freshness, assert_cta_https, assert_title_body_consistency
+p = Path(sys.argv[1])
+text = p.read_text(encoding="utf-8")
+stamp = p.name[:10]
+fails = assert_freshness(stamp, text) + assert_cta_https(text) + assert_title_body_consistency(text)
+if fails:
+    raise SystemExit("; ".join(fails[:6]))
+PY
     python3 - <<PY || fail "newsletter naturalness 게이트"
 import sys
 sys.path.insert(0, "$WORKDIR/scripts")
@@ -243,6 +256,20 @@ if issues:
     raise SystemExit("; ".join(issues))
 PY
     pass "newsletter OK: $FILE ($SIZE bytes, modules=$MOD_COUNT)"
+    ;;
+  newsletter-linkedin)
+    grep -qi "^# " "$FILE" || fail "LinkedIn 제목 없음"
+    grep -qi "타이틀 이미지\|16:9" "$FILE" || fail "이미지 슬롯 없음"
+    grep -qi "https://" "$FILE" || fail "CTA/출처 URL 없음"
+    H2=$(grep -c "^## " "$FILE" || true)
+    (( H2 >= 4 )) || fail "LinkedIn 섹션 부족: $H2"
+    pass "newsletter linkedin OK: $FILE ($SIZE bytes, h2=$H2)"
+    ;;
+  newsletter-title-image)
+    grep -qi "16:9" "$FILE" || fail "16:9 비율 없음"
+    grep -qi "Alt text\|대체 텍스트\|접근성" "$FILE" || fail "Alt text 없음"
+    grep -qi '```' "$FILE" || fail "프롬프트 코드블록 없음"
+    pass "newsletter title-image OK: $FILE ($SIZE bytes)"
     ;;
   newsletter-context)
     grep -qi "Newsletter 컨텍스트" "$FILE" || fail "Newsletter 컨텍스트 헤더 없음"
@@ -272,7 +299,10 @@ PY
     grep -qi "## §2 프리헤더" "$FILE" || fail "§2 프리헤더 섹션 없음"
     grep -qi "## §3 본문" "$FILE" || fail "§3 본문 섹션 없음"
     grep -qi "## §4 본문" "$FILE" || fail "§4 HTML 섹션 없음"
-    grep -qi "## 30초 TLDR" "$FILE" || fail "본문 TLDR 코드블록 없음"
+    grep -qi "## §5 LinkedIn" "$FILE" || fail "§5 LinkedIn 섹션 없음"
+    grep -qi "## §6 CTA URL" "$FILE" || fail "§6 CTA 섹션 없음"
+    grep -qi "## §7" "$FILE" || fail "§7 이미지 프롬프트 섹션 없음"
+    grep -qi "## 30초 TLDR\|## 타이틀 이미지" "$FILE" || fail "본문 TLDR/이미지 코드블록 없음"
     python3 - <<PY || fail "newsletter-paste naturalness 게이트"
 import sys
 sys.path.insert(0, "$WORKDIR/scripts")

@@ -1,5 +1,52 @@
 # Harness Progress — v1.3.0 Graph / Token / Playbook
 
+## Newsletter Production Readiness (2026-07-27) — Gate A~D 완료
+
+요구사항: `docs/plans/2026-07-27-001-feat-newsletter-production-readiness-plan.md` (R1–R30)  
+구현 계획: `docs/superpowers/plans/2026-07-27-newsletter-production-readiness.md`
+
+**종합: PASS** — A 4/0 · B 16/0 · C 11/0 · D 19/0 + E2E 5/5
+
+| Gate | 범위 | 결과 | eval |
+|------|------|------|------|
+| **A** Freshness/Safety/Title | 7호 비반복 · NSFW 차단 · 영문↔한글 정합 | ✅ 4/0 | `newsletter-freshness-eval.sh` |
+| **B** Email/LinkedIn/CTA/Image | 이메일 612단어 · LI 831단어 · HTTPS CTA · 16:9 프롬프트 | ✅ 16/0 | `newsletter-gate-b-eval.sh` |
+| **C** Validate/Publish Block | validate PASS · `publishable` 차단 · fail-injection | ✅ 11/0 | `newsletter-gate-c-eval.sh` |
+| **D** CTOR Learning + E2E | 시드 제외 학습 · 패턴 가중치 · 보조 지표 | ✅ 19/0 | `newsletter-gate-d-eval.sh` |
+
+### 근본 원인 (해소)
+`parse_brief`가 영문 원제를 버리고 한국어 폴백만 남겨 뉴스레터 주제가 `한국 AX 전환…`으로 **8일 반복**.
+→ `Insight.source_title` 보존 + `concrete_localize` + 정합/신선도 선별로 해소.
+
+### Gate D — 성과 학습 (R24–R27, AE8)
+- **시드 제외:** `notes`에 `p4-eval-seed` 등 마커 또는 `seed:true` → 학습 제외.
+  실측 < `min_real_records(3)`이면 `applied:false`, 정적 기본 가중치 유지
+- **패턴 가중치:** `pattern_id`를 캠페인에 기록, 패턴별 평균 CTOR → `pattern_weights`
+  (실측 전체 평균이라 저조 패턴은 음수). `_pick_pattern_id`가 연속 사용 한도 지키며 우선 선택
+- **보조 지표:** `ctr_pct` · `reply_rate_pct` · `unsub_rate_pct` + `health_flags`
+  (목표 CTOR ≥10% · CTR 2–3% · 회신 ≥1% · 해지 <0.5%)
+- 현재 원장은 시드 2건뿐 → `applied:false / seed_only`, 제목 점수 87 → **79** (시드 보너스 제거)
+
+```bash
+./scripts/newsletter-freshness-eval.sh YYYY-MM-DD   # Gate A
+./scripts/newsletter-gate-b-eval.sh YYYY-MM-DD      # Gate B
+./scripts/newsletter-gate-c-eval.sh YYYY-MM-DD      # Gate C
+./scripts/newsletter-gate-d-eval.sh YYYY-MM-DD      # Gate D + E2E
+./scripts/newsletter-ctor-record.sh YYYY-MM-DD --delivered N --opens N --clicks N \
+  [--replies N] [--unsub N] [--seed]
+```
+
+### 신규 모듈
+`newsletter_select.py` · `newsletter_issue_ledger.py` · `newsletter_prose.py` ·
+`newsletter_cta.py` · `newsletter_linkedin.py` · `newsletter_image_prompt.py` ·
+`newsletter_gates.py` (+ `content/packages/{date}_newsletter-publish.json`)
+
+### 경계 유지
+Daily Brief SoT · Notion paste · `esp_send:false` · 이미지 프롬프트만(생성 없음) ·
+게이트 실패 시 `publishable:false` → Notion newsletter 카테고리 스킵
+
+---
+
 ## 변경 요약 (2026-07-26, Architecture Docs v2.1)
 
 - **현행 SoT:** `docs/architecture/SYSTEM-LOGIC.md` → **v2.1**
