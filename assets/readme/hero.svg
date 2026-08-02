@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="100%" height="100%" viewBox="0 0 1200 360"
+     role="img" aria-labelledby="title desc">
+  <title id="title">Hermes Content Studio</title>
+  <desc id="desc">Intel Mac self-hosted marketing and education content studio. Daily Brief as single source of truth feeds blog, Instagram, LinkedIn, and newsletter through a deterministic pipeline.</desc>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111111"/>
+      <stop offset="100%" stop-color="#1A1A1A"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="360" rx="16" fill="url(#bg)"/>
+  <rect x="0" y="0" width="8" height="360" fill="#FFE500"/>
+
+  <g id="title-block" transform="translate(56 52)">
+    <text x="0" y="0"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="18" fill="#FFE500" letter-spacing="2">HARNESS v1.3 · SYSTEM LOGIC v2.1</text>
+
+    <text x="0" y="56"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="48" font-weight="700" fill="#F7F7F7">Hermes Content Studio</text>
+
+    <text x="0" y="100"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="22" fill="#B8B8B8">Daily Brief to channel packages in ~70s</text>
+
+    <text x="0" y="140"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="18" fill="#888888">Self-hosted Intel Mac · validate · Notion · Telegram/Slack/PlayMCP</text>
+
+    <g transform="translate(0 178)">
+      <rect x="0" y="0" width="118" height="32" rx="4" fill="#222222" stroke="#333333"/>
+      <text x="59" y="21" text-anchor="middle"
+            font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+            font-size="14" fill="#F7F7F7">M1 to M5</text>
+
+      <rect x="130" y="0" width="150" height="32" rx="4" fill="#222222" stroke="#333333"/>
+      <text x="205" y="21" text-anchor="middle"
+            font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+            font-size="14" fill="#F7F7F7">Brief SoT</text>
+
+      <rect x="292" y="0" width="170" height="32" rx="4" fill="#222222" stroke="#333333"/>
+      <text x="377" y="21" text-anchor="middle"
+            font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+            font-size="14" fill="#F7F7F7">LLM optional</text>
+    </g>
+  </g>
+
+  <g id="project-proof" transform="translate(720 48)">
+    <rect x="0" y="0" width="424" height="264" rx="12" fill="#0A0A0A" stroke="#2A2A2A"/>
+
+    <text x="24" y="36"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="14" fill="#666666">PIPELINE · DETERMINISTIC</text>
+
+    <rect x="24" y="56" width="376" height="44" rx="6" fill="#FFE500"/>
+    <text x="212" y="84" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="18" font-weight="600" fill="#111111">{date}_brief.md</text>
+
+    <path d="M212 108 L212 128" stroke="#FFE500" stroke-width="2"/>
+    <path d="M206 122 L212 132 L218 122" fill="none" stroke="#FFE500" stroke-width="2"/>
+
+    <rect x="24" y="140" width="86" height="52" rx="6" fill="#1C1C1C" stroke="#3A3A3A"/>
+    <text x="67" y="162" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="14" font-weight="600" fill="#F7F7F7">Blog</text>
+    <text x="67" y="180" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="12" fill="#888888">HTML</text>
+
+    <rect x="120" y="140" width="86" height="52" rx="6" fill="#1C1C1C" stroke="#3A3A3A"/>
+    <text x="163" y="162" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="14" font-weight="600" fill="#F7F7F7">IG</text>
+    <text x="163" y="180" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="12" fill="#888888">md</text>
+
+    <rect x="216" y="140" width="86" height="52" rx="6" fill="#1C1C1C" stroke="#3A3A3A"/>
+    <text x="259" y="162" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="14" font-weight="600" fill="#F7F7F7">LI</text>
+    <text x="259" y="180" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="12" fill="#888888">md</text>
+
+    <rect x="312" y="140" width="88" height="52" rx="6" fill="#1C1C1C" stroke="#3A3A3A"/>
+    <text x="356" y="162" text-anchor="middle"
+          font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+          font-size="14" font-weight="600" fill="#F7F7F7">NL</text>
+    <text x="356" y="180" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="12" fill="#888888">md+html</text>
+
+    <path d="M212 200 L212 220" stroke="#666666" stroke-width="2"/>
+    <path d="M206 214 L212 224 L218 214" fill="none" stroke="#666666" stroke-width="2"/>
+
+    <rect x="24" y="228" width="376" height="24" rx="4" fill="#1C1C1C" stroke="#3A3A3A"/>
+    <text x="212" y="245" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="13" fill="#B8B8B8">validate to Notion Permalink</text>
+  </g>
+</svg>

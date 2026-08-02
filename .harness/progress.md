@@ -1,5 +1,13 @@
 # Harness Progress — v1.3.0 Graph / Token / Playbook
 
+## README redesign (2026-08-02)
+
+- Skill: `beautify-github-readme` (oil-oil) — README mode + Pure SVG
+- Assets: `assets/readme/hero.svg`, `assets/readme/workflow.svg`
+- Story order: Value → Proof → Mechanism → First use → Detail
+- Audit: `audit_readme.py` PASS
+
+---
 ## Newsletter Production Readiness (2026-07-27) — Gate A~D 완료
 
 요구사항: `docs/plans/2026-07-27-001-feat-newsletter-production-readiness-plan.md` (R1–R30)  

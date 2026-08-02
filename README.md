@@ -1,187 +1,198 @@
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="Hermes Content Studio — Daily Brief를 단일 소스로 채널 패키지를 ~70초에 결정적으로 생성">
+</p>
+
 # Hermes Content Studio
 
-> **Hermes Harness Daily Brief** — Intel Mac 자체호스팅 AI 마케팅·교육 콘텐츠 스튜디오  
-> [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering) · Harness v1.3 / System Logic **v2.1** · [시스템 로직](docs/architecture/SYSTEM-LOGIC.md)
+Intel Mac에서 돌아가는 **자체호스팅 마케팅·교육 콘텐츠 스튜디오**예요.  
+일일 리서치 브리프(`{date}_brief.md`)를 Brief SoT로 두고, 블로그·인스타그램·링크드인·B2B 뉴스레터를 **결정적 파이프라인(M1→M5)** 으로 생성·검증·Notion 아카이브합니다.
 
-일일 리서치 브리프(Top 7)를 **Brief SoT**(`{date}_brief.md`)로 두고, 블로그·인스타그램·링크드인·B2B 뉴스레터를 **결정적 파이프라인(M1→M5)** 으로 생성·검증·Notion 아카이브합니다. Telegram·Slack·PlayMCP Commander, Content Loops, Voice/Naturalness 품질 게이트, **Wiki Graph · 토큰 SLA · Playbook 학습 루프**, 8개 sibling studio upstream 연동, JARVIS 프로젝트 메모리를 포함합니다.
+[Harness v1.3](https://github.com/walkinglabs/awesome-harness-engineering) · System Logic [v2.1](docs/architecture/SYSTEM-LOGIC.md) · [`AGENTS.md`](AGENTS.md) · [`HARNESS.md`](HARNESS.md)
 
-| 영역 | 설명 |
-|------|------|
-| **파이프라인** | M1 Research → GATE → M2 Content → M2b Newsletter → Quality → M5 Notion |
-| **Commander** | Telegram · Slack · PlayMCP · `hermes-agent.sh` · cron |
-| **품질·비용** | validate · voice/naturalness blocking · **token_gate** · cost-report |
-| **지식** | Wiki · **graph.db** · `/ask` graph_first (−87% tok) |
-| **학습** | SKILL STABLE/LEARNED · reflect/curate playbook |
-| **확장** | Multi-Studio ×8 · Research Squad · Cursor 핸드오프 |
-| **문서** | [`docs/architecture/`](docs/architecture/) · `HARNESS.md` · `AGENTS.md` |
+---
 
-Intel Mac (MacBook Pro) 자체호스팅 Hermes Agent 기반 **마케팅·교육 콘텐츠 스튜디오**.
+## 한눈에 보기
 
-## 목표
+| 할 수 있는 일 | 방식 |
+|---|---|
+| 주간 리서치 Top 7 | `run-research-brief.sh` (~15s) |
+| 블로그 · IG · LinkedIn · 뉴스레터 | `run-pipeline.sh` (~70s, LLM 불필요) |
+| Telegram / Slack / PlayMCP로 트리거 | Commander 라우팅 |
+| 품질·비용 통제 | `validate-output.sh` · voice/naturalness · token_gate |
+| 지식 누적 · `/ask` | Wiki Graph (`graph.db`) · graph_first |
 
-| 영역 | 산출물 | 주기 |
-|------|--------|------|
-| 마케팅 리서치 | 주간 브리프 | 월 09:00 |
-| 블로그 (SEO/AEO) | HTML 초안 | 수 09:00 |
-| 인스타그램 | 캐러셀·캡션 | 수 09:00 |
-| 링크드인 | 뉴스피드 포스트 | 수 09:00 |
-| B2B 뉴스레터 | md + HTML 이메일 · A/B 제목 | 수 09:00 (M2b) |
-| 강의 자료 | 기획·HTML·슬라이드 | 금 09:00 |
-| 바이브 코딩 | Cursor 핸드오프 | 요청 시 |
+<p align="center">
+  <img src="./assets/readme/workflow.svg" width="100%" alt="M1 Research → GATE → M2 Content → M2b Newsletter → Quality → M5 Notion 파이프라인">
+</p>
+
+---
+
+## 왜 이렇게 만들었나요
+
+- **Brief SoT 한 장**이 모든 채널의 입력이에요. 채널마다 LLM으로 다시 쓰지 않습니다.
+- **결정적 스크립트 우선** — polish(`HERMES_ENHANCE=1`)는 선택입니다.
+- **완료 = validate 통과 + `content/{channel}/` 저장** (+ Telegram이면 Notion Permalink).
+- 커맨더는 Telegram · Slack · PlayMCP가 같은 파이프라인을 호출합니다.
+
+---
 
 ## 빠른 시작
 
 ```bash
-# 0. 스튜디오 업데이트 (Hermes Agent + 스킬 v1.1.0)
-~/hermes-content-studio/scripts/update-studio.sh
+# 1) 세션 부트스트랩
+~/hermes-content-studio/scripts/init.sh
+cat ~/hermes-content-studio/.harness/progress.md
 
-# 1. 서비스 시작 (Ollama + Hermes Gateway)
+# 2) (선택) 서비스 — Ollama + Gateway
 ~/hermes-content-studio/scripts/start-services.sh
-
-# 2. 헬스체크
 ~/hermes-content-studio/scripts/health-check.sh
 
-# 3. 주간 cron 등록
-~/hermes-content-studio/scripts/setup-cron.sh
-
-# 4. 수동 리서치 실행
-hermes -z "이번 주 리서치 브리프 작성해줘" --skills marketing-research
+# 3) 리서치만 / 전체 파이프라인
+~/hermes-content-studio/scripts/run-research-brief.sh
+~/hermes-content-studio/scripts/run-pipeline.sh
 ```
 
-## 디렉토리 구조
-
-```
-hermes-content-studio/
-├── Getdesign.md              # 비주얼 디자인 시스템
-├── AGENTS.md                 # Hermes 에이전트 컨텍스트
-├── config/studio.yaml        # 스튜디오 설정
-├── skills/                   # 커스텀 Hermes 스킬
-│   ├── content-pipeline/
-│   ├── marketing-research/
-│   ├── content-studio-slides/
-│   └── vibe-coding-cursor/
-├── templates/                # HTML·소셜·슬라이드 템플릿
-├── content/                  # 산출물
-│   ├── research/
-│   ├── blog/
-│   ├── instagram/
-│   ├── linkedin/
-│   ├── newsletter/
-│   ├── lectures/
-│   └── drafts/cursor-handoff/
-└── scripts/                  # 셋업·운영 스크립트
-```
-
-## Harness Engineering (v1.3 / System Logic v2.1)
-
-[awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering) 기반 5-Subsystem 하네스:
-
-| 서브시스템 | 파일 |
-|-----------|------|
-| Instructions | `AGENTS.md`, `HARNESS.md` |
-| State | `.harness/feature_list.json`, `.harness/progress.md` |
-| Verification | `scripts/init.sh`, `scripts/harness-eval.sh` |
-| Scope | feature_list 단일 활성 기능 |
-| Lifecycle | `session-handoff.md`, init → 작업 → 핸드오프 |
-
-아키텍처: [`docs/architecture/SYSTEM-LOGIC.md`](docs/architecture/SYSTEM-LOGIC.md) (v2.1) · 상세: [`archive/v2.1-graph-token-playbook.md`](docs/architecture/archive/v2.1-graph-token-playbook.md) · 인덱스: [`docs/architecture/archive/`](docs/architecture/archive/)
-
-```bash
-# 세션 시작
-~/hermes-content-studio/scripts/init.sh
-
-# 성능 eval
-~/hermes-content-studio/scripts/harness-eval.sh --quick
-```
-
-## Intel Mac 최적화 (v1.2.0)
-
-- **결정적 파이프라인:** `run-research-brief.sh` + `run-content-package.sh` + `run-newsletter.sh` (~70s, LLM 불필요)
-- **병렬 웹 검색:** ddgs 4 workers (`gather-web-research.py`)
-- **로컬 모델:** Ollama `gemma4:latest` (8B Q4) — Hermes polish(선택)용
-- **클라우드 API:** 장문·슬라이드·복잡 분석 시 OpenRouter 등 권장
-- **메모리:** 16GB 이하 Mac에서는 Ollama + Gateway 동시 실행 주의
-- **상시 실행:** Mac 절전 해제 권장 (시스템 설정 → 에너지)
-
-## Cursor 연동
-
-Cursor Agent CLI (`cursor-agent`) + 핸드오ff 자동 실행:
-
-```bash
-# CLI 설치 (1회)
-~/hermes-content-studio/scripts/install-cursor-cli.sh
-
-# HANDOFF 자동 실행
-~/hermes-content-studio/scripts/run-cursor-handoff.sh --latest
-~/hermes-content-studio/scripts/run-cursor-handoff.sh --dry-run --latest
-
-# Telegram /automate → Codex HANDOFF → Cursor CLI (백그라운드, HERMES_CURSOR_AUTO=1)
-```
-
-수동 IDE 핸드오프 (CLI 없을 때):
-
-1. Hermes가 `content/drafts/cursor-handoff/` 에 HANDOFF.md 생성
-2. Cursor IDE에서 대상 레포 열기
-3. Agent 모드에 HANDOFF.md 내용 붙여넣기
-
-## Hermes 실행 (상태 표시바)
-
-`-z` 원샷은 진행 표시가 없습니다. **상태바 래퍼** 사용:
+상태바가 필요하면:
 
 ```bash
 ~/hermes-content-studio/scripts/hermes-run.sh \
-  "marketing-research 스킬대로 이번 주 리서치 브리프 작성. 파일: content/research/2026-06-05_brief.md" \
-  --skills marketing-research
+  "이번 주 리서치 브리프 작성" --skills marketing-research
 ```
 
-표시: `[████████░░░░] 02:30 | LLM 추론 | Ollama 85%`
+---
 
-## 메시징 (Discord → Telegram)
+## 주간 리듬
 
-Discord는 **연결 해제**됨. 대체: **Telegram** (WhatsApp 대비 BotFather 토큰만 필요).
+| 요일 | 산출 | 스크립트 |
+|------|------|----------|
+| 월 09:00 | 리서치 브리프 | `run-research-brief.sh` |
+| 수 09:00 | 블로그 · IG · LinkedIn · 뉴스레터 | `run-pipeline.sh` / `run-newsletter.sh` |
+| 금 09:00 | 강의 HTML · PPTX | `run-lecture-slides.sh` |
+| 요청 시 | Cursor 핸드오프 | `run-cursor-handoff.sh --latest` |
 
 ```bash
-TELEGRAM_BOT_TOKEN=... TELEGRAM_ALLOWED_USERS=... \
-  ~/hermes-content-studio/scripts/setup-telegram.sh
+~/hermes-content-studio/scripts/setup-cron.sh
 ```
 
-## MCP 연동 (Notion · Slack)
+---
 
-### Cursor IDE (완료)
-- **Notion MCP**: `https://mcp.notion.com/mcp` — OAuth 완료, 16 tools
-- **Slack MCP**: `https://mcp.slack.com/mcp` — OAuth 완료, 20 tools
-- Cursor Agent 채팅에서 Notion 검색·페이지 생성, Slack 채널·메시지 조회 가능
+## 산출물 위치
 
-### Hermes Agent
-- **Notion MCP**: `hermes mcp test notion` ✓ — 새 세션부터 16 tools 사용
-- **Slack MCP**: Hermes OAuth 등록 404로 비활성 — Cursor MCP 또는 Bot Token 사용
+```
+content/
+├── research/     # {date}_brief.md  ← Brief SoT
+├── blog/         # .html (SEO/AEO)
+├── instagram/    # .md + 이미지 프롬프트
+├── linkedin/     # .md
+├── newsletter/   # .md · .html · subject-scores.json
+├── lectures/     # .md · .html · .pptx
+└── packages/     # Notion paste · publish 메타
+```
+
+파일명: `YYYY-MM-DD_{channel}_{slug}.{ext}` · 디자인: [`Getdesign.md`](Getdesign.md)
+
+---
+
+## Commander 채널
+
+| 채널 | 역할 | 셋업 |
+|------|------|------|
+| **Telegram** | `/pipeline` · 진행 메시지 · Notion Permalink | `setup-telegram.sh` · `setup-telegram-routing.sh` · `watch-telegram.sh` |
+| **Slack** | `#일반데이터` `/pipeline` · 일일 digest | `setup-slack.sh` · `setup-slack-routing.sh` |
+| **PlayMCP** | Kakao 커맨더 (Slack과 동일 명령) | `setup-playmcp.sh` |
 
 ```bash
-# Hermes MCP 상태 확인
-hermes mcp list
-hermes mcp test notion
-
-# Hermes에 Notion MCP 재등록 (필요 시)
-hermes mcp add notion --url https://mcp.notion.com/mcp --auth oauth
+# 결정적 트리거 (LLM 없음)
+~/hermes-content-studio/scripts/telegram-pipeline.sh pipeline
 ```
 
-## 다음 설정 (수동)
+---
 
-1. **Codex (ChatGPT 구독)** (연결됨): `./scripts/setup-codex.sh` — claude-design·HERMES_ENHANCE 품질 경로에 자동 사용
-2. **클라우드 API** (선택): `~/.hermes/.env`에 `OPENROUTER_API_KEY` 추가 후 config에 fallback 설정
-3. **Notion REST API** (선택): `NOTION_API_KEY` + hermes `notion` 스킬 (MCP와 병행 가능)
-4. **Slack Bot** (커맨더): `./scripts/setup-slack.sh` + `./scripts/setup-slack-routing.sh` — `/pipeline` in `#일반데이터`
-5. **PlayMCP (Kakao)** (커맨더): `ONE_TIME_TOKEN=ott_... ./scripts/setup-playmcp.sh` — Slack과 동일한 명령 채널
-6. **Cursor CLI** (연결됨): `./scripts/install-cursor-cli.sh` + `./scripts/run-cursor-handoff.sh --latest`
+## 품질 · 비용 · 지식
 
-## 주간 워크플로
+```bash
+~/hermes-content-studio/scripts/validate-output.sh
+~/hermes-content-studio/scripts/voice-style-eval.sh
+~/hermes-content-studio/scripts/naturalness-eval.sh
+~/hermes-content-studio/scripts/cost-report.sh --since 7d
+HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
+```
+
+프로덕션 게이트: `voice_blocking` + `naturalness_blocking` ON · budget cap 초과는 WARN.
+
+---
+
+## Harness
+
+5-Subsystem ([awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering)):
+
+| 서브시스템 | SoT |
+|-----------|-----|
+| Instructions | `AGENTS.md` · `HARNESS.md` |
+| State | `.harness/feature_list.json` · `progress.md` |
+| Verification | `init.sh` · `harness-eval.sh` |
+| Scope | feature_list 단일 활성 기능 |
+| Lifecycle | `session-handoff.md` |
+
+```bash
+~/hermes-content-studio/scripts/harness-eval.sh --quick
+```
+
+아키텍처 상세: [`docs/architecture/`](docs/architecture/)
+
+---
+
+## 디렉토리
 
 ```
-월 09:00  리서치 브리프 ──────────────────────────┐
-                                                 │
-수 09:00  블로그 + 인스타 + 링크드인 초안 ◄───────┘
-                                                 │
-금 09:00  강의 기획 + 슬라이드 ◄──────────────────┘
-                                                 │
-요청 시   Cursor 핸드오프 (코드 구현) ────────────┘
+hermes-content-studio/
+├── AGENTS.md · HARNESS.md · Getdesign.md
+├── assets/readme/          # README 비주얼
+├── config/                 # harness · orchestration · channels
+├── content/                # 채널 산출물
+├── docs/architecture/      # System Logic SoT
+├── schemas/                # handoff · graph 등
+├── scripts/                # 결정적 파이프라인 · eval · commander
+├── skills/                 # Hermes 스킬
+└── templates/
 ```
+
+---
+
+## Intel Mac 메모
+
+- 결정적 경로: `run-research-brief.sh` + `run-content-package.sh` + `run-newsletter.sh`
+- 로컬 polish: Ollama `gemma4:latest` (선택)
+- 16GB 이하에서는 Ollama + Gateway 동시 실행에 주의
+- 상시 cron이면 Mac 절전 해제 권장
+
+---
+
+## Cursor 연동
+
+```bash
+~/hermes-content-studio/scripts/install-cursor-cli.sh
+~/hermes-content-studio/scripts/run-cursor-handoff.sh --latest
+```
+
+Telegram `/automate` → Codex HANDOFF → Cursor CLI (`HERMES_CURSOR_AUTO=1`).
+
+---
+
+## 선택 설정
+
+| 항목 | 스크립트 / 비고 |
+|------|-----------------|
+| Codex | `setup-codex.sh` — claude-design · `HERMES_ENHANCE` |
+| OpenRouter 등 | `~/.hermes/.env` (커밋 금지) |
+| Notion REST | `NOTION_API_KEY` · `archive-to-notion.sh` |
+| Notion/Slack MCP | Cursor MCP OAuth · `hermes mcp test notion` |
+
+---
+
+## 문서
+
+- [`docs/architecture/SYSTEM-LOGIC.md`](docs/architecture/SYSTEM-LOGIC.md) — 현행 SoT (v2.1)
+- [`HARNESS.md`](HARNESS.md) — 하네스 스펙
+- [`AGENTS.md`](AGENTS.md) — 에이전트 실행 컨텍스트
+- [`JARVIS.md`](JARVIS.md) — 프로젝트 메모리
