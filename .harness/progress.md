@@ -8,6 +8,13 @@
 - Audit: `audit_readme.py` PASS
 
 ---
+
+## Docs visual system (2026-08-02)
+
+- Skill: `beautify-github-readme` → `docs/**/*.md` 도입
+- Assets: `assets/docs/` (banners · timeline · studios · wiki · loops · agent · archive/plan)
+- Hub: `docs/README.md` · living docs Value→Proof→First-use · archives/plans banner only
+
 ## Newsletter Production Readiness (2026-07-27) — Gate A~D 완료
 
 요구사항: `docs/plans/2026-07-27-001-feat-newsletter-production-readiness-plan.md` (R1–R30)  

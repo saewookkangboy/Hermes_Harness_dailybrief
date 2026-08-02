@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 260"
+     role="img" aria-labelledby="t d">
+  <title id="t">Dual memory: daily Brief and cumulative Wiki Graph</title>
+  <desc id="d">Brief SoT feeds M2 channels; optional wiki seed builds graph.db for /ask</desc>
+  <rect width="1200" height="260" rx="16" fill="#F7F7F7"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#111111"/>
+  <text x="48" y="44" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#888888" letter-spacing="1">DUAL MEMORY · DAILY FACTORY + CUMULATIVE WIKI</text>
+
+  <rect x="48" y="72" width="240" height="72" rx="8" fill="#FFE500"/>
+  <text x="168" y="116" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="700" fill="#111111">{date}_brief.md</text>
+
+  <path d="M300 108 L360 108" stroke="#111111" stroke-width="2"/>
+  <path d="M354 102 L366 108 L354 114" fill="none" stroke="#111111" stroke-width="2"/>
+
+  <rect x="372" y="72" width="200" height="72" rx="8" fill="#111111"/>
+  <text x="472" y="116" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="600" fill="#F7F7F7">M2 channels</text>
+
+  <path d="M168 154 L168 180" stroke="#888888" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="180" y="176" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#888888">SEED opt</text>
+
+  <rect x="48" y="188" width="240" height="48" rx="8" fill="#111111"/>
+  <text x="168" y="218" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#F7F7F7">content/wiki</text>
+
+  <path d="M300 212 L360 212" stroke="#111111" stroke-width="2"/>
+  <path d="M354 206 L366 212 L354 218" fill="none" stroke="#111111" stroke-width="2"/>
+
+  <rect x="372" y="188" width="200" height="48" rx="8" fill="#111111"/>
+  <text x="472" y="218" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#FFE500">graph.db</text>
+
+  <path d="M584 212 L640 212" stroke="#111111" stroke-width="2"/>
+  <path d="M634 206 L646 212 L634 218" fill="none" stroke="#111111" stroke-width="2"/>
+
+  <rect x="652" y="188" width="200" height="48" rx="8" fill="#FFE500"/>
+  <text x="752" y="218" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" font-weight="700" fill="#111111">/ask graph_first</text>
+
+  <rect x="900" y="72" width="252" height="164" rx="12" fill="#0A0A0A" stroke="#2A2A2A"/>
+  <text x="924" y="112" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" fill="#FFE500">KEEP</text>
+  <text x="924" y="144" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#F7F7F7">M1 to M5 ~70s</text>
+  <text x="924" y="172" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#F7F7F7">validate gates</text>
+  <text x="924" y="200" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#F7F7F7">Notion Permalink</text>
+</svg>

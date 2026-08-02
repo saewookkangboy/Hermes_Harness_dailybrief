@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 120"
+     role="img" aria-labelledby="t d">
+  <title id="t">M1 Research Brief Redesign</title>
+  <desc id="d">Implementation plan document with requirements and acceptance criteria</desc>
+  <rect width="1200" height="120" rx="12" fill="#F7F7F7"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#111111"/>
+  <text x="48" y="48" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" fill="#888888" letter-spacing="2">PLAN · REQUIREMENTS · ACCEPTANCE</text>
+  <text x="48" y="88" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="26" font-weight="700" fill="#111111">M1 Research Brief Redesign</text>
+</svg>

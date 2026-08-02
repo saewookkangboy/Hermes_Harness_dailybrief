@@ -1,9 +1,26 @@
+<p align="center">
+  <img src="../assets/docs/banner-multi-studio.svg" width="100%" alt="Multi-Studio — one parent content-studio and eight sibling studios">
+</p>
+
 # Hermes Multi-Studio Architecture
 
 > Parent: `hermes-content-studio` · Harness v1.3 / System Logic **v2.1** · 8 sibling studios  
-> 전체 시스템 로직: [architecture/SYSTEM-LOGIC.md](./architecture/SYSTEM-LOGIC.md) · 변경 기록: [architecture/archive/v2.1-graph-token-playbook.md](./architecture/archive/v2.1-graph-token-playbook.md)
+> 전체 시스템 로직: [architecture/SYSTEM-LOGIC.md](./architecture/SYSTEM-LOGIC.md) · 변경 기록: [architecture/archive/v2.1-graph-token-playbook.md](./architecture/archive/v2.1-graph-token-playbook.md) · [Docs 허브](./README.md)
+
+부모 스튜디오가 Brief·blog·wiki를 upstream으로 넘기고, sibling ×8이 같은 5-Subsystem 하네스로 파이프라인을 돌립니다.
+
+```bash
+~/hermes-content-studio/scripts/bootstrap-hermes-studios.sh
+~/hermes-content-studio/scripts/studios-all-upstream-eval.sh 2026-07-12
+```
+
+---
 
 ## Studio 목록
+
+<p align="center">
+  <img src="../assets/docs/diagram-studios.svg" width="100%" alt="Tier 1 course intel seo, Tier 2 personal wiki dev, Tier 3 delivery social">
+</p>
 
 | Tier | ID | 디렉터리 | 파이프라인 |
 |------|-----|---------|-----------|
@@ -17,12 +34,6 @@
 | 3 | social | `~/hermes-social-studio` | `run-social-pipeline.sh` |
 
 레지스트리 SoT: `config/studios-registry.yaml`
-
-## 부트스트랩
-
-```bash
-~/hermes-content-studio/scripts/bootstrap-hermes-studios.sh
-```
 
 ## 공통 Harness 스펙
 

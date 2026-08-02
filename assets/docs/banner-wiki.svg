@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 200"
+     role="img" aria-labelledby="t d">
+  <title id="t">Partial Wiki, Full Pipeline</title>
+  <desc id="d">Keep M1-M5 factory; add cumulative wiki + graph.db optionally</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111111"/>
+      <stop offset="100%" stop-color="#1A1A1A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="200" rx="16" fill="url(#bg)"/>
+  <rect x="0" y="0" width="8" height="200" fill="#FFE500"/>
+  <text x="56" y="48"
+        font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        font-size="16" fill="#FFE500" letter-spacing="2">LLM WIKI</text>
+  <text x="56" y="96"
+        font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+        font-size="40" font-weight="700" fill="#F7F7F7">Partial Wiki, Full Pipeline</text>
+  <text x="56" y="132"
+        font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif"
+        font-size="18" fill="#B8B8B8">Keep M1-M5 factory; add cumulative wiki + graph.db optionally</text>
+    <rect x="56" y="148" width="90" height="28" rx="4" fill="#222222" stroke="#333333"/>
+    <text x="101.0" y="167" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="13" fill="#F7F7F7">Seed</text>
+    <rect x="158" y="148" width="116" height="28" rx="4" fill="#222222" stroke="#333333"/>
+    <text x="216.0" y="167" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="13" fill="#F7F7F7">graph.db</text>
+    <rect x="286" y="148" width="90" height="28" rx="4" fill="#222222" stroke="#333333"/>
+    <text x="331.0" y="167" text-anchor="middle"
+          font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+          font-size="13" fill="#F7F7F7">/ask</text>
+</svg>

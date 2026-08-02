@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 240"
+     role="img" aria-labelledby="t d">
+  <title id="t">Content loop levels L1 L2 L3</title>
+  <desc id="d">L1 report, L2 assisted supervised pipeline, L3 human-in-the-loop publish</desc>
+  <rect width="1200" height="240" rx="16" fill="#111111"/>
+  <rect x="0" y="0" width="8" height="240" fill="#FFE500"/>
+  <text x="48" y="48" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#FFE500" letter-spacing="1">CONTENT LOOPS · SCHEDULE + VERIFY + LOG</text>
+  <rect x="48" y="80" width="340" height="120" rx="12" fill="#F7F7F7" stroke="#111111" stroke-width="2"/>
+  <text x="72" y="120" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">L1</text>
+  <text x="72" y="152" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#111111">Report</text>
+  <text x="72" y="180" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#888888">triage · health</text>
+  <rect x="420" y="80" width="340" height="120" rx="12" fill="#111111" stroke="#111111" stroke-width="2"/>
+  <text x="444" y="120" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">L2</text>
+  <text x="444" y="152" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#F7F7F7">Assisted</text>
+  <text x="444" y="180" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#B8B8B8">supervised pipeline</text>
+  <rect x="792" y="80" width="340" height="120" rx="12" fill="#FFE500" stroke="#111111" stroke-width="2"/>
+  <text x="816" y="120" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#111111">L3</text>
+  <text x="816" y="152" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#111111">HITL</text>
+  <text x="816" y="180" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#B8B8B8">human publish only</text>
+</svg>

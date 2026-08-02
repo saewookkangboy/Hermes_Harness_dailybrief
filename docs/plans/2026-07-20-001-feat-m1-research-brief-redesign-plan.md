@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="../../assets/docs/plan-m1-redesign.svg" width="100%" alt="M1 Research Brief Redesign plan banner">
+</p>
+
+> 구현 계획 문서 · [Docs 허브](../README.md) · 현행 로직: [`SYSTEM-LOGIC.md`](../architecture/SYSTEM-LOGIC.md)
+
 ---
 title: M1 Research Brief Redesign - Plan
 date: 2026-07-20

@@ -192,6 +192,7 @@ Telegram `/automate` → Codex HANDOFF → Cursor CLI (`HERMES_CURSOR_AUTO=1`).
 
 ## 문서
 
+- [`docs/README.md`](docs/README.md) — Docs 허브 (배너·타임라인)
 - [`docs/architecture/SYSTEM-LOGIC.md`](docs/architecture/SYSTEM-LOGIC.md) — 현행 SoT (v2.1)
 - [`HARNESS.md`](HARNESS.md) — 하네스 스펙
 - [`AGENTS.md`](AGENTS.md) — 에이전트 실행 컨텍스트
