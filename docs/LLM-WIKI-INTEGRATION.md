@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="../assets/docs/banner-wiki.svg" width="100%" alt="LLM Wiki — keep M1-M5 factory, optionally add cumulative wiki and graph.db">
+</p>
+
 # LLM Wiki 통합 전략 — Hermes Content Studio
 
 > [Karpathy LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) 패턴을 **부분 반영**한 운영 SoT  
-> Harness v1.3 · 결정적 파이프라인 우선 · 이중 메모리 · **Wiki Graph v1 (2026-07-26)**
+> Harness v1.3 · 결정적 파이프라인 우선 · 이중 메모리 · **Wiki Graph v1 (2026-07-26)** · [Docs 허브](./README.md)
 
 ---
 
@@ -9,9 +13,18 @@
 
 **일별 콘텐츠 공장(M1→M5)은 그대로 두고**, Commander·장기 리서치·개인 메모를 위해 **누적 wiki + graph.db** 계층을 선택적으로 쌓는다. 전면 Wiki 교체는 SLA·재현성·validate 게이트를 훼손하므로 하지 않는다.
 
+```bash
+~/hermes-content-studio/scripts/wiki-lint-eval.sh
+HERMES_WIKI_SEED=1 ~/hermes-content-studio/scripts/wiki-seed.sh
+```
+
 ---
 
 ## 이중 메모리 · 이중 런타임
+
+<p align="center">
+  <img src="../assets/docs/diagram-wiki.svg" width="100%" alt="Brief feeds M2; optional wiki seed builds graph.db for /ask graph_first">
+</p>
 
 | 계층 | 역할 | 런타임 | 갱신 주기 |
 |------|------|--------|----------|

@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="../assets/docs/banner-loops.svg" width="100%" alt="Content Loops — L1 triage, L2 supervised, L3 HITL publish">
+</p>
+
 # Content Loops — Hermes Content Studio
 
 > Loop Engineering 패턴을 **콘텐츠 공장** 도메인에 맞게 흡수한 운영 SoT  
-> Harness v1.2 · 결정적 파이프라인 우선 · L1 report → L2 assisted → L3 HITL 발행만
+> Harness v1.2 · 결정적 파이프라인 우선 · L1 report → L2 assisted → L3 HITL 발행만 · [Docs 허브](./README.md)
 
 ---
 
@@ -9,6 +13,15 @@
 
 **사람이 매일 “오늘 뭐 했지?”를 묻지 않도록**, 스케줄·검증·상태 기록이 에이전트 루프를 돌린다.  
 M1→M5 **결정적 assemble**은 유지하고, LLM 루프는 triage·코칭·개인화 경로에만 쓴다.
+
+```bash
+~/hermes-content-studio/scripts/setup-commander-cron.sh
+~/hermes-content-studio/scripts/cron-daily-content-triage.sh
+```
+
+<p align="center">
+  <img src="../assets/docs/diagram-loops.svg" width="100%" alt="L1 Report, L2 Assisted supervised pipeline, L3 HITL publish only">
+</p>
 
 ---
 

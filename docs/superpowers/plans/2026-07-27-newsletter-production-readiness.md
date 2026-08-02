@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="../../../assets/docs/plan-newsletter.svg" width="100%" alt="Newsletter Production Readiness (implementation) plan banner">
+</p>
+
+> 구현 계획 문서 · [Docs 허브](../../README.md) · 현행 로직: [`SYSTEM-LOGIC.md`](../../architecture/SYSTEM-LOGIC.md)
+
 # Newsletter Production Readiness Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

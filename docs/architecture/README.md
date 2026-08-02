@@ -1,14 +1,20 @@
-# Hermes Content Studio — Architecture Docs
+<p align="center">
+  <img src="../../assets/docs/banner-architecture-index.svg" width="100%" alt="Architecture index — versioned system logic with current SoT and frozen timeline">
+</p>
 
-> 시스템 로직·Mermaid 다이어그램 SoT · 구현 단계별 버전 아카이브
+# Architecture Docs
+
+시스템 로직·다이어그램 SoT와 구현 단계별 버전 아카이브예요.
+
+**현행만 편집합니다.** major/minor bump 시 상세는 `archive/v{X.Y}-*.md`에 동결하고, [`SYSTEM-LOGIC.md`](./SYSTEM-LOGIC.md)는 요약+다이어그램만 유지해요.
+
+---
 
 ## 현행 (Current)
 
 | 문서 | 버전 | 기간 | 설명 |
 |------|------|------|------|
 | [SYSTEM-LOGIC.md](./SYSTEM-LOGIC.md) | **v2.1** | 2026-07-20 ~ | Graph · Token gates · Playbook · M1 redesign |
-
-자동 생성 (Notion 동기화용):
 
 ```bash
 ~/hermes-content-studio/scripts/generate-architecture-md.py
@@ -17,7 +23,13 @@
 
 산출: `content/logs/{date}_studio-resources-spec.md` · `{date}_studio-dependency-diagrams.md` · `{date}_cursor-agent-resources.md`
 
-## 버전 아카이브 (Implementation Timeline)
+---
+
+## 버전 타임라인
+
+<p align="center">
+  <img src="../../assets/docs/diagram-timeline.svg" width="100%" alt="Implementation timeline from v1.0 to current v2.1">
+</p>
 
 | 버전 | 아카이브 | 커밋 시대 | 핵심 마일스톤 |
 |------|----------|-----------|---------------|
@@ -29,12 +41,13 @@
 | v2.0 | [archive/v2.0-multi-studio-jarvis.md](./archive/v2.0-multi-studio-jarvis.md) | 2026-07-13 | 8 Studio · JARVIS · OAuth watch |
 | **v2.1** | [archive/v2.1-graph-token-playbook.md](./archive/v2.1-graph-token-playbook.md) | 2026-07-20~26 | Wiki Graph · Token SLA · Ask graph-first · Playbook · M1 redesign P1 |
 
-> **규칙:** major/minor 버전 bump 시 상세 변경을 `archive/v{X.Y}-*.md`에 동결하고, `SYSTEM-LOGIC.md`는 현행 요약+다이어그램만 유지한다.
+---
 
 ## 관련 문서
 
 | 문서 | 역할 |
 |------|------|
+| [../README.md](../README.md) | Docs 허브 |
 | [HERMES-CONVERSATIONAL-AGENT-MODEL.md](../HERMES-CONVERSATIONAL-AGENT-MODEL.md) | 대화형 Agent · CAR 매핑 |
 | [content-loops.md](../content-loops.md) | L1/L2/L3 루프 cadence |
 | [MULTI-STUDIO-ARCHITECTURE.md](../MULTI-STUDIO-ARCHITECTURE.md) | 8 Studio registry · upstream |

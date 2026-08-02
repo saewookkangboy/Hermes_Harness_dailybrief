@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="../../assets/docs/plan-newsletter.svg" width="100%" alt="Newsletter Production Readiness plan banner">
+</p>
+
+> 구현 계획 문서 · [Docs 허브](../README.md) · 현행 로직: [`SYSTEM-LOGIC.md`](../architecture/SYSTEM-LOGIC.md)
+
 ---
 title: Newsletter Production Readiness - Plan
 type: feat

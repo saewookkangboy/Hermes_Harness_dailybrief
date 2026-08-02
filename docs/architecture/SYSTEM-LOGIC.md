@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="../../assets/docs/banner-system-logic.svg" width="100%" alt="System Logic v2.1 — Brief SoT, M1 to M5, Graph, Token, Playbook">
+</p>
+
 # Hermes Content Studio — System Logic (v2.1)
 
 > **현행** · 2026-07-26 · Graph · Token Gates · Playbook · M1 Redesign  
-> 이전 버전: [archive/](./archive/) · 상세 변경: [archive/v2.1-graph-token-playbook.md](./archive/v2.1-graph-token-playbook.md)
+> 이전 버전: [archive/](./archive/) · 상세 변경: [archive/v2.1-graph-token-playbook.md](./archive/v2.1-graph-token-playbook.md) · [Docs 허브](../README.md)
 
 ---
 
@@ -9,9 +13,24 @@
 
 **Hermes Content Studio**는 Brief SoT(`{date}_brief.md`)를 중심으로 **결정적 M1→M5** 파이프라인을 돌리고, Telegram·Slack·PlayMCP·cron이 Commander로 감독하며, **Wiki Graph + 토큰 SLA + Playbook 학습 루프**로 질의·비용·스킬을 관리하는 자체호스팅 콘텐츠 공장이다.
 
+| 증명 (2026-07-26) | 값 |
+|-------------------|-----|
+| full_pipeline | **24–29s** (SLA 60–70) |
+| ask-eval | **−82~88%** tokens |
+| Full Retest | quick 40/0 · record 31/0 · commander 28/0 |
+
+```bash
+./scripts/init.sh --skip-health
+./scripts/harness-eval.sh --quick
+```
+
 ---
 
 ## 1. 버전 타임라인
+
+<p align="center">
+  <img src="../../assets/docs/diagram-timeline.svg" width="100%" alt="v1.0 to v2.1 implementation timeline">
+</p>
 
 ```mermaid
 timeline

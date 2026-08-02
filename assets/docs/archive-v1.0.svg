@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 120"
+     role="img" aria-labelledby="t d">
+  <title id="t">Frozen archive v1.0 Daily Brief Baseline</title>
+  <desc id="d">Historical snapshot. Current system logic is v2.1</desc>
+  <rect width="1200" height="120" rx="12" fill="#111111"/>
+  <rect x="0" y="0" width="8" height="120" fill="#888888"/>
+  <text x="48" y="48" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" fill="#888888" letter-spacing="2">ARCHIVED SNAPSHOT · DO NOT EDIT AS CURRENT SoT</text>
+  <text x="48" y="86" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="28" font-weight="700" fill="#F7F7F7">v1.0 Daily Brief Baseline</text>
+  <text x="900" y="86" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#FFE500">current = v2.1</text>
+</svg>

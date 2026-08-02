@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 240"
+     role="img" aria-labelledby="t d">
+  <title id="t">Commander routes to deterministic or conversational modes</title>
+  <desc id="d">Telegram Slack CLI cron enter router then M1-M5 or dialogue skills</desc>
+  <rect width="1200" height="240" rx="16" fill="#F7F7F7"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#111111"/>
+  <text x="48" y="44" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#888888" letter-spacing="1">COMMANDER · INTENT ROUTER · TWO RUNTIMES</text>
+
+  <rect x="48" y="72" width="280" height="140" rx="12" fill="#111111"/>
+  <text x="72" y="112" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" fill="#FFE500">COMMANDER</text>
+  <text x="72" y="144" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">Telegram · Slack</text>
+  <text x="72" y="172" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">CLI · cron</text>
+
+  <path d="M340 142 L400 142" stroke="#111111" stroke-width="2"/>
+  <path d="M394 136 L406 142 L394 148" fill="none" stroke="#111111" stroke-width="2"/>
+
+  <rect x="412" y="72" width="200" height="140" rx="12" fill="#FFE500"/>
+  <text x="512" y="140" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="700" fill="#111111">Router</text>
+  <text x="512" y="168" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" fill="#111111">intent</text>
+
+  <path d="M624 110 L684 110" stroke="#111111" stroke-width="2"/>
+  <path d="M678 104 L690 110 L678 116" fill="none" stroke="#111111" stroke-width="2"/>
+  <path d="M624 174 L684 174" stroke="#111111" stroke-width="2"/>
+  <path d="M678 168 L690 174 L678 180" fill="none" stroke="#111111" stroke-width="2"/>
+
+  <rect x="696" y="72" width="220" height="72" rx="10" fill="#111111"/>
+  <text x="806" y="116" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="600" fill="#F7F7F7">Deterministic</text>
+
+  <rect x="696" y="156" width="220" height="56" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+  <text x="806" y="190" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" font-weight="600" fill="#111111">Conversational</text>
+
+  <rect x="948" y="72" width="204" height="140" rx="12" fill="#0A0A0A" stroke="#2A2A2A"/>
+  <text x="972" y="112" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" fill="#FFE500">SoT</text>
+  <text x="972" y="144" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#F7F7F7">Brief</text>
+  <text x="972" y="172" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#F7F7F7">content/</text>
+  <text x="972" y="200" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#F7F7F7">Notion</text>
+</svg>

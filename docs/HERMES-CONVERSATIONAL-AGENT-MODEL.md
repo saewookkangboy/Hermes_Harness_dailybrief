@@ -1,13 +1,21 @@
+<p align="center">
+  <img src="../assets/docs/banner-agent.svg" width="100%" alt="Agent model — Commander routes to deterministic or conversational runtimes">
+</p>
+
 # Hermes Conversational Agent Model
 
 > Hermes Content Studio — **대화형 Agent**(리서치 · 세컨드 브레인 · 개인 업무) + **결정적 콘텐츠 파이프라인** 통합 모델  
-> Harness v1.2 · Studio v1.3 · Brief SoT Top 7 · Notion Archive
+> Harness v1.2 · Studio v1.3 · Brief SoT Top 7 · Notion Archive · [Docs 허브](./README.md)
 
 ---
 
 ## 0. Agent 모델 한 줄 정의
 
 **Hermes 대화형 Agent**는 Telegram·Slack·Hermes CLI를 **커맨더(Commander)** 로 두고, 사용자 의도를 **결정적 파이프라인(M1→M5)** 또는 **대화형 작업(리서치·메일·핸드오프)** 으로 라우팅한다. 모든 산출물은 `content/`에 쌓이고, **Notion**이 세컨드 브레인 아카이브, **Brief SoT**가 지식의 단일 출처(Single Source of Truth)가 된다.
+
+<p align="center">
+  <img src="../assets/docs/diagram-agent.svg" width="100%" alt="Commander and intent router split into deterministic and conversational modes">
+</p>
 
 ```mermaid
 flowchart TB

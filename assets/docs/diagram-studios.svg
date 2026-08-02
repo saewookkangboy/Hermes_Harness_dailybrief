@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 260"
+     role="img" aria-labelledby="t d">
+  <title id="t">Eight sibling Hermes studios</title>
+  <desc id="d">Parent content-studio fans out to Tier 1-3 sibling studios</desc>
+  <rect width="1200" height="260" rx="16" fill="#111111"/>
+  <rect x="0" y="0" width="8" height="260" fill="#FFE500"/>
+  <text x="48" y="44" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#FFE500" letter-spacing="1">MULTI-STUDIO · PARENT = content-studio</text>
+  <rect x="48" y="72" width="340" height="160" rx="12" fill="#0A0A0A" stroke="#2A2A2A"/>
+  <text x="72" y="108" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#FFE500">T1</text>
+  <text x="72" y="128" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-course-studio</text>
+  <text x="72" y="156" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-intel-studio</text>
+  <text x="72" y="184" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-seo-studio</text>
+  <rect x="420" y="72" width="340" height="160" rx="12" fill="#0A0A0A" stroke="#2A2A2A"/>
+  <text x="444" y="108" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#FFE500">T2</text>
+  <text x="444" y="128" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-personal-studio</text>
+  <text x="444" y="156" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-wiki-studio</text>
+  <text x="444" y="184" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-dev-studio</text>
+  <rect x="792" y="72" width="340" height="160" rx="12" fill="#0A0A0A" stroke="#2A2A2A"/>
+  <text x="816" y="108" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#FFE500">T3</text>
+  <text x="816" y="128" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-delivery-studio</text>
+  <text x="816" y="156" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="18" fill="#F7F7F7">hermes-social-studio</text>
+</svg>
