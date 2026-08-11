@@ -91,12 +91,19 @@ hygiene:
       unified: 400
       research: 1200
       blog: 800
+      threads: 120
       instagram: 350
       linkedin: 350
       newsletter: 800
       newsletter_html: 1200
       newsletter_paste: 600
     required_markers:
+      blog:
+        - "[오늘의 AI 트렌드]"
+        - "주요 트렌드"
+        - "한 줄 요약"
+      threads:
+        - "[블로그 링크]"
       newsletter:
         - "Newsletter 컨텍스트"
         - "CTOR"

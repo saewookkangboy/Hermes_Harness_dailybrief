@@ -7,7 +7,18 @@ from pathlib import Path
 WORKDIR = Path.home() / "hermes-content-studio"
 
 BLOG_SECTION_TITLES = frozenset(
-    {"한 줄 요약", "실무 적용", "FAQ", "GEO 인용", "출처"}
+    {
+        "한 줄 요약",
+        "실무 적용",
+        "FAQ",
+        "GEO 인용",
+        "출처",
+        # Velog daily report sections
+        "1. 주요 트렌드 및 개발 이슈",
+        "2. 요즘 주목받는 핵심 기술",
+        "2. 요즘 주목하는 기술",
+        "3. 마케터 및 비즈니스 리더를 위한 향후 대책",
+    }
 )
 
 # Insight blocks: title line followed by "N번째 인사이트"
@@ -20,6 +31,21 @@ def normalize_blog_package(text: str) -> str:
     out: list[str] = []
     for i, line in enumerate(lines):
         stripped = line.strip()
+        # Velog emoji tails → Notion-friendly headings
+        if stripped.startswith("💡 한 줄 요약"):
+            if out and out[-1].strip():
+                out.append("")
+            rest = stripped.split(":", 1)[1].strip() if ":" in stripped else ""
+            out.append("## 한 줄 요약")
+            if rest:
+                out.append("")
+                out.append(rest)
+            continue
+        if stripped.startswith("🔗 출처"):
+            if out and out[-1].strip():
+                out.append("")
+            out.append("## 출처")
+            continue
         if stripped in BLOG_SECTION_TITLES and not line.lstrip().startswith("#"):
             if out and out[-1].strip():
                 out.append("")
@@ -36,7 +62,7 @@ def normalize_blog_package(text: str) -> str:
             and not INSIGHT_LINE_RE.match(stripped)
             and stripped not in BLOG_SECTION_TITLES
             and len(stripped) < 120
-            and not stripped.startswith(("Q.", "A.", "- ", "1.", "2.", "3.", "Title tag", "Meta ", "Keywords"))
+            and not stripped.startswith(("Q.", "A.", "- ", "1.", "2.", "3.", "Title tag", "Meta ", "Keywords", "💡", "🔗", "→"))
             and stripped.endswith(("실무 가이드", "— 실무 가이드"))
         ):
             if out and out[-1].strip():
