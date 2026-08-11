@@ -12,9 +12,6 @@
   <meta name="author" content="Hermes Content Studio">
   <meta name="robots" content="index, follow">
   <script type="application/ld+json">
-{{FAQ_JSONLD}}
-  </script>
-  <script type="application/ld+json">
 {{ARTICLE_JSONLD}}
   </script>
   <style>
@@ -48,14 +45,8 @@
       margin: 1.5rem 0;
       border-radius: 4px;
     }
-    .geo-quote {
-      font-size: 1.1rem;
-      font-weight: 600;
-      border-left: 4px solid var(--accent);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-    }
     .faq { margin-top: 2rem; }
+    .faq:not(:has(.faq-item)) { display: none; }
     .faq-item { border-bottom: 1px solid var(--border); padding: 1rem 0; }
     .faq-item h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
     .sources { margin-top: 2rem; font-size: 0.9rem; }
@@ -80,14 +71,14 @@
       <p><strong>{{DIRECT_ANSWER}}</strong></p>
     </section>
 
-    <!-- GEO: AI 인용 가능 블록 -->
-    <blockquote class="geo-quote" cite="Hermes Content Studio">
+    <!-- Optional daily-report one-liner -->
+    <aside class="callout">
       {{GEO_QUOTE}}
-    </blockquote>
+    </aside>
 
     {{SECTIONS}}
 
-    <!-- FAQ (AEO) -->
+    <!-- FAQ is hidden when {{FAQ_ITEMS}} is empty. -->
     <section class="faq" itemscope itemtype="https://schema.org/FAQPage">
       <h2>자주 묻는 질문</h2>
       {{FAQ_ITEMS}}

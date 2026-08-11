@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from lib.brief_graph import load_brief_graph
+from lib.blog_daily_report import BODY_MAX_CHARS, body_char_count
 from lib.common import studio_today, truncate
 from lib.m4_analytics import build_m4_report, notion_tier_stats
 from lib.m4_channel_metrics import format_channel_metrics_block, load_channel_metrics, sync_ctor_to_channel_metrics
@@ -214,29 +215,40 @@ def _coach_blog(stamp: str, weights: dict[str, int]) -> ChannelCoach:
     title_m = re.search(r"<title>([^<]+)</title>", html, re.I)
     title = title_m.group(1).strip() if title_m else ""
     h2_count = len(re.findall(r"<h2", html, re.I))
+    article_path = WORKDIR / "content" / "packages" / f"{stamp}_blog-article.md"
+    body_cap = False
+    if article_path.exists():
+        try:
+            body_cap = body_char_count(article_path.read_text(encoding="utf-8")) <= BODY_MAX_CHARS
+        except OSError:
+            pass
     traits = {
-        "title_length": 20 <= len(title) <= 60 if title else False,
+        "trend_title": "[오늘의 AI 트렌드]" in title,
         "h2_count": h2_count >= 3,
-        "faq_jsonld": "FAQPage" in html or '"@type": "FAQPage"' in html,
-        "geo_block": "geo-quote" in html.lower() or "GEO" in html,
+        "source_url": bool(re.search(r'<a\s[^>]*href=["\']https?://', html, re.I)),
+        "body_cap": body_cap,
     }
     score = 50
-    if traits["title_length"]:
+    if traits["trend_title"]:
         score += 15
     if traits["h2_count"]:
         score += 15
-    if traits["faq_jsonld"]:
+    if traits["source_url"]:
         score += 10
-    if traits["geo_block"]:
+    if traits["body_cap"]:
         score += 10
     if title:
         sub_score, reasons, _ = _score_text_traits(title, weights)
         score = (score + sub_score) // 2
         coach.recommendations.append(f"제목 trait — {', '.join(reasons[:2])}")
-    if not traits["faq_jsonld"]:
-        coach.recommendations.append("FAQ JSON-LD 추가 — AEO 스니펫 강화")
+    if not traits["trend_title"]:
+        coach.recommendations.append("일일 리포트 제목에 [오늘의 AI 트렌드]를 포함하세요")
     if not traits["h2_count"]:
         coach.recommendations.append(f"H2 {h2_count}개 — 3개 이상 권장")
+    if not traits["source_url"]:
+        coach.recommendations.append("출처 URL을 추가하세요")
+    if not traits["body_cap"]:
+        coach.recommendations.append(f"블로그 본문을 {BODY_MAX_CHARS}자 이내로 조정하세요")
     coach.score = score
     coach.traits = traits
     coach.artifact = str(path)

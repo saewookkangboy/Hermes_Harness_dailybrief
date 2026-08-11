@@ -3,7 +3,7 @@
 set -euo pipefail
 
 WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
-TYPE="${1:?Usage: validate-output.sh research|blog|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|newsletter-linkedin|newsletter-title-image|lecture FILE}"
+TYPE="${1:?Usage: validate-output.sh research|blog-article|blog|threads-package|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|newsletter-linkedin|newsletter-title-image|lecture FILE}"
 FILE="${2:?Missing file path}"
 
 fail() { echo "❌ $1" >&2; exit 1; }
@@ -13,7 +13,9 @@ pass() { echo "✅ $1"; }
 [[ -f "$FILE" ]] || fail "파일 없음: $FILE"
 
 SIZE=$(wc -c < "$FILE" | tr -d ' ')
-(( SIZE > 200 )) || fail "파일 너무 짧음 (${SIZE} bytes): $FILE"
+MIN_SIZE=200
+[[ "$TYPE" == "threads-package" ]] && MIN_SIZE=120
+(( SIZE > MIN_SIZE )) || fail "파일 너무 짧음 (${SIZE} bytes): $FILE"
 
 case "$TYPE" in
   research)
@@ -71,13 +73,22 @@ PY
     pass "research brief OK: $FILE ($SIZE bytes)"
     ;;
   blog-article)
-    grep -q "한 줄 요약" "$FILE" || fail "Direct Answer(한 줄 요약) 섹션 없음"
-    grep -q "FAQ" "$FILE" || fail "FAQ (AEO) 섹션 없음"
-    grep -qE "GEO|GEO 인용" "$FILE" || warn "GEO 섹션 없음"
-    grep -q "실무 적용" "$FILE" || fail "실무 적용 섹션 없음"
-    CHARS=$(python3 -c "print(len(open('$FILE', encoding='utf-8').read()))")
-    (( CHARS >= 2500 )) || warn "본문 확장 미달(2500자 미만): ${CHARS}"
-    (( CHARS <= 15000 )) || warn "15000자 초과: ${CHARS}"
+    grep -q "\[오늘의 AI 트렌드\]" "$FILE" || fail "오늘의 AI 트렌드 제목 없음"
+    grep -qE "주요 트렌드" "$FILE" || fail "트렌드 섹션 없음"
+    grep -qE "주목.*기술|핵심 기술" "$FILE" || fail "기술 섹션 없음"
+    grep -qE "시사점|향후 대책" "$FILE" || fail "시사점 섹션 없음"
+    grep -qE "한 줄 요약" "$FILE" || fail "한 줄 요약 없음"
+    grep -qE "https?://" "$FILE" || fail "출처 URL 없음"
+    python3 - <<PY || fail "본문 3000자 초과"
+from pathlib import Path
+import sys
+sys.path.insert(0, "$WORKDIR/scripts")
+from lib.blog_daily_report import body_char_count, BODY_MAX_CHARS
+n = body_char_count(Path("$FILE").read_text(encoding="utf-8"))
+if n > BODY_MAX_CHARS:
+    raise SystemExit(f"body {n} > {BODY_MAX_CHARS}")
+print(n)
+PY
     python3 - <<PY || fail "blog-article naturalness 게이트"
 import sys
 sys.path.insert(0, "$WORKDIR/scripts")
@@ -87,6 +98,7 @@ issues = audit_blog_article_md_naturalness(Path("$FILE"))
 if issues:
     raise SystemExit("; ".join(issues))
 PY
+    CHARS=$(python3 -c "print(len(open('$FILE', encoding='utf-8').read()))")
     pass "blog article OK: $FILE (${CHARS} chars)"
     ;;
   blog)
@@ -94,11 +106,9 @@ PY
     grep -qi "meta name=\"description\"" "$FILE" || fail "meta description 없음"
     grep -qi "<h1" "$FILE" || fail "H1 없음"
     grep -qi "canonical" "$FILE" || fail "canonical URL 없음"
-    grep -qi "FAQPage" "$FILE" || fail "FAQ schema (AEO) 없음"
-    grep -qi "application/ld+json" "$FILE" || fail "JSON-LD 없음"
+    grep -qiE '"@type"[[:space:]]*:[[:space:]]*"Article"|application/ld\+json' "$FILE" || fail "Article JSON-LD 없음"
     H2_COUNT=$(grep -c "<h2" "$FILE" || true)
     (( H2_COUNT >= 3 )) || warn "H2 3개 미만 (SEO/AEO): $H2_COUNT"
-    grep -qi "geo-quote\|GEO" "$FILE" || warn "GEO 인용 블록 없음"
     python3 - <<PY || fail "blog naturalness 게이트"
 import sys
 sys.path.insert(0, "$WORKDIR/scripts")
@@ -109,6 +119,12 @@ if issues:
     raise SystemExit("; ".join(issues))
 PY
     pass "blog HTML OK: $FILE ($SIZE bytes, H2=$H2_COUNT)"
+    ;;
+  threads-package)
+    grep -q "\[블로그 링크\]" "$FILE" || fail "[블로그 링크] 없음"
+    grep -qE "\?|댓글" "$FILE" || fail "CTA 없음"
+    (( SIZE > 120 )) || fail "threads 너무 짧음"
+    pass "threads package OK: $FILE"
     ;;
   instagram)
     grep -qi "Slide 1" "$FILE" || grep -qi "슬라이드" "$FILE" || fail "슬라이드 구조 없음"
