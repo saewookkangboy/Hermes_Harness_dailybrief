@@ -1595,3 +1595,10 @@ cd ~/.hermes/scripts && bash cron-publish-schedule.sh      # no due schedules
 ./scripts/setup-slack-routing.sh             # Slack /pipeline 라우팅
 ./scripts/validate-output.sh research content/research/2026-06-06_brief.md
 ```
+
+## Slack Cursor Handoff (2026-08-12)
+
+- `/cursor` → `cursor-handoff.sh` → automate HANDOFF → `run-cursor-handoff` + Slack notify
+- `/automate` personal · `/handoff` session 유지
+- Eval: `scripts/slack-cursor-handoff-eval.sh` 9/0 PASS
+- `setup-slack-routing.sh` 적용 · Gateway restart

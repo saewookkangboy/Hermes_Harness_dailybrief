@@ -43,8 +43,16 @@ CHAT_ID="$(load_chat_id)"
 
 notify() {
   local msg="$1"
-  [[ -z "$CHAT_ID" ]] && return 0
-  "$DIR/telegram-notify.sh" "$CHAT_ID" "$msg" 2>/dev/null || true
+  local slack_ch
+  [[ -n "$CHAT_ID" ]] && "$DIR/telegram-notify.sh" "$CHAT_ID" "$msg" 2>/dev/null || true
+  if [[ "${HERMES_NOTIFY_SLACK:-0}" == "1" ]] || [[ -n "${SLACK_HOME_CHANNEL:-}" ]]; then
+    slack_ch="${SLACK_HOME_CHANNEL:-}"
+    if [[ -z "$slack_ch" && -f "$HOME/.hermes/.env" ]]; then
+      slack_ch=$(grep -E '^SLACK_HOME_CHANNEL=' "$HOME/.hermes/.env" 2>/dev/null \
+        | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'" || true)
+    fi
+    [[ -n "$slack_ch" ]] && "$DIR/slack-notify.sh" "$slack_ch" "$msg" 2>/dev/null || true
+  fi
 }
 
 slug_from_prompt() {
@@ -181,6 +189,9 @@ TASK_TYPE=$task_type
 PROMPT=$(printf '%q' "$prompt")
 CHAT_ID=$CHAT_ID
 DATE=$DATE
+HERMES_NOTIFY_SLACK=${HERMES_NOTIFY_SLACK:-0}
+SLACK_HOME_CHANNEL=${SLACK_HOME_CHANNEL:-}
+HERMES_CURSOR_AUTO=${HERMES_CURSOR_AUTO:-1}
 EOF
 
   notify "[█░░░░] 개인화 작업 접수 ($task_type)
@@ -188,7 +199,11 @@ ${prompt:0:200}"
 
   nohup "$0" run "$job_id" >>"$LOG" 2>&1 &
   echo "✅ 작업 접수: $job_id ($task_type)"
-  echo "완료 시 Telegram 알림 · 로그: $LOG"
+  if [[ "${HERMES_NOTIFY_SLACK:-0}" == "1" ]]; then
+    echo "완료 시 Slack·Telegram 알림 · 로그: $LOG"
+  else
+    echo "완료 시 Telegram 알림 · 로그: $LOG"
+  fi
 }
 
 run_job() {
@@ -201,6 +216,9 @@ run_job() {
   CHAT_ID="${CHAT_ID:-}"
   export TELEGRAM_CHAT_ID="$CHAT_ID"
   DATE="${DATE:-$(date +%Y-%m-%d)}"
+  export HERMES_NOTIFY_SLACK="${HERMES_NOTIFY_SLACK:-0}"
+  export SLACK_HOME_CHANNEL="${SLACK_HOME_CHANNEL:-}"
+  export HERMES_CURSOR_AUTO="${HERMES_CURSOR_AUTO:-1}"
 
   case "${TASK_TYPE:-ask}" in
     mail)
