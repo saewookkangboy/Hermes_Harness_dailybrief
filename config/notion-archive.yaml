@@ -31,31 +31,36 @@ categories:
     icon: "📝"
     glob: "content/packages/*_blog-article.md"
     order: 3
+  threads:
+    label: "Threads"
+    icon: "🧵"
+    glob: "content/packages/*_threads.md"
+    order: 4
   instagram:
     label: "Instagram Context"
     icon: "📸"
     glob: "content/packages/*_instagram-context.md"
-    order: 4
+    order: 5
   linkedin:
     label: "LinkedIn Context"
     icon: "💼"
     glob: "content/packages/*_linkedin-context.md"
-    order: 5
+    order: 6
   newsletter:
     label: "Newsletter"
     icon: "📧"
     glob: "content/packages/*_newsletter-context.md"
-    order: 6
+    order: 7
   newsletter_html:
     label: "Newsletter HTML"
     icon: "✉️"
     glob: "content/newsletter/*_newsletter_*.html"
-    order: 7
+    order: 8
   newsletter_paste:
     label: "Newsletter Paste"
     icon: "📋"
     glob: "content/packages/*_newsletter-paste.md"
-    order: 8
+    order: 9
   lecture_outline:
     label: "Lecture Outline"
     icon: "📑"

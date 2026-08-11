@@ -1,13 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
-DIR="$(dirname "$0")"
+DIR="$(cd "$(dirname "$0")" && pwd)"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$DIR/.." && pwd)}"
 MODE="${1:---unit}"
+ARG2="${2:-today}"
 export PYTHONPATH="$DIR${PYTHONPATH:+:$PYTHONPATH}"
+export HERMES_WORKDIR="$WORKDIR"
 pass=0; fail=0
 ok(){ echo "PASS: $*"; pass=$((pass+1)); }
 bad(){ echo "FAIL: $*"; fail=$((fail+1)); }
 
-if [[ "$MODE" == "--unit" || "$MODE" == "--all" ]]; then
+resolve_date() {
+  local d="${1:-today}"
+  if [[ "$d" == "today" ]]; then
+    date +%F
+  else
+    echo "$d"
+  fi
+}
+
+run_unit() {
   python3 - <<'PY' && ok "unit build_daily_blog_md" || bad "unit build_daily_blog_md"
 import os
 import sys
@@ -133,7 +145,68 @@ with tempfile.TemporaryDirectory() as tmp:
     assert "[블로그 링크]" in paths["threads"].read_text(encoding="utf-8")
 print("integration ok")
 PY
-fi
+}
+
+run_live() {
+  local DATE
+  DATE="$(resolve_date "$1")"
+  local BLOG="$WORKDIR/content/packages/${DATE}_blog-article.md"
+  local THREADS="$WORKDIR/content/packages/${DATE}_threads.md"
+
+  echo "=== blog-daily-report-eval --live $DATE ==="
+
+  if [[ ! -f "$BLOG" ]]; then
+    bad "live blog-article missing: $BLOG"
+  else
+    ok "live blog-article exists: $BLOG"
+    if "$DIR/validate-output.sh" blog-article "$BLOG"; then
+      ok "validate blog-article"
+    else
+      bad "validate blog-article"
+    fi
+    python3 - <<PY && ok "live body_char_count <= 3000" || bad "live body_char_count"
+import sys
+sys.path.insert(0, "$DIR")
+from pathlib import Path
+from lib.blog_daily_report import BODY_MAX_CHARS, body_char_count
+
+text = Path("$BLOG").read_text(encoding="utf-8")
+count = body_char_count(text)
+if count > BODY_MAX_CHARS:
+    raise SystemExit(f"body {count} > {BODY_MAX_CHARS}")
+print(count)
+PY
+  fi
+
+  if [[ ! -f "$THREADS" ]]; then
+    bad "live threads missing: $THREADS"
+  else
+    ok "live threads exists: $THREADS"
+    if "$DIR/validate-output.sh" threads-package "$THREADS"; then
+      ok "validate threads-package"
+    else
+      bad "validate threads-package"
+    fi
+  fi
+}
+
+case "$MODE" in
+  --unit)
+    run_unit
+    ;;
+  --live)
+    run_live "$ARG2"
+    ;;
+  --all)
+    run_unit
+    run_live "$ARG2"
+    ;;
+  *)
+    echo "Usage: $0 [--unit|--live [DATE]|--all [DATE]]" >&2
+    echo "  DATE defaults to today" >&2
+    exit 1
+    ;;
+esac
 
 echo "pass=$pass fail=$fail"
 [[ "$fail" -eq 0 ]]
