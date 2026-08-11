@@ -71,6 +71,10 @@ components:
     typography: h1
 ---
 
+<p align="center">
+  <img src="./assets/docs/banner-getdesign.svg" width="100%" alt="Getdesign — primary black, accent yellow, documentary density">
+</p>
+
 ## Overview
 
 Content Studio 디자인 시스템은 **실무형·문서형·밀도 높은** 비주얼을 기본으로 합니다.

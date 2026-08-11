@@ -1,62 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg"
-     width="100%" height="100%" viewBox="0 0 1200 280"
-     role="img" aria-labelledby="wf-title wf-desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 280" role="img" aria-labelledby="wf-title wf-desc">
   <title id="wf-title">M1 to M5 deterministic pipeline</title>
-  <desc id="wf-desc">Research Brief flows through Content Package, Newsletter, Quality Gate, then Notion archive.</desc>
-
+  <desc id="wf-desc">Research Brief flows through Content Package with Threads, Newsletter Gate A-D, Quality, then Notion archive in about 20 to 26 seconds.</desc>
   <rect width="1200" height="280" rx="16" fill="#F7F7F7"/>
   <rect x="0" y="0" width="1200" height="6" fill="#111111"/>
-
-  <text x="48" y="48"
-        font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
-        font-size="16" fill="#666666" letter-spacing="1">HOW IT WORKS · ~70s · LLM OPTIONAL</text>
-
+  <text x="48" y="48" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#666666" letter-spacing="1">HOW IT WORKS · 20–26s · LLM OPTIONAL · GATE A–D</text>
   <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
-    <rect x="48" y="80" width="180" height="120" rx="8" fill="#111111"/>
-    <text x="138" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M1</text>
-    <text x="138" y="148" text-anchor="middle" font-size="20" font-weight="600" fill="#F7F7F7">Research</text>
-    <text x="138" y="176" text-anchor="middle" font-size="14" fill="#888888">Top 7 Brief</text>
-
-    <path d="M238 140 L268 140" stroke="#111111" stroke-width="2"/>
-    <path d="M262 134 L272 140 L262 146" fill="none" stroke="#111111" stroke-width="2"/>
-
-    <rect x="280" y="80" width="100" height="120" rx="8" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
-    <text x="330" y="138" text-anchor="middle" font-size="16" font-weight="600" fill="#111111">GATE</text>
-    <text x="330" y="162" text-anchor="middle" font-size="13" fill="#666666">check</text>
-
-    <path d="M390 140 L420 140" stroke="#111111" stroke-width="2"/>
-    <path d="M414 134 L424 140 L414 146" fill="none" stroke="#111111" stroke-width="2"/>
-
-    <rect x="432" y="80" width="180" height="120" rx="8" fill="#111111"/>
-    <text x="522" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M2</text>
-    <text x="522" y="148" text-anchor="middle" font-size="20" font-weight="600" fill="#F7F7F7">Content</text>
-    <text x="522" y="176" text-anchor="middle" font-size="14" fill="#888888">Blog · IG · LI</text>
-
-    <path d="M622 140 L652 140" stroke="#111111" stroke-width="2"/>
-    <path d="M646 134 L656 140 L646 146" fill="none" stroke="#111111" stroke-width="2"/>
-
-    <rect x="664" y="80" width="160" height="120" rx="8" fill="#111111"/>
-    <text x="744" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M2b</text>
-    <text x="744" y="148" text-anchor="middle" font-size="20" font-weight="600" fill="#F7F7F7">Newsletter</text>
-    <text x="744" y="176" text-anchor="middle" font-size="14" fill="#888888">md + HTML</text>
-
-    <path d="M834 140 L864 140" stroke="#111111" stroke-width="2"/>
-    <path d="M858 134 L868 140 L858 146" fill="none" stroke="#111111" stroke-width="2"/>
-
-    <rect x="876" y="80" width="120" height="120" rx="8" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
-    <text x="936" y="130" text-anchor="middle" font-size="15" font-weight="600" fill="#111111">Quality</text>
-    <text x="936" y="156" text-anchor="middle" font-size="13" fill="#666666">voice</text>
-    <text x="936" y="176" text-anchor="middle" font-size="13" fill="#666666">natural</text>
-
-    <path d="M1006 140 L1036 140" stroke="#111111" stroke-width="2"/>
-    <path d="M1030 134 L1040 140 L1030 146" fill="none" stroke="#111111" stroke-width="2"/>
-
-    <rect x="1048" y="80" width="104" height="120" rx="8" fill="#FFE500"/>
-    <text x="1100" y="130" text-anchor="middle" font-size="14" fill="#111111" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M5</text>
-    <text x="1100" y="158" text-anchor="middle" font-size="18" font-weight="700" fill="#111111">Notion</text>
+    <rect x="40" y="80" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="120" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M1</text>
+    <text x="120" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Research</text>
+    <text x="120" y="176" text-anchor="middle" font-size="13" fill="#888888">Brief SoT</text>
+    <path d="M208 140 L232 140" stroke="#111111" stroke-width="2"/>
+    <path d="M226 134 L236 140 L226 146" fill="none" stroke="#111111" stroke-width="2"/>
+    <rect x="244" y="80" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="324" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M2</text>
+    <text x="324" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Packages</text>
+    <text x="324" y="176" text-anchor="middle" font-size="13" fill="#888888">Blog·Thr·IG·LI</text>
+    <path d="M412 140 L436 140" stroke="#111111" stroke-width="2"/>
+    <path d="M430 134 L440 140 L430 146" fill="none" stroke="#111111" stroke-width="2"/>
+    <rect x="448" y="80" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="528" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M2b</text>
+    <text x="528" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Newsletter</text>
+    <text x="528" y="176" text-anchor="middle" font-size="13" fill="#888888">Gate A–D</text>
+    <path d="M616 140 L640 140" stroke="#111111" stroke-width="2"/>
+    <path d="M634 134 L644 140 L634 146" fill="none" stroke="#111111" stroke-width="2"/>
+    <rect x="652" y="80" width="160" height="120" rx="8" fill="#FFE500"/>
+    <text x="732" y="118" text-anchor="middle" font-size="14" fill="#111111" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">QUALITY</text>
+    <text x="732" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#111111">Validate</text>
+    <text x="732" y="176" text-anchor="middle" font-size="13" fill="#444444">voice · publish</text>
+    <path d="M820 140 L844 140" stroke="#111111" stroke-width="2"/>
+    <path d="M838 134 L848 140 L838 146" fill="none" stroke="#111111" stroke-width="2"/>
+    <rect x="856" y="80" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="936" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M5</text>
+    <text x="936" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Notion</text>
+    <text x="936" y="176" text-anchor="middle" font-size="13" fill="#888888">Permalink</text>
+    <text x="1040" y="240" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#888888">Commander: Telegram · Slack · PlayMCP</text>
   </g>
-
-  <text x="48" y="248"
-        font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
-        font-size="15" fill="#666666">SoT: content/research/{date}_brief.md  ·  Out: content/{channel}/  ·  Gate: validate-output.sh</text>
 </svg>

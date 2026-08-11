@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 180" role="img" aria-labelledby="t d">
+  <title id="t">How the Agent Runs</title>
+  <desc id="d">Session boot · commander commands · quality gates · Definition of Done</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#111111"/><stop offset="100%" stop-color="#1A1A1A"/></linearGradient></defs>
+  <rect width="1200" height="180" rx="16" fill="url(#bg)"/>
+  <rect x="0" y="0" width="8" height="180" fill="#FFE500"/>
+  <text x="56" y="42" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" fill="#FFE500" letter-spacing="2">AGENTS CONTEXT</text>
+  <text x="56" y="86" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="36" font-weight="700" fill="#F7F7F7">How the Agent Runs</text>
+  <text x="56" y="118" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="16" fill="#B8B8B8">Session boot · commander commands · quality gates · Definition of Done</text>
+  <rect x="56" y="132" width="95" height="26" rx="4" fill="#222" stroke="#333"/><text x="103.5" y="150" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#F7F7F7">init.sh</text><rect x="161" y="132" width="104" height="26" rx="4" fill="#222" stroke="#333"/><text x="213.0" y="150" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#F7F7F7">Gate A-D</text><rect x="275" y="132" width="88" height="26" rx="4" fill="#222" stroke="#333"/><text x="319.0" y="150" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#F7F7F7">DoD</text>
+</svg>

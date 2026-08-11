@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/docs/banner-agents.svg" width="100%" alt="AGENTS — session boot, commander commands, quality gates, Definition of Done">
+</p>
+
 # Hermes Content Studio — Agent Context
 
 Intel Mac 자체호스팅 마케팅·교육 콘텐츠 스튜디오.
@@ -37,20 +41,26 @@ cat ~/hermes-content-studio/.harness/progress.md
 # 리서치 브리프 (결정적, ~15s)
 ~/hermes-content-studio/scripts/run-research-brief.sh
 
-# 전체 파이프라인 (결정적, M1+M2+M2b ~70s)
+# 전체 파이프라인 (결정적, M1+M2+M2b · 실측 ~20–26s / SLA 60–70s)
 ~/hermes-content-studio/scripts/run-pipeline.sh
 # SKIP_NEWSLETTER=1 ~/hermes-content-studio/scripts/run-pipeline.sh  # 뉴스레터 제외
 
-# B2B 뉴스레터 (Brief SoT → md + HTML + A/B 제목, ~10s)
+# B2B 뉴스레터 (Brief SoT → md + HTML + A/B 제목 · Gate A–D)
 ~/hermes-content-studio/scripts/run-newsletter.sh [YYYY-MM-DD] --validate
 ~/hermes-content-studio/scripts/hermes-agent.sh newsletter --date YYYY-MM-DD --validate
 ~/hermes-content-studio/scripts/newsletter-eval.sh [YYYY-MM-DD]
+~/hermes-content-studio/scripts/newsletter-freshness-eval.sh [YYYY-MM-DD]  # Gate A
+~/hermes-content-studio/scripts/newsletter-gate-b-eval.sh [YYYY-MM-DD]     # Gate B
+~/hermes-content-studio/scripts/newsletter-gate-c-eval.sh [YYYY-MM-DD]     # Gate C publishable
+~/hermes-content-studio/scripts/newsletter-gate-d-eval.sh [YYYY-MM-DD]     # Gate D CTOR
 ~/hermes-content-studio/scripts/newsletter-ctor-record.sh YYYY-MM-DD --delivered N --opens N --clicks N
 ~/hermes-content-studio/scripts/newsletter-ctor-dashboard.sh [YYYY-MM-DD]
 # 배포: Notion 붙여넣기 팩 → 외부 플랫폼 (ESP 발송 없음)
-# content/packages/{date}_newsletter-paste.md · Notion Newsletter Paste 페이지
+# content/packages/{date}_newsletter-paste.md · {date}_newsletter-publish.json
 ~/hermes-content-studio/scripts/commander-integration-eval.sh   # Telegram/Slack/Harness 점검
-
+~/hermes-content-studio/scripts/agents-eval.sh                  # Agents A–D 품질·운영·지식·성과
+~/hermes-content-studio/scripts/e2e-smoke-test.sh               # E2E 스모크
+~/hermes-content-studio/scripts/staging-supervised-eval.sh      # L2 staging
 # 스튜디오 업데이트 (Hermes + 의존성 + 헬스체크)
 ~/hermes-content-studio/scripts/update-studio.sh
 
@@ -156,7 +166,7 @@ Telegram에서 요청 보낼 때 **별도 Terminal**에서 `watch-telegram.sh` �
 | 구분 | 내용 |
 |------|------|
 | **선택** | `/ask` index-first · Brief Graph→concepts Seed · Personal→raw Ingest · 주간 Lint |
-| **유지** | M1→M5 결정적 (~70s) · `{date}_brief.md` SoT · validate · Notion Permalink |
+| **유지** | M1→M5 결정적 (~20–26s 실측) · `{date}_brief.md` SoT · validate · Notion Permalink · Gate A–D |
 | **신설** | `content/wiki/` · `config/wiki.yaml` · `wiki-maintainer` skill · `wiki-seed.sh` |
 
 ```bash
@@ -196,23 +206,27 @@ LEARNED 를 직접 편집하지 말고 `curate-playbook.sh` 를 사용하세요.
 | 채널 | 폴더 | 형식 |
 |------|------|------|
 | research | content/research | .md |
-| blog | content/blog | .html (SEO/AEO) |
+| blog | content/blog · packages/*_blog-article.md | Velog형 HTML/MD |
+| threads | content/packages/*_threads.md | Threads 숏폼 (Notion threads) |
 | instagram | content/instagram | .md |
 | linkedin | content/linkedin | .md |
-| newsletter | content/newsletter | .md, .html (+ subject-scores.json) |
+| newsletter | content/newsletter | .md, .html (+ subject-scores.json · publish.json) |
 | lectures | content/lectures | .md, .html, .pptx |
 
 ## 품질 게이트
 
-- SEO/AEO/GEO: title, meta, H1, H2×3, FAQ JSON-LD, GEO 인용 블록
-- LinkedIn: hook 2줄, 1300자, 댓글 CTA, 이미지 프롬pt 없음
-- Instagram: 슬라이드별 Midjourney/DALL-E 프롬pt + alt text
+- Blog (Velog형): `[오늘의 AI 트렌드]` · 주요 트렌드 · 한 줄 요약 (Notion archive markers)
+- Threads: `[블로그 링크]` 필수
+- LinkedIn: hook 2줄, 1300자, 댓글 CTA, 이미지 프롬프트 없음
+- Instagram: 슬라이드별 Midjourney/DALL-E 프롬프트 + alt text
 - Newsletter: TLDR 3불릿 · Hero · 모듈×3 · 단일 CTA · 제목 ≤50자 · CTOR 10–15%
+- Newsletter **Gate A–D**: 신선도/NSFW/제목 정합 · Email/LI/CTA/이미지 · validate/`publishable` · CTOR 학습
 - 강의: getdesign.md 프리셋, HTML + PPTX
 - 출처 URL 필수
 - `scripts/validate-output.sh` 통과
 - **Voice · Naturalness (P4–P14):** `voice_blocking` + `naturalness_blocking` 프로덕션 ON · `budget_blocking: false` (cap 초과 WARN)
 - **Budget:** `daily_token_cap: 600000` · `path_daily_token_caps.HERMES_HUMANIZE_LLM: 400000` — `loop-budget-status.sh`
+- **품질 기준선 (2026-08-12):** harness-eval quick 40/0 · Gate A–D PASS · e2e 19/0 · agents 40/0
 
 ## 실행 추가
 

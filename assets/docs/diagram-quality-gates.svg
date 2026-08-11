@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 260" role="img" aria-labelledby="t d">
+  <title id="t">Newsletter Gate A to D quality stack</title>
+  <desc id="d">Freshness, email/CTA, publishable validate, and CTOR learning gates</desc>
+  <rect width="1200" height="260" rx="16" fill="#F7F7F7"/>
+  <rect x="0" y="0" width="1200" height="6" fill="#111111"/>
+  <text x="48" y="44" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" fill="#888888" letter-spacing="1">NEWSLETTER QUALITY · GATE A-D · PUBLISHABLE</text>
+  <rect x="48" y="72" width="260" height="140" rx="12" fill="#111111" stroke="#111111" stroke-width="2"/>
+  <text x="72" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">GATE A</text>
+  <text x="72" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#F7F7F7">Freshness</text>
+  <text x="72" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#888888">title · NSFW</text>
+<path d="M312 142 L332 142" stroke="#111111" stroke-width="2"/><path d="M326 136 L336 142 L326 148" fill="none" stroke="#111111" stroke-width="2"/>  <rect x="336" y="72" width="260" height="140" rx="12" fill="#111111" stroke="#111111" stroke-width="2"/>
+  <text x="360" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">GATE B</text>
+  <text x="360" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#F7F7F7">Email / LI</text>
+  <text x="360" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#888888">CTA · 16:9</text>
+<path d="M600 142 L620 142" stroke="#111111" stroke-width="2"/><path d="M614 136 L624 142 L614 148" fill="none" stroke="#111111" stroke-width="2"/>  <rect x="624" y="72" width="260" height="140" rx="12" fill="#FFE500" stroke="#111111" stroke-width="2"/>
+  <text x="648" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#111111">GATE C</text>
+  <text x="648" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#111111">Validate</text>
+  <text x="648" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#444">publishable</text>
+<path d="M888 142 L908 142" stroke="#111111" stroke-width="2"/><path d="M902 136 L912 142 L902 148" fill="none" stroke="#111111" stroke-width="2"/>  <rect x="912" y="72" width="260" height="140" rx="12" fill="#111111" stroke="#111111" stroke-width="2"/>
+  <text x="936" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">GATE D</text>
+  <text x="936" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#F7F7F7">CTOR</text>
+  <text x="936" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#888888">learn · weight</text>
+</svg>
