@@ -40,6 +40,42 @@ README · docs 허브 · SYSTEM-LOGIC · architecture README · AGENTS · HARNES
 
 ---
 
+## AI Agent Velog Blog + Threads (2026-08-11) — Task 7
+
+**Status:** PASS — fresh research + feature assembler smoke
+
+- Network research: 29 hits / 10 queries → `content/research/2026-08-11_brief.md`
+- Artifacts: blog article + HTML, Threads, Instagram, LinkedIn generated in main runtime workspace
+- Gates: `blog-article` body 1,694/3,000 · `threads-package` PASS · `linkedin` PASS · `blog-daily-report-eval --all` 8/0
+- Runtime configs/template and temporary `blog_daily_report.py` sync were restored; no content artifacts committed or pushed.
+- Report: `.superpowers/sdd/task-7-report.md`
+
+---
+
+## AI Agent Velog Blog + Threads (2026-08-11) — Task 6
+
+**브랜치:** `feat/ai-agent-blog-threads` · Velog 일일 리포트 + Threads 패키지 eval·문서
+
+### 변경 요약
+- **`blog-daily-report-eval.sh`:** `--live [DATE]` — packages 존재 · `validate-output` blog-article/threads-package · 본문 ≤3,000자
+- **`config/notion-archive.yaml`:** `threads` 카테고리 (`content/packages/*_threads.md`, order 4)
+- **`skills/channels/blog/SKILL.md` (STABLE):** Velog 섹션 · 3,000자 cap · Threads 경로 · AI Agent 렌즈
+
+### Definition of Done
+1. `scripts/blog-daily-report-eval.sh --unit` PASS
+2. `scripts/validate-output.sh blog-article|threads-package` (파이프라인 산출물)
+3. 산출물: `content/packages/{date}_blog-article.md` · `{date}_threads.md`
+4. Notion: `archive-to-notion.sh` 시 threads 카테고리 동기화 (선택)
+5. `.harness/progress.md` 갱신 ✅
+
+```bash
+~/hermes-content-studio/scripts/blog-daily-report-eval.sh --unit
+~/hermes-content-studio/scripts/blog-daily-report-eval.sh --live YYYY-MM-DD   # packages 필요
+~/hermes-content-studio/scripts/validate-output.sh blog-article content/packages/YYYY-MM-DD_blog-article.md
+~/hermes-content-studio/scripts/validate-output.sh threads-package content/packages/YYYY-MM-DD_threads.md
+```
+
+---
 
 ## README redesign (2026-08-02)
 

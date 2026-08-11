@@ -21,32 +21,53 @@ metadata:
 
 # Channel: Blog (M2)
 
+## Velog 일일 리포트 (AI Agent 렌즈)
+
+Brief Top 인사이트 → **AI Agent·에이전틱 AI** 관점의 Velog 일일 트렌드 포스트.
+
+| 섹션 | 내용 |
+|------|------|
+| 제목 | `[오늘의 AI 트렌드] {테마}({MM/DD})` |
+| 서문 | 날짜 + 일일 요약 2문장 |
+| §1 | 주요 트렌드 및 개발 이슈 (Top 2) |
+| §2 | 요즘 주목받는 핵심 기술 (불릿) |
+| §3 | 마케터·비즈니스 리더 향후 대책 |
+| 마무리 | 한 줄 요약 + 출처 URL |
+
+- **본문 상한:** 출처·SEO 꼬리 제외 **≤3,000자** (`BODY_MAX_CHARS`)
+- **Threads 동반:** `content/packages/{date}_threads.md` — 훅 · `→` 불릿 3–5 · `[블로그 링크]` · 댓글 CTA
+- **렌즈:** 글로벌 AI Agent 신호 → 국내 마케터·AX 실무 (`research-brief.yaml` AI Agent 토픽)
+
 ## Phase 맵
 
 | Phase | Step | 출력 | validate |
 |-------|------|------|----------|
 | P0 | brief + `_search_context_*.md` | — | — |
 | P1 | blog-article md | `packages/{date}_blog-article.md` | blog-article |
+| P1b | Threads package | `packages/{date}_threads.md` | threads-package |
 | P2 | HTML assemble | `blog/{date}_blog_*.html` | blog |
-| P3 | validate | — | SEO/AEO/GEO |
+| P3 | validate | — | Velog 구조 · 본문 cap |
 | P5 | enhance (선택) | polish | — |
 
 ## 실행
 
 ```bash
 ~/hermes-content-studio/scripts/run-content-package.sh
-# blog만 검증
+# blog · Threads 검증
 ~/hermes-content-studio/scripts/validate-output.sh blog-article content/packages/YYYY-MM-DD_blog-article.md
+~/hermes-content-studio/scripts/validate-output.sh threads-package content/packages/YYYY-MM-DD_threads.md
 ~/hermes-content-studio/scripts/validate-output.sh blog content/blog/YYYY-MM-DD_blog_*.html
+# eval: unit + live (packages 필요)
+~/hermes-content-studio/scripts/blog-daily-report-eval.sh --unit
+~/hermes-content-studio/scripts/blog-daily-report-eval.sh --live YYYY-MM-DD
 ```
 
-## 품질 (`config/content-guidelines.yaml#blog`)
+## 품질 (`config/content-quality.yaml#blog`)
 
-- title 50–60자, meta 140–160자
-- H1 1개, H2 3개+
-- FAQ JSON-LD, Article schema
-- GEO 인용 블록, author attribution
-- ~합니다 평문 · 출처 기반 확장 (`blog-article`, 최대 15000자)
+- Velog 섹션 4블록 + 한 줄 요약 + 출처 URL 필수
+- 본문(출처 제외) **≤3,000자** — 초과 시 FAIL
+- HTML: title · meta · H1 · Article JSON-LD · H2×3+
+- ~합니다 평문 · AI Agent 렌즈 · 출처 기반
 
 ## 템플릿
 
@@ -60,8 +81,9 @@ metadata:
 
 ## Anti-patterns
 
-- FAQ schema 없이 "완료"
+- 본문이 출처·SEO 꼬리 제외 3,000자를 초과
 - 출처 URL 없음
+- `[오늘의 AI 트렌드]` 제목 누락
 - LLM으로 HTML 전체 재생성 (assemble 우선)
 
 ## LEARNED

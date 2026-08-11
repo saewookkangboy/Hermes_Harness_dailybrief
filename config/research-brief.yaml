@@ -17,40 +17,31 @@ persona:
     - 책임있는 AI
   ai_expertise_years: "4~5"
   focus:
-    - AX
-    - AI Native
-    - 기업 적용·교육·컨설팅
+    - AI Agent 동향
+    - Agentic AI
+    - 엔터프라이즈 적용·성장 전략
   voice: |
-    21년차 현장형 디지털 마케터이자, 최근 4~5년 AI 리터러시·거버넌스·AX 컨설턴트.
-    브랜드·콘텐츠·퍼포먼스·그로스·전략 전 영역을 아우르며,
-    AI Native 전환과 책임있는 AI 도입을 기업 맥락에 맞게 해석합니다.
+    21년차 현장형 디지털 마케터이자, 최근 4~5년 AI Agent·Agentic AI 동향·성장 전략가.
+    글로벌·국내 AI Agent 뉴스, 기술 트렌드, 산업 적용, 보안·거버넌스를
+    기업 도입·성장 맥락에 맞게 해석합니다.
 
 coverage:
   daily_lens:
     - 글로벌 뉴스·데이터
     - 대한민국 뉴스·데이터
   pillars:
-    - id: ai_marketing_tech
-      label: "AI 마케팅 기술·Repo"
-      keywords: [github, open source, marketing automation, repo]
-    - id: llm_platforms
-      label: "LLM 주요 서비스 업데이트"
-      platforms: [OpenAI ChatGPT, Anthropic Claude, Google Gemini, Perplexity]
-    - id: ax
-      label: "AX 트렌드·뉴스"
-      keywords: [AX, AI transformation, AI Native]
-    - id: ai_literacy_governance
-      label: "AI 리터러시·거버넌스"
-      keywords: [literacy, governance, responsible AI]
-    - id: ai_practice
-      label: "AI 실무 적용·도입 현황"
-      keywords: [use case, adoption, enterprise, pilot]
-    - id: engineering
-      label: "프롬프트·컨텍스트·하네스·에이전트"
-      keywords: [prompt engineering, context engineering, harness engineering, Hermes Agent, AI Agent]
-    - id: agent_guides
-      label: "도메인별 AI 에이전트 가이드"
-      keywords: [agent guide, workflow, SOP, automation]
+    - id: agent_news
+      label: "AI Agent 최신 뉴스·제품"
+      keywords: [AI agent, agentic AI, multi-agent, autonomous agent]
+    - id: agent_tech
+      label: "AI Agent 기술 트렌드"
+      keywords: [tool use, agent runtime, agent budget, MCP, orchestration]
+    - id: agent_industry
+      label: "산업·엔터프라이즈 적용"
+      keywords: [enterprise agent, workflow automation, adoption, use case]
+    - id: agent_security_gov
+      label: "보안·통제·거버넌스"
+      keywords: [AI governance, EU AI Act, agent security, human-in-the-loop, stop button]
 
 insight_pipeline:
   - 리서치
@@ -60,20 +51,16 @@ insight_pipeline:
   - 가이드·팁
 
 search_queries:
-  - "OpenAI ChatGPT update {year} business marketing"
-  - "Anthropic Claude update {year} enterprise"
-  - "Google Gemini update {year} marketing"
-  - "Perplexity AI search update {year}"
-  - "Korea AX AI transformation news {year}"
-  - "South Korea enterprise AI adoption {year}"
-  - "AI governance responsible AI enterprise {year}"
-  - "AI literacy marketing team training {year}"
-  - "AI agent marketing automation github {year}"
-  - "prompt engineering context engineering harness {year}"
-  - "Hermes agent NousResearch open source {year}"
-  - "AI agent use case enterprise workflow {year}"
-  - "AEO answer engine optimization {year}"
-  - "digital marketing Korea AX transformation {year}"
+  - "AI agent news {year}"
+  - "agentic AI enterprise adoption {year}"
+  - "multi-agent workflow orchestration {year}"
+  - "AI agent security governance {year}"
+  - "EU AI Act AI agent compliance {year}"
+  - "AI agent budget payment protocol {year}"
+  - "Korea enterprise AI agent adoption {year}"
+  - "OpenAI agents update {year}"
+  - "Anthropic Claude agent computer use {year}"
+  - "Salesforce agentic enterprise {year}"
 
 freshness:
   min_search_results: 7
@@ -95,9 +82,9 @@ schedule:
   period: single_day    # period_start = period_end = today
 
 priority_queries:
-  korea: "digital marketing Korea AX transformation {year}"
+  korea: "Korea enterprise AI agent adoption {year}"
   llm:
-    - "OpenAI ChatGPT update {year} business marketing"
-    - "Anthropic Claude update {year} enterprise"
-    - "Google Gemini update {year} marketing"
-    - "Perplexity AI search update {year}"
+    - "AI agent news {year}"
+    - "agentic AI security governance {year}"
+    - "multi-agent workflow enterprise {year}"
+    - "AI agent industry use case {year}"

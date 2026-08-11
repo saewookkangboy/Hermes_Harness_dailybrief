@@ -51,14 +51,19 @@ voice:
 
 longform:
   blog:
-    title_max_chars: 58
+    title_max_chars: 70
     subtitle_max_chars: 90
     meta_max_chars: 155
     direct_answer_max_chars: 360
     direct_answer_sentences: 3
     insight_body_sentences: 6
     geo_quote_max_chars: 240
-    min_h2_sections: 5
+    body_max_chars: 3000
+    format: velog_daily_trend
+    min_h2_sections: 3
+    require_faq_jsonld: false
+    require_geo_block: false
+    require_direct_answer_first: false
   newsletter:
     tldr_bullet_sentences: 2
     tldr_body_max_chars: 120
@@ -68,6 +73,7 @@ longform:
     module_apply_sentences: 2
     module_apply_max_chars: 260
   seo_aeo_geo:
+    # 공통 레거시 기준입니다. Velog blog는 longform.blog.require_* 설정을 사용합니다.
     require_faq_jsonld: true
     require_source_urls: true
     require_geo_block: true
@@ -89,7 +95,7 @@ coach:
     blog:
       label: Blog SEO
       metric: quality_score
-      traits: [title_length, h2_count, faq_jsonld, geo_block, no_ai_tell]
+      traits: [trend_title, h2_count, source_url, body_cap, no_ai_tell]
     instagram:
       label: Instagram
       metric: save_proxy

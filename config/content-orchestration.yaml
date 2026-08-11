@@ -33,6 +33,7 @@ stages:
       linkedin: content/linkedin/{date}_linkedin_*.md
       linkedin_context: content/packages/{date}_linkedin-context.md
       unified: content/packages/{date}_unified-context.md
+      threads_package: content/packages/{date}_threads.md
     sla_seconds: 10
     deterministic: true
   M2b:
