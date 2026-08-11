@@ -73,6 +73,7 @@ longform:
     module_apply_sentences: 2
     module_apply_max_chars: 260
   seo_aeo_geo:
+    # 공통 레거시 기준입니다. Velog blog는 longform.blog.require_* 설정을 사용합니다.
     require_faq_jsonld: true
     require_source_urls: true
     require_geo_block: true

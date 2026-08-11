@@ -81,8 +81,9 @@ Brief Top 인사이트 → **AI Agent·에이전틱 AI** 관점의 Velog 일일 
 
 ## Anti-patterns
 
-- FAQ schema 없이 "완료"
+- 본문이 출처·SEO 꼬리 제외 3,000자를 초과
 - 출처 URL 없음
+- `[오늘의 AI 트렌드]` 제목 누락
 - LLM으로 HTML 전체 재생성 (assemble 우선)
 
 ## LEARNED

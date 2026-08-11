@@ -231,11 +231,7 @@ def build_daily_blog_html(stamp: str, summary: str, insights: list[Insight]) -> 
         "{{DIRECT_ANSWER}}": html.escape(report.one_liner),
         "{{GEO_QUOTE}}": html.escape(report.one_liner),
         "{{SECTIONS}}": _render_sections(report),
-        "{{FAQ_ITEMS}}": "",
-        "{{FAQ_JSONLD}}": json.dumps(
-            {"@context": "https://schema.org", "@type": "Article", "headline": report.title},
-            ensure_ascii=False,
-        ),
+        "{{FAQ_BLOCK}}": "",
         "{{ARTICLE_JSONLD}}": json.dumps(article_jsonld, ensure_ascii=False),
         "{{SOURCES_LIST}}": "".join(
             f'<li><a href="{html.escape(url, quote=True)}">{html.escape(title)}</a></li>'

@@ -101,6 +101,36 @@ assert 3 <= th.count("→") <= 5
 print("threads unit ok", th.count("→"))
 PY
 
+  python3 - <<'PY' && ok "unit daily HTML omits empty FAQPage" || bad "unit daily HTML omits empty FAQPage"
+import os
+import sys
+from pathlib import Path
+sys.modules.pop("lib", None)
+sys.path.insert(0, os.environ["PYTHONPATH"].split(":")[0])
+import lib.common
+lib.common.WORKDIR = Path(os.environ["HERMES_WORKDIR"])
+from lib.blog_daily_report import build_daily_blog_html
+from lib.content_quality import Insight
+
+html = build_daily_blog_html(
+    "2026-08-11",
+    "AI Agent 일일 요약입니다.",
+    [
+        Insight(
+            title="에이전트 통제권",
+            summary="EU AI Act와 비상 정지 요구가 확산되고 있습니다.",
+            marketer_view="권한 캡과 HITL을 먼저 설계해야 합니다.",
+            channels="blog|linkedin",
+            url="https://example.com/a",
+            source_title="EU AI Act",
+        )
+    ],
+)
+assert "https://schema.org/FAQPage" not in html
+assert "{{FAQ_BLOCK}}" not in html
+print("daily HTML has no empty FAQPage")
+PY
+
   python3 - <<'PY' && ok "integration content package delegates daily assemblers" || bad "integration content package delegates daily assemblers"
 import os
 import sys
