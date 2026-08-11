@@ -88,3 +88,6 @@ content/research/*.prev.md
 
 # Cron exports
 cron-exports/*
+
+# Git worktrees
+.worktrees/
