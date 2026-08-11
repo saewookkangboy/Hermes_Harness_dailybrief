@@ -35,12 +35,12 @@ def build_seo_analysis_md(stamp: str, summary: str, insights: list[Insight]) -> 
         f"- **Secondary:** {', '.join(keywords[1:3]) if len(keywords) > 1 else '—'}",
         f"- **검색 컨텍스트:** {query_count}건",
         "",
-        "## SEO/AEO 체크",
-        "- [x] title ≤60자 · meta description",
-        "- [x] H1 1개 · H2×3+",
-        "- [x] FAQ JSON-LD",
-        "- [x] GEO 인용 블록",
+        "## Velog 구조 체크",
+        "- [x] 제목에 [오늘의 AI 트렌드]",
+        "- [x] H2 3개: 주요 트렌드 · 핵심 기술 · 향후 대책",
         "- [x] 출처 URL",
+        "- [x] 한 줄 요약",
+        "- [x] 본문 3,000자 이하",
         "",
         "## Wiki 맥락",
     ]
@@ -59,23 +59,23 @@ def build_structure_md(stamp: str, summary: str, insights: list[Insight]) -> str
         f"# Blog Structure — {stamp}",
         "",
         "## 아웃라인",
-        f"1. **한 줄 요약** — {truncate(topic, 80)}",
-        "2. **핵심 인사이트×3** — Brief Top 3",
-        "3. **실무 적용** — topic별 재구성",
-        "4. **FAQ×3** — AEO 스니펫",
-        "5. **출처** — canonical URL",
+        "1. **주요 트렌드 및 개발 이슈** — Brief Top 3",
+        "2. **요즘 주목받는 핵심 기술** — 핵심 기술 요약",
+        "3. **마케터 및 비즈니스 리더를 위한 향후 대책** — 실무 적용",
+        "4. **출처** — canonical URL",
+        f"5. **한 줄 요약** — {truncate(topic, 80)}",
         "",
         "## H2 구조",
-        "- ## 한 줄 요약",
-        "- ## 오늘의 신호",
-        "- ## 실무에 바로 쓰는 방법",
-        "- ## FAQ",
+        "- ## 1. 주요 트렌드 및 개발 이슈",
+        "- ## 2. 요즘 주목받는 핵심 기술",
+        "- ## 3. 마케터 및 비즈니스 리더를 위한 향후 대책",
         "- ## 출처",
+        "- ## 한 줄 요약",
         "",
         "## 모듈 매핑",
     ]
     for i, ins in enumerate(insights[:3], 1):
-        lines.append(f"{i}. {ins.korean_title} → H2 섹션 + GEO 블록")
+        lines.append(f"{i}. {ins.korean_title} → Velog H2 섹션 + 출처")
     return "\n".join(lines)
 
 

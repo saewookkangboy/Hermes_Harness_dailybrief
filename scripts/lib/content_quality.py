@@ -527,10 +527,10 @@ def build_blog_html(
     *,
     wiki_blurbs: list[str] | None = None,
 ) -> str:
-    from lib.longform_context import build_blog_longform, render_blog_html
+    # Local import avoids the Insight ↔ blog_daily_report circular dependency.
+    from lib.blog_daily_report import build_daily_blog_html
 
-    longform = build_blog_longform(stamp, summary, insights, wiki_blurbs=wiki_blurbs)
-    return render_blog_html(longform)
+    return build_daily_blog_html(stamp, summary, insights)
 
 
 def build_gemini_instagram_feed_prompt(
@@ -1038,61 +1038,11 @@ def _trim_to_chars(text: str, max_chars: int) -> str:
 
 
 def build_blog_article_md(stamp: str, summary: str, insights: list[Insight]) -> str:
-    """블로그 평문 — longform 컨텍스트와 HTML 동일 구조."""
-    from lib.longform_context import build_blog_longform, complete_text, load_longform_config
+    """Velog 일일 AI 트렌드 리포트 Markdown."""
+    # Local import avoids the Insight ↔ blog_daily_report circular dependency.
+    from lib.blog_daily_report import build_daily_blog_md
 
-    cfg = load_longform_config()
-    lf = build_blog_longform(stamp, summary, insights)
-    lines = [
-        f"# {lf.title}",
-        "",
-        f"**부제:** {lf.subtitle}",
-        f"**날짜:** {stamp}",
-        "",
-        "## 한 줄 요약",
-        lf.direct_answer,
-        "",
-        "## GEO 인용",
-        lf.geo_quote,
-        "",
-    ]
-    for section in lf.sections:
-        lines.append(f"## {section.heading}")
-        lines.append("")
-        for para in section.paragraphs:
-            if para.startswith("### "):
-                lines.extend(para.split("\n\n"))
-            else:
-                lines.append(para)
-            lines.append("")
-        for n, item in enumerate(section.list_items, 1):
-            lines.append(f"{n}. {item}")
-        if section.list_items:
-            lines.append("")
-    lines.extend(["## FAQ", ""])
-    for q, a in lf.faqs:
-        lines.extend([f"Q. {q}", f"A. {humanize(a, genre='blog').text}", ""])
-    lines.append("## 출처")
-    for title, url in lf.sources:
-        lines.append(f"- {title}: {url}")
-    lines.extend(
-        [
-            "",
-            "## SEO · AEO · GEO 메모",
-            complete_text(
-                "본문은 완결 문장으로 작성되었으며 FAQ JSON-LD·Direct Answer·출처 URL·갱신일을 "
-                "HTML 아티클과 동기화합니다.",
-                200,
-                max_sentences=2,
-                cfg=cfg,
-            ),
-            "",
-            f"Title tag: {lf.title}",
-            f"Meta description: {lf.meta_description}",
-            "Keywords: AEO, GEO, Agentic AI, AX, B2B Marketing",
-        ]
-    )
-    return "\n".join(lines)
+    return build_daily_blog_md(stamp, summary, insights)
 
 
 
@@ -1309,12 +1259,16 @@ def build_notion_packages(
     packages_dir: Path,
 ) -> dict[str, Path]:
     """Notion 아카이브용 카테고리별 단일 파일 생성."""
+    # Local import avoids the Insight ↔ blog_daily_report circular dependency.
+    from lib.blog_daily_report import build_threads_md
+
     packages_dir.mkdir(parents=True, exist_ok=True)
     paths = {
         "blog": packages_dir / f"{stamp}_blog-article.md",
         "instagram": packages_dir / f"{stamp}_instagram-context.md",
         "linkedin": packages_dir / f"{stamp}_linkedin-context.md",
         "unified": packages_dir / f"{stamp}_unified-context.md",
+        "threads": packages_dir / f"{stamp}_threads.md",
     }
     paths["blog"].write_text(build_blog_article_md(stamp, summary, insights), encoding="utf-8")
     paths["instagram"].write_text(
@@ -1330,6 +1284,10 @@ def build_notion_packages(
             insights,
             brief_excerpt=compress_sentences(brief_text, 1200, max_sentences=8),
         ),
+        encoding="utf-8",
+    )
+    paths["threads"].write_text(
+        build_threads_md(stamp, summary, insights),
         encoding="utf-8",
     )
     return paths
