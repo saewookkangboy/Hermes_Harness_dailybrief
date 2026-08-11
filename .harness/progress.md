@@ -1,5 +1,27 @@
 # Harness Progress — v1.3.0 Graph / Token / Playbook
 
+## Full Quality Retest (2026-08-12)
+
+리포트: `content/logs/2026-08-12_full-quality-retest.md`
+
+**종합: PASS** — validate 5/5 · quick 40/0 · record 31/0 · Gate A–D PASS · agents 40/0 · e2e 19/0 · staging PASS · phase1 8/0 · NL publishable=true
+
+해소: hero near-dup densify · phase1 intent_auto MCP 로그 노이즈
+
+---
+
+
+## Full System Retest (2026-08-11)
+
+리포트: `content/logs/2026-08-11_full-system-retest.md`
+
+**종합: PASS** — quick 40/0 · record 31/0 · pipeline 26s · ask −82.4%/시드0=0 · commander 28/0 · humanize 12/0 · newsletter Gate A/C PASS · publishable=true
+
+해소: stale 제목 폴백 `2026 AI·마케팅 실무 인사이트` → garbage 판정 + `이번 주 B2B AI 실무 신호`
+
+---
+
+
 ## README redesign (2026-08-02)
 
 - Skill: `beautify-github-readme` (oil-oil) — README mode + Pure SVG

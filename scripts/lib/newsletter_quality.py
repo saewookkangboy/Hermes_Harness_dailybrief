@@ -137,6 +137,12 @@ def _tldr_bullets(insights: list[Insight], cfg: dict | None = None) -> list[str]
     bullets: list[str] = []
     for ins in insights[:3]:
         title = _nl_label(_newsletter_title(ins, c), 40).rstrip(".")
+        title = unique_sentences(title, max_sentences=1) or title
+        if "실무 인사이트" in title and title.startswith("2026"):
+            title = _newsletter_title(ins, c)
+            title = _nl_label(title, 40).rstrip(".")
+            if "실무 인사이트" in title:
+                title = "이번 주 B2B AI 실무 신호"
         body = unique_sentences(
             complete_text(
                 ins.korean_summary or ins.insight_derivation or ins.marketer_view or "",

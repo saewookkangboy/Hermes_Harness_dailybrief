@@ -95,11 +95,12 @@ else
 fi
 
 # --- Intent: auto detect ---
-AUTO=$(run_py "$DIR/hermes-agent.py" auto "/morning" --date "$STAMP" 2>&1 | head -1)
-if echo "$AUTO" | grep -qi "morning\|Top 3\|Proactive"; then
+AUTO=$(run_py "$DIR/hermes-agent.py" auto "/morning" --date "$STAMP" 2>&1)
+# Skip MCP/Notion noise lines — match intent body, not the first log line.
+if echo "$AUTO" | grep -qiE "morning|Top 3|Proactive|Morning Pack"; then
   record PASS "intent_auto" "morning routed"
 else
-  record FAIL "intent_auto" "$AUTO"
+  record FAIL "intent_auto" "$(echo "$AUTO" | head -3 | tr '\n' ' ')"
 fi
 
 # --- Harness quick ---

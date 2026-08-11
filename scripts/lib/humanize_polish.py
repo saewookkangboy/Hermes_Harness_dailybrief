@@ -133,7 +133,7 @@ def _polish_brief_file(path: Path) -> bool:
 def _fix_newsletter_title(title: str) -> str:
     fixed = polish_display_title((title or "").strip())
     if is_garbage_korean_title(fixed):
-        return "2026 AI·마케팅 실무 인사이트"
+        return "이번 주 B2B AI 실무 신호"
     return fixed
 
 
