@@ -84,12 +84,31 @@ load_chat_id() {
   echo ""
 }
 
+load_slack_channel() {
+  if [[ -n "${SLACK_HOME_CHANNEL:-}" ]]; then
+    echo "$SLACK_HOME_CHANNEL"
+    return
+  fi
+  local env_file="$HOME/.hermes/.env"
+  if [[ -f "$env_file" ]]; then
+    local v
+    v=$(grep -E '^SLACK_HOME_CHANNEL=' "$env_file" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'" || true)
+    [[ -n "$v" ]] && { echo "$v"; return; }
+  fi
+  echo ""
+}
+
 notify() {
   local msg="$1"
-  local chat_id
+  local chat_id slack_ch
   chat_id=$(load_chat_id)
-  [[ -z "$chat_id" ]] && return 0
-  "$DIR/telegram-notify.sh" "$chat_id" "$msg" 2>/dev/null || true
+  [[ -n "$chat_id" ]] && "$DIR/telegram-notify.sh" "$chat_id" "$msg" 2>/dev/null || true
+
+  # Slack when explicitly enabled or SLACK_HOME_CHANNEL is set for this process
+  if [[ "${HERMES_NOTIFY_SLACK:-0}" == "1" ]] || [[ -n "${SLACK_HOME_CHANNEL:-}" ]]; then
+    slack_ch=$(load_slack_channel)
+    [[ -n "$slack_ch" ]] && "$DIR/slack-notify.sh" "$slack_ch" "$msg" 2>/dev/null || true
+  fi
 }
 
 find_latest_handoff() {
