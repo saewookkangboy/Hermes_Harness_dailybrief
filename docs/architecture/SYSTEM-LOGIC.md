@@ -4,7 +4,7 @@
 
 # Hermes Content Studio — System Logic (v2.1)
 
-> **현행** · 2026-07-26 · Graph · Token Gates · Playbook · M1 Redesign  
+> **현행** · 2026-08-12 · Graph · Token Gates · Playbook · M1 Redesign · Newsletter Gate A–D  
 > 이전 버전: [archive/](./archive/) · 상세 변경: [archive/v2.1-graph-token-playbook.md](./archive/v2.1-graph-token-playbook.md) · [Docs 허브](../README.md)
 
 ---
@@ -13,17 +13,27 @@
 
 **Hermes Content Studio**는 Brief SoT(`{date}_brief.md`)를 중심으로 **결정적 M1→M5** 파이프라인을 돌리고, Telegram·Slack·PlayMCP·cron이 Commander로 감독하며, **Wiki Graph + 토큰 SLA + Playbook 학습 루프**로 질의·비용·스킬을 관리하는 자체호스팅 콘텐츠 공장이다.
 
-| 증명 (2026-07-26) | 값 |
-|-------------------|-----|
-| full_pipeline | **24–29s** (SLA 60–70) |
-| ask-eval | **−82~88%** tokens |
-| Full Retest | quick 40/0 · record 31/0 · commander 28/0 |
+| 증명 (2026-08-12 Full Quality) | 값 |
+|--------------------------------|-----|
+| full_pipeline | **20–26s** (SLA 60–70) |
+| ask-eval | **−81~88%** tokens |
+| harness-eval --quick | **40/0** |
+| Newsletter Gate A–D | **PASS** · publishable=true |
+| Full Quality Retest | agents 40/0 · e2e 19/0 · commander 28/0 |
+
+<p align="center">
+  <img src="../../assets/docs/diagram-channels.svg" width="100%" alt="Brief SoT feeds Blog, Threads, IG, LinkedIn, Newsletter">
+</p>
+
+<p align="center">
+  <img src="../../assets/docs/diagram-quality-gates.svg" width="100%" alt="Newsletter Gate A–D quality stack">
+</p>
 
 ```bash
 ./scripts/init.sh --skip-health
 ./scripts/harness-eval.sh --quick
+./scripts/newsletter-gate-c-eval.sh
 ```
-
 ---
 
 ## 1. 버전 타임라인
@@ -138,10 +148,21 @@ flowchart LR
 |-------|----------|------|
 | M1 | `run-research-brief.sh` (+ trust/keyword P1) | validate FAIL |
 | GATE | `brief_gate.py` | FAIL → M2 skip |
-| M2 | `run-content-package.sh` | validate FAIL |
-| M2b | `run-newsletter.sh` | newsletter-eval |
+| M2 | `run-content-package.sh` (blog · threads · IG · LI) | validate FAIL |
+| M2b | `run-newsletter.sh` | Gate A–D · `publishable=false` 시 Notion newsletter 스킵 |
 | AUDIT→VOICE→HUMANIZE→NATURALNESS→BUDGET | quality stack | VOICE/NAT blocking ON |
 | M5 | `archive-to-notion.sh --force` | OAuth/MCP FAIL |
+
+### Newsletter Gate A–D (2026-07-27 · harden 2026-08-11/12)
+
+| Gate | 범위 | eval |
+|------|------|------|
+| **A** | 신선도 · NSFW · 영문↔한글 제목 정합 | `newsletter-freshness-eval.sh` |
+| **B** | Email/LI 길이 · HTTPS CTA · 16:9 이미지 프롬프트 | `newsletter-gate-b-eval.sh` |
+| **C** | validate · `publishable` · fail-injection | `newsletter-gate-c-eval.sh` |
+| **D** | CTOR 학습 · 시드 제외 · 패턴 가중치 | `newsletter-gate-d-eval.sh` |
+
+품질 harden: stale 제목 폴백 금지 · hero near-dup densify · `content/packages/{date}_newsletter-publish.json`
 
 상세 단계 다이어그램·Commander·Multi-Studio·Notion OAuth는 [v2.0 스냅샷](./archive/v2.0-multi-studio-jarvis.md)과 동일 골격. v2.1은 그 위에 Graph/Token/Playbook을 적층.
 
@@ -177,16 +198,20 @@ v2.0과 동일:
 
 ---
 
-## 7. 성능 기준선 (2026-07-26)
+## 7. 성능·품질 기준선 (2026-08-12)
 
 | 항목 | 결과 |
 |------|------|
-| full_pipeline | **24–29s** (SLA 60–70) |
-| research | ~17s (SLA 30) |
-| content (eval, skip research) | **~2s** (baseline 3s) |
-| wiki-graph 증분 | **~260ms** (SLA 3s) |
-| ask-eval | **−82~88%** tokens |
-| Full Retest | quick 40/0 · record 31/0 · commander 28/0 |
+| full_pipeline | **20–26s** (SLA 60–70) |
+| research | ~17–21s (SLA 30) |
+| content (eval, skip research) | **~2–3s** (baseline 3s) |
+| wiki-graph 증분 / rebuild | **~350ms / ~7s** (SLA 3s / 10s) |
+| ask-eval | **−81~88%** tokens |
+| harness-eval --quick | **40/0** |
+| Newsletter Gate A–D | **PASS** · publishable=true |
+| Full Quality Retest | agents 40/0 · e2e 19/0 · commander 28/0 · staging PASS |
+
+이전 스냅샷 (2026-07-26): full 24–29s · quick 40/0 · ask −82~88% — 동일 SLA 밴드.
 
 ---
 
@@ -204,6 +229,12 @@ v2.0과 동일:
 ./scripts/curate-playbook.sh --dry-run
 ./scripts/research-trust-eval.sh
 ./scripts/commander-integration-eval.sh
+./scripts/newsletter-freshness-eval.sh
+./scripts/newsletter-gate-b-eval.sh
+./scripts/newsletter-gate-c-eval.sh
+./scripts/newsletter-gate-d-eval.sh
+./scripts/e2e-smoke-test.sh
+./scripts/agents-eval.sh
 ./scripts/generate-architecture-md.py
 ```
 
@@ -216,8 +247,9 @@ v2.0과 동일:
 | 본 파일 | 현행 System Logic |
 | [archive/v2.1-…](./archive/v2.1-graph-token-playbook.md) | F1–F4 · M1 상세 변경 기록 |
 | [LLM-WIKI-INTEGRATION.md](../LLM-WIKI-INTEGRATION.md) | Wiki + Graph 이중 메모리 |
+| [AI Agent blog+Threads 설계](../superpowers/specs/2026-08-11-ai-agent-blog-threads-daily-report-design.md) | Velog형 블로그 · Threads 패키지 |
 | [HARNESS.md](../../HARNESS.md) | CAR · Voice/Budget · Playbook |
 | `.harness/progress.md` | 세션 진행 SoT |
 
 ---
-*System Logic v2.1 · 2026-07-26*
+*System Logic v2.1 · 품질 기준선 갱신 2026-08-12*

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/docs/banner-harness.svg" width="100%" alt="Harness — 5-subsystem control plane, deterministic first, eval">
+</p>
+
 # Hermes Content Studio — Harness Engineering (v1.3.0)
 
 > [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering) 기반 성능·신뢰성 하네스
@@ -28,12 +32,17 @@ LLM 호출 없이 `assemble-*.py`로 산출물 생성 (~25초).
 `HERMES_ENHANCE=1`일 때만 Hermes polish (2-5분).
 
 ```bash
-./scripts/run-pipeline.sh          # 결정적 전체 M1+M2+M2b (~70s)
+./scripts/run-pipeline.sh          # 결정적 전체 M1+M2+M2b (실측 ~20–26s / SLA 60–70s)
 HERMES_ENHANCE=1 ./scripts/run-pipeline.sh  # LLM polish 추가
-./scripts/run-newsletter.sh [DATE] --validate  # M2b 단독
-./scripts/newsletter-eval.sh · newsletter-p2-eval.sh · newsletter-p3-eval.sh
+./scripts/run-newsletter.sh [DATE] --validate  # M2b 단독 + publishable
+./scripts/newsletter-eval.sh
+./scripts/newsletter-freshness-eval.sh   # Gate A
+./scripts/newsletter-gate-b-eval.sh      # Gate B
+./scripts/newsletter-gate-c-eval.sh      # Gate C
+./scripts/newsletter-gate-d-eval.sh      # Gate D
+./scripts/newsletter-p2-eval.sh · newsletter-p3-eval.sh · …
+./scripts/e2e-smoke-test.sh · agents-eval.sh · staging-supervised-eval.sh
 ```
-
 ### 2. 컨텍스트 백프레셔 (Agency)
 
 - **사전 검색:** `gather-web-research.py` — 에이전트가 `web_search` 호출 생략

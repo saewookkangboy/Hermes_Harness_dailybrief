@@ -14,7 +14,7 @@
 
 | 문서 | 버전 | 기간 | 설명 |
 |------|------|------|------|
-| [SYSTEM-LOGIC.md](./SYSTEM-LOGIC.md) | **v2.1** | 2026-07-20 ~ | Graph · Token gates · Playbook · M1 redesign |
+| [SYSTEM-LOGIC.md](./SYSTEM-LOGIC.md) | **v2.1** | 2026-07-20 ~ | Graph · Token · Playbook · Newsletter Gate A–D · 품질 기준선 2026-08-12 |
 
 ```bash
 ~/hermes-content-studio/scripts/generate-architecture-md.py
@@ -48,10 +48,11 @@
 | 문서 | 역할 |
 |------|------|
 | [../README.md](../README.md) | Docs 허브 |
+| [../superpowers/specs/2026-08-11-ai-agent-blog-threads-daily-report-design.md](../superpowers/specs/2026-08-11-ai-agent-blog-threads-daily-report-design.md) | Velog형 블로그 + Threads 설계 |
 | [HERMES-CONVERSATIONAL-AGENT-MODEL.md](../HERMES-CONVERSATIONAL-AGENT-MODEL.md) | 대화형 Agent · CAR 매핑 |
 | [content-loops.md](../content-loops.md) | L1/L2/L3 루프 cadence |
 | [MULTI-STUDIO-ARCHITECTURE.md](../MULTI-STUDIO-ARCHITECTURE.md) | 8 Studio registry · upstream |
 | [LLM-WIKI-INTEGRATION.md](../LLM-WIKI-INTEGRATION.md) | Wiki · Graph 이중 메모리 |
 | [JARVIS.md](../../JARVIS.md) | 프로젝트 메모리 · OMM |
-| [HARNESS.md](../../HARNESS.md) | 5-Subsystem · Voice/Budget · Playbook |
-| `.harness/progress.md` | 세션 진행 SoT (F1–F4 · retest) |
+| [HARNESS.md](../../HARNESS.md) | 5-Subsystem · Voice/Budget · Playbook · Gate A–D |
+| `.harness/progress.md` | 세션 진행 SoT (F1–F4 · quality retest) |

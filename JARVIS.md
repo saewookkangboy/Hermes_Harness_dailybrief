@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/docs/banner-jarvis.svg" width="100%" alt="JARVIS — project memory, OMM, handoff for operators">
+</p>
+
 # JARVIS.md — Hermes Content Studio 프로젝트 메모리
 
 > Cursor · Codex · JARVIS CODE · Hermes Agent 공유 컨텍스트 (JLC/JARVIS CODE 패턴 차용)
@@ -32,7 +36,7 @@
 
 | 경로 | 역할 |
 |------|------|
-| `scripts/run-pipeline.sh` | M1+M2+M2b 결정적 (~70s) |
+| `scripts/run-pipeline.sh` | M1+M2+M2b 결정적 (~20–26s 실측 / SLA 60–70s) |
 | `scripts/run-research-brief.sh` | M1 리서치 (+ trust/keyword) |
 | `scripts/run-content-package.sh` | M2 blog·IG·LI |
 | `scripts/run-newsletter.sh` | M2b 뉴스레터 |

@@ -1,5 +1,24 @@
 # Harness Progress — v1.3.0 Graph / Token / Playbook
 
+## Beautify docs refresh (2026-08-12)
+
+Skill: [beautify-github-readme](https://github.com/oil-oil/beautify-github-readme) · README mode + Pure SVG
+
+- Hero/workflow 갱신: 20–26s · Gate A–D · Blog/Threads 채널
+- 신규 SVG: `diagram-quality-gates` · `diagram-channels` · root banners (AGENTS/HARNESS/JARVIS/Getdesign/quality)
+- README Value→Proof→Gate→First-use · AGENTS/HARNESS/JARVIS/Getdesign/docs/SYSTEM-LOGIC/Threads plan·spec 배너 반영
+
+---
+
+## Docs sync after quality retest (2026-08-12)
+
+README · docs 허브 · SYSTEM-LOGIC · architecture README · AGENTS · HARNESS에 반영:
+- 실측 SLA **20–26s** · Gate A–D · publishable
+- Velog형 블로그 + Threads 패키지 · Notion archive markers
+- Full Quality Retest 기준선 · eval 커맨드 맵
+
+---
+
 ## Full Quality Retest (2026-08-12)
 
 리포트: `content/logs/2026-08-12_full-quality-retest.md`

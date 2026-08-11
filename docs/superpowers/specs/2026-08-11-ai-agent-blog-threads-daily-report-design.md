@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../../../assets/docs/plan-blog-threads.svg" width="100%" alt="Design — AI Agent Blog + Threads from Brief SoT">
+</p>
+
 # Design: AI Agent 일일 리서치 → Velog형 블로그 + Threads 패키지
 
 **Date:** 2026-08-11  

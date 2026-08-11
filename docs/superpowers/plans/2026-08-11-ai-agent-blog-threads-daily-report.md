@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../../../assets/docs/plan-blog-threads.svg" width="100%" alt="Plan — AI Agent Blog + Threads implementation">
+</p>
+
 # AI Agent Daily Blog + Threads Report Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
