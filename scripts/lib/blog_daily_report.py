@@ -250,6 +250,53 @@ def build_daily_blog_html(stamp: str, summary: str, insights: list[Insight]) -> 
 
 
 def build_threads_md(stamp: str, summary: str, insights: list[Insight]) -> str:
-    """Return the Task 2 companion draft; Task 3 supplies final Threads copy."""
+    """Build package-companion Threads shortform with hook, points, and CTA."""
     theme = _theme_title(insights)
-    return f"# Threads — {theme} ({stamp})\n\n(draft)\n\n[블로그 링크]\n\n궁금한 점 댓글?\n"
+    hook = _sentence(humanize(summary or theme, genre="blog").text, 200)
+
+    points: list[str] = []
+    for insight in insights[:5]:
+        point = _first_nonempty(
+            insight.marketer_view,
+            insight.korean_summary,
+            insight.utilization,
+        )
+        if point:
+            points.append(_sentence(point, 120))
+
+    fallback_points = [
+        "에이전트 권한과 승인 지점을 먼저 정하세요.",
+        "최악의 손실액을 숫자로 고정하세요.",
+        "작은 파일럿에서 실패 조건을 기록하세요.",
+    ]
+    for fallback in fallback_points:
+        if len(points) >= 3:
+            break
+        if fallback not in points:
+            points.append(fallback)
+    points = points[:5]
+
+    cta_topics: list[str] = []
+    for insight in insights[:3]:
+        title = insight.korean_title
+        if title and title not in cta_topics:
+            cta_topics.append(title)
+    if not cta_topics:
+        cta_topics = ["통제권", "예산", "워크플로"]
+    cta_joined = "·".join(cta_topics[:3])
+
+    lines = [
+        f"# Threads — {theme} ({stamp})",
+        "",
+        hook,
+        "",
+        "핵심만 말하면:",
+        *(f"→ {point}" for point in points),
+        "",
+        "자세한 맥락은 블로그에 정리해 두었어요.",
+        "[블로그 링크]",
+        "",
+        f"오늘 팀에서 가장 먼저 손대고 싶은 건 {cta_joined} 중 어디인가요?",
+        "댓글로 한 가지만 남겨 주세요.",
+    ]
+    return "\n".join(lines).rstrip() + "\n"
