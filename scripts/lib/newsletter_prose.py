@@ -24,6 +24,12 @@ BOILERPLATE_PHRASES = [
     "2026 AI·마케팅 실무 인사이트 — ",
     "2026 AI·마케팅 실무 인사이트 —",
     "2026 AI·마케팅 실무 인사이트",
+    "2026 마케팅 실무 인사이트 — ",
+    "2026 마케팅 실무 인사이트 —",
+    "2026 마케팅 실무 인사이트",
+    "2026 AI 마케팅 실무 인사이트 — ",
+    "2026 AI 마케팅 실무 인사이트 —",
+    "2026 AI 마케팅 실무 인사이트",
     "글로벌·국내 AI·마케팅 교차 신호이에요.",
     "글로벌·국내 AI·마케팅 교차 신호입니다.",
     "글로벌·대한민국 AI·마케팅 교차 신호이에요.",
@@ -153,8 +159,10 @@ def densify_hero_parts(
     apply: str,
 ) -> str:
     """Hero: 도입 1문장 + 고유 문장만, 반복·프로세스 문구 제거."""
+    clean_title = re.sub(r"[*_`]", "", (title or "")).strip().rstrip(".!?。")
     lead = f"이번 주 가장 먼저 짚을 주제는 **{title}**이에요."
-    pool: list[str] = []
+    # Seed against lead/title so bare title echoes never re-enter the body.
+    pool: list[str] = [lead, clean_title, f"{clean_title}."]
     for chunk, limit in (
         (problem, 2),
         (explanation, 3),
@@ -163,11 +171,21 @@ def densify_hero_parts(
         piece = unique_sentences(chunk, max_sentences=limit, against=pool)
         if piece:
             pool.extend([p.strip() for p in _SENT_SPLIT.split(piece) if p.strip()])
-    body = " ".join(pool[:6]).strip()
-    body = unique_sentences(body, max_sentences=5)
-    action = unique_sentences(apply, max_sentences=1, against=pool)
+    body = " ".join(
+        p for p in pool if p not in (lead, clean_title, f"{clean_title}.")
+    ).strip()
+    # Drop residual title-only fragments after densify
+    kept: list[str] = []
+    for part in [p.strip() for p in _SENT_SPLIT.split(body) if p.strip()]:
+        bare = re.sub(r"[*_`]", "", part).strip().rstrip(".!?。")
+        if bare == clean_title:
+            continue
+        if sentence_similar(part, lead, threshold=0.72):
+            continue
+        kept.append(part)
+    body = unique_sentences(" ".join(kept), max_sentences=5)
+    action = unique_sentences(apply, max_sentences=1, against=pool + [lead])
     if action:
-        # strip trailing period for "바로 쓸 액션:" line flow
         act = action.rstrip(".!?。")
         body = f"{body} 바로 쓸 액션: {act}.".strip()
     return f"{lead} {body}".strip()

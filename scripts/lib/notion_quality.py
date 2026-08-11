@@ -33,6 +33,7 @@ DEFAULT_MIN_CHARS = {
     "unified": 400,
     "research": 1200,
     "blog": 800,
+    "threads": 120,
     "instagram": 350,
     "linkedin": 350,
     "newsletter": 800,
@@ -44,7 +45,9 @@ DEFAULT_MIN_CHARS = {
 
 REQUIRED_MARKERS = {
     "research": ["## Executive Summary", "## Top 7"],
-    "blog": ["## 한 줄 요약", "## FAQ"],
+    # Velog daily report: emoji one-liner + sources (FAQ no longer required)
+    "blog": ["[오늘의 AI 트렌드]", "주요 트렌드", "한 줄 요약"],
+    "threads": ["[블로그 링크]"],
     "unified": ["## Executive Context", "## Top 인사이트", "## Research Brief 발췌", "| # |"],
     "instagram": ["## 플랫폼", "## 캐러셀", "## Gemini 이미지 생성 프롬프트"],
     "linkedin": ["## 포스트 구조", "## CTA", "## Gemini 이미지 생성 프롬프트"],

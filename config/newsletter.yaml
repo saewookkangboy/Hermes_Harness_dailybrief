@@ -88,6 +88,8 @@ title_integrity:
     - "ChatGPT Workspace Agents 실무 검토"
     - "Claude 엔터프라이즈 — 거버넌스·컨텍스트"
     - "2026 AI·마케팅 실무 인사이트"
+    - "2026 마케팅 실무 인사이트"
+    - "2026 AI 마케팅 실무 인사이트"
 
 boilerplate_ban:
   - "SEO·AEO·GEO 인용"
@@ -102,6 +104,8 @@ boilerplate_ban:
   - "Direct Answer·AEO"
   - "실무 실무"
   - "2026 AI·마케팅 실무 인사이트"
+  - "2026 마케팅 실무 인사이트"
+  - "2026 AI 마케팅 실무 인사이트"
   - "브랜드·퍼포먼스·콘텐츠·AX 관점에서 재해석"
   - "글로벌·국내 AI·마케팅 교차 신호"
   - "글로벌·대한민국 AI·마케팅 교차 신호"

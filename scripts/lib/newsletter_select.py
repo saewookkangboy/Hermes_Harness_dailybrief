@@ -13,7 +13,20 @@ _STALE_DEFAULT = [
     "ChatGPT Workspace Agents 실무 검토",
     "Claude 엔터프라이즈 — 거버넌스·컨텍스트",
     "2026 AI·마케팅 실무 인사이트",
+    "2026 마케팅 실무 인사이트",
+    "2026 AI 마케팅 실무 인사이트",
 ]
+
+
+def _is_stale_display(title: str, stale: set[str]) -> bool:
+    t = (title or "").strip()
+    if not t:
+        return True
+    if t in stale:
+        return True
+    if "실무 인사이트" in t and re.match(r"^2026\s", t):
+        return True
+    return False
 
 
 @dataclass
@@ -112,12 +125,16 @@ def concrete_localize(source_title: str) -> str:
         if re.search(pat, tl, re.I):
             return label
 
-    # Brand + short gloss — never collapse to generic AX
+    # Brand + short gloss — never collapse to generic AX / stale insight titles
     words = re.findall(r"[A-Za-z0-9][A-Za-z0-9\-]+", raw)
     brand = " ".join(words[:4]).strip()
     if brand:
         gloss = polish_display_title(raw)
-        if gloss and gloss not in _STALE_DEFAULT and "실무 인사이트" not in gloss:
+        if (
+            gloss
+            and not _is_stale_display(gloss, set(_STALE_DEFAULT))
+            and "실무 인사이트" not in gloss
+        ):
             return gloss if has_meaningful_korean(gloss) else f"{brand} — 실무 점검"
         return f"{brand} — 실무 점검"
     return "이번 주 B2B AI 실무 신호"
@@ -130,10 +147,10 @@ def title_integrity_ok(ins: Insight, cfg: dict | None = None) -> bool:
     stale = set(integrity.get("stale_korean_titles") or _STALE_DEFAULT)
     display = (ins.title or "").strip()
     source = _source_title(ins)
-    if display in stale and source:
+    if _is_stale_display(display, stale) and source:
         return False
     if not source:
-        return display not in stale
+        return not _is_stale_display(display, stale)
 
     sl = source.lower()
     dl = display.lower()
@@ -160,9 +177,9 @@ def display_title_for(ins: Insight, cfg: dict | None = None) -> str:
     source = _source_title(ins)
     display = (ins.title or "").strip()
 
-    if prefer and source and (display in stale or not title_integrity_ok(ins, c)):
+    if prefer and source and (_is_stale_display(display, stale) or not title_integrity_ok(ins, c)):
         return concrete_localize(source)
-    if display and display not in stale and has_meaningful_korean(display):
+    if display and not _is_stale_display(display, stale) and has_meaningful_korean(display):
         return re.sub(r"\s+", " ", display).strip()
     if source:
         return concrete_localize(source)

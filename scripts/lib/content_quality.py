@@ -62,6 +62,13 @@ def has_meaningful_korean(text: str, *, min_chars: int = 4) -> bool:
     return _hangul_count(text) >= min_chars
 
 
+_GENERIC_INSIGHT_TITLES = (
+    "2026 AI·마케팅 실무 인사이트",
+    "2026 마케팅 실무 인사이트",
+    "2026 AI 마케팅 실무 인사이트",
+)
+
+
 def is_garbage_korean_title(title: str) -> bool:
     """영문 조각 + '실무 가이드' 등 다운스트림 맥락 단절 제목."""
     t = (title or "").strip()
@@ -78,6 +85,9 @@ def is_garbage_korean_title(title: str) -> bool:
     if re.search(r"\bOpenAI\s+News\s+OpenAI\b", t, re.I):
         return True
     if re.search(r"관련 AI·마케팅 신호입니다\.?\s*$", t):
+        return True
+    # Stale weekly fallback that polluted 8+ issues — never treat as real title
+    if t in _GENERIC_INSIGHT_TITLES or re.fullmatch(r"2026\s*(AI[·・\s]*)?마케팅\s*실무\s*인사이트", t):
         return True
     return False
 
@@ -134,14 +144,14 @@ def localize_title(title: str) -> str:
         if kw in tl:
             keywords.append(label)
     if keywords:
-        return f"2026 {keywords[0]} 실무 인사이트"
+        return f"2026 {keywords[0]} 실무 점검"
     words = re.sub(r"[^\w\s\-]", " ", t).split()[:5]
     if words:
         candidate = " ".join(words).strip()
         if not has_meaningful_korean(candidate):
-            return "2026 AI·마케팅 실무 인사이트"
+            return "이번 주 B2B AI 실무 신호"
         return compress_sentences(f"{candidate} 관련 실무 신호입니다.", 72, max_sentences=1)
-    return "2026 AI·마케팅 실무 인사이트"
+    return "이번 주 B2B AI 실무 신호"
 
 
 def polish_display_title(title: str) -> str:
