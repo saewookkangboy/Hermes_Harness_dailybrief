@@ -37,6 +37,9 @@ class ConfigError(RuntimeError):
     """config/meta-ads.yaml 이 없거나 깨졌거나 meta_ads 섹션이 없음."""
 
 
+MODES = ("sample", "api")
+
+
 # ── config ────────────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
     # A missing, broken or unreadable config must stop the job: silently falling
@@ -66,6 +69,11 @@ def load_config() -> dict[str, Any]:
     env_mode = os.environ.get("HERMES_META_ADS_MODE")
     if env_mode:
         cfg["mode"] = env_mode
+    # A typo ("ap") must stop here: setup treats any non-api mode as "remove the jobs".
+    mode = str(cfg.get("mode") or "sample").strip().lower()
+    if mode not in MODES:
+        raise ConfigError(f"mode 는 {' 또는 '.join(MODES)} 여야 합니다 (현재: {cfg.get('mode')!r})")
+    cfg["mode"] = mode
     return cfg
 
 

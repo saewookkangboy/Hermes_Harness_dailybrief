@@ -135,6 +135,25 @@ for path, text in ((bad.parent / "absent.yaml", None), (bad.parent / "nosection.
         pass
 M.CONFIG_PATH = orig_cfg
 check("missing_config_fails_loudly", missing_ok)
+
+# 5b) A misspelled mode stops too — setup would otherwise take the non-api branch and remove jobs
+import os
+os.environ.pop("HERMES_META_ADS_MODE", None)
+def mode_of(text, env=None):
+    path = bad.parent / "mode.yaml"; path.write_text(text, encoding="utf-8"); M.CONFIG_PATH = path
+    if env: os.environ["HERMES_META_ADS_MODE"] = env
+    try:
+        return M.load_config()["mode"]
+    except M.ConfigError:
+        return "ConfigError"
+    finally:
+        os.environ.pop("HERMES_META_ADS_MODE", None)
+        M.CONFIG_PATH = orig_cfg
+check("invalid_mode_fails_loudly",
+      mode_of("meta_ads:\n  mode: ap\n") == "ConfigError"
+      and mode_of("meta_ads:\n  mode: api\n", env="bogus") == "ConfigError"
+      and mode_of("meta_ads:\n  currency: KRW\n") == "sample"
+      and mode_of("meta_ads:\n  mode: api\n") == "api")
 PY
 )
 while IFS= read -r line; do
@@ -233,8 +252,12 @@ touch "$SBX/scripts/lib/__init__.py"
 printf 'meta_ads:\n  mode: api\n  fatigue: [unclosed\n' > "$SBX/config/meta-ads.yaml"
 printf '#!/usr/bin/env bash\n[[ "$1 $2" == "cron list" ]] && printf "  ab12cd34 [active]\\n    Name: cron-meta-weekly\\n" || echo "$*" >> "%s/calls.log"\n' "$SBX" > "$SBX/bin/hermes"
 chmod +x "$SBX/bin/hermes"
-for case in broken missing; do
-  [[ "$case" == missing ]] && rm -f "$SBX/config/meta-ads.yaml"
+for case in broken invalid missing; do
+  case "$case" in
+    broken)  printf 'meta_ads:\n  mode: api\n  fatigue: [unclosed\n' > "$SBX/config/meta-ads.yaml" ;;
+    invalid) printf 'meta_ads:\n  mode: ap\n' > "$SBX/config/meta-ads.yaml" ;;
+    missing) rm -f "$SBX/config/meta-ads.yaml" ;;
+  esac
   rm -f "$SBX/calls.log"
   if ! PATH="$SBX/bin:$PATH" HERMES_WORKDIR="$SBX" bash "$SBX/scripts/setup-meta-ads-cron.sh" >/dev/null 2>&1 && [[ ! -s "$SBX/calls.log" ]]; then
     record PASS "setup_aborts_on_${case}_config"
