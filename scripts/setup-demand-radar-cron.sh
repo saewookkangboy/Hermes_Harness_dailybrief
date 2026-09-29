@@ -13,14 +13,18 @@ DRY=0; [[ "${1:-}" == "--dry-run" ]] && DRY=1
 # shellcheck source=lib/slack_home.sh
 source "$WORKDIR/scripts/lib/slack_home.sh"
 
-read -r MODE SCHEDULE < <(python3 - <<PY
+# 설정을 못 읽으면 여기서 멈춤 (빈 MODE 로 아래 non-api 분기에 들어가 기존 작업을 지우지 않게)
+if ! CFG_LINE=$(python3 - <<PY
 import sys
 sys.path.insert(0, "$WORKDIR/scripts")
 from lib.demand_radar import load_config
 c = load_config()
 print(c["mode"], (c.get("notify") or {}).get("schedule", "40 8 * * 1").replace(" ", "_"))
 PY
-)
+); then
+  echo "❌ config/demand-radar.yaml 을 읽지 못해 아무것도 바꾸지 않았습니다"; exit 1
+fi
+read -r MODE SCHEDULE <<< "$CFG_LINE"
 SCHEDULE="${SCHEDULE//_/ }"
 
 _remove_existing() {
@@ -38,7 +42,7 @@ if [[ "$MODE" != "api" ]]; then
   exit 0
 fi
 
-if ! PROBE=$(python3 "$WORKDIR/scripts/demand-radar.py" --date "$(date +%Y-%m-%d)-probe" 2>&1); then
+if ! PROBE=$(python3 "$WORKDIR/scripts/demand-radar.py" --probe 2>&1); then
   echo "❌ 데이터랩 조회 실패 — 등록 중단"; echo "$PROBE"; exit 1
 fi
 

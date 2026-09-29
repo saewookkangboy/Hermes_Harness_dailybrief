@@ -114,6 +114,57 @@ PY
 )
 record "$BROKEN" "broken_config_fails_loudly"
 
+# 5b2) Missing file or missing demand_radar section also stops (no silent sample mode)
+MISSING=$(cd "$DIR" && PYTHONPATH="$DIR" python3 - <<'PY'
+import tempfile
+from pathlib import Path
+from lib import demand_radar as R
+d = Path(tempfile.mkdtemp())
+ok = True
+for path, text in ((d / "absent.yaml", None), (d / "nosection.yaml", "other: {}\n")):
+    if text is not None:
+        path.write_text(text, encoding="utf-8")
+    R.CONFIG_PATH = path
+    try:
+        R.load_config(); ok = False
+    except R.ConfigError:
+        pass
+print("PASS" if ok else "FAIL")
+PY
+)
+record "$MISSING" "missing_config_fails_loudly"
+
+# 5b3) setup aborts on a config error — it must not reach the non-api branch that removes jobs
+SBX="$(mktemp -d)"
+mkdir -p "$SBX/scripts/lib" "$SBX/config" "$SBX/bin"
+cp "$DIR/setup-demand-radar-cron.sh" "$SBX/scripts/"
+cp "$DIR/lib/demand_radar.py" "$DIR/lib/slack_home.sh" "$SBX/scripts/lib/"
+touch "$SBX/scripts/lib/__init__.py"
+printf 'demand_radar:\n  mode: api\n  themes: [unclosed\n' > "$SBX/config/demand-radar.yaml"
+printf '#!/usr/bin/env bash\n[[ "$1 $2" == "cron list" ]] && printf "  ab12cd34 [active]\\n    Name: cron-demand-radar\\n" || echo "$*" >> "%s/calls.log"\n' "$SBX" > "$SBX/bin/hermes"
+chmod +x "$SBX/bin/hermes"
+for case in broken missing; do
+  [[ "$case" == missing ]] && rm -f "$SBX/config/demand-radar.yaml"
+  rm -f "$SBX/calls.log"
+  if ! PATH="$SBX/bin:$PATH" HERMES_WORKDIR="$SBX" bash "$SBX/scripts/setup-demand-radar-cron.sh" >/dev/null 2>&1 && [[ ! -s "$SBX/calls.log" ]]; then
+    record PASS "setup_aborts_on_${case}_config"
+  else
+    record FAIL "setup_aborts_on_${case}_config ($(cat "$SBX/calls.log" 2>/dev/null))"
+  fi
+done
+rm -rf "$SBX"
+
+# 5b4) The setup probe queries only — no report file that Notion could archive
+PROBE_WS="$(mktemp -d)"
+if HERMES_WORKDIR="$PROBE_WS" python3 "$DIR/demand-radar.py" --mode sample --probe | grep -q 'probe ok' \
+   && [[ -z "$(find "$PROBE_WS" -name '*demand-radar.md' 2>/dev/null)" ]] \
+   && grep -q -- '--probe' "$DIR/setup-demand-radar-cron.sh"; then
+  record PASS "probe_writes_no_report"
+else
+  record FAIL "probe_writes_no_report"
+fi
+rm -rf "$PROBE_WS"
+
 # 5c) Cron wrapper posts nothing outside api mode
 grep -q -- '--require-api' "$DIR/cron-demand-radar.sh" \
   && [[ -z "$(HERMES_DEMAND_RADAR_MODE=sample HERMES_WORKDIR="$TMP_WS" python3 "$DIR/demand-radar.py" --require-api 2>/dev/null)" ]] \

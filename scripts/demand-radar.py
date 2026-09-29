@@ -24,9 +24,15 @@ def main() -> int:
     ap.add_argument("--print-report", action="store_true")
     ap.add_argument("--require-api", action="store_true",
                     help="cron 전용: mode 가 api 가 아니면 아무것도 게시하지 않고 종료")
+    ap.add_argument("--probe", action="store_true",
+                    help="setup 전용: 조회만 하고 리포트 파일은 쓰지 않음")
     args = ap.parse_args()
 
-    cfg = R.load_config()
+    try:
+        cfg = R.load_config()
+    except R.ConfigError as exc:
+        print(f"⚠️ 수요 레이더 설정 오류 — 실행하지 않았습니다: {exc}")
+        return 2
     if args.mode:
         cfg["mode"] = args.mode
     if args.require_api and cfg["mode"] != "api":
@@ -38,6 +44,9 @@ def main() -> int:
     except R.DataLabError as exc:
         print(f"⚠️ 데이터랩 조회 실패: {exc}")
         return 2
+    if args.probe:
+        print(f"probe ok · 키워드 {len(radar.keywords)}개 · 급상승 {len(radar.rising)}개 (파일 저장 안 함)")
+        return 0
 
     report = R.format_report(radar, cfg)
     path = R.output_path(radar, cfg, args.date)

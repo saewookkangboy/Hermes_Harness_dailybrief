@@ -27,14 +27,23 @@ class DataLabError(RuntimeError):
     pass
 
 
+class ConfigError(RuntimeError):
+    """config/demand-radar.yaml 이 없거나 깨졌거나 demand_radar 섹션이 없음."""
+
+
 # ── config ────────────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
-    # A broken or unreadable config must stop the job, not silently fall back to sample mode.
-    cfg: dict[str, Any] = {}
-    if CONFIG_PATH.exists():
-        import yaml  # type: ignore
+    # A missing, broken or unreadable config must stop the job, never silently fall
+    # back to sample mode (setup would then also remove a live api-mode job).
+    import yaml  # type: ignore
 
-        cfg = (yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}).get("demand_radar") or {}
+    try:
+        data = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError) as exc:
+        raise ConfigError(f"{CONFIG_PATH} 를 읽지 못했습니다: {exc}") from exc
+    cfg = data.get("demand_radar") if isinstance(data, dict) else None
+    if not isinstance(cfg, dict):
+        raise ConfigError(f"{CONFIG_PATH} 에 demand_radar 섹션이 없습니다")
     cfg.setdefault("mode", "sample")
     api = cfg.setdefault("api", {})
     api.setdefault("provider", "hub")
