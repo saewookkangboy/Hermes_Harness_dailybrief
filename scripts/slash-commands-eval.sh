@@ -43,6 +43,9 @@ calls=$(cat "$TMP/calls.log")
 [[ "$calls" != *"run-research-brief.sh"* && "$calls" != *"run-content-package.sh"* ]] \
   && record PASS "slash_research_does_not_run" || record FAIL "slash_research_does_not_run ($calls)"
 [[ "$out" == *"리서치 <키워드>"* ]] && record PASS "slash_research_shows_usage" || record FAIL "slash_research_shows_usage"
+# …and the status part works from the running copy of the scripts (HOME here has no hermes-content-studio)
+[[ "$out" != *"Traceback"* && "$out" != *"ModuleNotFoundError"* ]] \
+  && record PASS "slash_research_status_no_traceback" || record FAIL "slash_research_status_no_traceback"
 
 # 3) Natural-language approvals keep working; bare 승인 only lists
 AGENT=$(cd "$DIR" && PYTHONPATH="$DIR" python3 - <<'PY'

@@ -218,10 +218,12 @@ run_research_keyword() {
 }
 
 run_research_pending() {
-  python3 - <<'PY'
+  # Import lib/ from this script's own directory (bare /research now lands here),
+  # not a fixed ~/hermes-content-studio path that may not exist.
+  HERMES_SCRIPTS_DIR="$DIR" python3 - <<'PY'
+import os
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+sys.path.insert(0, os.environ["HERMES_SCRIPTS_DIR"])
 from lib.research_staging import format_pending_status
 print(format_pending_status())
 PY
@@ -230,11 +232,10 @@ PY
 run_research_approve() {
   studio_refresh_date
   local target="${1:-}"
-  HERMES_RESEARCH_APPROVE_TARGET="$target" python3 - <<'PY'
+  HERMES_SCRIPTS_DIR="$DIR" HERMES_RESEARCH_APPROVE_TARGET="$target" python3 - <<'PY'
 import os
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+sys.path.insert(0, os.environ["HERMES_SCRIPTS_DIR"])
 from lib.research_staging import approve
 target = (os.environ.get("HERMES_RESEARCH_APPROVE_TARGET") or "").strip()
 if target == "all":
