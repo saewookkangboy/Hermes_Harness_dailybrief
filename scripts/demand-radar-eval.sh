@@ -134,6 +134,31 @@ PY
 )
 record "$MISSING" "missing_config_fails_loudly"
 
+# 5b2b) A misspelled mode stops too — setup would otherwise take the non-api branch and remove the job
+INVALID=$(cd "$DIR" && PYTHONPATH="$DIR" python3 - <<'PY'
+import os, tempfile
+from pathlib import Path
+from lib import demand_radar as R
+d = Path(tempfile.mkdtemp())
+os.environ.pop("HERMES_DEMAND_RADAR_MODE", None)
+def mode_of(text, env=None):
+    path = d / "c.yaml"; path.write_text(text, encoding="utf-8"); R.CONFIG_PATH = path
+    if env: os.environ["HERMES_DEMAND_RADAR_MODE"] = env
+    try:
+        return R.load_config()["mode"]
+    except R.ConfigError:
+        return "ConfigError"
+    finally:
+        os.environ.pop("HERMES_DEMAND_RADAR_MODE", None)
+ok = (mode_of("demand_radar:\n  mode: ap\n") == "ConfigError"
+      and mode_of("demand_radar:\n  mode: api\n", env="bogus") == "ConfigError"
+      and mode_of("demand_radar:\n  themes: {}\n") == "sample"
+      and mode_of("demand_radar:\n  mode: api\n") == "api")
+print("PASS" if ok else "FAIL")
+PY
+)
+record "$INVALID" "invalid_mode_fails_loudly"
+
 # 5b3) setup aborts on a config error — it must not reach the non-api branch that removes jobs
 SBX="$(mktemp -d)"
 mkdir -p "$SBX/scripts/lib" "$SBX/config" "$SBX/bin"
@@ -143,8 +168,12 @@ touch "$SBX/scripts/lib/__init__.py"
 printf 'demand_radar:\n  mode: api\n  themes: [unclosed\n' > "$SBX/config/demand-radar.yaml"
 printf '#!/usr/bin/env bash\n[[ "$1 $2" == "cron list" ]] && printf "  ab12cd34 [active]\\n    Name: cron-demand-radar\\n" || echo "$*" >> "%s/calls.log"\n' "$SBX" > "$SBX/bin/hermes"
 chmod +x "$SBX/bin/hermes"
-for case in broken missing; do
-  [[ "$case" == missing ]] && rm -f "$SBX/config/demand-radar.yaml"
+for case in broken invalid missing; do
+  case "$case" in
+    broken)  printf 'demand_radar:\n  mode: api\n  themes: [unclosed\n' > "$SBX/config/demand-radar.yaml" ;;
+    invalid) printf 'demand_radar:\n  mode: ap\n' > "$SBX/config/demand-radar.yaml" ;;
+    missing) rm -f "$SBX/config/demand-radar.yaml" ;;
+  esac
   rm -f "$SBX/calls.log"
   if ! PATH="$SBX/bin:$PATH" HERMES_WORKDIR="$SBX" bash "$SBX/scripts/setup-demand-radar-cron.sh" >/dev/null 2>&1 && [[ ! -s "$SBX/calls.log" ]]; then
     record PASS "setup_aborts_on_${case}_config"

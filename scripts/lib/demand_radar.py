@@ -31,6 +31,9 @@ class ConfigError(RuntimeError):
     """config/demand-radar.yaml 이 없거나 깨졌거나 demand_radar 섹션이 없음."""
 
 
+MODES = ("sample", "api")
+
+
 # ── config ────────────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
     # A missing, broken or unreadable config must stop the job, never silently fall
@@ -60,6 +63,11 @@ def load_config() -> dict[str, Any]:
     cfg.setdefault("outputs", {}).setdefault("dir", "content/signals")
     if os.environ.get("HERMES_DEMAND_RADAR_MODE"):
         cfg["mode"] = os.environ["HERMES_DEMAND_RADAR_MODE"]
+    # A typo ("ap") must stop here: setup treats any non-api mode as "remove the job".
+    mode = str(cfg.get("mode") or "sample").strip().lower()
+    if mode not in MODES:
+        raise ConfigError(f"mode 는 {' 또는 '.join(MODES)} 여야 합니다 (현재: {cfg.get('mode')!r})")
+    cfg["mode"] = mode
     return cfg
 
 
