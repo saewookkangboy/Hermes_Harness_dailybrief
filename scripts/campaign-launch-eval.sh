@@ -230,6 +230,44 @@ try:
 except CG.CampaignError:
     second = "rejected"
 check("approve_waits_for_lock_then_single_package", waited and results == ["packaged"] and second == "rejected")
+
+# 7b) run takes the same lock: a run queued behind an in-flight approval must not overwrite it
+CG.start_campaign(str(brief_file("b10", id="race-test")), cfg=cfg, today=TODAY)
+race_state = CG._state_path(cfg, "race-test")
+lock_fh = open(race_state.with_suffix(".lock"), "w")
+fcntl.flock(lock_fh, fcntl.LOCK_EX)                      # approval in progress
+run_result = []
+def rerun():
+    try:
+        run_result.append(CG.start_campaign(str(brief_file("b10", id="race-test")), cfg=cfg, today=TODAY)["status"])
+    except CG.CampaignError:
+        run_result.append("refused")
+t = threading.Thread(target=rerun); t.start()
+time.sleep(0.4)
+run_waited = t.is_alive() and not run_result
+s_ = json.loads(race_state.read_text(encoding="utf-8")); s_["status"] = "packaged"   # approval finishes
+race_state.write_text(json.dumps(s_, ensure_ascii=False), encoding="utf-8")
+fcntl.flock(lock_fh, fcntl.LOCK_UN); lock_fh.close()
+t.join(10)
+check("run_waits_for_lock_and_keeps_approval",
+      run_waited and run_result == ["refused"] and json.loads(race_state.read_text(encoding="utf-8"))["status"] == "packaged")
+
+# 7c) The CSV is always PAUSED: a config asking for anything else stops, and the CSV ignores the value anyway
+bad_status = tmpd / "active.yaml"
+bad_status.write_text("campaign_launch:\n  package:\n    status: ACTIVE\n", encoding="utf-8")
+CG.CONFIG_PATH = bad_status
+try:
+    CG.load_config(); status_refused = False
+except CG.ConfigError:
+    status_refused = True
+finally:
+    CG.CONFIG_PATH = orig_cfg_path
+import copy
+cfg_active = copy.deepcopy(cfg); cfg_active["package"]["status"] = "ACTIVE"
+packaged = json.loads(CG._state_path(cfg, st["id"]).read_text(encoding="utf-8"))
+rows_a = list(csv.reader(io.StringIO(CG.build_ads_csv(packaged, cfg_active))))
+si = rows_a[0].index(cfg_active["package"]["columns"]["ad_status"])
+check("csv_paused_regardless_of_config", status_refused and len(rows_a) > 1 and all(r[si] == "PAUSED" for r in rows_a[1:]))
 PY
 )
 while IFS= read -r line; do
