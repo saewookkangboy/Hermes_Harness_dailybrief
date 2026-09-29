@@ -22,11 +22,17 @@ def main() -> int:
     ap.add_argument("--mode", choices=["sample", "api"])
     ap.add_argument("--date", help="파일명 날짜 (기본: 오늘 KST)")
     ap.add_argument("--print-report", action="store_true")
+    ap.add_argument("--require-api", action="store_true",
+                    help="cron 전용: mode 가 api 가 아니면 아무것도 게시하지 않고 종료")
     args = ap.parse_args()
 
     cfg = R.load_config()
     if args.mode:
         cfg["mode"] = args.mode
+    if args.require_api and cfg["mode"] != "api":
+        # stdout 은 cron --deliver 로 Slack 에 게시되므로 비워 둠 (샘플 수치 게시 방지)
+        print(f"demand-radar: mode={cfg['mode']} — cron 실행 건너뜀 (setup-demand-radar-cron.sh 를 다시 실행하세요)", file=sys.stderr)
+        return 0
     try:
         radar = R.build_radar(cfg)
     except R.DataLabError as exc:

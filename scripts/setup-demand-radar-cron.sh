@@ -23,10 +23,18 @@ PY
 )
 SCHEDULE="${SCHEDULE//_/ }"
 
+_remove_existing() {
+  local id
+  for id in $(hermes cron list 2>/dev/null | awk '/^  [a-f0-9][a-f0-9]/ {i=$1; gsub(/[^a-f0-9]/,"",i)} $0 ~ "Name:" && index($0,"cron-demand-radar")>0 {print i}' || true); do
+    if [[ "$DRY" == "1" ]]; then echo "[dry-run] remove cron-demand-radar ($id)"; else hermes cron remove "$id" >/dev/null 2>&1 && echo "  🗑  cron-demand-radar ($id) 해제" || true; fi
+  done
+}
+
 echo "=== Demand Radar cron (조회 전용) ==="
 echo "mode: $MODE · schedule: $SCHEDULE"
 if [[ "$MODE" != "api" ]]; then
   echo "ℹ️  mode=$MODE — 등록하지 않습니다. 키 연결 후 config/demand-radar.yaml mode: api 로 바꾸고 다시 실행하세요."
+  _remove_existing   # api 모드에서 등록했던 작업이 남아 있으면 해제
   exit 0
 fi
 
@@ -48,8 +56,6 @@ cp "$WORKDIR/scripts/lib/cron_bootstrap.sh" "$HERMES_SCRIPTS/cron_bootstrap.sh"
 cp "$WORKDIR/scripts/cron-demand-radar.sh" "$HERMES_SCRIPTS/cron-demand-radar.sh"
 chmod +x "$HERMES_SCRIPTS/cron-demand-radar.sh"
 
-for id in $(hermes cron list 2>/dev/null | awk '/^  [a-f0-9][a-f0-9]/ {i=$1; gsub(/[^a-f0-9]/,"",i)} $0 ~ "Name:" && index($0,"cron-demand-radar")>0 {print i}'); do
-  hermes cron remove "$id" >/dev/null 2>&1 || true
-done
+_remove_existing
 hermes cron create --name "cron-demand-radar" --workdir "$WORKDIR" --script "cron-demand-radar.sh" \
   --no-agent --deliver "$DELIVER" "$SCHEDULE" "" && echo "  ✅ cron-demand-radar"

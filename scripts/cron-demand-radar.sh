@@ -7,4 +7,4 @@ WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
 # shellcheck source=lib/cron_bootstrap.sh
 source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 
-cron_run_py "$SCRIPTS_DIR/demand-radar.py"
+cron_run_py "$SCRIPTS_DIR/demand-radar.py" --require-api

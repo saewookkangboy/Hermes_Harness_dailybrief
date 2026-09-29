@@ -98,6 +98,43 @@ else
   record PASS "no_auto_merge_into_m1"
 fi
 
+# 5b) A broken config fails loudly instead of falling back to sample mode
+BROKEN=$(cd "$DIR" && PYTHONPATH="$DIR" python3 - <<'PY'
+import tempfile
+from pathlib import Path
+from lib import demand_radar as R
+bad = Path(tempfile.mkdtemp()) / "demand-radar.yaml"
+bad.write_text("demand_radar:\n  mode: api\n  themes: [unclosed\n", encoding="utf-8")
+R.CONFIG_PATH = bad
+try:
+    R.load_config(); print("FAIL")
+except Exception:
+    print("PASS")
+PY
+)
+record "$BROKEN" "broken_config_fails_loudly"
+
+# 5c) Cron wrapper posts nothing outside api mode
+grep -q -- '--require-api' "$DIR/cron-demand-radar.sh" \
+  && [[ -z "$(HERMES_DEMAND_RADAR_MODE=sample HERMES_WORKDIR="$TMP_WS" python3 "$DIR/demand-radar.py" --require-api 2>/dev/null)" ]] \
+  && record PASS "cron_sample_mode_posts_nothing" || record FAIL "cron_sample_mode_posts_nothing"
+
+# 5d) Switching back to sample mode removes a job registered earlier in api mode
+STUB="$(mktemp -d)"
+cat > "$STUB/hermes" <<'SH'
+#!/usr/bin/env bash
+if [[ "$1 $2" == "cron list" ]]; then
+  printf '  ab12cd34 [active]\n    Name: cron-demand-radar\n  ef56ab78 [active]\n    Name: cron-meta-weekly\n'
+else
+  echo "$*" >> "$(dirname "$0")/calls.log"
+fi
+SH
+chmod +x "$STUB/hermes"
+PATH="$STUB:$PATH" HERMES_DEMAND_RADAR_MODE=sample HERMES_WORKDIR="$REPO" bash "$DIR/setup-demand-radar-cron.sh" >/dev/null 2>&1 || true
+[[ "$(cat "$STUB/calls.log" 2>/dev/null)" == "cron remove ab12cd34" ]] \
+  && record PASS "sample_mode_removes_existing_job" || record FAIL "sample_mode_removes_existing_job"
+rm -rf "$STUB"
+
 # 6) Sample mode never registers cron
 if HERMES_DEMAND_RADAR_MODE=sample HERMES_WORKDIR="$REPO" bash "$DIR/setup-demand-radar-cron.sh" --dry-run 2>&1 | grep -q '등록하지 않습니다'; then
   record PASS "sample_mode_no_cron"

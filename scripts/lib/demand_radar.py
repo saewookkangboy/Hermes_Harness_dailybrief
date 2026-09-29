@@ -29,12 +29,12 @@ class DataLabError(RuntimeError):
 
 # ── config ────────────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
-    try:
+    # A broken or unreadable config must stop the job, not silently fall back to sample mode.
+    cfg: dict[str, Any] = {}
+    if CONFIG_PATH.exists():
         import yaml  # type: ignore
 
-        cfg = (yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}).get("demand_radar", {})
-    except Exception:  # noqa: BLE001
-        cfg = {}
+        cfg = (yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}).get("demand_radar") or {}
     cfg.setdefault("mode", "sample")
     api = cfg.setdefault("api", {})
     api.setdefault("provider", "hub")
