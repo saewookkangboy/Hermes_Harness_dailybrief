@@ -9,8 +9,10 @@ playmcp_routing:
 
     Slash: /pipeline /research /content /newsletter /sync
     Intent: /morning /catch-up /publish /approve /linkedin /blog /traces /graph /commands
-    Research: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
-    (승인 alone = publish; 리서치 승인 = research-approve)
+    Slash never carries arguments (gateway drops them): /research · /approve only show status + usage.
+    Keyword research: 리서치 <kw> [--replace] [--approve] → telegram-pipeline.sh auto "<message>"
+    Publish approval: 승인 <linkedin|newsletter|blog|instagram|all> → telegram-pipeline.sh auto "<message>"
+    (승인 alone = 대기 목록만; 리서치 승인 = research-approve) · /research-pending · /research-approve
 
     Rules: ONE terminal command. Reply with stdout only.
 

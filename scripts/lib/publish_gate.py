@@ -99,7 +99,7 @@ def format_telegram_approval(stamp: str, queue: dict[str, Any] | None = None) ->
     lines.extend(
         [
             "",
-            "승인: /approve linkedin · /approve newsletter · /approve all",
+            "승인(일반 메시지): 승인 linkedin · 승인 newsletter · 승인 all",
             f"상태: /pending",
         ]
     )
@@ -149,9 +149,9 @@ def format_approval_card(stamp: str, queue: dict[str, Any] | None = None) -> str
     lines.extend(
         [
             "",
-            "승인 예:",
-            f"  /approve linkedin",
-            f"  /approve all",
+            "승인 예 (일반 메시지 — 슬래시 /approve는 목록만 보여줌):",
+            f"  승인 linkedin",
+            f"  승인 all",
             f"  hermes-agent.sh publish linkedin --approve --date {stamp}",
         ]
     )

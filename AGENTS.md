@@ -150,6 +150,8 @@ Telegram에서 요청 보낼 때 **별도 Terminal**에서 `watch-telegram.sh` �
 
 두 채널 모두 동일한 커맨더 역할: 리서치·콘텐츠·강의 파이프라인 트리거.
 
+슬래시 명령은 뒤에 붙인 글자가 스크립트로 전달되지 않습니다(Hermes 게이트웨이 exec quick command). 그래서 `/approve`·`/research`는 조회·안내만 하고, 승인·키워드는 일반 메시지로 보냅니다: `승인 linkedin` · `승인 all` · `리서치 <키워드>` · `캠페인 승인 <id>`. 검증: `scripts/slash-commands-eval.sh`
+
 ## Harness 상태
 
 | 파일 | 역할 |

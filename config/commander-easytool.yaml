@@ -28,7 +28,7 @@ easytool:
   rules:
     - "/slash → scripts/<cmd>.sh qc <name> (zero LLM)"
     - "NL pipeline → telegram-pipeline.sh auto"
-    - "캠페인 승인·반려·목록 → telegram-pipeline.sh auto \"<message>\" (never qc approve)"
+    - "승인·리서치 키워드·캠페인 → telegram-pipeline.sh auto \"<message>\" (slash drops args)"
     - "Base: ~/hermes-content-studio/scripts/"
 
   quick_command_hints:
