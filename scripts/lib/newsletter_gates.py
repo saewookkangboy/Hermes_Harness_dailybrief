@@ -69,7 +69,7 @@ def assert_freshness(stamp: str, md_text: str, cfg: dict | None = None) -> list[
     if "## 품질 메모" in body:
         body = body.split("## 품질 메모", 1)[0]
     failures.extend(banned_boilerplate(body, c))
-    if re.search(r"(?i)undress|nsfw|deepnude", body):
+    if re.search(r"(?i)undress|nsfw|deepnude|nudify", body):
         failures.append("unsafe_content")
     return failures
 

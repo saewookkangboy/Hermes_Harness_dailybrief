@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 from lib.common import compress_sentences, finish_at_sentence
 from lib.content_quality import localize_title, polish_display_title
+from lib.content_safety import is_unsafe
 from lib.humanize_korean import humanize
 
 INSIGHT_LIMIT = 7
@@ -122,6 +123,9 @@ def is_usable_search_result(item: dict) -> bool:
     )
     if any(b in host or b in url.lower() for b in blocked):
         return False
+    # Same NSFW/ad-click blocklist as the newsletter gate (config/newsletter.yaml safety).
+    if is_unsafe(url, title, snippet):
+        return False
     blob = f"{title} {snippet}".lower()
     q = query.lower()
     if any(k in q for k in ("korea", "south korea", "ax")):
@@ -145,9 +149,22 @@ def is_usable_search_result(item: dict) -> bool:
     return True
 
 
+KOREA_EVIDENCE_RE = re.compile(
+    r"korea|seoul|samsung|hyundai|naver|kakao|chaebol|\b(?:sk|kt|lg)\b|[가-힣]{2,}",
+    re.IGNORECASE,
+)
+
+
+def has_korea_evidence(text: str) -> bool:
+    """Korea must appear in the result itself (title/snippet), not only in the search query."""
+    return bool(KOREA_EVIDENCE_RE.search(text or ""))
+
+
 def classify_insight(title: str, snippet: str, query: str) -> str:
     q = query.lower()
-    blob = f"{title} {snippet} {query}".lower()
+    # The search query is not evidence about the article: keeping it in the blob
+    # labelled global pages as Korean whenever the query mentioned Korea.
+    blob = f"{title} {snippet}".lower()
     if "hermes" in q or "nousresearch" in q:
         return "hermes_agent"
     if "governance" in q or "responsible ai" in q:
@@ -164,9 +181,10 @@ def classify_insight(title: str, snippet: str, query: str) -> str:
         return "llm_perplexity"
     if "aeo" in q or "answer engine" in q:
         return "aeo"
-    if "south korea enterprise" in q or "korea ax" in q:
+    korea_evidence = has_korea_evidence(blob)
+    if ("south korea enterprise" in q or "korea ax" in q) and korea_evidence:
         return "korea_adoption" if "adoption" in q else "korea_ax"
-    if "digital marketing korea" in q or "korea ax" in blob:
+    if ("digital marketing korea" in q and korea_evidence) or "korea ax" in blob:
         return "korea_ax"
     if "agent marketing" in q or "github" in q and "agent" in q:
         return "agent_marketing"

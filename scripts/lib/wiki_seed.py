@@ -7,6 +7,7 @@ from pathlib import Path
 
 from lib.brief_graph import load_brief_graph
 from lib.common import compress_sentences, studio_today, truncate
+from lib.content_safety import is_unsafe
 
 WORKDIR = Path.home() / "hermes-content-studio"
 WIKI_ROOT = WORKDIR / "content" / "wiki"
@@ -48,6 +49,8 @@ def _write_concept(topic_key: str, nodes: list[dict], streak_days: int) -> Path:
     seen_urls: set[str] = set()
     for n in nodes[:5]:
         url = n.get("url", "")
+        if url and is_unsafe(url, n.get("title", "")):
+            continue  # never cite a blocked source in the wiki, even from old briefs
         if url and url not in seen_urls:
             seen_urls.add(url)
             sources.append(f"- {n.get('stamp', '')}: [{truncate(n.get('title', ''), 80)}]({url})")

@@ -19,6 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib import graph as G  # noqa: E402
 from lib import ledger  # noqa: E402
+from lib.content_safety import is_unsafe  # noqa: E402
 
 STUDIO = ledger.STUDIO
 RESEARCH = STUDIO / "content" / "research"
@@ -79,6 +80,8 @@ def extract_source_claims(body: str) -> list[tuple[str, str]]:
             if len(plain) > 20:
                 claims = [plain[:200]]
         for u in urls[:3]:
+            if is_unsafe(u):  # historical briefs may still cite blocked sources
+                continue
             for c in claims[:3]:
                 pairs.append((u.rstrip(".,)"), c))
     return pairs

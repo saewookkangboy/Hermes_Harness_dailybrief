@@ -71,15 +71,19 @@ freshness:
   max_subject_pattern_streak: 1
   ledger_path: content/newsletter/issue-ledger.jsonl
 
+# Shared blocklist: M1 research intake, build-graph, wiki seed and the M2b
+# newsletter gate all read this list (scripts/lib/content_safety.py).
 safety:
   block_url_substrings:
     - undress
     - undresser
     - nsfw
     - deepnude
+    - nudify
   block_title_substrings:
     - Undress
     - NSFW
+    - Nudify
 
 title_integrity:
   prefer_source_when_korean_mismatch: true
