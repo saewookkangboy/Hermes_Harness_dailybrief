@@ -63,7 +63,7 @@ detect_personal() {
   local lower
   lower=$(echo "$msg" | tr '[:upper:]' '[:lower:]')
   echo "$lower" | grep -qE \
-    '이메일|email|mail|받은편지함|inbox|메일|개인|맞춤|custom|자동화|automate|codex|구현|심층|deep.?dive|personal'
+    '이메일|email|mail|받은편지함|inbox|메일|개인|맞춤|custom|자동화|automate|codex|구현|심층|deep.?dive|personal|^[[:space:]]*/cursor([[:space:]]|$)'
 }
 
 detect_intent_pack() {
@@ -101,9 +101,9 @@ detect_action() {
     echo "agents-eval"
   # Read-only Notion check must win over sync: "노션에 올라갔는지 확인" used to hit
   # the sync branch and run archive-to-notion.sh --force.
-  elif echo "$lower" | grep -qE '노션.?상태|notion.?status|아카이브.?점검|중복' \
-    || { echo "$lower" | grep -qE '노션|notion' \
-      && echo "$lower" | grep -qE '확인|점검|올라갔|있는지|됐는지|봐줘|check'; }; then
+  elif echo "$lower" | grep -qE 'notion.?status|아카이브.?점검' \
+    || { echo "$lower" | grep -qE '노션|notion|아카이브|archive' \
+      && echo "$lower" | grep -qE '상태|status|확인|점검|중복|올라갔|있는지|됐는지|봐줘|알려|check'; }; then
     echo "notion-status"
   elif echo "$lower" | grep -qE '노션|notion|동기화|sync|permalink'; then
     echo "sync"

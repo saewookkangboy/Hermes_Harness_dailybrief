@@ -79,9 +79,9 @@ def extract_source_claims(body: str) -> list[tuple[str, str]]:
             plain = re.sub(r"\s+", " ", URL_RE.sub("", block)).strip()
             if len(plain) > 20:
                 claims = [plain[:200]]
-        for u in urls[:3]:
-            if is_unsafe(u):  # historical briefs may still cite blocked sources
-                continue
+        # historical briefs may still cite blocked sources — drop them before the 3-URL cap
+        safe_urls = [u for u in urls if not is_unsafe(u)]
+        for u in safe_urls[:3]:
             for c in claims[:3]:
                 pairs.append((u.rstrip(".,)"), c))
     return pairs

@@ -149,8 +149,11 @@ def is_usable_search_result(item: dict) -> bool:
     return True
 
 
+# Korea-specific entities and places only. Korean-language text alone is not
+# evidence: Korean coverage of a foreign launch must not become "대한민국 AX".
 KOREA_EVIDENCE_RE = re.compile(
-    r"korea|seoul|samsung|hyundai|naver|kakao|chaebol|\b(?:sk|kt|lg)\b|[가-힣]{2,}",
+    r"korea|seoul|pangyo|busan|samsung|hyundai|naver|kakao|coupang|chaebol|\b(?:sk|kt|lg)\b"
+    r"|한국|국내|대한민국|서울|판교|부산|과기정통부|과학기술정보통신부|삼성|현대|네이버|카카오|쿠팡|토스",
     re.IGNORECASE,
 )
 

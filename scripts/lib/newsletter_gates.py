@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from lib.content_quality import Insight
+from lib.content_safety import is_unsafe
 from lib.newsletter_cta import cta_failures
 from lib.newsletter_issue_ledger import recent_excluding
 from lib.newsletter_quality import load_newsletter_config
@@ -69,7 +70,7 @@ def assert_freshness(stamp: str, md_text: str, cfg: dict | None = None) -> list[
     if "## 품질 메모" in body:
         body = body.split("## 품질 메모", 1)[0]
     failures.extend(banned_boilerplate(body, c))
-    if re.search(r"(?i)undress|nsfw|deepnude|nudify", body):
+    if re.search(r"(?i)undress|nsfw|deepnude|nudify", body) or is_unsafe("", "", body):
         failures.append("unsafe_content")
     return failures
 

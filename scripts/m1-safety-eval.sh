@@ -43,7 +43,8 @@ check("m1_keeps_normal_news", is_usable_search_result(item("KT unveils 18 tn won
 check("global_stat_not_korea", not classify_insight("AI Adoption Gap: 80% of Orgs See Value, 39% Struggle", "Enterprise AI agent adoption in 2026 shows a widening gap", adopt_q).startswith("korea"))
 check("europe_event_not_korea", not classify_insight("Enterprise AI Marketing Transformation Assembly Europe – June 2025", "Join marketing leaders in London", korea_q).startswith("korea"))
 check("korean_news_still_korea", classify_insight("KT unveils 18 tn won AX transformation plan", "KT announced an AI transformation plan", korea_q).startswith("korea"))
-check("korean_language_title_korea", classify_insight("'2026 한경 AX 서밋' 첫 개최…최신트렌드·우수사례 한자리에", "", korea_q).startswith("korea"))
+check("korean_domestic_title_korea", classify_insight("'2026 한경 AX 서밋' 첫 개최…국내 기업 우수사례 한자리에", "", korea_q).startswith("korea"))
+check("korean_language_foreign_not_korea", not classify_insight("프랑스 미스트랄, 새 오픈소스 AI 모델 공개", "유럽 AI 스타트업의 신규 모델", korea_q).startswith("korea"))
 
 # 3) Graph + wiki never re-ingest blocked sources from historical briefs
 spec = importlib.util.spec_from_file_location("build_graph", Path("build-graph.py"))
@@ -56,6 +57,34 @@ pairs = bg.extract_source_claims(
 urls = {u for u, _ in pairs}
 check("graph_skips_unsafe_url", "https://undress-her.com/" not in urls and any("mk.co.kr" in u for u in urls))
 check("safety_list_shared_with_newsletter", is_unsafe("https://x.example/nudify-tool"))
+pairs = bg.extract_source_claims(
+    "국내 기업 68% 가 AX 도입을 검토 중이라고 밝혔습니다.\n"
+    "https://undress-her.com/a https://nudify.example/b https://www.bing.com/aclick?x=1 https://pulse.mk.co.kr/news/1"
+)
+check("graph_caps_after_filtering", any("mk.co.kr" in u for u, _ in pairs))
+
+# 4) Wiki seed: a blocked latest node supplies neither heading nor summary
+import tempfile
+import lib.wiki_seed as WS
+WS.CONCEPTS_DIR = Path(tempfile.mkdtemp())
+out = WS._write_concept("korea_ax", [
+    {"title": "UndressHer AI – Best Undress AI Tools", "url": "https://undress-her.com/", "stamp": "2026-09-14"},
+    {"title": "KT unveils 18 tn won AX plan", "url": "https://pulse.mk.co.kr/news/1", "stamp": "2026-09-13"},
+], 1)
+text = out.read_text(encoding="utf-8") if out else ""
+check("wiki_seed_blocked_latest_not_in_page", "Undress" not in text and "KT unveils" in text)
+check("wiki_seed_all_blocked_skips_page", WS._write_concept("x", [{"title": "Nudify", "url": "https://nudify.example/"}], 0) is None)
+
+# 5) Newsletter gate follows config/newsletter.yaml, not only its own regex
+import lib.content_safety as CS
+from lib.newsletter_gates import assert_freshness
+orig = CS._lists
+CS._lists = lambda: (("forbidden-term-x",), ())
+try:
+    fails = assert_freshness("2099-01-01", "**권장 제목:** `테스트`\n\n본문 forbidden-term-x 포함", {})
+finally:
+    CS._lists = orig
+check("newsletter_gate_uses_shared_policy", "unsafe_content" in fails)
 PY
 )
 while IFS= read -r line; do
@@ -63,7 +92,7 @@ while IFS= read -r line; do
   record "${line%% *}" "${line#* }"
 done <<< "$OUT"
 
-# 4) Wiki no longer cites blocked sources
+# 6) Wiki no longer cites blocked sources
 if grep -rqiE 'undress|nudify|deepnude' "$REPO/content/wiki" 2>/dev/null; then
   record FAIL "wiki_clean_of_blocked_sources"
 else

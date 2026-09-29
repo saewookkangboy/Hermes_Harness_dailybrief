@@ -64,7 +64,9 @@ detect_task_type() {
   local lower
   lower=$(echo "$msg" | tr '[:upper:]' '[:lower:]')
 
-  if echo "$lower" | grep -qE '이메일|email|mail|받은편지함|inbox|메일함'; then
+  if echo "$lower" | grep -qE '^[[:space:]]*/(automate|cursor)([[:space:]]|$)'; then
+    echo "automate"
+  elif echo "$lower" | grep -qE '이메일|email|mail|받은편지함|inbox|메일함'; then
     echo "mail"
   elif echo "$lower" | grep -qE '자동화|automate|automation|codex|스크립트|구현|코드'; then
     echo "automate"

@@ -38,7 +38,11 @@ def _streak_for(graph: dict, topic_key: str) -> int:
     return 0
 
 
-def _write_concept(topic_key: str, nodes: list[dict], streak_days: int) -> Path:
+def _write_concept(topic_key: str, nodes: list[dict], streak_days: int) -> Path | None:
+    # Blocked sources from old briefs must not supply the heading or summary either.
+    nodes = [n for n in nodes if not is_unsafe(n.get("url", ""), n.get("title", ""))]
+    if not nodes:
+        return None
     CONCEPTS_DIR.mkdir(parents=True, exist_ok=True)
     latest = nodes[0]
     title = latest.get("title", topic_key)
@@ -49,8 +53,6 @@ def _write_concept(topic_key: str, nodes: list[dict], streak_days: int) -> Path:
     seen_urls: set[str] = set()
     for n in nodes[:5]:
         url = n.get("url", "")
-        if url and is_unsafe(url, n.get("title", "")):
-            continue  # never cite a blocked source in the wiki, even from old briefs
         if url and url not in seen_urls:
             seen_urls.add(url)
             sources.append(f"- {n.get('stamp', '')}: [{truncate(n.get('title', ''), 80)}]({url})")
@@ -141,8 +143,8 @@ def seed_from_brief_graph() -> dict:
     written: list[str] = []
     for key, nodes in by_key.items():
         streak = _streak_for(graph, key)
-        path = CONCEPTS_DIR / f"{key}.md"
-        _write_concept(key, nodes, streak)
+        if _write_concept(key, nodes, streak) is None:
+            continue  # every source for this topic is blocked
         # inject cross-links after all keys known
         written.append(key)
     for key in written:

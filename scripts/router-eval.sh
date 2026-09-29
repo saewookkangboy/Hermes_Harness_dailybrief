@@ -46,6 +46,9 @@ expect_not "오늘 성과 어땠어?" "pipeline:pipeline"
 expect "노션에 어제 브리프 올라갔는지 확인" "pipeline:notion-status"
 expect "노션 상태 알려줘" "pipeline:notion-status"
 expect "노션에 다시 올려줘" "pipeline:sync"
+expect "노션 동기화 상태 알려줘" "pipeline:notion-status"
+expect "노션 중복 페이지 있어?" "pipeline:notion-status"
+expect "콘텐츠 중복 확인해줘" "pipeline:content"
 # Inbox typo
 expect "받은편지함 정리해줘" "personal:mail"
 # Unchanged happy paths
@@ -57,6 +60,22 @@ expect "리서치 승인" "pipeline:research-approve"
 is_explicit_automate "/automate 슬랙 알림 스크립트 추가" && record PASS "explicit /automate keeps Cursor" || record FAIL "explicit /automate"
 is_explicit_automate "/cursor threads validate 추가" && record PASS "explicit /cursor keeps Cursor" || record FAIL "explicit /cursor"
 is_explicit_automate "링크드인 콘텐츠 자동화 흐름 좀 점검해줘" && record FAIL "inferred automate treated as explicit" || record PASS "inferred automate → HANDOFF only"
+# /cursor reaches the automate path from both entrypoints
+expect "/cursor threads validate 추가" "personal:automate"
+expect "/automate 슬랙 알림 스크립트" "personal:automate"
+
+# cursor-handoff.sh auto (commander natural language) must not auto-run Cursor
+cursor_auto_value() {
+  local tmp; tmp="$(mktemp -d)"
+  printf '#!/usr/bin/env bash\necho "HERMES_CURSOR_AUTO=${HERMES_CURSOR_AUTO:-unset}"\n' > "$tmp/telegram-custom.sh"
+  chmod +x "$tmp/telegram-custom.sh"
+  cp "$DIR/cursor-handoff.sh" "$tmp/"
+  (unset HERMES_CURSOR_AUTO; HOME="$tmp" bash "$tmp/cursor-handoff.sh" "$1" "$2" 2>/dev/null | grep -o 'HERMES_CURSOR_AUTO=.*')
+  rm -rf "$tmp"
+}
+[[ "$(cursor_auto_value auto "이 기능 구현해줘")" == "HERMES_CURSOR_AUTO=0" ]] && record PASS "cursor-handoff auto (NL) → HANDOFF only" || record FAIL "cursor-handoff auto (NL) still auto-runs Cursor"
+[[ "$(cursor_auto_value auto "/cursor threads validate 추가")" == "HERMES_CURSOR_AUTO=unset" ]] && record PASS "cursor-handoff auto /cursor keeps Cursor" || record FAIL "cursor-handoff auto /cursor"
+[[ "$(cursor_auto_value qc "threads validate 추가")" == "HERMES_CURSOR_AUTO=unset" ]] && record PASS "cursor-handoff qc keeps Cursor" || record FAIL "cursor-handoff qc"
 
 echo "=== Result: PASS=$PASS FAIL=$FAIL ==="
 [[ "$FAIL" -eq 0 ]]
