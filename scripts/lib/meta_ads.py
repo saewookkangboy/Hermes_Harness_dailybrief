@@ -35,12 +35,13 @@ class MetaApiError(RuntimeError):
 
 # ── config ────────────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
-    try:
+    # A broken or unreadable config must stop the job: silently falling back to
+    # sample mode would let an api-mode cron post synthetic numbers.
+    cfg: dict[str, Any] = {}
+    if CONFIG_PATH.exists():
         import yaml  # type: ignore
 
-        cfg = (yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}).get("meta_ads", {})
-    except Exception:  # noqa: BLE001
-        cfg = {}
+        cfg = (yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}).get("meta_ads") or {}
     cfg.setdefault("mode", "sample")
     cfg.setdefault("api", {}).setdefault("version", "v25.0")
     cfg["api"].setdefault("level", "adset")
@@ -138,8 +139,16 @@ def windows_for(today: date, days: int) -> tuple[tuple[str, str], tuple[str, str
     return (since.isoformat(), until.isoformat()), (p_since.isoformat(), p_until.isoformat())
 
 
-def _get_json(url: str, timeout: int) -> dict:
-    req = urllib.request.Request(url, method="GET")
+def _without_token(url: str) -> str:
+    """paging.next echoes access_token in its query — drop it before following."""
+    parts = urllib.parse.urlsplit(url)
+    query = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True) if k != "access_token"]
+    return urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(query)))
+
+
+def _get_json(url: str, timeout: int, token: str) -> dict:
+    # Token goes in the header: URLs end up in proxy and request logs.
+    req = urllib.request.Request(_without_token(url), method="GET", headers={"Authorization": f"Bearer {token}"})
     try:
         with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.load(r)
@@ -157,12 +166,11 @@ def _fetch_window(cfg: dict, token: str, account: str, since: str, until: str) -
         "fields": INSIGHT_FIELDS,
         "time_range": json.dumps({"since": since, "until": until}),
         "limit": 200,
-        "access_token": token,
     }
     url = f"https://graph.facebook.com/{api['version']}/act_{account}/insights?{urllib.parse.urlencode(params)}"
     rows: list[dict] = []
     while url:
-        page = _get_json(url, int(api["timeout_seconds"]))
+        page = _get_json(url, int(api["timeout_seconds"]), token)
         if "error" in page:
             raise MetaApiError(str(page["error"])[:300])
         rows.extend(page.get("data") or [])

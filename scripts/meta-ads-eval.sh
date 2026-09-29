@@ -53,7 +53,7 @@ check("sample_outputs_skip_notion", M.output_path("weekly", ins, cfg).name.start
 pages = [
     {"data": [{"adset_id": "1", "adset_name": "A", "campaign_name": "C", "impressions": "6000", "reach": "1500",
                "clicks": "30", "spend": "1000", "actions": [{"action_type": "lead", "value": "2"}]}],
-     "paging": {"next": "https://graph.facebook.com/next-page"}},
+     "paging": {"next": "https://graph.facebook.com/v25.0/act_123/insights?after=abc&access_token=ECHOED"}},
     {"data": [{"adset_id": "2", "adset_name": "B", "campaign_name": "C", "impressions": "100", "reach": "90",
                "clicks": "1", "spend": "10"}]},
 ]
@@ -63,8 +63,10 @@ class FakeResp:
     def __enter__(self): return self
     def __exit__(self, *a): return False
     def read(self): return json.dumps(self.body).encode()
+auth = []
 def fake_urlopen(req, timeout=0):
     seen.append((req.get_method(), req.full_url))
+    auth.append(req.get_header("Authorization"))
     return FakeResp(pages[len(seen) - 1])
 orig = urllib.request.urlopen
 urllib.request.urlopen = fake_urlopen
@@ -77,6 +79,23 @@ check("api_follows_paging", len(got) == 2 and len(seen) == 2)
 check("api_get_only", all(m == "GET" for m, _ in seen))
 check("api_derives_frequency_ctr", abs(stats[0].frequency - 4.0) < 1e-9 and abs(stats[0].ctr - 0.5) < 1e-9 and stats[0].conversions == 2)
 check("api_uses_insights_endpoint", "/act_123/insights?" in seen[0][1] and "level=adset" in seen[0][1])
+check("api_token_never_in_url", all("access_token" not in u and "TOKEN" not in u for _, u in seen))
+check("api_token_in_auth_header", auth == ["Bearer TOKEN", "Bearer TOKEN"])
+check("api_paging_keeps_cursor", "after=abc" in seen[1][1])
+
+# 5) A broken config fails loudly instead of falling back to sample mode
+import tempfile
+from pathlib import Path
+bad = Path(tempfile.mkdtemp()) / "meta-ads.yaml"
+bad.write_text("meta_ads:\n  mode: api\n  fatigue: [unclosed\n", encoding="utf-8")
+orig_cfg = M.CONFIG_PATH
+M.CONFIG_PATH = bad
+try:
+    M.load_config(); check("broken_config_fails_loudly", False)
+except Exception:
+    check("broken_config_fails_loudly", True)
+finally:
+    M.CONFIG_PATH = orig_cfg
 PY
 )
 while IFS= read -r line; do
@@ -94,6 +113,35 @@ fi
 # 6) Ad performance never lands in git (public repo)
 git -C "$REPO" check-ignore -q content/ads/2026-01-01_meta-weekly-report.md \
   && record PASS "content_ads_gitignored" || record FAIL "content_ads_gitignored"
+
+# 7b) Cron wrappers post nothing when the mode is not api
+for kind in fatigue weekly; do
+  grep -q -- '--require-api' "$DIR/cron-meta-$kind.sh" || record FAIL "cron_${kind}_requires_api"
+done
+if [[ -z "$(HERMES_META_ADS_MODE=sample python3 "$DIR/meta-ads.py" weekly --require-api 2>/dev/null)" ]]; then
+  record PASS "cron_sample_mode_posts_nothing"
+else
+  record FAIL "cron_sample_mode_posts_nothing"
+fi
+
+# 7c) Switching back to sample mode removes jobs registered earlier in api mode
+STUB="$(mktemp -d)"
+cat > "$STUB/hermes" <<'SH'
+#!/usr/bin/env bash
+if [[ "$1 $2" == "cron list" ]]; then
+  printf '  ab12cd34 [active]\n    Name: cron-meta-fatigue\n  ef56ab78 [active]\n    Name: cron-meta-weekly\n  0011aa22 [active]\n    Name: cron-demand-radar\n'
+else
+  echo "$*" >> "$(dirname "$0")/calls.log"
+fi
+SH
+chmod +x "$STUB/hermes"
+PATH="$STUB:$PATH" HERMES_META_ADS_MODE=sample HERMES_WORKDIR="$REPO" bash "$DIR/setup-meta-ads-cron.sh" >/dev/null 2>&1 || true
+if [[ "$(sort "$STUB/calls.log" 2>/dev/null | tr '\n' ' ')" == "cron remove ab12cd34 cron remove ef56ab78 " ]]; then
+  record PASS "sample_mode_removes_existing_jobs"
+else
+  record FAIL "sample_mode_removes_existing_jobs ($(tr '\n' ' ' < "$STUB/calls.log" 2>/dev/null))"
+fi
+rm -rf "$STUB"
 
 # 7) Sample mode never registers cron
 if HERMES_META_ADS_MODE=sample HERMES_WORKDIR="$REPO" bash "$DIR/setup-meta-ads-cron.sh" --dry-run 2>&1 | grep -q '등록하지 않습니다'; then

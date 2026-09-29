@@ -7,4 +7,4 @@ WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
 # shellcheck source=lib/cron_bootstrap.sh
 source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 
-cron_run_py "$SCRIPTS_DIR/meta-ads.py" fatigue
+cron_run_py "$SCRIPTS_DIR/meta-ads.py" fatigue --require-api

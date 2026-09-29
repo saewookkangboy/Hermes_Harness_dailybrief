@@ -24,11 +24,17 @@ def main() -> int:
     ap.add_argument("--mode", choices=["sample", "api"])
     ap.add_argument("--date", help="파일명 날짜 (기본: 오늘 KST)")
     ap.add_argument("--print-report", action="store_true", help="저장한 리포트 전문도 출력")
+    ap.add_argument("--require-api", action="store_true",
+                    help="cron 전용: mode 가 api 가 아니면 아무것도 게시하지 않고 종료")
     args = ap.parse_args()
 
     cfg = M.load_config()
     if args.mode:
         cfg["mode"] = args.mode
+    if args.require_api and cfg["mode"] != "api":
+        # stdout 은 cron --deliver 로 Slack 에 게시되므로 비워 둠 (샘플 수치 게시 방지)
+        print(f"meta-ads: mode={cfg['mode']} — cron 실행 건너뜀 (setup-meta-ads-cron.sh 를 다시 실행하세요)", file=sys.stderr)
+        return 0
     try:
         ins = M.load_insights(cfg)
     except M.MetaApiError as exc:
@@ -53,7 +59,7 @@ def main() -> int:
         label = "[샘플] " if ins.source == "sample" else ""
         print(
             f"{label}[Meta 주간 리포트] {ins.current.since}~{ins.current.until} · "
-            f"지출 ₩{t['spend']:,.0f} · 전환 {t['conversions']:,.0f} · 교체 검토 {flagged}개 · {path.name}"
+            f"지출 {M._money(t['spend'], ins.currency)} · 전환 {t['conversions']:,.0f} · 교체 검토 {flagged}개 · {path.name}"
         )
         if args.print_report:
             print()
