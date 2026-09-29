@@ -44,6 +44,7 @@ M1→M5 **결정적 assemble**은 유지하고, LLM 루프는 triage·코칭·�
 | health-alert | (triage §3에 포함) | 10:00·18:00 | L1 | `cron-health-alert.sh` | 이상 시만 알림 |
 | publish-schedule | HITL due | */15 | L1 | `cron-publish-schedule.sh` | HITL 카드 |
 | competitive-watch | (triage §4, 월) | 월 09:00 | L1 | `cron-competitive-watch.sh` | watch 리포트 |
+| **demand-radar** | 네이버 검색 수요, 조회 전용 | 월 08:40 | **L1** | `cron-demand-radar.sh` → `demand-radar.py` | 급상승 키워드 제안 → Slack (M1 병합은 사람이 `/research`) · `content/signals/{date}_demand-radar.md` → Notion |
 | **supervised-pipeline** | Factory run | 평일 10:00 | **L2** | `cron-supervised-pipeline.sh` | supervised 로그 · handoff JSON |
 | **staging-supervised** | Blocking 회귀 | 토 11:00 | L2 | `cron-staging-supervised.sh` | staging eval · `HERMES_SUPERVISED_STAGING=1` |
 | m4-coach | Performance feedback | _(P1-4 예정)_ | L1→L2 | `run-m4-coach.sh` | trait 코칭 |

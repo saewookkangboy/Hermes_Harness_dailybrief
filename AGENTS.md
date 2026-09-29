@@ -94,6 +94,11 @@ cat ~/hermes-content-studio/.harness/progress.md
 ~/hermes-content-studio/scripts/cost-report.sh --since 7d
 ~/hermes-content-studio/scripts/token-gate-eval.sh
 
+# 네이버 데이터랩 수요 레이더 (조회 전용 · config/demand-radar.yaml · M1 자동 병합 없음)
+python3 ~/hermes-content-studio/scripts/demand-radar.py --mode sample --print-report
+~/hermes-content-studio/scripts/demand-radar-eval.sh
+~/hermes-content-studio/scripts/setup-demand-radar-cron.sh --dry-run   # mode: api 일 때만 등록
+
 # 누적 개념 그래프 (F2, 결정적, LLM 없음)
 HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
 ~/hermes-content-studio/scripts/wiki-graph.sh --force --rebuild

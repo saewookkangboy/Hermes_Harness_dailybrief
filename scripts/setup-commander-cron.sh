@@ -98,6 +98,9 @@ _create "cron-competitive-watch" "0 9 * * 1" "cron-competitive-watch.sh"
 
 _create "cron-staging-supervised" "0 11 * * 6" "cron-staging-supervised.sh"
 
+# 수요 레이더 — 등록은 setup-demand-radar-cron.sh (mode: api 일 때만). 위 rm -f 이후 복사본만 복구
+_deploy_cron_script "cron-demand-radar.sh"
+
 echo ""
 echo "cron-supervised-pipeline env (script 내 config SoT — hermes cron은 env 미지원):"
 echo "  HERMES_CRON_HUMANIZE=1 · HERMES_CRON_SKIP_NEWSLETTER=0 (기본, yaml)"

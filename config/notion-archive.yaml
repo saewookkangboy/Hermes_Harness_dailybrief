@@ -61,6 +61,12 @@ categories:
     icon: "📋"
     glob: "content/packages/*_newsletter-paste.md"
     order: 9
+  demand_radar:
+    label: "Demand Radar"
+    icon: "📈"
+    glob: "content/signals/*_demand-radar.md"   # _sample_* 는 '_' 접두사로 제외됨
+    pipeline: false
+    order: 13
   lecture_outline:
     label: "Lecture Outline"
     icon: "📑"
