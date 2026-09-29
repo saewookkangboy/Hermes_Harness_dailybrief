@@ -69,10 +69,12 @@ def load_config() -> dict[str, Any]:
     env_mode = os.environ.get("HERMES_META_ADS_MODE")
     if env_mode:
         cfg["mode"] = env_mode
-    # A typo ("ap") must stop here: setup treats any non-api mode as "remove the jobs".
-    mode = str(cfg.get("mode") or "sample").strip().lower()
+    # A typo ("ap") or a blanked value (`mode:` / "") must stop here: setup treats any
+    # non-api mode as "remove the jobs". Only an absent key defaults to sample (setdefault above).
+    raw = cfg.get("mode")
+    mode = raw.strip().lower() if isinstance(raw, str) else None
     if mode not in MODES:
-        raise ConfigError(f"mode 는 {' 또는 '.join(MODES)} 여야 합니다 (현재: {cfg.get('mode')!r})")
+        raise ConfigError(f"mode 는 {' 또는 '.join(MODES)} 여야 합니다 (현재: {raw!r})")
     cfg["mode"] = mode
     return cfg
 

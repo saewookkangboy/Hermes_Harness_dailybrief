@@ -152,6 +152,8 @@ def mode_of(text, env=None):
 check("invalid_mode_fails_loudly",
       mode_of("meta_ads:\n  mode: ap\n") == "ConfigError"
       and mode_of("meta_ads:\n  mode: api\n", env="bogus") == "ConfigError"
+      and mode_of("meta_ads:\n  mode:\n") == "ConfigError"          # blanked value is not "absent"
+      and mode_of('meta_ads:\n  mode: ""\n') == "ConfigError"
       and mode_of("meta_ads:\n  currency: KRW\n") == "sample"
       and mode_of("meta_ads:\n  mode: api\n") == "api")
 PY
