@@ -81,7 +81,9 @@ detect_task_type() {
 # must not launch Cursor on its own. Explicit /automate or /cursor keeps the
 # documented behaviour (HANDOFF → Cursor CLI); inferred ones stop at the HANDOFF.
 is_explicit_automate() {
-  [[ "${1:-}" =~ ^[[:space:]]*/(automate|cursor)([[:space:]]|$) ]]
+  local msg
+  msg=$(printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]')
+  [[ "$msg" =~ ^[[:space:]]*/(automate|cursor)([[:space:]]|$) ]]
 }
 
 guard_inferred_automate() {

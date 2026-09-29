@@ -151,9 +151,14 @@ def is_usable_search_result(item: dict) -> bool:
 
 # Korea-specific entities and places only. Korean-language text alone is not
 # evidence: Korean coverage of a foreign launch must not become "대한민국 AX".
+# "Korean" / "한국어" also name the language, so the country names exclude them
+# (lookahead instead of \b so "Korea가" in mixed text still counts).
+_KOREA_NAME = r"korea(?!n)|한국(?!어)|대한민국"
+KOREA_NAME_RE = re.compile(_KOREA_NAME, re.IGNORECASE)
 KOREA_EVIDENCE_RE = re.compile(
-    r"korea|seoul|pangyo|busan|samsung|hyundai|naver|kakao|coupang|chaebol|\b(?:sk|kt|lg)\b"
-    r"|한국|국내|대한민국|서울|판교|부산|과기정통부|과학기술정보통신부|삼성|현대|네이버|카카오|쿠팡|토스",
+    _KOREA_NAME
+    + r"|seoul|pangyo|busan|samsung|hyundai|naver|kakao|coupang|chaebol|\b(?:sk|kt|lg)\b"
+    r"|국내|서울|판교|부산|과기정통부|과학기술정보통신부|삼성|현대|네이버|카카오|쿠팡|토스",
     re.IGNORECASE,
 )
 
@@ -205,7 +210,7 @@ def classify_insight(title: str, snippet: str, query: str) -> str:
         return "llm_google"
     if "perplexity" in blob:
         return "llm_perplexity"
-    if "korea" in blob or "south korea" in blob or "한국" in blob:
+    if KOREA_NAME_RE.search(blob):
         if "ax" in blob or "transform" in blob:
             return "korea_ax"
         if "adopt" in blob or "enterprise" in blob:

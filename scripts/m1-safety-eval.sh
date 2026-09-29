@@ -21,7 +21,7 @@ import importlib.util
 import sys
 from pathlib import Path
 
-from lib.brief_quality import classify_insight, is_usable_search_result
+from lib.brief_quality import classify_insight, has_korea_evidence, is_usable_search_result
 from lib.content_safety import is_unsafe
 
 def check(name, ok):
@@ -45,6 +45,11 @@ check("europe_event_not_korea", not classify_insight("Enterprise AI Marketing Tr
 check("korean_news_still_korea", classify_insight("KT unveils 18 tn won AX transformation plan", "KT announced an AI transformation plan", korea_q).startswith("korea"))
 check("korean_domestic_title_korea", classify_insight("'2026 한경 AX 서밋' 첫 개최…국내 기업 우수사례 한자리에", "", korea_q).startswith("korea"))
 check("korean_language_foreign_not_korea", not classify_insight("프랑스 미스트랄, 새 오픈소스 AI 모델 공개", "유럽 AI 스타트업의 신규 모델", korea_q).startswith("korea"))
+# "Korean" / "한국어" name the language, not the country
+check("korean_translation_not_korea_evidence", not has_korea_evidence("Korean translation of the French AI announcement"))
+check("korean_translation_not_korea_class", not classify_insight("Korean translation of the French AI transformation announcement", "", "AI news 2026").startswith("korea"))
+check("hangul_korean_language_not_korea", not has_korea_evidence("미스트랄 발표문 한국어 번역본 공개"))
+check("korea_name_still_evidence", all(has_korea_evidence(t) for t in ("South Korea's AI push", "Korea가 AI 투자 확대", "한국 기업 AX 사례")))
 
 # 3) Graph + wiki never re-ingest blocked sources from historical briefs
 spec = importlib.util.spec_from_file_location("build_graph", Path("build-graph.py"))
@@ -74,6 +79,27 @@ out = WS._write_concept("korea_ax", [
 text = out.read_text(encoding="utf-8") if out else ""
 check("wiki_seed_blocked_latest_not_in_page", "Undress" not in text and "KT unveils" in text)
 check("wiki_seed_all_blocked_skips_page", WS._write_concept("x", [{"title": "Nudify", "url": "https://nudify.example/"}], 0) is None)
+
+# 4b) Full seed: blocked nodes stay out of the index and cross-links; a page whose
+#     sources are now all blocked is removed rather than left from an earlier run
+root = Path(tempfile.mkdtemp())
+WS.WIKI_ROOT, WS.CONCEPTS_DIR = root, root / "concepts"
+WS.INDEX_PATH, WS.LOG_PATH = root / "index.md", root / "log.md"
+WS.CONCEPTS_DIR.mkdir(parents=True)
+(WS.CONCEPTS_DIR / "blocked_only.md").write_text("# Nudify old page\n", encoding="utf-8")
+WS.load_brief_graph = lambda: {"nodes": [
+    {"topic_key": "korea_ax", "title": "UndressHer AI – Best Undress AI Tools", "url": "https://undress-her.com/", "stamp": "2026-09-14"},
+    {"topic_key": "korea_ax", "title": "KT unveils 18 tn won AX plan", "url": "https://pulse.mk.co.kr/news/1", "stamp": "2026-09-13"},
+    {"topic_key": "blocked_only", "title": "Free Nudify App", "url": "https://nudify.example/", "stamp": "2026-09-14"},
+    {"topic_key": "ai_ide", "title": "Cursor ships background agents", "url": "https://cursor.com/blog/x", "stamp": "2026-09-12"},
+], "streaks": []}
+res = WS.seed_from_brief_graph()
+index = WS.INDEX_PATH.read_text(encoding="utf-8")
+korea_page = (WS.CONCEPTS_DIR / "korea_ax.md").read_text(encoding="utf-8")
+check("wiki_index_skips_blocked_latest", "Undress" not in index and "KT unveils" in index)
+check("wiki_index_skips_blocked_topic", "blocked_only" not in index and "Nudify" not in index)
+check("wiki_links_only_written_pages", "[[blocked_only]]" not in korea_page and "[[ai_ide]]" in korea_page)
+check("wiki_removes_now_blocked_page", not (WS.CONCEPTS_DIR / "blocked_only.md").exists() and res.get("concepts") == 2)
 
 # 5) Newsletter gate follows config/newsletter.yaml, not only its own regex
 import lib.content_safety as CS

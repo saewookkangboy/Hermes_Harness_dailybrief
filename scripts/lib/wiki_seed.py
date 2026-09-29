@@ -38,9 +38,13 @@ def _streak_for(graph: dict, topic_key: str) -> int:
     return 0
 
 
+def _safe_nodes(nodes: list[dict]) -> list[dict]:
+    """Blocked sources from old briefs must not supply a heading, summary, index row or link."""
+    return [n for n in nodes if not is_unsafe(n.get("url", ""), n.get("title", ""))]
+
+
 def _write_concept(topic_key: str, nodes: list[dict], streak_days: int) -> Path | None:
-    # Blocked sources from old briefs must not supply the heading or summary either.
-    nodes = [n for n in nodes if not is_unsafe(n.get("url", ""), n.get("title", ""))]
+    nodes = _safe_nodes(nodes)
     if not nodes:
         return None
     CONCEPTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -144,9 +148,14 @@ def seed_from_brief_graph() -> dict:
     for key, nodes in by_key.items():
         streak = _streak_for(graph, key)
         if _write_concept(key, nodes, streak) is None:
-            continue  # every source for this topic is blocked
-        # inject cross-links after all keys known
+            # Every source for this topic is blocked: a page from an earlier seed
+            # would keep that content, so remove it (seed owns concept pages).
+            (CONCEPTS_DIR / f"{key}.md").unlink(missing_ok=True)
+            continue
         written.append(key)
+    # Index rows and cross-links use the same safe nodes, and only topics with a page.
+    by_key = {k: _safe_nodes(by_key[k]) for k in written}
+    # inject cross-links after all keys known
     for key in written:
         path = CONCEPTS_DIR / f"{key}.md"
         if not path.exists():

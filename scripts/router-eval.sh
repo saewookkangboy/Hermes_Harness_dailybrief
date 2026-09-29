@@ -60,6 +60,7 @@ expect "리서치 승인" "pipeline:research-approve"
 is_explicit_automate "/automate 슬랙 알림 스크립트 추가" && record PASS "explicit /automate keeps Cursor" || record FAIL "explicit /automate"
 is_explicit_automate "/cursor threads validate 추가" && record PASS "explicit /cursor keeps Cursor" || record FAIL "explicit /cursor"
 is_explicit_automate "링크드인 콘텐츠 자동화 흐름 좀 점검해줘" && record FAIL "inferred automate treated as explicit" || record PASS "inferred automate → HANDOFF only"
+is_explicit_automate "/CURSOR threads validate 추가" && record PASS "explicit /CURSOR (uppercase) keeps Cursor" || record FAIL "explicit /CURSOR (uppercase)"
 # /cursor reaches the automate path from both entrypoints
 expect "/cursor threads validate 추가" "personal:automate"
 expect "/automate 슬랙 알림 스크립트" "personal:automate"
@@ -75,6 +76,7 @@ cursor_auto_value() {
 }
 [[ "$(cursor_auto_value auto "이 기능 구현해줘")" == "HERMES_CURSOR_AUTO=0" ]] && record PASS "cursor-handoff auto (NL) → HANDOFF only" || record FAIL "cursor-handoff auto (NL) still auto-runs Cursor"
 [[ "$(cursor_auto_value auto "/cursor threads validate 추가")" == "HERMES_CURSOR_AUTO=unset" ]] && record PASS "cursor-handoff auto /cursor keeps Cursor" || record FAIL "cursor-handoff auto /cursor"
+[[ "$(cursor_auto_value auto "/Automate 슬랙 알림 스크립트")" == "HERMES_CURSOR_AUTO=unset" ]] && record PASS "cursor-handoff auto /Automate (mixed case) keeps Cursor" || record FAIL "cursor-handoff auto /Automate (mixed case)"
 [[ "$(cursor_auto_value qc "threads validate 추가")" == "HERMES_CURSOR_AUTO=unset" ]] && record PASS "cursor-handoff qc keeps Cursor" || record FAIL "cursor-handoff qc"
 
 echo "=== Result: PASS=$PASS FAIL=$FAIL ==="
