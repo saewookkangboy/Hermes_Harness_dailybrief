@@ -53,6 +53,13 @@ case "$MODE" in
       usage >&2
       exit 1
     fi
+    # `auto` = 커맨더가 자연어에서 추론한 요청 → HANDOFF만 (Cursor 자동 실행 없음).
+    # qc(/cursor 슬래시)·automate(명시 호출)·"/cursor …" 메시지는 기존대로 Cursor까지.
+    MSG_LOWER=$(printf '%s' "$MSG" | tr '[:upper:]' '[:lower:]')
+    if [[ "$MODE" == "auto" && ! "$MSG_LOWER" =~ ^[[:space:]]*/(automate|cursor)([[:space:]]|$) ]]; then
+      export HERMES_CURSOR_AUTO=0
+      echo "ℹ️ 자연어 요청으로 판단해 HANDOFF만 만들어요. Cursor 실행은 /cursor 로 요청해 주세요."
+    fi
     # telegram-custom: `automate <prompt>` submits Codex+vibe-coding-cursor job
     exec "$DIR/telegram-custom.sh" automate "$MSG"
     ;;

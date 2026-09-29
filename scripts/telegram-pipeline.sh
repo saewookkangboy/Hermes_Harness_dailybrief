@@ -63,7 +63,7 @@ detect_personal() {
   local lower
   lower=$(echo "$msg" | tr '[:upper:]' '[:lower:]')
   echo "$lower" | grep -qE \
-    '이메일|email|mail|받편지함|inbox|메일|개인|맞춤|custom|자동화|automate|codex|구현|심층|deep.?dive|personal'
+    '이메일|email|mail|받은편지함|inbox|메일|개인|맞춤|custom|자동화|automate|codex|구현|심층|deep.?dive|personal|^[[:space:]]*/cursor([[:space:]]|$)'
 }
 
 detect_intent_pack() {
@@ -99,7 +99,13 @@ detect_action() {
 
   if echo "$lower" | grep -qE 'agents.?eval|에이전트 검증|agent eval'; then
     echo "agents-eval"
-  elif echo "$lower" | grep -qE '노션|notion|동기화|sync|permalink|permalink'; then
+  # Read-only Notion check must win over sync: "노션에 올라갔는지 확인" used to hit
+  # the sync branch and run archive-to-notion.sh --force.
+  elif echo "$lower" | grep -qE 'notion.?status|아카이브.?점검' \
+    || { echo "$lower" | grep -qE '노션|notion|아카이브|archive' \
+      && echo "$lower" | grep -qE '상태|status|확인|점검|중복|올라갔|있는지|됐는지|봐줘|알려|check'; }; then
+    echo "notion-status"
+  elif echo "$lower" | grep -qE '노션|notion|동기화|sync|permalink'; then
     echo "sync"
   elif echo "$lower" | grep -qE '강의|lecture|slide|슬라이드|pptx|claude.?design'; then
     echo "lecture_hint"
@@ -109,13 +115,21 @@ detect_action() {
     echo "content"
   elif echo "$lower" | grep -qE '파이프라인|pipeline|전체|주간|weekly|패키지'; then
     echo "pipeline"
-  elif echo "$lower" | grep -qE '노션.?상태|notion.?status|아카이브.?점검|중복'; then
-    echo "notion-status"
   elif echo "$lower" | grep -qE '상태|status|health|헬스'; then
     echo "status"
   else
-    echo "pipeline"
+    # Unmatched free text never runs anything (it used to run the full pipeline).
+    echo "help"
   fi
+}
+
+print_route_help() {
+  echo "ℹ️ 요청을 명령으로 해석하지 못해 아무것도 실행하지 않았어요."
+  echo "실행하려면 슬래시 명령을 써 주세요:"
+  echo "  /pipeline 전체 파이프라인 · /research <키워드> · /content · /newsletter"
+  echo "  /sync Notion 동기화 · /notion-status Notion 상태 확인 · /studio 스튜디오 상태"
+  echo "  /coach 성과 코치 · /ask <질문> · /mail 메일 정리 · /personal <요청>"
+  echo "전체 목록: /commands"
 }
 
 # Parse natural-language / slash research message → args for run_research_keyword
@@ -579,7 +593,7 @@ case "$MODE" in
       lecture_hint)
         echo "강의: /lecture-studio 명령 사용"
         ;;
-      *)        run_pipeline ;;
+      *)        print_route_help ;;
     esac
     ;;
   morning)

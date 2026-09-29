@@ -64,7 +64,9 @@ detect_task_type() {
   local lower
   lower=$(echo "$msg" | tr '[:upper:]' '[:lower:]')
 
-  if echo "$lower" | grep -qE '이메일|email|mail|받편지함|inbox|메일함'; then
+  if echo "$lower" | grep -qE '^[[:space:]]*/(automate|cursor)([[:space:]]|$)'; then
+    echo "automate"
+  elif echo "$lower" | grep -qE '이메일|email|mail|받은편지함|inbox|메일함'; then
     echo "mail"
   elif echo "$lower" | grep -qE '자동화|automate|automation|codex|스크립트|구현|코드'; then
     echo "automate"
@@ -72,6 +74,23 @@ detect_task_type() {
     echo "research"
   else
     echo "ask"
+  fi
+}
+
+# A free-text request that merely *looks* like automation ("…자동화 흐름 점검해줘")
+# must not launch Cursor on its own. Explicit /automate or /cursor keeps the
+# documented behaviour (HANDOFF → Cursor CLI); inferred ones stop at the HANDOFF.
+is_explicit_automate() {
+  local msg
+  msg=$(printf '%s' "${1:-}" | tr '[:upper:]' '[:lower:]')
+  [[ "$msg" =~ ^[[:space:]]*/(automate|cursor)([[:space:]]|$) ]]
+}
+
+guard_inferred_automate() {
+  local task_type="$1" msg="${2:-}"
+  if [[ "$task_type" == "automate" ]] && ! is_explicit_automate "$msg"; then
+    export HERMES_CURSOR_AUTO=0
+    echo "ℹ️ 자연어 요청으로 판단해 HANDOFF만 만들어요. Cursor 실행은 /automate 또는 /cursor로 요청해 주세요."
   fi
 }
 
@@ -263,7 +282,9 @@ case "$MODE" in
         submit_job mail "받편함 확인 및 요약"
         ;;
       ask-bg)
-        submit_job "$(detect_task_type "${3:-}")" "${3:-}"
+        TYPE=$(detect_task_type "${3:-}")
+        guard_inferred_automate "$TYPE" "${3:-}"
+        submit_job "$TYPE" "${3:-}"
         ;;
       status)
         run_status
@@ -277,6 +298,7 @@ case "$MODE" in
   auto)
     TYPE=$(detect_task_type "$ARG")
     echo "# 개인화: $TYPE ← \"$ARG\""
+    guard_inferred_automate "$TYPE" "$ARG"
     submit_job "$TYPE" "$ARG"
     ;;
   mail)

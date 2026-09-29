@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 
 from lib.common import compress_sentences, finish_at_sentence
 from lib.content_quality import localize_title, polish_display_title
+from lib.content_safety import is_unsafe
 from lib.humanize_korean import humanize
 
 INSIGHT_LIMIT = 7
@@ -122,6 +123,9 @@ def is_usable_search_result(item: dict) -> bool:
     )
     if any(b in host or b in url.lower() for b in blocked):
         return False
+    # Same NSFW/ad-click blocklist as the newsletter gate (config/newsletter.yaml safety).
+    if is_unsafe(url, title, snippet):
+        return False
     blob = f"{title} {snippet}".lower()
     q = query.lower()
     if any(k in q for k in ("korea", "south korea", "ax")):
@@ -145,9 +149,30 @@ def is_usable_search_result(item: dict) -> bool:
     return True
 
 
+# Korea-specific entities and places only. Korean-language text alone is not
+# evidence: Korean coverage of a foreign launch must not become "대한민국 AX".
+# "Korean" / "한국어" also name the language, so the country names exclude them
+# (lookahead instead of \b so "Korea가" in mixed text still counts).
+_KOREA_NAME = r"korea(?!n)|한국(?!어)|대한민국"
+KOREA_NAME_RE = re.compile(_KOREA_NAME, re.IGNORECASE)
+KOREA_EVIDENCE_RE = re.compile(
+    _KOREA_NAME
+    + r"|seoul|pangyo|busan|samsung|hyundai|naver|kakao|coupang|chaebol|\b(?:sk|kt|lg)\b"
+    r"|국내|서울|판교|부산|과기정통부|과학기술정보통신부|삼성|현대|네이버|카카오|쿠팡|토스",
+    re.IGNORECASE,
+)
+
+
+def has_korea_evidence(text: str) -> bool:
+    """Korea must appear in the result itself (title/snippet), not only in the search query."""
+    return bool(KOREA_EVIDENCE_RE.search(text or ""))
+
+
 def classify_insight(title: str, snippet: str, query: str) -> str:
     q = query.lower()
-    blob = f"{title} {snippet} {query}".lower()
+    # The search query is not evidence about the article: keeping it in the blob
+    # labelled global pages as Korean whenever the query mentioned Korea.
+    blob = f"{title} {snippet}".lower()
     if "hermes" in q or "nousresearch" in q:
         return "hermes_agent"
     if "governance" in q or "responsible ai" in q:
@@ -164,9 +189,10 @@ def classify_insight(title: str, snippet: str, query: str) -> str:
         return "llm_perplexity"
     if "aeo" in q or "answer engine" in q:
         return "aeo"
-    if "south korea enterprise" in q or "korea ax" in q:
+    korea_evidence = has_korea_evidence(blob)
+    if ("south korea enterprise" in q or "korea ax" in q) and korea_evidence:
         return "korea_adoption" if "adoption" in q else "korea_ax"
-    if "digital marketing korea" in q or "korea ax" in blob:
+    if ("digital marketing korea" in q and korea_evidence) or "korea ax" in blob:
         return "korea_ax"
     if "agent marketing" in q or "github" in q and "agent" in q:
         return "agent_marketing"
@@ -184,7 +210,7 @@ def classify_insight(title: str, snippet: str, query: str) -> str:
         return "llm_google"
     if "perplexity" in blob:
         return "llm_perplexity"
-    if "korea" in blob or "south korea" in blob or "한국" in blob:
+    if KOREA_NAME_RE.search(blob):
         if "ax" in blob or "transform" in blob:
             return "korea_ax"
         if "adopt" in blob or "enterprise" in blob:

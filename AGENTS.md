@@ -35,6 +35,10 @@ cat ~/hermes-content-studio/.harness/progress.md
 # 성능 eval (구조·벤치마크)
 ~/hermes-content-studio/scripts/harness-eval.sh --quick
 
+# 회귀 eval — M1 안전·분류 / 커맨더 자연어 라우팅 (결정적, 실행 없음)
+~/hermes-content-studio/scripts/m1-safety-eval.sh
+~/hermes-content-studio/scripts/router-eval.sh
+
 # E2E 사용성·성능 스모크 (Telegram 포함)
 ~/hermes-content-studio/scripts/e2e-smoke-test.sh --telegram
 
