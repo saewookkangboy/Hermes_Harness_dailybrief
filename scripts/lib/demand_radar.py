@@ -63,10 +63,12 @@ def load_config() -> dict[str, Any]:
     cfg.setdefault("outputs", {}).setdefault("dir", "content/signals")
     if os.environ.get("HERMES_DEMAND_RADAR_MODE"):
         cfg["mode"] = os.environ["HERMES_DEMAND_RADAR_MODE"]
-    # A typo ("ap") must stop here: setup treats any non-api mode as "remove the job".
-    mode = str(cfg.get("mode") or "sample").strip().lower()
+    # A typo ("ap") or a blanked value (`mode:` / "") must stop here: setup treats any
+    # non-api mode as "remove the job". Only an absent key defaults to sample (setdefault above).
+    raw = cfg.get("mode")
+    mode = raw.strip().lower() if isinstance(raw, str) else None
     if mode not in MODES:
-        raise ConfigError(f"mode 는 {' 또는 '.join(MODES)} 여야 합니다 (현재: {cfg.get('mode')!r})")
+        raise ConfigError(f"mode 는 {' 또는 '.join(MODES)} 여야 합니다 (현재: {raw!r})")
     cfg["mode"] = mode
     return cfg
 

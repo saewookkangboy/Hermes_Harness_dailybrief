@@ -152,6 +152,8 @@ def mode_of(text, env=None):
         os.environ.pop("HERMES_DEMAND_RADAR_MODE", None)
 ok = (mode_of("demand_radar:\n  mode: ap\n") == "ConfigError"
       and mode_of("demand_radar:\n  mode: api\n", env="bogus") == "ConfigError"
+      and mode_of("demand_radar:\n  mode:\n") == "ConfigError"      # blanked value is not "absent"
+      and mode_of('demand_radar:\n  mode: ""\n') == "ConfigError"
       and mode_of("demand_radar:\n  themes: {}\n") == "sample"
       and mode_of("demand_radar:\n  mode: api\n") == "api")
 print("PASS" if ok else "FAIL")
