@@ -27,10 +27,26 @@ fi
 read -r MODE SCHEDULE <<< "$CFG_LINE"
 SCHEDULE="${SCHEDULE//_/ }"
 
+# `hermes cron list` 출력: "  <id> [active]" 다음 줄들에 "    Name:      <name>"
+# 이름은 정확히 같을 때만 (cron-demand-radar-old 같은 다른 작업은 건드리지 않게)
+_job_ids() {
+  local name="$1" out
+  # 조회 실패를 "작업 없음"으로 보면 아래 create 가 중복 작업을 만듭니다
+  out=$(hermes cron list) || { echo "❌ hermes cron list 실패 — 아무것도 바꾸지 않고 중단" >&2; return 1; }
+  awk -v n="$name" '
+    /^  [a-f0-9][a-f0-9]/ { id=$1; gsub(/[^a-f0-9]/,"",id) }
+    /^[[:space:]]*Name:/ { v=$0; sub(/^[[:space:]]*Name:[[:space:]]*/,"",v); sub(/[[:space:]]+$/,"",v); if (v==n && id!="") print id }
+  ' <<< "$out"
+}
 _remove_existing() {
-  local id
-  for id in $(hermes cron list 2>/dev/null | awk '/^  [a-f0-9][a-f0-9]/ {i=$1; gsub(/[^a-f0-9]/,"",i)} $0 ~ "Name:" && index($0,"cron-demand-radar")>0 {print i}' || true); do
-    if [[ "$DRY" == "1" ]]; then echo "[dry-run] remove cron-demand-radar ($id)"; else hermes cron remove "$id" >/dev/null 2>&1 && echo "  🗑  cron-demand-radar ($id) 해제" || true; fi
+  local id ids
+  ids=$(_job_ids "cron-demand-radar") || return 1
+  for id in $ids; do
+    if [[ "$DRY" == "1" ]]; then echo "[dry-run] remove cron-demand-radar ($id)"; continue; fi
+    if ! hermes cron remove "$id" >/dev/null; then
+      echo "❌ cron-demand-radar ($id) 해제 실패 — 중복 등록을 막으려고 중단" >&2; return 1
+    fi
+    echo "  🗑  cron-demand-radar ($id) 해제"
   done
 }
 
@@ -38,7 +54,7 @@ echo "=== Demand Radar cron (조회 전용) ==="
 echo "mode: $MODE · schedule: $SCHEDULE"
 if [[ "$MODE" != "api" ]]; then
   echo "ℹ️  mode=$MODE — 등록하지 않습니다. 키 연결 후 config/demand-radar.yaml mode: api 로 바꾸고 다시 실행하세요."
-  _remove_existing   # api 모드에서 등록했던 작업이 남아 있으면 해제
+  _remove_existing || exit 1   # api 모드에서 등록했던 작업이 남아 있으면 해제
   exit 0
 fi
 
@@ -60,6 +76,6 @@ cp "$WORKDIR/scripts/lib/cron_bootstrap.sh" "$HERMES_SCRIPTS/cron_bootstrap.sh"
 cp "$WORKDIR/scripts/cron-demand-radar.sh" "$HERMES_SCRIPTS/cron-demand-radar.sh"
 chmod +x "$HERMES_SCRIPTS/cron-demand-radar.sh"
 
-_remove_existing
+_remove_existing || exit 1
 hermes cron create --name "cron-demand-radar" --workdir "$WORKDIR" --script "cron-demand-radar.sh" \
   --no-agent --deliver "$DELIVER" "$SCHEDULE" "" && echo "  ✅ cron-demand-radar"
