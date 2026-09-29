@@ -505,7 +505,11 @@ def cmd_campaign_approve(args: argparse.Namespace) -> int:
 
     tokens = [str(x) for x in (getattr(args, "campaign_args", None) or [])]
     if not tokens:
-        print(CG.format_pending() or CG.format_list())
+        try:
+            print(CG.format_pending() or CG.format_list())
+        except CG.CampaignError as e:
+            print(f"⚠️ {e}")
+            return 1
         print("\n승인: 캠페인 승인 <id> [번호…]")
         return 0
     cid, picks = tokens[0], [int(x) for x in tokens[1:] if x.isdigit()]
@@ -540,16 +544,16 @@ def cmd_campaigns(args: argparse.Namespace) -> int:
     from lib import campaign_graph as CG
 
     tokens = [str(x) for x in (getattr(args, "campaign_args", None) or [])]
-    if tokens:
-        try:
-            st = CG.load_state(CG.load_config(), tokens[0])
-        except CG.CampaignError as e:
-            print(f"⚠️ {e}")
-            return 1
+    try:
         cfg = CG.load_config()
-        print(CG.format_approval_card(st, cfg) if st.get("status") == "awaiting_approval" else CG.format_status(st))
-        return 0
-    print(CG.format_list())
+        if tokens:
+            st = CG.load_state(cfg, tokens[0])
+            print(CG.format_approval_card(st, cfg) if st.get("status") == "awaiting_approval" else CG.format_status(st))
+        else:
+            print(CG.format_list(cfg))
+    except CG.CampaignError as e:
+        print(f"⚠️ {e}")
+        return 1
     return 0
 
 

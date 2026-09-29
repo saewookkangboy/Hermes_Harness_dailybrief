@@ -16,7 +16,9 @@ Modes
 """
 from __future__ import annotations
 
+import contextlib
 import csv
+import fcntl
 import hashlib
 import io
 import json
@@ -64,14 +66,23 @@ class CampaignError(RuntimeError):
     pass
 
 
+class ConfigError(CampaignError):
+    """config/campaign-launch.yaml 이 없거나 깨졌거나 campaign_launch 섹션이 없음."""
+
+
 # ── config · paths ────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
-    try:
-        import yaml  # type: ignore
+    # A missing or broken config must stop the run: falling back to defaults would
+    # quietly shrink the review rules (claims list, budget cap) the copy is checked against.
+    import yaml  # type: ignore
 
-        cfg = (yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}).get("campaign_launch", {})
-    except Exception:  # noqa: BLE001
-        cfg = {}
+    try:
+        data = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError) as exc:
+        raise ConfigError(f"{CONFIG_PATH} 를 읽지 못했어요: {exc}") from exc
+    cfg = data.get("campaign_launch") if isinstance(data, dict) else None
+    if not isinstance(cfg, dict):
+        raise ConfigError(f"{CONFIG_PATH} 에 campaign_launch 섹션이 없어요")
     cfg.setdefault("mode", "sample")
     cfg.setdefault("briefs_dir", "content/campaigns/briefs")
     cfg.setdefault("outputs_dir", "content/campaigns")
@@ -153,8 +164,25 @@ def save_state(cfg: dict, state: dict[str, Any]) -> Path:
     path = _state_path(cfg, state["id"])
     path.parent.mkdir(parents=True, exist_ok=True)
     state["updated_at"] = _now()
-    path.write_text(json.dumps(state, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    # temp file + os.replace: an interrupted write never leaves a truncated state file
+    tmp = path.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(state, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    os.replace(tmp, path)
     return path
+
+
+@contextlib.contextmanager
+def _campaign_lock(cfg: dict, cid: str):
+    """Per-campaign exclusive lock: two 캠페인 승인 messages (Telegram + Slack, or a
+    redelivery) cannot both pass the status check and build the package twice."""
+    lock_path = _state_path(cfg, cid).with_suffix(".lock")
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(lock_path, "w", encoding="utf-8") as fh:
+        fcntl.flock(fh, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(fh, fcntl.LOCK_UN)
 
 
 def list_states(cfg: dict) -> list[dict[str, Any]]:
@@ -926,6 +954,11 @@ def approve(
     notify_override: bool | None = None,
 ) -> dict:
     cfg = cfg or load_config()
+    with _campaign_lock(cfg, cid):
+        return _approve_locked(cid, picks, cfg=cfg, by=by, today=today, notify_override=notify_override)
+
+
+def _approve_locked(cid: str, picks: list[int] | None, *, cfg: dict, by: str, today: date | None, notify_override: bool | None) -> dict:
     state = load_state(cfg, cid)
     if state.get("status") != "awaiting_approval":
         raise CampaignError(f"'{cid}'은 승인 대기 상태가 아니에요 (현재: {STATUS_KO.get(state.get('status'), state.get('status'))})")
@@ -962,14 +995,15 @@ def repackage(cid: str, *, cfg: dict | None = None, today: date | None = None) -
 
 def reject(cid: str, reason: str, *, cfg: dict | None = None, by: str = "cli") -> dict:
     cfg = cfg or load_config()
-    state = load_state(cfg, cid)
-    if state.get("status") != "awaiting_approval":
-        raise CampaignError(f"'{cid}'은 승인 대기 상태가 아니에요")
-    state["status"] = "rejected"
-    state["rejection"] = {"at": _now(), "by": by, "reason": reason}
-    _log(state, "human", f"반려 · {by} · {reason}")
-    save_state(cfg, state)
-    return state
+    with _campaign_lock(cfg, cid):
+        state = load_state(cfg, cid)
+        if state.get("status") != "awaiting_approval":
+            raise CampaignError(f"'{cid}'은 승인 대기 상태가 아니에요")
+        state["status"] = "rejected"
+        state["rejection"] = {"at": _now(), "by": by, "reason": reason}
+        _log(state, "human", f"반려 · {by} · {reason}")
+        save_state(cfg, state)
+        return state
 
 
 def notify(msg: str) -> None:
