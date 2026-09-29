@@ -176,6 +176,60 @@ finally:
     LB.check_loop_budget = orig_budget
 check("loop_budget_blocks_codex", sb["status"] == "blocked" and "예산" in sb.get("blocked_reason", ""))
 check("parse_variants_tolerates_noise", len(CG.parse_variants('noise {"x":1} ```json\n{"variants":[{"id":1,"headline":"h","primary_text":"p"}]}\n``` tail')) == 1)
+
+# 7) Config, state file and approval lock
+import os, tempfile, time, threading
+orig_cfg_path = CG.CONFIG_PATH
+tmpd = Path(tempfile.mkdtemp())
+cfg_ok = True
+for path, text in ((tmpd / "absent.yaml", None), (tmpd / "broken.yaml", "campaign_launch:\n  review: [unclosed\n"), (tmpd / "nosection.yaml", "x: 1\n")):
+    if text is not None:
+        path.write_text(text, encoding="utf-8")
+    CG.CONFIG_PATH = path
+    try:
+        CG.load_config(); cfg_ok = False
+    except CG.ConfigError:
+        pass
+CG.CONFIG_PATH = orig_cfg_path
+check("config_missing_or_broken_fails_loudly", cfg_ok)
+
+sa = CG.start_campaign(str(brief_file("b8", id="atomic-save")), cfg=cfg, today=TODAY)
+state_file = CG._state_path(cfg, "atomic-save")
+before = state_file.read_text(encoding="utf-8")
+orig_replace = os.replace
+def boom(*a, **k):
+    raise OSError("disk full")
+os.replace = boom
+try:
+    try:
+        CG.save_state(cfg, {**sa, "status": "blocked"})
+    except OSError:
+        pass
+finally:
+    os.replace = orig_replace
+check("interrupted_save_keeps_previous_state", state_file.read_text(encoding="utf-8") == before and json.loads(before)["status"] == "awaiting_approval")
+
+sl = CG.start_campaign(str(brief_file("b9", id="lock-test")), cfg=cfg, today=TODAY)
+import fcntl
+lock_fh = open(CG._state_path(cfg, "lock-test").with_suffix(".lock"), "w")
+fcntl.flock(lock_fh, fcntl.LOCK_EX)
+results = []
+def worker():
+    try:
+        results.append(CG.approve("lock-test", cfg=cfg, today=TODAY)["status"])
+    except CG.CampaignError as e:
+        results.append(f"err:{e}")
+t = threading.Thread(target=worker); t.start()
+time.sleep(0.4)
+waited = t.is_alive() and not results
+fcntl.flock(lock_fh, fcntl.LOCK_UN); lock_fh.close()
+t.join(10)
+second = None
+try:
+    CG.approve("lock-test", cfg=cfg, today=TODAY)
+except CG.CampaignError:
+    second = "rejected"
+check("approve_waits_for_lock_then_single_package", waited and results == ["packaged"] and second == "rejected")
 PY
 )
 while IFS= read -r line; do
