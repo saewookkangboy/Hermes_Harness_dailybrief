@@ -70,6 +70,9 @@ class ConfigError(CampaignError):
     """config/campaign-launch.yaml 이 없거나 깨졌거나 campaign_launch 섹션이 없음."""
 
 
+AD_STATUS = "PAUSED"  # every ad in the CSV is imported switched off
+
+
 # ── config · paths ────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
     # A missing or broken config must stop the run: falling back to defaults would
@@ -108,7 +111,10 @@ def load_config() -> dict[str, Any]:
     rv.setdefault("allowed_landing_domains", [])
     rv.setdefault("max_daily_krw", 1_000_000)
     pk = cfg.setdefault("package", {})
-    pk.setdefault("status", "PAUSED")
+    pk.setdefault("status", AD_STATUS)
+    if str(pk["status"]).strip().upper() != AD_STATUS:
+        raise ConfigError(f"package.status 는 {AD_STATUS} 만 쓸 수 있어요 (현재: {pk['status']!r}). 광고는 광고 관리자에서 사람이 켭니다.")
+    pk["status"] = AD_STATUS
     pk.setdefault("utm", {"source": "meta", "medium": "paid_social"})
     pk.setdefault("columns", {})
     env_mode = os.environ.get("HERMES_CAMPAIGN_MODE")
@@ -704,7 +710,7 @@ def build_ads_csv(state: dict, cfg: dict) -> str:
             "campaign_name": names["campaign"],
             "adset_name": names["adset"],
             "ad_name": f"{state['id']}_v{v['id']}",
-            "ad_status": cfg["package"]["status"],
+            "ad_status": AD_STATUS,  # never taken from config: the package must not switch ads on
             "headline": v["headline"],
             "primary_text": v["primary_text"],
             "description": v.get("description", ""),
@@ -922,26 +928,30 @@ def start_campaign(
         raise CampaignError(f"mode는 {', '.join(GENERATORS)} 중 하나예요")
     path = resolve_brief_path(cfg, brief_arg)
     cid = str(read_brief(path).get("id") or "")
-    if ID_RE.match(cid) and _state_path(cfg, cid).exists():
-        prev = load_state(cfg, cid)
-        if prev.get("status") in ("approved", "packaged") and not restart:
-            raise CampaignError(f"'{cid}'은 이미 {STATUS_KO[prev['status']]} 상태예요. 새 id로 브리프를 만들거나 --restart를 쓰세요.")
-    state: dict[str, Any] = {
-        "id": cid if ID_RE.match(cid) else f"invalid-{_sha(str(path))[:8]}",
-        "brief_path": str(path),
-        "mode": mode,
-        "status": "running",
-        "attempts": 0,
-        "variants": [],
-        "created_at": _now(),
-    }
-    ctx = Ctx(
-        cfg=cfg,
-        today=today or date.today(),
-        generator=generator or GENERATORS[mode],
-        notify=_want_notify(cfg, mode, notify_override),
-    )
-    return run_graph(state, ctx, "load_brief")
+    # Same lock as approve/reject: a run queued behind an in-flight approval re-reads the
+    # status after the approval finishes instead of overwriting it with a new card.
+    lock = _campaign_lock(cfg, cid) if ID_RE.match(cid) else contextlib.nullcontext()
+    with lock:
+        if ID_RE.match(cid) and _state_path(cfg, cid).exists():
+            prev = load_state(cfg, cid)
+            if prev.get("status") in ("approved", "packaged") and not restart:
+                raise CampaignError(f"'{cid}'은 이미 {STATUS_KO[prev['status']]} 상태예요. 새 id로 브리프를 만들거나 --restart를 쓰세요.")
+        state: dict[str, Any] = {
+            "id": cid if ID_RE.match(cid) else f"invalid-{_sha(str(path))[:8]}",
+            "brief_path": str(path),
+            "mode": mode,
+            "status": "running",
+            "attempts": 0,
+            "variants": [],
+            "created_at": _now(),
+        }
+        ctx = Ctx(
+            cfg=cfg,
+            today=today or date.today(),
+            generator=generator or GENERATORS[mode],
+            notify=_want_notify(cfg, mode, notify_override),
+        )
+        return run_graph(state, ctx, "load_brief")
 
 
 def approve(
@@ -982,15 +992,16 @@ def _approve_locked(cid: str, picks: list[int] | None, *, cfg: dict, by: str, to
 def repackage(cid: str, *, cfg: dict | None = None, today: date | None = None) -> dict:
     """열 이름을 고친 뒤 같은 승인본으로 패키지만 다시 만듦 (승인 내용은 그대로)."""
     cfg = cfg or load_config()
-    state = load_state(cfg, cid)
-    if state.get("status") != "packaged":
-        raise CampaignError("패키지 완료 상태에서만 다시 만들 수 있어요")
-    if content_hash(state) != state["approval"]["content_hash"]:
-        raise CampaignError("승인본과 카피가 달라요. 다시 돌려 승인을 받으세요.")
-    ctx = Ctx(cfg=cfg, today=today or date.today(), generator=GENERATORS["sample"], notify=False)
-    n_package(state, ctx)
-    save_state(cfg, state)
-    return state
+    with _campaign_lock(cfg, cid):
+        state = load_state(cfg, cid)
+        if state.get("status") != "packaged":
+            raise CampaignError("패키지 완료 상태에서만 다시 만들 수 있어요")
+        if content_hash(state) != state["approval"]["content_hash"]:
+            raise CampaignError("승인본과 카피가 달라요. 다시 돌려 승인을 받으세요.")
+        ctx = Ctx(cfg=cfg, today=today or date.today(), generator=GENERATORS["sample"], notify=False)
+        n_package(state, ctx)
+        save_state(cfg, state)
+        return state
 
 
 def reject(cid: str, reason: str, *, cfg: dict | None = None, by: str = "cli") -> dict:
