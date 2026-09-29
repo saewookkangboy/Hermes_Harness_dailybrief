@@ -304,7 +304,7 @@ is_campaign_command "캠페인승인 abc" || route_ok=0
 is_campaign_command "승인 linkedin" && route_ok=0
 is_campaign_command "/approve" && route_ok=0
 [[ $route_ok -eq 1 ]] && record PASS "pipeline_routes_campaign_before_personal" || record FAIL "pipeline_routes_campaign_before_personal"
-grep -q 'never qc approve' "$REPO/config/commander-easytool.yaml" && grep -q '캠페인 승인' "$REPO/config/telegram-routing.yaml" \
+grep -q '승인·리서치 키워드·캠페인' "$REPO/config/commander-easytool.yaml" && grep -q '캠페인 승인' "$REPO/config/telegram-routing.yaml" \
   && grep -q '캠페인 승인' "$REPO/config/slack-routing.yaml" && record PASS "commander_prompts_route_campaign" || record FAIL "commander_prompts_route_campaign"
 
 echo "=== Result: PASS=$PASS FAIL=$FAIL ==="

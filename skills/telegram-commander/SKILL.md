@@ -27,7 +27,9 @@ Telegram·Slack에서 주간/일일 콘텐츠 파이프라인을 트리거하고
 | 명령 | 동작 |
 |------|------|
 | `/pipeline` | **M1(gather→brief Top 7) → M2 → M5** (~45s) |
-| `/research` | M1 — `run-research-brief.sh` (일일 최신 수집) |
+| `/research` | 오늘 브리프 상태·리서치 대기 목록·사용법만 표시 (슬래시는 키워드가 전달되지 않음) |
+| `리서치 해줘` · `리서치 <키워드>` | M1 실행 · 키워드 리서치 — 일반 메시지 → `telegram-pipeline.sh auto` |
+| `/approve` · `승인 <채널\|all>` | 슬래시는 발행 대기 목록만, 승인은 일반 메시지 (`승인`만 보내면 목록) |
 | `/content` | **M1 선행(당일) + M2** — brief SoT → blog · instagram · linkedin |
 | `/sync` | M5 — Notion Permalink |
 | `/studio` | 상태 점검 |

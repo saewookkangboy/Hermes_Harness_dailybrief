@@ -218,10 +218,12 @@ run_research_keyword() {
 }
 
 run_research_pending() {
-  python3 - <<'PY'
+  # Import lib/ from this script's own directory (bare /research now lands here),
+  # not a fixed ~/hermes-content-studio path that may not exist.
+  HERMES_SCRIPTS_DIR="$DIR" python3 - <<'PY'
+import os
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+sys.path.insert(0, os.environ["HERMES_SCRIPTS_DIR"])
 from lib.research_staging import format_pending_status
 print(format_pending_status())
 PY
@@ -230,11 +232,10 @@ PY
 run_research_approve() {
   studio_refresh_date
   local target="${1:-}"
-  HERMES_RESEARCH_APPROVE_TARGET="$target" python3 - <<'PY'
+  HERMES_SCRIPTS_DIR="$DIR" HERMES_RESEARCH_APPROVE_TARGET="$target" python3 - <<'PY'
 import os
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+sys.path.insert(0, os.environ["HERMES_SCRIPTS_DIR"])
 from lib.research_staging import approve
 target = (os.environ.get("HERMES_RESEARCH_APPROVE_TARGET") or "").strip()
 if target == "all":
@@ -256,6 +257,32 @@ PY
       run_newsletter
     fi
   fi
+}
+
+# Hermes 게이트웨이의 exec quick command(슬래시)는 뒤에 붙인 글자를 스크립트에 넘기지 않습니다.
+# 그래서 인자가 필요한 슬래시는 조회·안내만 하고, 실행은 일반 메시지(auto 경로)로 받습니다.
+print_approve_usage() {
+  run_intent_qc pending || true
+  echo ""
+  echo "ℹ️ /approve는 대기 목록만 보여줘요. 슬래시 뒤 글자는 전달되지 않아요."
+  echo "승인은 일반 메시지로 보내 주세요:"
+  echo "  승인 linkedin · 승인 newsletter · 승인 blog instagram · 승인 all"
+  echo "  캠페인 승인 <id> [번호…]"
+}
+
+print_research_usage() {
+  studio_refresh_date
+  if [[ -f "$WORKDIR/content/research/${DATE}_brief.md" ]]; then
+    echo "✅ 오늘 브리프: content/research/${DATE}_brief.md"
+  else
+    echo "⬜ 오늘 브리프 없음"
+  fi
+  run_research_pending || true
+  echo ""
+  echo "ℹ️ /research는 안내만 해요. 슬래시 뒤 키워드는 전달되지 않아요."
+  echo "일반 메시지로 보내 주세요:"
+  echo "  리서치 <키워드> [--replace] [--approve]   키워드 리서치"
+  echo "  리서치 해줘                              오늘 M1 브리프 전체 실행"
 }
 
 run_content() {
@@ -425,13 +452,13 @@ case "$MODE" in
         run_pipeline_qc
         ;;
       research)
-        # qc research [keywords…] [--replace] [--approve]
+        # qc research [keywords…] [--replace] [--approve] — 인자는 터미널에서만 들어옴.
+        # 슬래시 /research는 인자 없이 도착하므로 실행하지 않고 안내만 (키워드 누락 방지).
         shift 2 || true
         if [[ $# -gt 0 ]]; then
           run_research_keyword "$@"
         else
-          notify "[█░░░░] 1/5 리서치 시작"
-          run_research
+          print_research_usage
         fi
         ;;
       research-pending)
@@ -510,7 +537,8 @@ case "$MODE" in
         run_intent_qc commands
         ;;
       approve)
-        run_intent_qc approve all
+        # 조회만 — 예전엔 인자가 빠져 항상 approve all(콘텐츠 4채널 승인·패키징·Notion)로 실행됐음
+        print_approve_usage
         ;;
       coach)
         run_intent_qc coach

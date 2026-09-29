@@ -866,6 +866,11 @@ def cmd_auto(args: argparse.Namespace) -> int:
     if intent == "graph":
         return cmd_graph(args)
     if intent == "approve":
+        if not rest:
+            # "승인"만 보내면 무엇을 승인할지 모름 → 대기 목록만 (전체 승인은 "승인 all")
+            cmd_pending(args)
+            print("\n승인할 채널을 붙여 보내 주세요: 승인 linkedin · 승인 all · 캠페인 승인 <id>")
+            return 0
         return cmd_approve(args)
     if intent == "campaign-approve":
         return cmd_campaign_approve(args)

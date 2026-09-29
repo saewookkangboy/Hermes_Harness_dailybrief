@@ -37,7 +37,7 @@ python3 scripts/campaign-launch.py run ax-webinar-oct --mode codex  # 승인 카
 | `캠페인 반려 ax-webinar-oct 톤이 너무 딱딱함` | 반려 기록. 브리프를 고쳐 `run`을 다시 돌림 |
 | `캠페인 목록` / `/pending` | 승인 대기 목록 |
 
-`/approve campaign ...`처럼 **슬래시 명령으로 보내지 마세요.** Hermes 게이트웨이의 exec quick command는 슬래시 뒤 글자를 스크립트에 넘기지 않아서, `/approve`는 항상 `approve all`(콘텐츠 발행 전체 승인)로 실행됩니다. Mac 터미널에서는 `hermes-agent.sh approve campaign <id>`도 됩니다.
+`/approve campaign ...`처럼 **슬래시로 보내면 승인되지 않습니다.** Hermes 게이트웨이의 exec quick command는 슬래시 뒤 글자를 스크립트에 넘기지 않아서, `/approve`는 대기 목록만 보여줍니다. Mac 터미널에서는 `hermes-agent.sh approve campaign <id>`도 됩니다.
 
 승인 요청 뒤 브리프 파일이나 카피가 바뀌면 승인이 거부됩니다. 다시 `run`해서 새 카드를 받으세요.
 

@@ -1057,7 +1057,7 @@ def format_approval_card(state: dict, cfg: dict) -> str:
         f"승인: 캠페인 승인 {state['id']}",
         f"일부만: 캠페인 승인 {state['id']} {' '.join(str(v['id']) for v in ready[:2])}",
         f"반려: 캠페인 반려 {state['id']} <사유>",
-        "※ /approve 슬래시 명령은 쓰지 마세요. 뒤에 붙인 글자가 전달되지 않아 콘텐츠 발행 전체 승인으로 동작해요.",
+        "※ 일반 메시지로 보내 주세요. 슬래시 /approve는 뒤 글자가 전달되지 않아 대기 목록만 보여줘요.",
         "승인해도 광고 계정에는 아무것도 올라가지 않아요. 런칭 패키지 파일만 만들어요.",
     ]
     return "\n".join(lines)
