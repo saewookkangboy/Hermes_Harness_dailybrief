@@ -36,6 +36,12 @@ categories:
     icon: "🧵"
     glob: "content/packages/*_threads.md"
     order: 4
+  campaign_launch:
+    label: "Campaign Launch"
+    icon: "📣"
+    glob: "content/campaigns/*_campaign_*_launch.md"   # _sample_* 는 '_' 접두사로 제외됨
+    pipeline: false
+    order: 14
   instagram:
     label: "Instagram Context"
     icon: "📸"

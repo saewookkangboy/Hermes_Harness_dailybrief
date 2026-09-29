@@ -143,6 +143,12 @@ parse_research_args() {
   printf '%s\n' "${args[@]}"
 }
 
+# 캠페인 런칭 그래프 HITL — "캠페인 승인 <id> [번호…]" · "캠페인 반려 <id> 사유" · "캠페인 목록"
+# 슬래시 quick command는 인자가 전달되지 않으므로 자연어로만 받고, 개인화(Codex) 라우팅보다 먼저 봄
+is_campaign_command() {
+  echo "${1:-}" | grep -qE '^[[:space:]]*(캠페인[[:space:]]*(승인|반려|목록|대기)|/?(approve|reject)-campaign|/?campaigns)([[:space:]]|$)'
+}
+
 run_research() {
   studio_refresh_date
   local start end elapsed
@@ -540,6 +546,11 @@ case "$MODE" in
     ;;
   auto)
     MSG="${ACTION:-}"
+    if is_campaign_command "$MSG"; then
+      echo "# 라우팅: campaign ← \"$MSG\""
+      detect_intent_pack "$MSG" || exit 1
+      exit 0
+    fi
     if detect_personal "$MSG"; then
       exec "$DIR/telegram-custom.sh" auto "$MSG"
     fi

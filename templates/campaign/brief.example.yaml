@@ -1,0 +1,44 @@
+# 캠페인 브리프 — campaign-launch.py new <id> 가 이 파일을 content/campaigns/briefs/<id>.yaml 로 복사합니다.
+# content/campaigns/ 는 .gitignore — 채운 브리프는 공개 레포에 올라가지 않습니다.
+#
+# 실행:   python3 scripts/campaign-launch.py run <id> --mode codex
+# 승인:   텔레그램·슬랙에서 "캠페인 승인 <id>"  (슬래시 /approve 는 쓰지 마세요)
+
+id: ax-webinar-oct              # 영문 소문자·숫자·하이픈. 광고 이름·UTM에 그대로 들어감
+name: AX 실무 웨비나 10월       # 광고 관리자 캠페인 이름
+objective: leads                # leads · traffic · sales · awareness · engagement
+
+offer:
+  summary: 10월 22일(목) 저녁 8시 온라인 웨비나 — 마케팅팀이 AI 에이전트를 실무에 붙인 과정
+  conditions: 사전 등록자 대상 무료, 선착순 300명   # '무료'·'할인'을 카피에 쓰려면 조건을 적어야 함
+
+landing_url: https://example.com/ax-webinar         # https 필수. UTM은 패키지가 URL Tags로 따로 붙임
+cta: SIGN_UP                    # LEARN_MORE · SIGN_UP · APPLY_NOW · DOWNLOAD · CONTACT_US · SUBSCRIBE · GET_QUOTE · SHOP_NOW
+
+audience:
+  label: b2b-marketer           # 광고세트 이름 뒤에 붙음 → "AX 실무 웨비나 10월_b2b-marketer"
+  description: B2B 마케팅 팀장·실무자, 30~49세, 수도권, 관심사 마케팅 자동화·생성형 AI
+  notes: 기존 웨비나 등록자 제외
+
+budget:
+  daily_krw: 50000              # 원 단위 정수. CSV에는 안 들어가고 광고 관리자에서 사람이 입력
+
+schedule:
+  start: 2026-10-12
+  end: 2026-10-21
+
+keywords: [AI 에이전트, 마케팅 자동화, AX 교육]   # 최근 M1 브리프·수요 레이더와 연결할 때 씀
+
+key_messages:
+  - 데모가 아니라 실제로 쓰는 흐름을 그대로 보여줌
+  - 리서치 브리프 자동화부터 광고 리포트까지
+  - 비개발 마케터도 바로 따라 할 수 있는 수준
+
+tone: 전문적이지만 쉬운 해요체
+must_include: [웨비나]          # 모든 변형에 들어가야 하는 말
+banned_words: [혁명, 게임체인저]
+
+# '1위'·'최초'·'100%' 같은 표현을 쓰려면 근거를 적습니다. 없으면 검수에서 막힙니다.
+substantiated_claims: []
+#  - claim: 2025 교육 만족도 1위
+#    source: 2025 수강생 설문 n=412, 5점 만점 4.8 (내부 자료)

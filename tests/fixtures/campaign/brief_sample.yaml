@@ -1,0 +1,36 @@
+
+id: sample-ax-webinar
+name: AX 실무 웨비나 10월
+objective: leads
+
+offer:
+  summary: 10월 22일(목) 저녁 8시 온라인 웨비나 — 마케팅팀이 AI 에이전트를 실무에 붙인 과정
+  conditions: 사전 등록자 대상 무료, 선착순 300명
+
+landing_url: https://example.com/ax-webinar
+cta: SIGN_UP
+
+audience:
+  label: b2b-marketer
+  description: B2B 마케팅 팀장·실무자, 30~49세, 수도권, 관심사 마케팅 자동화·생성형 AI
+  notes: 기존 웨비나 등록자 제외
+
+budget:
+  daily_krw: 50000
+
+schedule:
+  start: 2026-10-12
+  end: 2026-10-21
+
+keywords: [AI 에이전트, 마케팅 자동화, AX 교육]
+
+key_messages:
+  - 데모가 아니라 실제로 쓰는 흐름을 그대로 보여줌
+  - 리서치 브리프 자동화부터 광고 리포트까지
+  - 비개발 마케터도 바로 따라 할 수 있는 수준
+
+tone: 전문적이지만 쉬운 해요체
+must_include: [웨비나]
+banned_words: [혁명, 게임체인저]
+
+substantiated_claims: []

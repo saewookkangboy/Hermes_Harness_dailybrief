@@ -16,6 +16,8 @@ slack_routing:
     Slash (intent): /morning /catch-up /publish /pending /approve /linkedin /traces /handoff /graph /commands /cursor
     Research keyword: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
     (bare 승인 = publish HITL only; 리서치 승인 = /research-approve)
+    Campaign HITL (광고 계정 쓰기 없음): 캠페인 승인 <id> [번호…] · 캠페인 반려 <id> <사유> · 캠페인 목록
+      → ~/hermes-content-studio/scripts/telegram-pipeline.sh auto "<message>"  (메시지 그대로 전달, id를 바꾸지 말 것)
     Cursor HANDOFF: /cursor <설명> → Codex HANDOFF → run-cursor-handoff (Slack 알림)
     (/automate = personal · /handoff = session resume · /cursor = Cursor CLI)
 

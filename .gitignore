@@ -17,6 +17,8 @@ venv/
 
 # Personal / private outputs
 content/personal/
+# Campaign briefs · launch packages (budget·audience) — never commit to this public repo
+content/campaigns/
 
 # Harness runtime traces & logs
 .harness/traces/
@@ -45,6 +47,7 @@ content/personal/
 .harness/playbook-log.jsonl
 .harness/token-baseline.jsonl
 .harness/signals-*.json
+.harness/campaigns/
 
 # Stale channel artifacts (moved by pipeline_supervisor)
 content/_stale/
