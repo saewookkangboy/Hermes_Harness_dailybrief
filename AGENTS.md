@@ -113,6 +113,12 @@ PYTHONPATH=scripts python3 -m lib.graph_context "<질문>" --budget 3000
 ~/hermes-content-studio/scripts/curate-playbook.sh --promote
 ~/hermes-content-studio/scripts/curate-playbook.sh --verify
 
+# Meta Ads 루프 (조회 전용 · config/meta-ads.yaml)
+python3 ~/hermes-content-studio/scripts/meta-ads.py fatigue --mode sample
+python3 ~/hermes-content-studio/scripts/meta-ads.py weekly --mode sample --print-report
+~/hermes-content-studio/scripts/meta-ads-eval.sh
+~/hermes-content-studio/scripts/setup-meta-ads-cron.sh --dry-run   # mode: api 일 때만 등록
+
 # Notion 일자별 아카이브
 ~/hermes-content-studio/scripts/archive-to-notion.sh [YYYY-MM-DD]
 

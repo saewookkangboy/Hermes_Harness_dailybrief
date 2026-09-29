@@ -74,6 +74,12 @@ categories:
     exclude: ["*_outline.md", "*_base.html"]
     pipeline: false
     order: 11
+  meta_ads_weekly:
+    label: "Meta Ads Weekly"
+    icon: "📊"
+    glob: "content/ads/*_meta-weekly-report.md"   # _sample_* 는 '_' 접두사로 제외됨
+    pipeline: false
+    order: 12
 
 hygiene:
   enabled: true

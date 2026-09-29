@@ -1,0 +1,234 @@
+{
+ "_note": "합성 샘플 데이터 — 실제 계정 아님. Meta Insights API 응답 형식(문자열 숫자)을 흉내 냄.",
+ "account_currency": "KRW",
+ "windows": {
+  "current": {
+   "since": "2026-09-22",
+   "until": "2026-09-28",
+   "data": [
+    {
+     "adset_id": "120210000000001",
+     "adset_name": "AX교육_리타게팅_30일",
+     "campaign_name": "AX 실무 교육 모집",
+     "impressions": "38120",
+     "reach": "9030",
+     "frequency": "4.221484",
+     "clicks": "297",
+     "ctr": "0.779119",
+     "spend": "412000.00",
+     "cpm": "10807.974816",
+     "cpc": "1387.205387",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "11"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000002",
+     "adset_name": "웨비나_유사타깃_1%",
+     "campaign_name": "10월 AX 웨비나",
+     "impressions": "52400",
+     "reach": "13800",
+     "frequency": "3.797101",
+     "clicks": "471",
+     "ctr": "0.898855",
+     "spend": "520000.00",
+     "cpm": "9923.664122",
+     "cpc": "1104.033970",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "23"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000003",
+     "adset_name": "뉴스레터_구독_리드폼",
+     "campaign_name": "뉴스레터 구독",
+     "impressions": "21300",
+     "reach": "5460",
+     "frequency": "3.901099",
+     "clicks": "298",
+     "ctr": "1.399061",
+     "spend": "188000.00",
+     "cpm": "8826.291080",
+     "cpc": "630.872483",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "41"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000004",
+     "adset_name": "가이드북_다운로드_관심사",
+     "campaign_name": "AX 가이드북 배포",
+     "impressions": "4200",
+     "reach": "1135",
+     "frequency": "3.700441",
+     "clicks": "29",
+     "ctr": "0.690476",
+     "spend": "52000.00",
+     "cpm": "12380.952381",
+     "cpc": "1793.103448",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "3"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000005",
+     "adset_name": "AX교육_관심사_확장",
+     "campaign_name": "AX 실무 교육 모집",
+     "impressions": "61200",
+     "reach": "38250",
+     "frequency": "1.600000",
+     "clicks": "734",
+     "ctr": "1.199346",
+     "spend": "690000.00",
+     "cpm": "11274.509804",
+     "cpc": "940.054496",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "27"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000006",
+     "adset_name": "브랜드_인지도_동영상",
+     "campaign_name": "브랜드 인지도",
+     "impressions": "88000",
+     "reach": "36700",
+     "frequency": "2.397820",
+     "clicks": "440",
+     "ctr": "0.500000",
+     "spend": "350000.00",
+     "cpm": "3977.272727",
+     "cpc": "795.454545"
+    }
+   ]
+  },
+  "previous": {
+   "since": "2026-09-15",
+   "until": "2026-09-21",
+   "data": [
+    {
+     "adset_id": "120210000000001",
+     "adset_name": "AX교육_리타게팅_30일",
+     "campaign_name": "AX 실무 교육 모집",
+     "impressions": "36500",
+     "reach": "10400",
+     "frequency": "3.509615",
+     "clicks": "402",
+     "ctr": "1.101370",
+     "spend": "398000.00",
+     "cpm": "10904.109589",
+     "cpc": "990.049751",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "19"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000002",
+     "adset_name": "웨비나_유사타깃_1%",
+     "campaign_name": "10월 AX 웨비나",
+     "impressions": "49900",
+     "reach": "16100",
+     "frequency": "3.099379",
+     "clicks": "603",
+     "ctr": "1.208417",
+     "spend": "505000.00",
+     "cpm": "10120.240481",
+     "cpc": "837.479270",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "31"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000003",
+     "adset_name": "뉴스레터_구독_리드폼",
+     "campaign_name": "뉴스레터 구독",
+     "impressions": "20100",
+     "reach": "5900",
+     "frequency": "3.406780",
+     "clicks": "290",
+     "ctr": "1.442786",
+     "spend": "181000.00",
+     "cpm": "9004.975124",
+     "cpc": "624.137931",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "39"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000004",
+     "adset_name": "가이드북_다운로드_관심사",
+     "campaign_name": "AX 가이드북 배포",
+     "impressions": "4500",
+     "reach": "1500",
+     "frequency": "3.000000",
+     "clicks": "45",
+     "ctr": "1.000000",
+     "spend": "55000.00",
+     "cpm": "12222.222222",
+     "cpc": "1222.222222",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "5"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000005",
+     "adset_name": "AX교육_관심사_확장",
+     "campaign_name": "AX 실무 교육 모집",
+     "impressions": "58000",
+     "reach": "37400",
+     "frequency": "1.550802",
+     "clicks": "650",
+     "ctr": "1.120690",
+     "spend": "655000.00",
+     "cpm": "11293.103448",
+     "cpc": "1007.692308",
+     "actions": [
+      {
+       "action_type": "lead",
+       "value": "22"
+      }
+     ]
+    },
+    {
+     "adset_id": "120210000000006",
+     "adset_name": "브랜드_인지도_동영상",
+     "campaign_name": "브랜드 인지도",
+     "impressions": "85000",
+     "reach": "37000",
+     "frequency": "2.297297",
+     "clicks": "545",
+     "ctr": "0.641176",
+     "spend": "340000.00",
+     "cpm": "4000.000000",
+     "cpc": "623.853211"
+    }
+   ]
+  }
+ }
+}

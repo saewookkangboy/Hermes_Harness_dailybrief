@@ -1,0 +1,44 @@
+# Hermes Content Studio — Meta Ads 루프 (조회 전용)
+#
+# 피로도 감시(매일)와 주간 리포트(월요일)가 읽는 설정입니다.
+# 이 루프는 Meta Insights를 GET으로 읽기만 하고, 예산·입찰·오디언스·상태를
+# 바꾸는 호출은 코드에 없습니다 (scripts/meta-ads-eval.sh 가 검사).
+
+meta_ads:
+  version: "1.0.0"
+
+  # sample: tests/fixtures/meta/insights_sample.json (알림·Notion 없음)
+  # api:    Meta Marketing API — ~/.hermes/.env 의 META_ACCESS_TOKEN, META_AD_ACCOUNT_ID
+  # env HERMES_META_ADS_MODE 가 있으면 그 값이 우선합니다.
+  mode: sample
+
+  api:
+    # 2026-09 확인 기준 최신 v25.0 (2026-02-18 출시). 새 버전이 나오면 올립니다.
+    version: v25.0
+    level: adset
+    timeout_seconds: 30
+
+  currency: KRW
+  timezone: Asia/Seoul
+  window_days: 7            # 최근 7일 vs 직전 7일 (어제까지)
+
+  # 전환으로 셀 action_type. B2B 리드 캠페인이면 lead, 커머스면 purchase 계열.
+  conversion_action_types:
+    - lead
+    - onsite_conversion.lead_grouped
+    - offsite_conversion.fb_pixel_lead
+
+  fatigue:
+    # 세 조건을 모두 만족하면 "교체 검토" 알림
+    min_impressions: 5000     # 최근 7일 노출
+    max_frequency: 3.5        # 최근 7일 빈도
+    ctr_drop_pct: -20         # 직전 7일 대비 CTR 변화율(%) 이하
+
+  notify:
+    # 피로도 알림은 해당 광고세트가 있을 때만 보냅니다. 0건이면 게시하지 않습니다.
+    slack_home_channel: true
+    schedule_fatigue: "0 9 * * *"      # 매일 09:00 KST
+    schedule_weekly: "5 9 * * 1"       # 월요일 09:05 KST
+
+  outputs:
+    dir: content/ads          # .gitignore — 광고 성과는 공개 레포에 올리지 않습니다
