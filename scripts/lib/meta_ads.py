@@ -33,15 +33,24 @@ class MetaApiError(RuntimeError):
     pass
 
 
+class ConfigError(RuntimeError):
+    """config/meta-ads.yaml 이 없거나 깨졌거나 meta_ads 섹션이 없음."""
+
+
 # ── config ────────────────────────────────────────────────────────────────
 def load_config() -> dict[str, Any]:
-    # A broken or unreadable config must stop the job: silently falling back to
-    # sample mode would let an api-mode cron post synthetic numbers.
-    cfg: dict[str, Any] = {}
-    if CONFIG_PATH.exists():
-        import yaml  # type: ignore
+    # A missing, broken or unreadable config must stop the job: silently falling
+    # back to sample mode would let an api-mode cron post synthetic numbers, and
+    # setup would remove the live jobs.
+    import yaml  # type: ignore
 
-        cfg = (yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}).get("meta_ads") or {}
+    try:
+        data = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}
+    except (OSError, yaml.YAMLError) as exc:
+        raise ConfigError(f"{CONFIG_PATH} 를 읽지 못했습니다: {exc}") from exc
+    cfg = data.get("meta_ads") if isinstance(data, dict) else None
+    if not isinstance(cfg, dict):
+        raise ConfigError(f"{CONFIG_PATH} 에 meta_ads 섹션이 없습니다")
     cfg.setdefault("mode", "sample")
     cfg.setdefault("api", {}).setdefault("version", "v25.0")
     cfg["api"].setdefault("level", "adset")

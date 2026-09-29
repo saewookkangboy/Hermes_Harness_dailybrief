@@ -28,7 +28,11 @@ def main() -> int:
                     help="cron 전용: mode 가 api 가 아니면 아무것도 게시하지 않고 종료")
     args = ap.parse_args()
 
-    cfg = M.load_config()
+    try:
+        cfg = M.load_config()
+    except M.ConfigError as exc:
+        print(f"⚠️ Meta 설정 오류 — 아무것도 조회·변경하지 않았습니다: {exc}")
+        return 2
     if args.mode:
         cfg["mode"] = args.mode
     if args.require_api and cfg["mode"] != "api":

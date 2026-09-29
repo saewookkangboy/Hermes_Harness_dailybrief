@@ -13,7 +13,8 @@ DRY=0; [[ "${1:-}" == "--dry-run" ]] && DRY=1
 # shellcheck source=lib/slack_home.sh
 source "$WORKDIR/scripts/lib/slack_home.sh"
 
-read -r MODE FATIGUE_CRON WEEKLY_CRON < <(python3 - <<PY
+# 설정을 못 읽으면 여기서 멈춤 (아래 non-api 분기에 들어가 기존 작업을 지우지 않게)
+if ! CFG_LINE=$(python3 - <<PY
 import sys
 sys.path.insert(0, "$WORKDIR/scripts")
 from lib.meta_ads import load_config
@@ -21,7 +22,10 @@ c = load_config()
 n = c.get("notify", {})
 print(c["mode"], n.get("schedule_fatigue", "0 9 * * *").replace(" ", "_"), n.get("schedule_weekly", "5 9 * * 1").replace(" ", "_"))
 PY
-)
+); then
+  echo "❌ config/meta-ads.yaml 을 읽지 못해 아무것도 바꾸지 않았습니다"; exit 1
+fi
+read -r MODE FATIGUE_CRON WEEKLY_CRON <<< "$CFG_LINE"
 FATIGUE_CRON="${FATIGUE_CRON//_/ }"; WEEKLY_CRON="${WEEKLY_CRON//_/ }"
 
 _job_ids() {

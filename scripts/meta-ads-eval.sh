@@ -92,10 +92,21 @@ orig_cfg = M.CONFIG_PATH
 M.CONFIG_PATH = bad
 try:
     M.load_config(); check("broken_config_fails_loudly", False)
-except Exception:
+except M.ConfigError:
     check("broken_config_fails_loudly", True)
 finally:
     M.CONFIG_PATH = orig_cfg
+missing_ok = True
+for path, text in ((bad.parent / "absent.yaml", None), (bad.parent / "nosection.yaml", "other: {}\n")):
+    if text is not None:
+        path.write_text(text, encoding="utf-8")
+    M.CONFIG_PATH = path
+    try:
+        M.load_config(); missing_ok = False
+    except M.ConfigError:
+        pass
+M.CONFIG_PATH = orig_cfg
+check("missing_config_fails_loudly", missing_ok)
 PY
 )
 while IFS= read -r line; do
@@ -142,6 +153,26 @@ else
   record FAIL "sample_mode_removes_existing_jobs ($(tr '\n' ' ' < "$STUB/calls.log" 2>/dev/null))"
 fi
 rm -rf "$STUB"
+
+# 7d) setup aborts when the config cannot be loaded — never reaches the branch that removes jobs
+SBX="$(mktemp -d)"
+mkdir -p "$SBX/scripts/lib" "$SBX/config" "$SBX/bin"
+cp "$DIR/setup-meta-ads-cron.sh" "$SBX/scripts/"
+cp "$DIR/lib/meta_ads.py" "$DIR/lib/slack_home.sh" "$SBX/scripts/lib/"
+touch "$SBX/scripts/lib/__init__.py"
+printf 'meta_ads:\n  mode: api\n  fatigue: [unclosed\n' > "$SBX/config/meta-ads.yaml"
+printf '#!/usr/bin/env bash\n[[ "$1 $2" == "cron list" ]] && printf "  ab12cd34 [active]\\n    Name: cron-meta-weekly\\n" || echo "$*" >> "%s/calls.log"\n' "$SBX" > "$SBX/bin/hermes"
+chmod +x "$SBX/bin/hermes"
+for case in broken missing; do
+  [[ "$case" == missing ]] && rm -f "$SBX/config/meta-ads.yaml"
+  rm -f "$SBX/calls.log"
+  if ! PATH="$SBX/bin:$PATH" HERMES_WORKDIR="$SBX" bash "$SBX/scripts/setup-meta-ads-cron.sh" >/dev/null 2>&1 && [[ ! -s "$SBX/calls.log" ]]; then
+    record PASS "setup_aborts_on_${case}_config"
+  else
+    record FAIL "setup_aborts_on_${case}_config ($(cat "$SBX/calls.log" 2>/dev/null))"
+  fi
+done
+rm -rf "$SBX"
 
 # 7) Sample mode never registers cron
 if HERMES_META_ADS_MODE=sample HERMES_WORKDIR="$REPO" bash "$DIR/setup-meta-ads-cron.sh" --dry-run 2>&1 | grep -q '등록하지 않습니다'; then
