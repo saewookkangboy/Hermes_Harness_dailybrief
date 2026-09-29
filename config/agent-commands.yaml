@@ -150,6 +150,21 @@ intent_packs:
     aliases: ["/research-approve", "리서치 승인", "research-approve"]
     sla_seconds: 90
 
+  campaign-approve:
+    label: "캠페인 승인 → 런칭 패키지 (광고 계정 쓰기 없음)"
+    aliases: ["캠페인 승인", "/approve-campaign", "approve-campaign"]
+    sla_seconds: 10
+
+  campaign-reject:
+    label: "캠페인 반려"
+    aliases: ["캠페인 반려", "/reject-campaign", "reject-campaign"]
+    sla_seconds: 5
+
+  campaigns:
+    label: "캠페인 목록·승인 카드"
+    aliases: ["캠페인 목록", "캠페인 대기", "/campaigns", "campaigns"]
+    sla_seconds: 5
+
   blog:
     label: "Blog M3 sub-pipeline"
     aliases: ["/blog", "블로그 seo", "blog pipeline"]

@@ -1,0 +1,71 @@
+# 캠페인 런칭 그래프 — config
+#
+# 브리프(YAML) → 리서치 → 카피(Codex) → 검수 ─(실패 시 카피로, 최대 max_retries)→ 사람 승인 → 런칭 패키지 → 감시 인계
+#
+# 광고 계정에는 아무것도 쓰지 않습니다. 산출물은 사람이 광고 관리자에 올리는 파일까지입니다.
+# 예산·기간·타깃은 CSV에 넣지 않고, 사람이 광고 관리자 화면에서 직접 입력합니다.
+#
+# 코드: scripts/lib/campaign_graph.py · CLI: scripts/campaign-launch.py · 검증: scripts/campaign-launch-eval.sh
+
+campaign_launch:
+  version: "1.0.0"
+
+  mode: sample                 # sample: 픽스처 카피 (Codex 호출 없음) · codex: hermes-run.sh (HERMES_USE_CODEX=1)
+  briefs_dir: content/campaigns/briefs
+  outputs_dir: content/campaigns
+  state_dir: .harness/campaigns
+  notify: auto                 # auto: codex 모드에서만 Telegram·Slack 알림 · always · never
+
+  copy:
+    variants: 3
+    max_retries: 2             # 검수에서 걸린 변형만 카피 노드로 되돌려 다시 씀 (최대 횟수)
+    min_passing: 2             # 승인 카드로 넘어가려면 필요한 통과 변형 수
+    timeout_sec: 300
+    sample_fixture: tests/fixtures/campaign/copy_sample.json
+
+  research:
+    max_insights: 3            # 최근 M1 브리프에서 브리프 키워드와 겹치는 인사이트
+    radar_glob: content/signals/*_demand-radar.md
+
+  objectives:                  # 브리프 objective → Meta 캠페인 목표 (광고 관리자에서 고를 값)
+    leads: OUTCOME_LEADS
+    traffic: OUTCOME_TRAFFIC
+    sales: OUTCOME_SALES
+    awareness: OUTCOME_AWARENESS
+    engagement: OUTCOME_ENGAGEMENT
+
+  review:
+    # Meta 권장 글자 수. 넘으면 잘려 보일 뿐 게재는 되므로 '재작성 요청'만 하고 막지는 않음.
+    recommended_length:
+      primary_text: 125
+      headline: 40
+      description: 30
+    # 표시·광고의 공정화에 관한 법률상 실증이 필요한 표현.
+    # 브리프 substantiated_claims에 근거(source)가 있으면 통과, 없으면 차단.
+    require_evidence: ["최고", "최초", "최대", "유일", "1위", "넘버원", "No.1", "100%", "완벽", "보장", "최저", "무조건", "독보적", "압도적"]
+    allow_phrases: ["최고경영자", "최고기술책임자", "최고마케팅책임자", "최고책임자"]
+    # 조건이 따라붙어야 하는 표현 — 브리프 offer.conditions가 비어 있으면 차단
+    needs_conditions: ["무료", "공짜", "할인", "증정"]
+    placeholders: ["{{", "}}", "TODO", "TBD", "XXX", "lorem", "[브랜드]", "[링크]"]
+    cta_allowed: [LEARN_MORE, SIGN_UP, APPLY_NOW, DOWNLOAD, CONTACT_US, SUBSCRIBE, GET_QUOTE, SHOP_NOW]
+    allowed_landing_domains: []   # 비어 있으면 https만 확인. 예: ["troe.kr"]
+    max_daily_krw: 1000000        # 브리프 일 예산 오타(0 하나 더) 방지용 상한 — 넘으면 차단
+
+  package:
+    status: PAUSED               # CSV의 모든 광고는 일시중지로 가져와짐
+    utm:
+      source: meta
+      medium: paid_social
+    # 광고 관리자 '가져오기' 열 이름. 계정마다 템플릿이 다를 수 있으니
+    # 먼저 광고 1개를 만들어 내보내기(export)한 파일의 열 이름과 대조하고, 다르면 여기만 고치면 됩니다.
+    columns:
+      campaign_name: "Campaign Name"
+      adset_name: "Ad Set Name"
+      ad_name: "Ad Name"
+      ad_status: "Ad Status"
+      headline: "Title"
+      primary_text: "Body"
+      description: "Link Description"
+      link: "Link"
+      cta: "Call to Action"
+      url_tags: "URL Tags"

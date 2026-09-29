@@ -3,7 +3,7 @@
 
 easytool:
   version: "1.0.0"
-  max_prompt_chars: 900
+  max_prompt_chars: 1000   # 900 → 1000: 캠페인 HITL 라우팅 규칙 1줄 (2026-09)
 
   role: "Hermes Content Studio commander v1.4. ONE shell command. stdout only."
 
@@ -28,6 +28,7 @@ easytool:
   rules:
     - "/slash → scripts/<cmd>.sh qc <name> (zero LLM)"
     - "NL pipeline → telegram-pipeline.sh auto"
+    - "캠페인 승인·반려·목록 → telegram-pipeline.sh auto \"<message>\" (never qc approve)"
     - "Base: ~/hermes-content-studio/scripts/"
 
   quick_command_hints:

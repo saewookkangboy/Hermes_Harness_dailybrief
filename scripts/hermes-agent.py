@@ -77,6 +77,10 @@ INTENT_ALIASES: dict[str, list[str]] = {
     "handoff": ["/handoff", "핸드오프", "이어하기"],
     "graph": ["/graph", "brief graph", "브리프 그래프"],
     "approve": ["/approve", "승인", "approve"],
+    # 캠페인 런칭 그래프 HITL — 슬래시 quick command는 인자가 안 넘어가므로 자연어로 받음
+    "campaign-approve": ["캠페인 승인", "/approve-campaign", "approve-campaign"],
+    "campaign-reject": ["캠페인 반려", "/reject-campaign", "reject-campaign"],
+    "campaigns": ["캠페인 목록", "캠페인 대기", "/campaigns", "campaigns"],
     "commands": ["/commands", "명령 목록", "registry"],
     "newsletter": ["/newsletter", "뉴스레터", "newsletter"],
     "blog": ["/blog", "블로그 seo", "blog pipeline"],
@@ -439,6 +443,10 @@ def cmd_approve(args: argparse.Namespace) -> int:
     channels = args.channels or ["all"]
     if isinstance(channels, str):
         channels = [channels]
+    if channels[0].lower() in ("campaign", "캠페인"):
+        # hermes-agent.sh approve campaign <id> [번호…] — 콘텐츠 발행 승인과 분리
+        args.campaign_args = channels[1:]
+        return cmd_campaign_approve(args)
     if "esp" in [c.lower() for c in channels]:
         import os
 
@@ -476,6 +484,72 @@ def cmd_approve(args: argparse.Namespace) -> int:
 def cmd_pending(args: argparse.Namespace) -> int:
     stamp = args.date or ""
     print(format_pending_status(stamp or None))
+    try:
+        from lib.campaign_graph import format_pending as campaign_pending
+
+        extra = campaign_pending()
+        if extra:
+            print("\n" + extra)
+    except Exception:  # noqa: BLE001 — 캠페인 목록 실패가 /pending을 막지 않음
+        pass
+    return 0
+
+
+def _campaign_actor(args: argparse.Namespace) -> str:
+    return "cli" if getattr(args, "session", "cli") in ("", "cli") else "commander"
+
+
+def cmd_campaign_approve(args: argparse.Namespace) -> int:
+    """캠페인 승인 <id> [번호…] → 런칭 패키지 (광고 계정 쓰기 없음)."""
+    from lib import campaign_graph as CG
+
+    tokens = [str(x) for x in (getattr(args, "campaign_args", None) or [])]
+    if not tokens:
+        print(CG.format_pending() or CG.format_list())
+        print("\n승인: 캠페인 승인 <id> [번호…]")
+        return 0
+    cid, picks = tokens[0], [int(x) for x in tokens[1:] if x.isdigit()]
+    try:
+        st = CG.approve(cid, picks or None, by=_campaign_actor(args))
+    except CG.CampaignError as e:
+        print(f"⚠️ {e}")
+        return 1
+    record_action(args.session, intent="campaign-approve", action=f"approve_campaign_{cid}", stamp=args.date or studio_today(), pending=[])
+    print(f"✅ 캠페인 승인 · {cid}\n📦 {Path(st['package']['launch']).name}\n📄 {Path(st['package']['csv']).name}")
+    print("광고 관리자에 올리고 켜는 건 사람이 합니다 (모든 광고 일시중지 상태).")
+    return 0
+
+
+def cmd_campaign_reject(args: argparse.Namespace) -> int:
+    from lib import campaign_graph as CG
+
+    tokens = [str(x) for x in (getattr(args, "campaign_args", None) or [])]
+    if not tokens:
+        print("반려: 캠페인 반려 <id> <사유>")
+        return 1
+    try:
+        CG.reject(tokens[0], " ".join(tokens[1:]) or "(사유 없음)", by=_campaign_actor(args))
+    except CG.CampaignError as e:
+        print(f"⚠️ {e}")
+        return 1
+    print(f"↩️ 캠페인 반려 · {tokens[0]} — 브리프를 고친 뒤 campaign-launch.py run 으로 다시 돌리세요")
+    return 0
+
+
+def cmd_campaigns(args: argparse.Namespace) -> int:
+    from lib import campaign_graph as CG
+
+    tokens = [str(x) for x in (getattr(args, "campaign_args", None) or [])]
+    if tokens:
+        try:
+            st = CG.load_state(CG.load_config(), tokens[0])
+        except CG.CampaignError as e:
+            print(f"⚠️ {e}")
+            return 1
+        cfg = CG.load_config()
+        print(CG.format_approval_card(st, cfg) if st.get("status") == "awaiting_approval" else CG.format_status(st))
+        return 0
+    print(CG.format_list())
     return 0
 
 
@@ -750,6 +824,9 @@ def _auto_defaults(args: argparse.Namespace, intent: str, rest: str) -> None:
         "schedules": {"all": False},
         "supervised": {"skip_newsletter": False, "skip_notion": False, "skip_audit": False, "quiet": False},
         "approve": {"channels": rest.split() if rest else ["all"]},
+        "campaign-approve": {"campaign_args": rest.split()},
+        "campaign-reject": {"campaign_args": rest.split()},
+        "campaigns": {"campaign_args": rest.split()},
     }
     for key, val in defaults.get(intent, {}).items():
         if not hasattr(args, key):
@@ -786,6 +863,12 @@ def cmd_auto(args: argparse.Namespace) -> int:
         return cmd_graph(args)
     if intent == "approve":
         return cmd_approve(args)
+    if intent == "campaign-approve":
+        return cmd_campaign_approve(args)
+    if intent == "campaign-reject":
+        return cmd_campaign_reject(args)
+    if intent == "campaigns":
+        return cmd_campaigns(args)
     if intent == "commands":
         return cmd_commands(args)
     if intent == "newsletter":
@@ -952,6 +1035,13 @@ def main() -> int:
 
     p_pend = sub.add_parser("pending", help="HITL publish queue status", parents=[common])
     p_pend.set_defaults(func=cmd_pending)
+
+    p_camp = sub.add_parser("campaign", help="캠페인 런칭 그래프 HITL (list·approve·reject)", parents=[common])
+    p_camp.add_argument("campaign_action", choices=["list", "approve", "reject"])
+    p_camp.add_argument("campaign_args", nargs="*")
+    p_camp.set_defaults(
+        func=lambda a: {"list": cmd_campaigns, "approve": cmd_campaign_approve, "reject": cmd_campaign_reject}[a.campaign_action](a)
+    )
 
     p_cmd = sub.add_parser("commands", help="Command registry", parents=[common])
     p_cmd.set_defaults(func=cmd_commands)

@@ -234,6 +234,12 @@ LEARNED 를 직접 편집하지 말고 `curate-playbook.sh` 를 사용하세요.
 # 강의 슬라이드 (HTML + PPTX + claude-design 연동)
 ~/hermes-content-studio/scripts/run-lecture-slides.sh "제목" \
   --content-file outline.txt --design-mode claude-design --notion-sync
+
+# 캠페인 런칭 그래프 (브리프 → Codex 카피 → 검수 ↺ → 사람 승인 → 런칭 패키지 · 광고 계정 쓰기 없음)
+python3 ~/hermes-content-studio/scripts/campaign-launch.py new <id>            # 브리프 템플릿
+python3 ~/hermes-content-studio/scripts/campaign-launch.py run <id> --mode codex
+# 승인: 텔레그램·슬랙 일반 메시지 "캠페인 승인 <id> [번호…]" (슬래시 /approve 아님) · docs/campaign-launch.md
+~/hermes-content-studio/scripts/campaign-launch-eval.sh
 ```
 
 ## 코딩
