@@ -91,3 +91,6 @@ cron-exports/*
 
 # Git worktrees
 .worktrees/
+
+# Ad account performance (Meta loop) — never commit to this public repo
+content/ads/

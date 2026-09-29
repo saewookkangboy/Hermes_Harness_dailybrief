@@ -47,6 +47,10 @@ M1→M5 **결정적 assemble**은 유지하고, LLM 루프는 triage·코칭·�
 | **supervised-pipeline** | Factory run | 평일 10:00 | **L2** | `cron-supervised-pipeline.sh` | supervised 로그 · handoff JSON |
 | **staging-supervised** | Blocking 회귀 | 토 11:00 | L2 | `cron-staging-supervised.sh` | staging eval · `HERMES_SUPERVISED_STAGING=1` |
 | m4-coach | Performance feedback | _(P1-4 예정)_ | L1→L2 | `run-m4-coach.sh` | trait 코칭 |
+| **meta-fatigue** | Closed loop, 조회 전용 | 매일 09:00 | **L1** | `cron-meta-fatigue.sh` → `meta-ads.py fatigue` | 교체 검토 광고세트 있을 때만 Slack · `content/ads/{date}_meta-fatigue.md` |
+| **meta-weekly** | Weekly report, 조회 전용 | 월 09:05 | **L1** | `cron-meta-weekly.sh` → `meta-ads.py weekly` | Slack 한 줄 · `content/ads/{date}_meta-weekly-report.md` → Notion |
+
+Meta 루프는 `config/meta-ads.yaml` `mode: api`일 때만 `setup-meta-ads-cron.sh`가 등록합니다. 판정 규칙(노출·빈도·CTR 변화)은 코드에 있고, 검증은 `meta-ads-eval.sh`입니다.
 
 ---
 
@@ -178,6 +182,8 @@ repurpose_pipeline           brief_gate (M2 진입 전)
 | M2 LLM polish | `HERMES_ENHANCE=1`만 | `HERMES_LOOP_BUDGET_KILL=1` · cap 초과 시 `budget_blocking: true`면 FAIL, `false`면 WARN |
 | M2 LLM humanize | `HERMES_HUMANIZE_LLM=1` 수동 | cron 미포함 (`cron_llm_humanize: false`) · `HERMES_ENHANCE`와 별도 경로 |
 | Wiki LLM Ingest | `HERMES_WIKI_INGEST=1` | 비동기·옵션 |
+| Meta 광고 조회·리포트 | ✅ `meta-fatigue` · `meta-weekly` (GET만) | — |
+| Meta 예산·입찰·오디언스·상태 변경, 소재 교체 | ❌ 코드 없음 | 광고 관리자에서 직접 |
 
 참조: `config/harness.yaml` `guardrails.deny_paths`, `require_notion_sync_telegram`
 

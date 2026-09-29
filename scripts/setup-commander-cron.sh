@@ -52,6 +52,9 @@ _deploy_cron_script "cron-competitive-watch.sh"
 _deploy_cron_script "cron-weekly-graph-digest.sh"
 _deploy_cron_script "cron-staging-supervised.sh"
 _deploy_cron_script "cron-notion-oauth-watch.sh"
+# Meta Ads 루프 — 등록은 setup-meta-ads-cron.sh (mode: api 일 때만). 위 rm -f 이후 복사본만 복구
+_deploy_cron_script "cron-meta-fatigue.sh"
+_deploy_cron_script "cron-meta-weekly.sh"
 
 _remove_by_name() {
   local name="$1" id ids
