@@ -68,12 +68,14 @@ def fake_urlopen(req, timeout=0):
     seen.append((req.get_method(), req.full_url))
     auth.append(req.get_header("Authorization"))
     return FakeResp(pages[len(seen) - 1])
-orig = urllib.request.urlopen
+# Patch both the module's opener and the global urlopen: the eval must never reach the network.
+orig_open = getattr(M, "_urlopen", None)
 urllib.request.urlopen = fake_urlopen
+M._urlopen = fake_urlopen
 try:
     got = M._fetch_window(cfg, "TOKEN", "123", "2026-09-22", "2026-09-28")
 finally:
-    urllib.request.urlopen = orig
+    M._urlopen = orig_open
 stats = [M.AdSetStats.from_row(r, cfg["conversion_action_types"]) for r in got]
 check("api_follows_paging", len(got) == 2 and len(seen) == 2)
 check("api_get_only", all(m == "GET" for m, _ in seen))
@@ -82,6 +84,32 @@ check("api_uses_insights_endpoint", "/act_123/insights?" in seen[0][1] and "leve
 check("api_token_never_in_url", all("access_token" not in u and "TOKEN" not in u for _, u in seen))
 check("api_token_in_auth_header", auth == ["Bearer TOKEN", "Bearer TOKEN"])
 check("api_paging_keeps_cursor", "after=abc" in seen[1][1])
+
+# 4b) The bearer token only ever goes to https://graph.facebook.com (paging.next is not trusted),
+#     and a redirect cannot carry it elsewhere (urllib forwards Authorization on redirects)
+refused_all = True
+for bad_next in ("https://evil.example/v25.0/act_123/insights?after=x",
+                 "http://graph.facebook.com/v25.0/act_123/insights?after=x",
+                 "https://graph.facebook.com.evil.example/v25.0/x",
+                 "https://user:pw@graph.facebook.com/v25.0/x",
+                 "https://graph.facebook.com:8443/v25.0/x"):
+    seen.clear(); auth.clear()
+    pages = [{"data": [], "paging": {"next": bad_next}}, {"data": []}]
+    M._urlopen = fake_urlopen
+    try:
+        M._fetch_window(cfg, "TOKEN", "123", "2026-09-22", "2026-09-28")
+        refused_all = False
+    except M.MetaApiError:
+        refused_all = refused_all and len(seen) == 1
+    finally:
+        M._urlopen = orig_open
+check("api_refuses_off_host_urls", refused_all)
+opener = getattr(M, "_OPENER", None)
+handlers = opener.handlers if opener else []
+check("api_does_not_follow_redirects",
+      any(isinstance(h, getattr(M, "_NoRedirect", ())) for h in handlers)
+      and not any(type(h) is urllib.request.HTTPRedirectHandler for h in handlers)
+      and M._NoRedirect().redirect_request(urllib.request.Request("https://graph.facebook.com/x"), None, 302, "Found", {}, "https://evil.example/") is None)
 
 # 5) A broken config fails loudly instead of falling back to sample mode
 import tempfile
@@ -140,7 +168,7 @@ STUB="$(mktemp -d)"
 cat > "$STUB/hermes" <<'SH'
 #!/usr/bin/env bash
 if [[ "$1 $2" == "cron list" ]]; then
-  printf '  ab12cd34 [active]\n    Name: cron-meta-fatigue\n  ef56ab78 [active]\n    Name: cron-meta-weekly\n  0011aa22 [active]\n    Name: cron-demand-radar\n'
+  printf '  ab12cd34 [active]\n    Name:      cron-meta-fatigue\n  ef56ab78 [active]\n    Name:      cron-meta-weekly\n  0011aa22 [active]\n    Name:      cron-demand-radar\n  99aa88bb [active]\n    Name:      cron-meta-weekly-backup\n'
 else
   echo "$*" >> "$(dirname "$0")/calls.log"
 fi
@@ -152,7 +180,49 @@ if [[ "$(sort "$STUB/calls.log" 2>/dev/null | tr '\n' ' ')" == "cron remove ab12
 else
   record FAIL "sample_mode_removes_existing_jobs ($(tr '\n' ' ' < "$STUB/calls.log" 2>/dev/null))"
 fi
+grep -q 99aa88bb "$STUB/calls.log" 2>/dev/null \
+  && record FAIL "setup_removes_only_exact_name" || record PASS "setup_removes_only_exact_name"
 rm -rf "$STUB"
+
+# 7e) api mode: a failed lookup or removal stops setup before it registers a duplicate job
+SBX="$(mktemp -d)"
+mkdir -p "$SBX/scripts/lib" "$SBX/config" "$SBX/bin" "$SBX/home"
+cp "$DIR/setup-meta-ads-cron.sh" "$DIR/cron-meta-fatigue.sh" "$DIR/cron-meta-weekly.sh" "$SBX/scripts/"
+cp "$DIR/lib/meta_ads.py" "$DIR/lib/slack_home.sh" "$DIR/lib/cron_bootstrap.sh" "$SBX/scripts/lib/"
+touch "$SBX/scripts/lib/__init__.py"
+cp "$REPO/config/meta-ads.yaml" "$SBX/config/"
+printf 'import sys\nsys.exit(0)\n' > "$SBX/scripts/meta-ads.py"   # probe stub (no network)
+cat > "$SBX/bin/hermes" <<'SH'
+#!/usr/bin/env bash
+echo "$*" >> "$STUB_LOG"
+case "$1 $2" in
+  "cron list")
+    [[ "${STUB_FAIL:-}" == list ]] && exit 1
+    printf '  ab12cd34 [active]\n    Name:      cron-meta-fatigue\n  99aa88bb [active]\n    Name:      cron-meta-weekly-backup\n' ;;
+  "cron remove") [[ "${STUB_FAIL:-}" == remove ]] && exit 1 ;;
+esac
+exit 0
+SH
+chmod +x "$SBX/bin/hermes"
+api_setup() {
+  rm -f "$SBX/calls.log"
+  PATH="$SBX/bin:$PATH" HOME="$SBX/home" HERMES_WORKDIR="$SBX" HERMES_META_ADS_MODE=api META_ADS_DELIVER=telegram \
+    STUB_LOG="$SBX/calls.log" STUB_FAIL="$1" bash "$SBX/scripts/setup-meta-ads-cron.sh" >/dev/null 2>&1
+}
+for fail in list remove; do
+  if ! api_setup "$fail" && ! grep -q "cron create" "$SBX/calls.log" 2>/dev/null; then
+    record PASS "setup_stops_when_cron_${fail}_fails"
+  else
+    record FAIL "setup_stops_when_cron_${fail}_fails ($(grep -c 'cron create' "$SBX/calls.log" 2>/dev/null) creates)"
+  fi
+done
+if api_setup "" && [[ "$(grep -c 'cron create' "$SBX/calls.log")" == 2 ]] \
+   && grep -q "cron remove ab12cd34" "$SBX/calls.log" && ! grep -q 99aa88bb "$SBX/calls.log"; then
+  record PASS "setup_api_replaces_own_jobs_only"
+else
+  record FAIL "setup_api_replaces_own_jobs_only ($(tr '\n' ';' < "$SBX/calls.log" 2>/dev/null))"
+fi
+rm -rf "$SBX"
 
 # 7d) setup aborts when the config cannot be loaded — never reaches the branch that removes jobs
 SBX="$(mktemp -d)"
@@ -174,12 +244,16 @@ for case in broken missing; do
 done
 rm -rf "$SBX"
 
-# 7) Sample mode never registers cron
-if HERMES_META_ADS_MODE=sample HERMES_WORKDIR="$REPO" bash "$DIR/setup-meta-ads-cron.sh" --dry-run 2>&1 | grep -q '등록하지 않습니다'; then
+# 7) Sample mode never registers cron (stub hermes: the eval must not depend on the live cron list)
+STUB="$(mktemp -d)"
+printf '#!/usr/bin/env bash\necho "$*" >> "%s/calls.log"\nexit 0\n' "$STUB" > "$STUB/hermes"; chmod +x "$STUB/hermes"
+out=$(PATH="$STUB:$PATH" HERMES_META_ADS_MODE=sample HERMES_WORKDIR="$REPO" bash "$DIR/setup-meta-ads-cron.sh" --dry-run 2>&1 || true)
+if [[ "$out" == *'등록하지 않습니다'* ]] && ! grep -q "cron create" "$STUB/calls.log" 2>/dev/null; then
   record PASS "sample_mode_no_cron"
 else
   record FAIL "sample_mode_no_cron"
 fi
+rm -rf "$STUB"
 
 echo "=== Result: PASS=$PASS FAIL=$FAIL ==="
 [[ "$FAIL" -eq 0 ]]

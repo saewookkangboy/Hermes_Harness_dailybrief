@@ -155,11 +155,48 @@ def _without_token(url: str) -> str:
     return urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(query)))
 
 
+_META_HOST = "graph.facebook.com"
+
+
+def _is_meta_url(url: str) -> bool:
+    """Only https://graph.facebook.com[:443] with no userinfo may receive the token."""
+    parts = urllib.parse.urlsplit(url)
+    try:
+        port = parts.port
+    except ValueError:
+        return False
+    return (
+        parts.scheme == "https"
+        and parts.hostname == _META_HOST
+        and port in (None, 443)
+        and parts.username is None
+        and parts.password is None
+    )
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """urllib copies Authorization onto the redirected request, whatever the host."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):  # noqa: D401
+        return None
+
+
+_OPENER = urllib.request.build_opener(_NoRedirect())
+
+
+def _urlopen(req: urllib.request.Request, timeout: int):
+    return _OPENER.open(req, timeout=timeout)
+
+
 def _get_json(url: str, timeout: int, token: str) -> dict:
     # Token goes in the header: URLs end up in proxy and request logs.
-    req = urllib.request.Request(_without_token(url), method="GET", headers={"Authorization": f"Bearer {token}"})
+    # paging.next comes from the response, so check the destination before every request.
+    clean = _without_token(url)
+    if not _is_meta_url(clean):
+        raise MetaApiError(f"Meta Graph API 가 아닌 주소라 요청하지 않았습니다: {urllib.parse.urlsplit(clean).netloc or clean[:60]}")
+    req = urllib.request.Request(clean, method="GET", headers={"Authorization": f"Bearer {token}"})
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        with _urlopen(req, timeout) as r:
             return json.load(r)
     except urllib.error.HTTPError as exc:  # type: ignore[attr-defined]
         detail = exc.read().decode("utf-8", "replace")[:300]

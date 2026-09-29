@@ -28,14 +28,26 @@ fi
 read -r MODE FATIGUE_CRON WEEKLY_CRON <<< "$CFG_LINE"
 FATIGUE_CRON="${FATIGUE_CRON//_/ }"; WEEKLY_CRON="${WEEKLY_CRON//_/ }"
 
+# `hermes cron list` 출력: "  <id> [active]" 다음 줄들에 "    Name:      <name>"
+# 이름은 정확히 같을 때만 (cron-meta-weekly 가 cron-meta-weekly-backup 을 지우지 않게)
 _job_ids() {
-  local name="$1"
-  hermes cron list 2>/dev/null | awk -v n="$name" '/^  [a-f0-9][a-f0-9]/ {i=$1; gsub(/[^a-f0-9]/,"",i)} $0 ~ "Name:" && index($0,n)>0 {print i}' || true
+  local name="$1" out
+  # 조회 실패를 "작업 없음"으로 보면 아래 create 가 중복 작업을 만듭니다
+  out=$(hermes cron list) || { echo "❌ hermes cron list 실패 — 아무것도 바꾸지 않고 중단" >&2; return 1; }
+  awk -v n="$name" '
+    /^  [a-f0-9][a-f0-9]/ { id=$1; gsub(/[^a-f0-9]/,"",id) }
+    /^[[:space:]]*Name:/ { v=$0; sub(/^[[:space:]]*Name:[[:space:]]*/,"",v); sub(/[[:space:]]+$/,"",v); if (v==n && id!="") print id }
+  ' <<< "$out"
 }
 _remove() {
-  local name="$1" id
-  for id in $(_job_ids "$name"); do
-    if [[ "$DRY" == "1" ]]; then echo "[dry-run] remove $name ($id)"; else hermes cron remove "$id" >/dev/null 2>&1 && echo "  🗑  $name ($id) 해제" || true; fi
+  local name="$1" id ids
+  ids=$(_job_ids "$name") || return 1
+  for id in $ids; do
+    if [[ "$DRY" == "1" ]]; then echo "[dry-run] remove $name ($id)"; continue; fi
+    if ! hermes cron remove "$id" >/dev/null; then
+      echo "❌ $name ($id) 해제 실패 — 중복 등록을 막으려고 중단" >&2; return 1
+    fi
+    echo "  🗑  $name ($id) 해제"
   done
 }
 
@@ -44,8 +56,8 @@ echo "mode: $MODE · fatigue: $FATIGUE_CRON · weekly: $WEEKLY_CRON"
 if [[ "$MODE" != "api" ]]; then
   echo "ℹ️  mode=$MODE — 등록하지 않습니다. 토큰 연결 후 config/meta-ads.yaml mode: api 로 바꾸고 다시 실행하세요."
   # api 모드에서 등록했던 작업이 남아 있으면 해제 (sample 로 되돌린 뒤 샘플 수치가 게시되지 않게)
-  _remove "cron-meta-fatigue"
-  _remove "cron-meta-weekly"
+  _remove "cron-meta-fatigue" || exit 1
+  _remove "cron-meta-weekly" || exit 1
   exit 0
 fi
 
@@ -72,7 +84,7 @@ done
 
 _create() {
   local name="$1" schedule="$2" script="$3"
-  _remove "$name"
+  _remove "$name" || exit 1
   hermes cron create --name "$name" --workdir "$WORKDIR" --script "$script" \
     --no-agent --deliver "$DELIVER" "$schedule" "" && echo "  ✅ $name"
 }
