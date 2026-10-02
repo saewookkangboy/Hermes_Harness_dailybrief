@@ -10,6 +10,7 @@ playmcp_routing:
     Slash: /pipeline /research /content /newsletter /sync
     Intent: /morning /catch-up /publish /approve /linkedin /blog /traces /graph /commands
     Research: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
+    Topic Pack (M1–M6, 임의 키워드): /topic <kw> · /research <kw> --pack · '토픽 리서치', 'AX 설계' → auto "<message>"
     (승인 alone = publish; 리서치 승인 = research-approve)
 
     Rules: ONE terminal command. Reply with stdout only.
@@ -27,6 +28,9 @@ quick_commands:
   research-approve:
     type: exec
     command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc research-approve
+  topic:
+    type: exec
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc topic
   content:
     type: exec
     command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc content

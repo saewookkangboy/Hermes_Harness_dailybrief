@@ -15,6 +15,7 @@ slack_routing:
     Slash: /pipeline (M1+M2+M2b+Notion) /research /content /newsletter /sync /studio /notion-status
     Slash (intent): /morning /catch-up /publish /pending /approve /linkedin /traces /handoff /graph /commands /cursor
     Research keyword: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
+    Topic Pack (M1–M6, 임의 키워드): /topic <kw> · /research <kw> --pack · '토픽 리서치', 'AX 설계' → auto "<message>"
     (bare 승인 = publish HITL only; 리서치 승인 = /research-approve)
     Cursor HANDOFF: /cursor <설명> → Codex HANDOFF → run-cursor-handoff (Slack 알림)
     (/automate = personal · /handoff = session resume · /cursor = Cursor CLI)
@@ -45,6 +46,9 @@ quick_commands:
   research-approve:
     type: exec
     command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc research-approve
+  topic:
+    type: exec
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc topic
   content:
     type: exec
     command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc content

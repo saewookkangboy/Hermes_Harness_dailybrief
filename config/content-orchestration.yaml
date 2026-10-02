@@ -117,6 +117,45 @@ pipelines:
   full_deterministic:
     script: scripts/run-pipeline.sh
     stages: [M1, M2, M2b]
+  topic_pack:
+    script: scripts/run-topic-pack.sh
+    stages: [T1, T2, T3, T4, T5, T6]
+    config: config/topic-research.yaml
+    output: content/topics/{slug}/
+    eval: scripts/topic-pack-eval.sh
+    note: "임의 키워드 주제 모드 (일별 brief와 병렬). CLI는 --stages M1..M6 표기"
+
+# Topic Pack 단계 (run-topic-pack.sh --stages M1..M6 와 1:1)
+topic_stages:
+  - id: T1
+    cli: M1
+    name: topic_research
+    role: "topic_spec → 7-Lens 쿼리 → web/news/github/arxiv/hn → Evidence Pack → Topic Brief"
+    gates: [relevance, coverage, diversity]
+  - id: T2
+    cli: M2
+    name: ax_blueprint
+    role: "마케팅 가치사슬 × 영향도/실행가능성 매트릭스 · 성숙도 L0–L4 · HITL·KPI · 30/60/90"
+    gates: [blueprint]
+  - id: T3
+    cli: M3
+    name: resource_map
+    role: "도메인 도구 · 오픈소스(GitHub) · 논문(arXiv) · 최신 동향 · 학습 리소스"
+  - id: T4
+    cli: M4
+    name: future_ahead
+    role: "Three Horizons · 약한 신호 · 2×2 시나리오 · 다음 주 월요일 액션"
+    gates: [future]
+  - id: T5
+    cli: M5
+    name: channel_pack
+    role: "blog · linkedin · newsletter · threads · instagram 초안"
+    gates: [channel]
+  - id: T6
+    cli: M6
+    name: archive_learn
+    role: "validate-output · topic-pack 합본 · memory delta · 렌즈 피드백 · Notion(--notion)"
+    gates: [validate]
 
 # LinkedIn 전용: analyze → strategy → draft (linkedin-feed-strategy-maker)
 linkedin_pipeline:

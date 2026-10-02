@@ -1,0 +1,40 @@
+{
+  "lenses": {
+    "definition": {
+      "runs": 5,
+      "avg_yield": 2.8,
+      "last_yield": 3.5
+    },
+    "market_news": {
+      "runs": 5,
+      "avg_yield": 1.534,
+      "last_yield": 1.0
+    },
+    "tech_tools": {
+      "runs": 5,
+      "avg_yield": 3.267,
+      "last_yield": 3.667
+    },
+    "use_cases": {
+      "runs": 5,
+      "avg_yield": 2.266,
+      "last_yield": 3.0
+    },
+    "risk_regulation": {
+      "runs": 5,
+      "avg_yield": 0.583,
+      "last_yield": 1.0
+    },
+    "korea": {
+      "runs": 5,
+      "avg_yield": 0.483,
+      "last_yield": 0.5
+    },
+    "future_signals": {
+      "runs": 5,
+      "avg_yield": 1.05,
+      "last_yield": 1.0
+    }
+  },
+  "updated_at": "2026-10-02T08:47:15+00:00"
+}

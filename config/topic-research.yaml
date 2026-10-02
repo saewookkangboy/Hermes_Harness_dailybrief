@@ -1,0 +1,408 @@
+# Topic-Agnostic AX Pipeline (M1–M6) — 설정 SoT
+# 임의 키워드 → topic_spec → 7-Lens 리서치 → AX Blueprint → Resource Map → Future Ahead → 채널 → 아카이브·학습
+# 계획: docs/plans/2026-10-02-001-feat-topic-agnostic-ax-m1-m6-plan.md
+version: "1.0.0"
+
+output:
+  root: content/topics
+  index: content/topics/_index.json
+  lens_feedback: .harness/topic-lens-feedback.json
+
+sla_seconds:
+  M1: 60
+  M2: 3
+  M3: 3
+  M4: 3
+  M5: 5
+  M6: 30
+  total: 90
+
+# ── M1a Topic Framing ─────────────────────────────────────────
+synonyms_ko_en:
+  숏폼: short-form video
+  쇼츠: YouTube Shorts
+  릴스: Instagram Reels
+  틱톡: TikTok
+  유튜브: YouTube
+  커머스: commerce
+  이커머스: e-commerce
+  라이브커머스: live commerce
+  쇼핑: shopping
+  리테일: retail
+  고객데이터: customer data
+  고객: customer
+  데이터: data
+  개인화: personalization
+  세그먼트: segmentation
+  리텐션: retention
+  검색: search
+  광고: advertising
+  퍼포먼스: performance marketing
+  마케팅: marketing
+  자동화: automation
+  에이전트: AI agent
+  생성형: generative AI
+  평가: evaluation
+  인플루언서: influencer marketing
+  크리에이터: creator economy
+  브랜드: brand
+  브랜딩: branding
+  콘텐츠: content
+  이메일: email marketing
+  뉴스레터: newsletter
+  챗봇: chatbot
+  분석: analytics
+  영상: video
+  이미지: image generation
+  교육: education
+  보안: security
+  거버넌스: governance
+  규제: regulation
+  엔터프라이즈: enterprise
+  소셜: social media
+  커뮤니티: community
+  리드: lead generation
+  세일즈: sales
+  고객경험: customer experience
+  상담: customer service
+  추천: recommendation
+  가격: pricing
+  물류: logistics
+  여행: travel
+  금융: finance
+  헬스케어: healthcare
+  게임: gaming
+  음성: voice AI
+  번역: translation
+  로컬: local
+  지역: local
+  최적화: optimization
+  엔진: engine
+  플랫폼: platform
+  전환: conversion
+  구독: subscription
+  리뷰: review
+  멤버십: membership
+  로열티: loyalty program
+  앱: app
+  랜딩페이지: landing page
+  퍼널: marketing funnel
+  카피라이팅: copywriting
+  카피: ad copy
+  디자인: design
+  중고거래: resale marketplace
+  공동구매: group buying
+  팝업: pop-up store
+  오프라인: offline retail
+  굿즈: merchandise
+  웹툰: webtoon
+  팬덤: fandom
+  구독경제: subscription economy
+
+stopwords: [the, and, for, with, of, to, in, a, an, "on", 및, 그리고, 관련, 대한, 위한, 방법, 리서치, 조사, 키워드]
+
+# 약어 → 확장형 (en_query·relevance 변형). 약어 단독 매칭은 ambiguity_context 동반 시에만 인정
+acronyms:
+  cdp: customer data platform
+  crm: customer relationship management
+  rag: retrieval-augmented generation
+  llm: large language model
+  mcp: model context protocol
+  seo: search engine optimization
+  aeo: answer engine optimization
+  geo: generative engine optimization
+  roas: return on ad spend
+  abm: account-based marketing
+  dsp: demand-side platform
+  mmm: marketing mix modeling
+  ltv: customer lifetime value
+  ugc: user-generated content
+  d2c: direct-to-consumer
+  cro: conversion rate optimization
+ambiguity_context: [marketing, marketer, customer, brand, campaign, audience, ai, llm, 마케팅, 마케터, 고객, 브랜드, 캠페인]
+
+domains:
+  commerce:
+    label: 커머스·리테일
+    terms: [커머스, 이커머스, 라이브커머스, 쇼핑, 쇼핑몰, 리테일, commerce, ecommerce, e-commerce, retail, shopping, shopify, d2c]
+  content_social:
+    label: 콘텐츠·소셜
+    terms: [숏폼, 쇼츠, 릴스, 틱톡, 유튜브, 인플루언서, 크리에이터, 소셜, sns, short-form, reels, tiktok, youtube, influencer, creator, social]
+  search_seo:
+    label: 검색·SEO/AEO
+    terms: [검색, seo, aeo, geo, search, answer engine, 노출]
+  data_crm:
+    label: 데이터·CRM
+    terms: [cdp, crm, 고객데이터, 개인화, 세그먼트, 리텐션, customer data, personalization, segmentation, retention, 1st party, 퍼스트파티]
+  performance_ads:
+    label: 퍼포먼스·광고
+    terms: [광고, 퍼포먼스, roas, 미디어믹스, ads, advertising, performance marketing, programmatic, pmax, advantage+]
+  b2b_saas:
+    label: B2B·세일즈
+    terms: [b2b, saas, abm, 리드, 세일즈, lead, sales, pipeline]
+  ai_tech:
+    label: AI 기술
+    terms: [llm, rag, agent, 에이전트, mcp, genai, 생성형, 프롬프트, fine-tuning, 파인튜닝, 멀티모달, multimodal, ai]
+  brand:
+    label: 브랜드
+    terms: [브랜드, 브랜딩, brand, branding]
+  education:
+    label: 교육·리터러시
+    terms: [교육, 강의, 리터러시, learning, edtech, literacy, training]
+  cx_service:
+    label: 고객경험·상담
+    terms: [고객경험, 상담, 챗봇, cx, customer experience, customer service, chatbot, contact center]
+default_domain: general_marketing
+domain_labels:
+  general_marketing: 마케팅 일반
+
+intents:
+  how_to: [방법, 하는 법, 가이드, 구축, 만들기, 도입, how to, guide, setup, implement]
+  comparison: [비교, vs, 대안, 추천, alternative, best, versus]
+  strategy: [전략, 로드맵, 플랜, strategy, roadmap, playbook]
+  trend: [트렌드, 동향, 전망, 뉴스, trend, news, outlook]
+default_intent: trend
+intent_labels:
+  how_to: 실행 가이드
+  comparison: 도구·대안 비교
+  strategy: 전략 수립
+  trend: 트렌드 파악
+
+# ── M1b 7-Lens ────────────────────────────────────────────────
+lenses:
+  definition:
+    label: 정의·개념
+    sources: [web]
+    queries: ["what is {en}", "{ko} 개념 정리", "{en} explained guide"]
+    tag_terms: [what is, explained, guide, introduction, overview, definition, 개념, 정의, 입문, 가이드, 이란]
+  market_news:
+    label: 시장·뉴스
+    sources: [news, web]
+    queries: ["{en} news {year}", "{ko} 최신 뉴스", "{en} market growth {year}"]
+    tag_terms: [market, funding, announce, launch, report, growth, billion, million, survey, 시장, 발표, 출시, 투자, 성장, 조사]
+  tech_tools:
+    label: 기술·도구
+    sources: [web, github]
+    queries: ["{en} tools platform {year}", "{en} open source", "{en} API automation"]
+    tag_terms: [tool, platform, api, open source, github, sdk, framework, release, plugin, integration, 도구, 플랫폼, 오픈소스, 솔루션]
+  use_cases:
+    label: 사례·Use case
+    sources: [web, news]
+    queries: ["{en} case study marketing", "{ko} 도입 사례", "{en} brand campaign results"]
+    tag_terms: [case study, case, campaign, results, roi, customer, deployed, adopted, success, 사례, 도입, 캠페인, 성과, 효과]
+  risk_regulation:
+    label: 규제·리스크
+    sources: [web, news]
+    queries: ["{en} risks challenges", "{en} regulation compliance {year}", "{ko} 규제 리스크"]
+    tag_terms: [risk, regulation, compliance, privacy, lawsuit, ban, governance, security, ethics, fraud, 규제, 리스크, 개인정보, 보안, 윤리, 소송]
+  korea:
+    label: 한국 맥락
+    sources: [news, web]
+    queries: ["{ko} 국내 기업", "{ko} 한국 시장 {year}", "Korea {en} {year}"]
+    tag_terms: [korea, korean, seoul, naver, kakao, samsung, coupang, 한국, 국내, 네이버, 카카오, 삼성, 쿠팡, 서울]
+  future_signals:
+    label: 미래 신호
+    sources: [arxiv, hn, web]
+    queries: ["{en} future trends {next_year}", "{en} research", "{en} emerging"]
+    tag_terms: [future, forecast, outlook, roadmap, research, paper, emerging, next, prediction, arxiv, 전망, 미래, 연구, 예측, 차세대]
+
+sources:
+  web: {enabled: true, max_results: 4, timelimit: m, fallback_timelimit: y}
+  news: {enabled: true, max_results: 4, timelimit: m, fallback_timelimit: y}
+  github: {enabled: true, max_results: 5, min_stars: 20}
+  arxiv: {enabled: true, max_results: 4}
+  hn: {enabled: true, max_results: 4, min_points: 5}
+  timeout_seconds: 12
+  workers: 6
+
+source_weights:
+  news: 0.85
+  web: 0.7
+  github: 0.8
+  arxiv: 0.9
+  hn: 0.6
+
+# ── M1d Evidence ──────────────────────────────────────────────
+evidence:
+  relevance_threshold: 0.5   # 핵심어 그룹 중 매칭 비율
+  max_items: 40
+  top_insights: 7
+  freshness_days_full: 30
+  freshness_days_zero: 365
+
+# ── Gates ────────────────────────────────────────────────────
+gates:
+  relevance:
+    min_relevant: 8
+    raw_ratio_warn: 0.35
+    blocking: true
+  coverage:
+    min_lenses: 4
+    target_lenses: 5
+    blocking: true
+  diversity:
+    min_source_types: 2
+    target_source_types: 3
+    min_domains: 5
+    blocking: true
+  blueprint:
+    min_opportunities: 4
+    blocking: true
+  future:
+    min_signals_per_prediction: 2
+    blocking: true
+  channel:
+    naturalness: true
+    blocking: true
+
+# ── M2 AX Blueprint ──────────────────────────────────────────
+value_chain:
+  research:
+    label: 시장·고객 리서치
+    automation: "검색·소셜·리뷰 신호를 매일 수집해 요약하는 리서치 에이전트"
+    kpi: 인사이트 리드타임(시간)
+    hitl: "주간 우선순위 확정은 사람이 해요"
+    lens_boost: [market_news, korea, future_signals]
+    evidence_terms: [trend, survey, report, market, insight, consumer, 트렌드, 조사, 리포트, 시장, 소비자]
+  planning:
+    label: 기획·전략
+    automation: "브리프 → 콘텐츠 캘린더·메시지 하우스 초안 자동 생성"
+    kpi: 기획 사이클 타임(일)
+    hitl: "포지셔닝·메시지 최종 승인은 사람이 해요"
+    lens_boost: [definition, use_cases]
+    evidence_terms: [strategy, guide, how to, playbook, framework, roadmap, 전략, 가이드, 기획, 방법, 구축]
+  production:
+    label: 콘텐츠 제작
+    automation: "채널별 카피·이미지·숏폼 변형을 템플릿 기반으로 대량 생성"
+    kpi: 에셋당 제작 시간·변형 수
+    hitl: "브랜드 톤·사실 확인 검수는 사람이 해요"
+    lens_boost: [tech_tools, use_cases]
+    evidence_terms: [content, creative, video, copy, generate, studio, 콘텐츠, 제작, 영상, 생성, 크리에이티브]
+  distribution:
+    label: 배포·채널 운영
+    automation: "채널별 최적 시간 예약 발행·크로스포스팅 워크플로"
+    kpi: 발행 리드타임·채널 커버리지
+    hitl: "위기 이슈 시 발행 중단(stop button)은 사람이 해요"
+    lens_boost: [tech_tools, market_news]
+    evidence_terms: [channel, publish, schedule, integration, workflow, sdk, api, 채널, 배포, 연동, 운영, 자동화]
+  measurement:
+    label: 측정·분석
+    automation: "채널 지표 자동 수집 → 주간 성과 리포트·이상 탐지"
+    kpi: 리포트 작성 시간·이상 탐지 리드타임
+    hitl: "지표 해석과 다음 액션 결정은 사람이 해요"
+    lens_boost: [use_cases, tech_tools]
+    evidence_terms: [analytics, metric, attribution, dashboard, measure, tracking, 분석, 지표, 측정, 성과, 대시보드]
+  optimization:
+    label: 최적화·개인화
+    automation: "A/B·세그먼트별 메시지 자동 실험과 예산 재배분 제안"
+    kpi: 전환율·ROAS·CTOR 개선폭
+    hitl: "예산 재배분 승인·개인정보 사용 범위 결정은 사람이 해요"
+    lens_boost: [risk_regulation, use_cases]
+    evidence_terms: [personalization, segment, a/b, experiment, recommendation, privacy, consent, 개인화, 세그먼트, 최적화, 추천, 실험, 동의]
+
+domain_stage_impact:
+  commerce: {research: 3, planning: 3, production: 5, distribution: 4, measurement: 4, optimization: 5}
+  content_social: {research: 4, planning: 4, production: 5, distribution: 5, measurement: 3, optimization: 3}
+  search_seo: {research: 5, planning: 4, production: 4, distribution: 3, measurement: 4, optimization: 4}
+  data_crm: {research: 3, planning: 3, production: 3, distribution: 4, measurement: 5, optimization: 5}
+  performance_ads: {research: 3, planning: 3, production: 4, distribution: 4, measurement: 5, optimization: 5}
+  b2b_saas: {research: 4, planning: 4, production: 4, distribution: 3, measurement: 4, optimization: 4}
+  ai_tech: {research: 4, planning: 4, production: 4, distribution: 3, measurement: 4, optimization: 4}
+  brand: {research: 4, planning: 5, production: 4, distribution: 3, measurement: 3, optimization: 3}
+  education: {research: 4, planning: 5, production: 5, distribution: 3, measurement: 3, optimization: 3}
+  cx_service: {research: 3, planning: 3, production: 3, distribution: 4, measurement: 4, optimization: 5}
+  general_marketing: {research: 4, planning: 4, production: 4, distribution: 4, measurement: 4, optimization: 4}
+
+maturity_levels:
+  L0: {label: 수동, desc: "사람이 모든 단계를 직접 수행해요"}
+  L1: {label: AI 보조, desc: "개별 작업에 생성형 AI를 도구로 써요"}
+  L2: {label: 워크플로 자동화, desc: "정해진 순서를 자동화하고 사람이 검수해요"}
+  L3: {label: 에이전트, desc: "에이전트가 계획·실행하고 사람은 승인 지점만 맡아요"}
+  L4: {label: 자율 운영, desc: "목표·가드레일 안에서 스스로 실험·최적화해요"}
+
+# ── M3 Resource Catalog (정적 시드 + evidence 보강) ───────────
+tool_catalog:
+  research:
+    - {name: Perplexity, url: "https://www.perplexity.ai", note: 출처 기반 리서치}
+    - {name: Google Trends, url: "https://trends.google.com", note: 검색 수요 추세}
+    - {name: 네이버 데이터랩, url: "https://datalab.naver.com", note: 국내 검색·쇼핑 트렌드}
+  planning:
+    - {name: NotebookLM, url: "https://notebooklm.google.com", note: 자료 기반 기획 요약}
+    - {name: Claude, url: "https://claude.ai", note: 장문 브리프·전략 초안}
+  production:
+    - {name: Canva Magic Studio, url: "https://www.canva.com/magic", note: 디자인 변형 대량 생성}
+    - {name: Gemini (Nano Banana), url: "https://gemini.google.com", note: 이미지 생성·편집}
+    - {name: CapCut, url: "https://www.capcut.com", note: 숏폼 편집 자동화}
+  distribution:
+    - {name: n8n, url: "https://n8n.io", note: 셀프호스팅 워크플로 자동화}
+    - {name: Zapier, url: "https://zapier.com", note: SaaS 연결 자동화}
+    - {name: Buffer, url: "https://buffer.com", note: 소셜 예약 발행}
+  measurement:
+    - {name: GA4, url: "https://analytics.google.com", note: 웹·앱 분석}
+    - {name: Looker Studio, url: "https://lookerstudio.google.com", note: 대시보드}
+  optimization:
+    - {name: Optimizely, url: "https://www.optimizely.com", note: 실험·개인화}
+    - {name: Braze, url: "https://www.braze.com", note: CRM 메시지 자동화}
+domain_tools:
+  commerce:
+    - {name: Shopify Magic, url: "https://www.shopify.com/magic", stage: production, note: 상품 설명·이미지 자동화}
+    - {name: 네이버 쇼핑라이브, url: "https://shoppinglive.naver.com", stage: distribution, note: 국내 라이브커머스}
+  content_social:
+    - {name: TikTok Symphony, url: "https://ads.tiktok.com/business/en/symphony", stage: production, note: 숏폼 크리에이티브 생성}
+    - {name: Opus Clip, url: "https://www.opus.pro", stage: production, note: 롱폼 → 숏폼 클리핑}
+  search_seo:
+    - {name: Google Search Console, url: "https://search.google.com/search-console", stage: measurement, note: 검색 노출 진단}
+    - {name: Semrush, url: "https://www.semrush.com", stage: research, note: 키워드·경쟁 분석}
+  data_crm:
+    - {name: Segment, url: "https://segment.com", stage: measurement, note: CDP 이벤트 수집}
+    - {name: Salesforce Data Cloud, url: "https://www.salesforce.com/data", stage: optimization, note: 통합 고객 프로필}
+  performance_ads:
+    - {name: Google Ads Performance Max, url: "https://ads.google.com", stage: optimization, note: AI 입찰·소재 조합}
+    - {name: Meta Advantage+, url: "https://www.facebook.com/business/ads/meta-advantage-plus", stage: optimization, note: 자동 타깃·예산}
+  b2b_saas:
+    - {name: HubSpot Breeze, url: "https://www.hubspot.com/products/artificial-intelligence", stage: distribution, note: B2B 마케팅 에이전트}
+    - {name: Clay, url: "https://www.clay.com", stage: research, note: 리드 데이터 보강}
+  ai_tech:
+    - {name: Model Context Protocol, url: "https://modelcontextprotocol.io", stage: distribution, note: 에이전트-도구 연결 표준}
+    - {name: LangGraph, url: "https://www.langchain.com/langgraph", stage: production, note: 에이전트 워크플로}
+    - {name: Ragas, url: "https://docs.ragas.io", stage: measurement, note: RAG 평가}
+  brand:
+    - {name: Brandwatch, url: "https://www.brandwatch.com", stage: research, note: 소셜 리스닝}
+  education:
+    - {name: Gamma, url: "https://gamma.app", stage: production, note: 강의·발표 자료 생성}
+  cx_service:
+    - {name: Intercom Fin, url: "https://www.intercom.com/fin", stage: optimization, note: AI 상담 에이전트}
+learning_resources:
+  - {name: Google Skillshop, url: "https://skillshop.withgoogle.com", note: 광고·분석 공식 교육}
+  - {name: HubSpot Academy, url: "https://academy.hubspot.com", note: 인바운드·콘텐츠 마케팅}
+  - {name: DeepLearning.AI Short Courses, url: "https://www.deeplearning.ai/short-courses", note: 생성형 AI 실습}
+  - {name: Anthropic Docs, url: "https://docs.anthropic.com", note: 에이전트·프롬프트 설계}
+  - {name: OpenAI Cookbook, url: "https://cookbook.openai.com", note: API 활용 예제}
+
+# ── M4 Future Ahead ──────────────────────────────────────────
+horizons:
+  now: {label: "Now (0–6개월)", lenses: [market_news, use_cases, korea, definition]}
+  next: {label: "Next (6–18개월)", lenses: [tech_tools, risk_regulation]}
+  future: {label: "Future (18–36개월)", lenses: [future_signals]}
+scenario_axes:
+  default:
+    x: {label: 기술 도입 속도, low: 점진 도입, high: 가속 도입}
+    y: {label: 규제·신뢰 환경, low: 규제 강화, high: 자율 규율}
+  commerce:
+    x: {label: AI 쇼핑 에이전트 보급, low: 검색 중심 유지, high: 에이전트 구매 확산}
+    y: {label: 플랫폼 종속도, low: 자사몰 강화, high: 플랫폼 집중}
+  data_crm:
+    x: {label: 퍼스트파티 데이터 성숙도, low: 데이터 분절, high: 통합 프로필}
+    y: {label: 개인정보 규제, low: 규제 강화, high: 동의 기반 활용 확대}
+  content_social:
+    x: {label: 생성형 영상 품질, low: 보조 편집 수준, high: 완전 생성 수준}
+    y: {label: 플랫폼 정책, low: AI 라벨·제한 강화, high: AI 콘텐츠 허용 확대}
+  ai_tech:
+    x: {label: 모델 비용 하락 속도, low: 완만, high: 급락}
+    y: {label: 거버넌스 요구, low: 강한 통제, high: 자율 운영 허용}
+weak_signal:
+  min_domains: 2
+  max_share: 0.35
+  max_items: 5
+  stop_terms: [usd, krw, eur, ceo, cto, cmo, faq, pdf, api, llm, llms, ai, large, language, model, models, learning,
+    system, systems, framework, method, methods, approach, paper, results, performance, discover, 승부수, 브랜드, 콘텐츠, 인공지능, 플랫폼, 마케팅, 서비스, 데이터, 솔루션, 다양한, 기업가치, 관계자, 업계, 대표이사, 소비자, 시장규모, 생성형, 디지털, 글로벌, 온라인, 오프라인]

@@ -11,6 +11,7 @@ telegram_routing:
     Command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh auto "<message>"
     Slash: /pipeline (M1+M2+M2b+Notion) /research /content /newsletter /sync /studio /notion-status
     Research: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
+    Topic Pack (M1–M6, 임의 키워드): /topic <kw> · /research <kw> --pack · '토픽 리서치', 'AX 설계' → auto "<message>"
     (bare 승인 = publish; 리서치 승인 = research-approve)
     Slash (intent): /morning /catch-up /publish /pending /approve /linkedin /traces /handoff /graph /commands
     Slash (agents): /coach /agents-eval /audit /instagram /wiki /squad /watch /supervised /schedule
@@ -40,6 +41,9 @@ quick_commands:
   research-approve:
     type: exec
     command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc research-approve
+  topic:
+    type: exec
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc topic
   content:
     type: exec
     command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc content

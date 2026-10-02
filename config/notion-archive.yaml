@@ -74,6 +74,11 @@ categories:
     exclude: ["*_outline.md", "*_base.html"]
     pipeline: false
     order: 11
+  topic_pack:
+    label: "Topic Pack (M1–M6)"
+    icon: "🧭"
+    glob: "content/topics/*/*_topic-pack_*.md"
+    order: 12
 
 hygiene:
   enabled: true

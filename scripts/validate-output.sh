@@ -4,7 +4,7 @@ set -euo pipefail
 
 WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 export HERMES_WORKDIR="$WORKDIR"
-TYPE="${1:?Usage: validate-output.sh research|blog-article|blog|threads-package|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|newsletter-linkedin|newsletter-title-image|lecture FILE}"
+TYPE="${1:?Usage: validate-output.sh research|blog-article|blog|threads-package|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|newsletter-linkedin|newsletter-title-image|lecture|topic-brief|ax-blueprint|resource-map|future-ahead|topic-pack FILE}"
 FILE="${2:?Missing file path}"
 
 fail() { echo "❌ $1" >&2; exit 1; }
@@ -362,6 +362,56 @@ PY
   lecture)
     grep -qiE "목차|outline|강의|슬라이드" "$FILE" || fail "강의 구조 없음"
     pass "lecture OK: $FILE ($SIZE bytes)"
+    ;;
+  topic-brief)
+    for s in "## Topic Spec" "## Executive Summary" "## 렌즈 커버리지" "## Evidence 목록" "## 수집 메타"; do
+      grep -q "$s" "$FILE" || fail "topic brief 섹션 없음: $s"
+    done
+    grep -qE "^## Top [0-9]+ 인사이트" "$FILE" || fail "Top N 인사이트 섹션 없음"
+    grep -qE "https?://" "$FILE" || fail "출처 URL 없음"
+    python3 - <<PY || fail "topic brief 품질"
+import re
+from pathlib import Path
+text = Path("$FILE").read_text(encoding="utf-8")
+views = re.findall(r"- \*\*마케터 관점:\*\* (.+)", text)
+if len(views) != len(set(views)):
+    raise SystemExit("마케터 관점 중복")
+if re.search(r"[^\s.]\u2026|\.{3}\S", text):
+    raise SystemExit("문장 중간 생략부호")
+PY
+    pass "topic brief OK: $FILE ($SIZE bytes)"
+    ;;
+  ax-blueprint)
+    for s in "## AX 성숙도" "## 자동화 기회 매트릭스" "## 단계별 설계" "## 30/60/90일 로드맵" "## 거버넌스"; do
+      grep -q "$s" "$FILE" || fail "AX blueprint 섹션 없음: $s"
+    done
+    KPI=$(grep -c "^- \*\*KPI:\*\*" "$FILE" || true)
+    HITL=$(grep -c "^- \*\*HITL:\*\*" "$FILE" || true)
+    (( KPI >= 4 && KPI == HITL )) || fail "KPI/HITL 누락 (KPI=$KPI HITL=$HITL)"
+    pass "ax blueprint OK: $FILE (opportunities=$KPI)"
+    ;;
+  resource-map)
+    for s in "## 도구·플랫폼" "## 오픈소스 (GitHub)" "## 연구·논문 (arXiv)" "## 최신 기술·릴리스" "## 학습 리소스"; do
+      grep -q "$s" "$FILE" || fail "resource map 섹션 없음: $s"
+    done
+    grep -qE "https?://" "$FILE" || fail "출처 URL 없음"
+    pass "resource map OK: $FILE ($SIZE bytes)"
+    ;;
+  future-ahead)
+    for s in "## Three Horizons" "## 약한 신호" "## 2×2 시나리오" "## 다음 주 월요일에 할 일"; do
+      grep -q "$s" "$FILE" || fail "future ahead 섹션 없음: $s"
+    done
+    SIGNALS=$(grep -c "^- 신호:" "$FILE" || true)
+    (( SIGNALS >= 4 )) || fail "예측 근거 신호 부족: $SIGNALS"
+    pass "future ahead OK: $FILE (signals=$SIGNALS)"
+    ;;
+  topic-pack)
+    grep -q "# \[Topic Pack\]" "$FILE" || fail "Topic Pack 헤더 없음"
+    grep -q "게이트 PASS" "$FILE" || fail "Topic Pack 게이트 PASS 아님"
+    for s in "## \[Topic Research\]" "## \[AX Blueprint\]" "## \[Resource & Tech Map\]" "## \[Future Ahead\]"; do
+      grep -q "$s" "$FILE" || fail "Topic Pack 구성 누락: $s"
+    done
+    pass "topic pack OK: $FILE ($SIZE bytes)"
     ;;
   *)
     fail "알 수 없는 타입: $TYPE"

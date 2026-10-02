@@ -15,6 +15,7 @@ SCRIPTS = WORKDIR / "scripts"
 RESEARCH = WORKDIR / "content" / "research"
 sys.path.insert(0, str(SCRIPTS))
 
+from lib.ax.lens_queries import expand_keyword_queries  # noqa: E402
 from lib.research_merge import (  # noqa: E402
     backup_brief,
     merge_contexts,
@@ -86,14 +87,7 @@ def main() -> int:
     kw_parts = [p.strip() for p in re.split(r"[|\n]+", keywords) if p.strip()]
     expanded: list[str] = []
     for p in kw_parts:
-        expanded.extend(
-            [
-                p,
-                f"{p} 2026",
-                f"{p} marketing",
-                f"{p} enterprise AI",
-            ]
-        )
+        expanded.extend(expand_keyword_queries(p, stamp))
     # de-dupe preserve order
     seen_q: set[str] = set()
     kw_query = []

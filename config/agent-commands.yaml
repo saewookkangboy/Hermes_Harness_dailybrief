@@ -150,6 +150,12 @@ intent_packs:
     aliases: ["/research-approve", "리서치 승인", "research-approve"]
     sla_seconds: 90
 
+  topic:
+    label: "Topic Pack M1–M6 (임의 키워드 → 리서치·AX Blueprint·Resource·Future·채널·Notion)"
+    aliases: ["/topic", "토픽 리서치", "주제 리서치", "리서치 팩", "AX 설계", "future ahead"]
+    script: scripts/run-topic-pack.sh
+    sla_seconds: 90
+
   blog:
     label: "Blog M3 sub-pipeline"
     aliases: ["/blog", "블로그 seo", "blog pipeline"]

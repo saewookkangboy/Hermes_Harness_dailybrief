@@ -9,6 +9,7 @@
 #   telegram-pipeline.sh qc pipeline       # quick command (≤30s; Notion sync-bg)
 #   telegram-pipeline.sh qc sync-bg        # background Notion sync
 #   telegram-pipeline.sh auto "리서치 해줘"  # keyword routing (에이전트용)
+#   telegram-pipeline.sh qc topic 숏폼 커머스  # Topic Pack M1–M6 (임의 키워드)
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -126,6 +127,7 @@ parse_research_args() {
   local args=()
   echo "$msg" | grep -qiE '(--replace|교체)' && args+=(--replace)
   echo "$msg" | grep -qiE '(--approve|승인 후|스테이징)' && args+=(--approve)
+  echo "$msg" | grep -qiE '(--pack|리서치[[:space:]]*팩)' && args+=(--pack)
   # Strip command verbs / flags; keep keyword phrase
   local kw
   kw=$(echo "$msg" | sed -E \
@@ -137,7 +139,9 @@ parse_research_args() {
     -e 's/교체로?//g' \
     -e 's/승인 후(에)?( 반영)?//g' \
     -e 's/스테이징//g' \
-    -e 's/키워드[[:space:]]*리서치[[:space:]]*//g')
+    -e 's/키워드[[:space:]]*리서치[[:space:]]*//g' \
+    -e 's/--pack//Ig' \
+    -e 's/리서치[[:space:]]*팩//g')
   kw=$(echo "$kw" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
   if [[ -n "$kw" ]]; then
     args+=("$kw")
@@ -162,11 +166,12 @@ run_research() {
 # Usage: run_research_keyword "RAG 평가" [--replace] [--approve]
 run_research_keyword() {
   studio_refresh_date
-  local keywords="" replace=0 approve=0 token
+  local keywords="" replace=0 approve=0 pack=0 token
   for token in "$@"; do
     case "$token" in
       --replace) replace=1 ;;
       --approve) approve=1 ;;
+      --pack) pack=1 ;;
       *)
         if [[ -n "$keywords" ]]; then
           keywords="$keywords $token"
@@ -179,6 +184,10 @@ run_research_keyword() {
   keywords="$(echo "$keywords" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
   if [[ -z "$keywords" ]]; then
     run_research
+    return
+  fi
+  if [[ "$pack" == "1" ]]; then
+    run_topic "$keywords"
     return
   fi
   notify "[██░░░] 키워드 리서치: $keywords"
@@ -222,6 +231,57 @@ sys.path.insert(0, str(Path(os.environ["HERMES_WORKDIR"]) / "scripts"))
 from lib.research_staging import format_pending_status
 print(format_pending_status())
 PY
+}
+
+# Topic Pack (M1–M6): 임의 키워드 → 리서치 · AX Blueprint · Resource Map · Future Ahead · 채널 · Notion
+# Usage: run_topic "숏폼 커머스"
+detect_topic() {
+  local lower
+  lower=$(echo "${1:-}" | tr '[:upper:]' '[:lower:]')
+  echo "$lower" | grep -qE '^/topic|--pack|토픽|주제.?리서치|리서치.?팩|topic.?pack|future.?ahead|ax.?(설계|블루프린트|blueprint)|자동화.?설계'
+}
+
+parse_topic_keyword() {
+  echo "${1:-}" | sed -E \
+    -e 's/^[[:space:]]*\/(topic|research)[[:space:]]*//I' \
+    -e 's/--pack//Ig' \
+    -e 's/(topic[[:space:]]*pack|future[[:space:]]*ahead)//Ig' \
+    -e 's/(토픽|주제)[[:space:]]*(리서치)?//g' \
+    -e 's/리서치[[:space:]]*팩//g' \
+    -e 's/(AX|ax)[[:space:]]*(설계|블루프린트|blueprint)//g' \
+    -e 's/자동화[[:space:]]*설계//g' \
+    -e 's/(키워드[[:space:]]*)?리서치//g' \
+    -e 's/(해줘|해주세요|부탁해?|까지|하고|및)//g' \
+    -e 's/[[:space:]]+/ /g' -e 's/^[[:space:]]*//;s/[[:space:]]*$//'
+}
+
+run_topic() {
+  studio_refresh_date
+  local keyword
+  keyword="$(parse_topic_keyword "$*")"
+  if [[ -z "$keyword" ]]; then
+    echo "ℹ️ /topic은 키워드가 필요합니다."
+    echo "예: /topic 숏폼 커머스"
+    return 1
+  fi
+  notify "[█░░░░░] Topic Pack 시작: $keyword (M1 리서치 → M6 아카이브)"
+  local start end rc out
+  local -a topic_args=("$keyword" --date "$DATE")
+  [[ -z "${HERMES_TOPIC_NO_NOTION:-}" ]] && topic_args+=(--notion)
+  start=$(date +%s)
+  set +e
+  out=$(TELEGRAM_CHAT_ID="${CHAT_ID:-}" SLACK_HOME_CHANNEL="${SLACK_CHANNEL:-}" \
+    "$DIR/run-topic-pack.sh" "${topic_args[@]}" 2>>"$LOG")
+  rc=$?
+  set -e
+  end=$(date +%s)
+  echo "$out" | tee -a "$LOG"
+  if [[ $rc -ne 0 ]]; then
+    notify "❌ Topic Pack 미완료 ($((end - start))s): $keyword — 게이트/로그 확인"
+    return "$rc"
+  fi
+  notify "✅ Topic Pack 완료 ($((end - start))s): $keyword
+$(echo "$out" | grep -E '게이트:|Notion:' || true)"
 }
 
 run_research_approve() {
@@ -404,9 +464,9 @@ run_status() {
   ls "$WORKDIR/content/instagram/${DATE}"_instagram_* >/dev/null 2>&1 && echo "✅ instagram" || echo "⬜ instagram"
   ls "$WORKDIR/content/linkedin/${DATE}"_linkedin_* >/dev/null 2>&1 && echo "✅ linkedin" || echo "⬜ linkedin"
   ls "$WORKDIR/content/newsletter/${DATE}"_newsletter_*.md >/dev/null 2>&1 && echo "✅ newsletter" || echo "⬜ newsletter"
-  pgrep -f "hermes_cli.main gateway" >/dev/null && echo "✅ Gateway" || echo "❌ Gateway"
+  pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' >/dev/null && echo "✅ Gateway" || echo "❌ Gateway"
   echo ""
-  echo "명령: /pipeline /research /content /newsletter /sync /morning /catch-up /publish /ask /studio"
+  echo "명령: /pipeline /research /topic /content /newsletter /sync /morning /catch-up /publish /ask /studio"
   echo "개인화: /mail /personal /automate"
   echo "강의: /lecture-studio <요구사항>"
 }
@@ -437,6 +497,11 @@ case "$MODE" in
       research-approve)
         shift 2 || true
         run_research_approve "${1:-}"
+        ;;
+      topic)
+        # qc topic <keywords…> — Topic Pack M1–M6
+        shift 2 || true
+        run_topic "$@"
         ;;
       content)
         notify "[█░░░░] 1/5 콘텐츠 시작"
@@ -543,6 +608,11 @@ case "$MODE" in
     ;;
   auto)
     MSG="${ACTION:-}"
+    if detect_topic "$MSG"; then
+      echo "# 라우팅: topic ← \"$MSG\""
+      run_topic "$MSG"
+      exit $?
+    fi
     if detect_personal "$MSG"; then
       exec "$DIR/telegram-custom.sh" auto "$MSG"
     fi
@@ -608,13 +678,14 @@ case "$MODE" in
     "$DIR/hermes-agent.sh" bridge-sync --date "$DATE"
     ;;
   research)  notify "[█░░░░] 1/5"; run_research ;;
+  topic)     shift || true; run_topic "$@" ;;
   content)   notify "[█░░░░] 1/5"; run_content ;;
   pipeline)  run_pipeline ;;
   sync)      run_sync ;;
   sync-bg)   run_sync_bg ;;
   status|studio) run_status ;;
   *)
-    echo "Usage: $0 {pipeline|research|content|sync|morning|catch-up|publish|deep|ask|proactive|status|qc|auto} [args]"
+    echo "Usage: $0 {pipeline|research|topic|content|sync|morning|catch-up|publish|deep|ask|proactive|status|qc|auto} [args]"
     exit 1
     ;;
 esac
