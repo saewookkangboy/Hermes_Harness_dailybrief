@@ -42,6 +42,13 @@ cat ~/Hermes_Harness_dailybrief/.harness/progress.md
 # 리서치 브리프 (결정적, ~15s)
 ~/Hermes_Harness_dailybrief/scripts/run-research-brief.sh
 
+# Topic Pack M1–M6 (임의 키워드 → 리서치·AX Blueprint·Resource Map·Future Ahead·채널·아카이브, 결정적 ~10–20s)
+~/Hermes_Harness_dailybrief/scripts/run-topic-pack.sh "숏폼 커머스"
+~/Hermes_Harness_dailybrief/scripts/run-topic-pack.sh "CDP 도입 방법" --stages M1,M2,M3,M4 --json
+~/Hermes_Harness_dailybrief/scripts/run-topic-pack.sh "RAG 평가" --notion   # M6 Notion archive
+~/Hermes_Harness_dailybrief/scripts/topic-pack-eval.sh [--live "키워드"]    # 오프라인 fixture eval
+# Commander: /topic <kw> · /research <kw> --pack · "토픽 리서치" · "AX 설계"
+
 # 전체 파이프라인 (결정적, M1+M2+M2b · 실측 ~20–26s / SLA 60–70s)
 ~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 # SKIP_NEWSLETTER=1 ~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh  # 뉴스레터 제외
@@ -207,6 +214,7 @@ LEARNED 를 직접 편집하지 말고 `curate-playbook.sh` 를 사용하세요.
 | 채널 | 폴더 | 형식 |
 |------|------|------|
 | research | content/research | .md |
+| topics | content/topics/{slug} | research · ax-blueprint · resource-map · future-ahead · 채널 5종 · topic-pack .md (+ evidence/gates .json) |
 | blog | content/blog · packages/*_blog-article.md | Velog형 HTML/MD |
 | threads | content/packages/*_threads.md | Threads 숏폼 (Notion threads) |
 | instagram | content/instagram | .md |

@@ -1,23 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 260" role="img" aria-labelledby="t d">
-  <title id="t">Newsletter Gate A to D quality stack</title>
-  <desc id="d">Freshness, email/CTA, publishable validate, and CTOR learning gates</desc>
-  <rect width="1200" height="260" rx="16" fill="#F7F7F7"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 452" role="img" aria-labelledby="t d">
+  <title id="t">Quality gates: Newsletter Gate A to D and Topic Pack seven gates</title>
+  <desc id="d">Newsletter: Gate A freshness, Gate B email and CTA, Gate C validate publishable, Gate D CTOR learning. Topic Pack: relevance at least 8 items, coverage at least 4 of 7 lenses, diversity at least 2 source types and 5 domains, blueprint at least 4 opportunities, future at least 2 signals per prediction, channel naturalness, and validate-output for 5 artifact types.</desc>
+  <rect width="1200" height="452" rx="16" fill="#F7F7F7"/>
   <rect x="0" y="0" width="1200" height="6" fill="#111111"/>
-  <text x="48" y="44" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" fill="#888888" letter-spacing="1">NEWSLETTER QUALITY · GATE A-D · PUBLISHABLE</text>
-  <rect x="48" y="72" width="260" height="140" rx="12" fill="#111111" stroke="#111111" stroke-width="2"/>
-  <text x="72" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">GATE A</text>
-  <text x="72" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#F7F7F7">Freshness</text>
-  <text x="72" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#888888">title · NSFW</text>
-<path d="M312 142 L332 142" stroke="#111111" stroke-width="2"/><path d="M326 136 L336 142 L326 148" fill="none" stroke="#111111" stroke-width="2"/>  <rect x="336" y="72" width="260" height="140" rx="12" fill="#111111" stroke="#111111" stroke-width="2"/>
-  <text x="360" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">GATE B</text>
-  <text x="360" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#F7F7F7">Email / LI</text>
-  <text x="360" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#888888">CTA · 16:9</text>
-<path d="M600 142 L620 142" stroke="#111111" stroke-width="2"/><path d="M614 136 L624 142 L614 148" fill="none" stroke="#111111" stroke-width="2"/>  <rect x="624" y="72" width="260" height="140" rx="12" fill="#FFE500" stroke="#111111" stroke-width="2"/>
-  <text x="648" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#111111">GATE C</text>
-  <text x="648" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#111111">Validate</text>
-  <text x="648" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#444">publishable</text>
-<path d="M888 142 L908 142" stroke="#111111" stroke-width="2"/><path d="M902 136 L912 142 L902 148" fill="none" stroke="#111111" stroke-width="2"/>  <rect x="912" y="72" width="260" height="140" rx="12" fill="#111111" stroke="#111111" stroke-width="2"/>
-  <text x="936" y="110" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">GATE D</text>
-  <text x="936" y="148" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="24" font-weight="700" fill="#F7F7F7">CTOR</text>
-  <text x="936" y="178" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="15" fill="#888888">learn · weight</text>
+  <text x="48" y="52" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#777777" letter-spacing="1">QUALITY GATES · NEWSLETTER A–D · TOPIC PACK 7</text>
+
+  <g id="newsletter-gates" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', 'Malgun Gothic', 'Noto Sans KR', sans-serif">
+    <text x="48" y="92" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" fill="#111111">NEWSLETTER · publishable=true</text>
+
+    <rect x="48" y="108" width="252" height="130" rx="12" fill="#111111"/>
+    <text x="72" y="146" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#FFE500">GATE A</text>
+    <text x="72" y="186" font-size="26" font-weight="700" fill="#F7F7F7">Freshness</text>
+    <text x="72" y="218" font-size="18" fill="#9A9A9A">제목 · NSFW</text>
+    <path d="M304 173 L322 173" stroke="#111111" stroke-width="2"/><path d="M317 167 L326 173 L317 179" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="332" y="108" width="252" height="130" rx="12" fill="#111111"/>
+    <text x="356" y="146" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#FFE500">GATE B</text>
+    <text x="356" y="186" font-size="26" font-weight="700" fill="#F7F7F7">Email / LI</text>
+    <text x="356" y="218" font-size="18" fill="#9A9A9A">CTA · 16:9 이미지</text>
+    <path d="M588 173 L606 173" stroke="#111111" stroke-width="2"/><path d="M601 167 L610 173 L601 179" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="616" y="108" width="252" height="130" rx="12" fill="#FFE500"/>
+    <text x="640" y="146" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#111111">GATE C</text>
+    <text x="640" y="186" font-size="26" font-weight="700" fill="#111111">Validate</text>
+    <text x="640" y="218" font-size="18" fill="#444444">publishable</text>
+    <path d="M872 173 L890 173" stroke="#111111" stroke-width="2"/><path d="M885 167 L894 173 L885 179" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="900" y="108" width="252" height="130" rx="12" fill="#111111"/>
+    <text x="924" y="146" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" fill="#FFE500">GATE D</text>
+    <text x="924" y="186" font-size="26" font-weight="700" fill="#F7F7F7">CTOR</text>
+    <text x="924" y="218" font-size="18" fill="#9A9A9A">10–15% 학습</text>
+  </g>
+
+  <g id="topic-gates" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', 'Malgun Gothic', 'Noto Sans KR', sans-serif" text-anchor="middle">
+    <text x="48" y="288" text-anchor="start" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" fill="#111111">TOPIC PACK · 7/7 PASS · blocking</text>
+
+    <rect x="49" y="305" width="145" height="118" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+    <text x="121.5" y="356" font-size="20" font-weight="700" fill="#111111">relevance</text>
+    <text x="121.5" y="388" font-size="18" fill="#666666">근거 ≥8</text>
+
+    <rect x="208.5" y="305" width="145" height="118" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+    <text x="281" y="356" font-size="20" font-weight="700" fill="#111111">coverage</text>
+    <text x="281" y="388" font-size="18" fill="#666666">렌즈 ≥4/7</text>
+
+    <rect x="368" y="305" width="145" height="118" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+    <text x="440.5" y="356" font-size="20" font-weight="700" fill="#111111">diversity</text>
+    <text x="440.5" y="388" font-size="18" fill="#666666">2종 · 5도메인</text>
+
+    <rect x="527.5" y="305" width="145" height="118" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+    <text x="600" y="356" font-size="20" font-weight="700" fill="#111111">blueprint</text>
+    <text x="600" y="388" font-size="18" fill="#666666">기회 ≥4</text>
+
+    <rect x="687" y="305" width="145" height="118" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+    <text x="759.5" y="356" font-size="20" font-weight="700" fill="#111111">future</text>
+    <text x="759.5" y="388" font-size="18" fill="#666666">신호 ≥2</text>
+
+    <rect x="846.5" y="305" width="145" height="118" rx="10" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
+    <text x="919" y="356" font-size="20" font-weight="700" fill="#111111">channel</text>
+    <text x="919" y="388" font-size="18" fill="#666666">naturalness</text>
+
+    <rect x="1006" y="305" width="145" height="118" rx="10" fill="#FFE500" stroke="#111111" stroke-width="2"/>
+    <text x="1078.5" y="356" font-size="20" font-weight="700" fill="#111111">validate</text>
+    <text x="1078.5" y="388" font-size="18" fill="#444444">산출물 5종</text>
+  </g>
 </svg>

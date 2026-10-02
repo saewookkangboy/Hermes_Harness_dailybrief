@@ -16,11 +16,11 @@ Hermes Content Studio 운영·아키텍처 문서 허브예요.
 **최신 품질 기준선 (2026-08-12):** quick 40/0 · record 31/0 · pipeline 20–26s · Newsletter Gate A–D PASS · publishable=true
 
 <p align="center">
-  <img src="../assets/docs/diagram-channels.svg" width="100%" alt="Brief SoT → Blog · Threads · IG · LinkedIn · Newsletter">
+  <img src="../assets/docs/diagram-channels.svg" width="100%" alt="Brief SoT · Topic Pack → Blog · Threads · IG · LinkedIn · Newsletter">
 </p>
 
 <p align="center">
-  <img src="../assets/docs/diagram-quality-gates.svg" width="100%" alt="Newsletter Gate A–D quality stack">
+  <img src="../assets/docs/diagram-quality-gates.svg" width="100%" alt="Newsletter Gate A–D + Topic Pack 7 gates quality stack">
 </p>
 
 ---

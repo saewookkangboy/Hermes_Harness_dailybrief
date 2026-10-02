@@ -1,8 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 88" role="img" aria-labelledby="t d">
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 112" role="img" aria-labelledby="t d">
   <title id="t">Visual system method</title>
-  <desc id="d">README and docs visuals follow beautify-github-readme Pure SVG practice</desc>
-  <rect width="1200" height="88" rx="12" fill="#F7F7F7"/>
+  <desc id="d">README and docs visuals follow beautify-github-readme Pure SVG practice: Value, Proof, First use.</desc>
+  <rect width="1200" height="112" rx="12" fill="#F7F7F7"/>
   <rect x="0" y="0" width="1200" height="4" fill="#111111"/>
-  <text x="48" y="38" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#888888" letter-spacing="1">VISUAL METHOD</text>
-  <text x="48" y="66" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="600" fill="#111111">beautify-github-readme · Pure SVG · Value → Proof → First use</text>
+  <text x="48" y="44" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#888888" letter-spacing="1">VISUAL METHOD</text>
+  <text x="48" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="24" font-weight="600" fill="#111111">beautify-github-readme · Pure SVG · Value → Proof → First use</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#111111" text-anchor="middle">
+    <rect x="920" y="58" width="104" height="32" rx="5" fill="#111111"/><text x="972" y="80" fill="#FFE500">#111111</text>
+    <rect x="1036" y="58" width="116" height="32" rx="5" fill="#FFE500"/><text x="1094" y="80">#FFE500</text>
+  </g>
 </svg>

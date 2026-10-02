@@ -1,5 +1,51 @@
 # Harness Progress — v1.3.0 Graph / Token / Playbook
 
+## README 전체 업데이트 (2026-10-02)
+
+- 이중 모드(일일 Brief SoT · Topic Pack M1–M6) 소개 · Proof 기준선 2026-10-02(pipeline 16–29s · topic-pack 21/0 · pytest 44 · quick 39/1)로 갱신
+- 신규 섹션: Topic Pack M1–M6(단계·게이트·명령) · 환경 셋업 잔여 항목(Gateway·Notion OAuth·토큰·cron·형제 스튜디오)
+- 산출물(`content/topics/` · `wiki/`) · Commander `/topic` · 디렉토리(`scripts/lib/ax/` · `tests/`) · M2/Hermes v0.21.5 메모 · 문서 링크 반영
+- **검증:** README 로컬 링크·스크립트 참조 전부 존재 · `audit_readme.py` 이미지 6개 OK
+- **SVG 6종 재구성 (Pure SVG):** `readme/hero` · `readme/workflow` (일일 5단계 + Topic 6단계 2행) · `docs/diagram-channels` (Brief SoT + Topic Pack → 5채널) · `docs/diagram-quality-gates` (Gate A–D + Topic 7 게이트) · `docs/banner-quality` (2026-10-02 기준선) · `docs/banner-visual-method` — 핵심 텍스트 ≥20 · 보조 ≥18 · 한글 폰트 스택 · XML 파싱·sips 렌더 확인 · README/docs/SYSTEM-LOGIC alt 갱신
+
+## Hermes Agent 설치 + 전체 테스트 (2026-10-02)
+
+- **설치:** Hermes Agent v0.21.5 (런처 `~/.local/bin/hermes`, managed Python 3.14, config v49) · `hermes doctor` healthy
+- **스튜디오 venv:** `~/.hermes/hermes-agent/venv` (Python 3.14 — Hermes core deps `python_version >= '3.14'`) · Hermes editable + `requirements.txt`
+- **호환 수정:** `lib/notion_client.py` — Hermes ≥0.21 `tools.mcp_tool_config` / `tools.mcp_tool_discovery` 분리 대응 (≤0.18 fallback)
+- **회귀 수정:** `config/telegram-routing.yaml` `cursor` quick_command 추가 → commander-phases `slack_parity` 13/0
+- **라우팅 반영:** telegram/slack/playmcp quick_commands → `~/.hermes/config.yaml` (백업 `config.yaml.bak-20261002172533`)
+- **wiki graph 재빌드:** nodes 422 · concepts 134 → ask-eval PASS
+
+**전체 eval (49 suite):** 27 exit 0 → 수정 후 ask-eval·commander-phases 추가 PASS · harness-eval quick **38/2** · topic-pack 21/0 · Gate A–D PASS · pipeline-integrity 17/0 · run-pipeline 29s publishable
+**남은 FAIL — 전부 환경/자격증명 의존 (코드 회귀 없음):**
+- Notion MCP 미등록·OAuth 없음 → m5-notion · humanize-llm(`notion_mcp_skip_log`) · harness quick 2건 → phase1–3 · commander-integration · e2e · research-stress 연쇄, newsletter-p3–p6 (`content/.notion-archive-state.json` 없음)
+- Gateway 미설치·Slack 토큰 없음 → health-check 2건 · slack-smoke
+- `~/.hermes/scripts` 미배포 (`setup-commander-cron.sh`) → agents/content-ops `cron_publish_hermes_cwd`
+- 형제 스튜디오 `~/hermes-*-studio` 미부트스트랩 → studios-* 5종
+**다음:** `hermes mcp install notion` (브라우저 OAuth) → `reauth-notion-mcp.sh` · `hermes gateway install` · `setup-commander-cron.sh` · `bootstrap-hermes-studios.py` → 전체 eval 재실행
+
+---
+
+## Topic-Agnostic AX Pipeline — Topic Pack M1–M6 (2026-10-02)
+
+계획: `docs/plans/2026-10-02-001-feat-topic-agnostic-ax-m1-m6-plan.md` · 설정 SoT: `config/topic-research.yaml` · 아키텍처: `SYSTEM-LOGIC.md` §5b
+
+- **M1 Topic Research:** `topic_spec`(의도어 분리·약어 확장·약어 문맥 가드·ASCII slug) · 7-Lens 쿼리 · ddgs web/news(+`fallback_timelimit`)·GitHub·arXiv·HN · Evidence Pack(정규화·dedupe·렌즈 재지정·신뢰도·교차확인) · Topic Brief
+- **M2 AX Blueprint:** 가치사슬 6단계 × 영향도/실행가능성 · 성숙도 L1→L3 · 단계별 KPI/HITL/리스크 · 단계별 근거 분산 배정 · 30/60/90
+- **M3 Resource Map · M4 Future Ahead:** 도메인 도구·오픈소스·논문·학습 / Horizons·약한 신호(고유명사형 추출)·2×2 시나리오·월요일 액션
+- **M5 Channel Pack:** blog(합니다체)·linkedin·newsletter·threads(`[블로그 링크]`)·instagram — naturalness PASS
+- **M6:** validate-output 5종(topic-brief/ax-blueprint/resource-map/future-ahead/topic-pack) · memory delta · `_index.json` · 렌즈 피드백 · Notion `topic_pack` 카테고리
+- **Commander:** `telegram-pipeline.sh` `/topic` · `/research --pack` · NL("토픽 리서치", "AX 설계") · telegram/slack/playmcp routing + agent-commands
+- **기존 경로 개선:** `run-keyword-research.py` 하드코딩 `enterprise AI` 확장 → `expand_keyword_queries`
+
+**검증:** pytest `tests/test_ax_*.py` 44 passed · `topic-pack-eval.sh` 21/0 · `research-keyword-eval.sh` 7/0 · harness-eval quick 37/3 (기존 환경 FAIL 3건 동일)
+**라이브 E2E:** 숏폼 커머스 8–13s · RAG 평가 9–19s · CDP 도입 방법 13–17s — 7 게이트 전부 PASS (SLA 90s)
+**미검증:** M6 `--notion` (Hermes Agent `tools` 모듈·Notion OAuth 미설치)
+**다음:** Hermes Agent 설치 후 `run-topic-pack.sh "<kw>" --notion` → Permalink 확인 · Telegram `/topic` 실전 호출 · 렌즈 피드백 누적 후 쿼리 수율 점검
+
+---
+
 ## Host migration — Apple Silicon M2 · 워크스페이스 이전 (2026-10-02)
 
 호스트: MacBook Air M2 (arm64, 16GB, macOS 27) · 워크스페이스 `~/hermes-content-studio` → `~/Hermes_Harness_dailybrief`

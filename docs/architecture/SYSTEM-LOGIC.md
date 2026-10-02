@@ -22,11 +22,11 @@
 | Full Quality Retest | agents 40/0 · e2e 19/0 · commander 28/0 |
 
 <p align="center">
-  <img src="../../assets/docs/diagram-channels.svg" width="100%" alt="Brief SoT feeds Blog, Threads, IG, LinkedIn, Newsletter">
+  <img src="../../assets/docs/diagram-channels.svg" width="100%" alt="Brief SoT and Topic Pack feed Blog, Threads, IG, LinkedIn, Newsletter">
 </p>
 
 <p align="center">
-  <img src="../../assets/docs/diagram-quality-gates.svg" width="100%" alt="Newsletter Gate A–D quality stack">
+  <img src="../../assets/docs/diagram-quality-gates.svg" width="100%" alt="Newsletter Gate A–D + Topic Pack 7 gates quality stack">
 </p>
 
 ```bash
@@ -59,6 +59,7 @@ timeline
 |------|------|
 | [v2.0](./archive/v2.0-multi-studio-jarvis.md) | Multi-Studio · JARVIS · Notion OAuth |
 | **v2.1 (현행)** | Wiki Graph · Token gates · Ask graph-first · Playbook · M1 redesign |
+| v2.1 + Topic Pack (2026-10-02) | 임의 키워드 M1–M6 · AX Blueprint · Resource Map · Future Ahead (§5b) |
 
 ---
 
@@ -184,7 +185,49 @@ flowchart TB
 |------|------|
 | Plan | `docs/plans/2026-07-20-001-feat-m1-research-brief-redesign-plan.md` |
 | 검증 | `research-trust-eval` 8/8 · `research-keyword-eval` 7/7 |
-| Deferred | Evidence Pack P2 (`HERMES_EVIDENCE`) |
+| Deferred | Evidence Pack P2 (`HERMES_EVIDENCE`) → §5b Topic Pack에서 구현 |
+
+---
+
+## 5b. Topic-Agnostic AX Pipeline — Topic Pack M1–M6 (2026-10-02)
+
+일별 `{date}_brief.md` 파이프라인과 **병렬**로 도는 주제 모드예요. 임의 키워드 하나로 리서치 → AX 자동화 설계 → 기술 자원 → Future Ahead → 채널 초안 → 아카이브·학습까지 결정적으로 생성해요 (LLM 없음).
+
+```mermaid
+flowchart LR
+  KW["임의 키워드"] --> M1["M1 Topic Research<br/>topic_spec · 7-Lens · 멀티소스 · Evidence Pack"]
+  M1 -->|"relevance·coverage·diversity 게이트"| M2["M2 AX Blueprint<br/>가치사슬 × 영향도/실행가능성 · L0–L4 · 30/60/90"]
+  M2 --> M3["M3 Resource & Tech Map<br/>도구·오픈소스·논문·학습"]
+  M3 --> M4["M4 Future Ahead<br/>Horizons · 약한 신호 · 2×2 · 월요일 액션"]
+  M4 --> M5["M5 Channel Pack<br/>blog · linkedin · newsletter · threads · instagram"]
+  M5 --> M6["M6 Archive & Learn<br/>validate · topic-pack · memory delta · 렌즈 피드백 · Notion"]
+```
+
+| 단계 | 모듈 (`scripts/lib/ax/`) | 산출물 (`content/topics/{slug}/`) | 게이트 |
+|------|--------------------------|-----------------------------------|--------|
+| M1 | `topic_spec` · `lens_queries` · `sources` · `evidence` · `brief` | `topic_spec.json` · `*_evidence_*.json` · `*_research_*.md` | relevance ≥8 · coverage ≥4/7 · diversity ≥2종·5도메인 |
+| M2 | `blueprint` | `*_ax-blueprint_*.md/json` | 단계 ≥4 · KPI/HITL/리스크 필수 |
+| M3 | `resources` | `*_resource-map_*.md` | validate |
+| M4 | `future` | `*_future-ahead_*.md` | 예측 ≥2 (각 신호 ≥2) · 액션 ≥3 |
+| M5 | `channels` | `*_{blog,linkedin,newsletter,threads,instagram}_*.md` | `score_naturalness` |
+| M6 | `memory` · `pipeline` | `*_topic-pack_*.md` · `*_gates_*.json` · `_index.json` | validate-output 5종 |
+
+**설계 포인트**
+
+- **Topic Framing:** 의도어(도입·전략·비교…)는 주제어에서 분리하고, 약어는 확장(CDP → customer data platform)해요. 약어 단독 매칭은 마케팅·도메인 문맥이 있을 때만 relevance로 인정해요 (예: 기후 공시 CDP 배제).
+- **7-Lens:** 정의 · 시장/뉴스 · 기술/도구 · 사례 · 규제/리스크 · 한국 · 미래 신호. 쿼리 렌즈와 본문이 다르면 본문 기준으로 대표 렌즈를 재지정해요.
+- **소스:** ddgs web/news (0건이면 `fallback_timelimit: y` 재시도) · GitHub Search · arXiv · HN Algolia. 소스별 오류는 격리돼요.
+- **학습:** `memory.json` seen URL로 delta(🆕) 표시 · `.harness/topic-lens-feedback.json` 수율 낮은 렌즈는 다음 실행에서 쿼리 +1.
+- **격리:** 일별 glob(`{date}_linkedin_*.md`)과 충돌하지 않게 `content/topics/` 하위에만 저장해요.
+
+| 항목 | 내용 |
+|------|------|
+| Plan | `docs/plans/2026-10-02-001-feat-topic-agnostic-ax-m1-m6-plan.md` |
+| 설정 SoT | `config/topic-research.yaml` |
+| 실행 | `./scripts/run-topic-pack.sh "키워드" [--stages M1,M2] [--notion] [--json]` |
+| Commander | `/topic <kw>` · `/research <kw> --pack` · "토픽 리서치", "AX 설계" (auto) |
+| 검증 | `topic-pack-eval.sh` 21/0 · pytest `tests/test_ax_*.py` 44 |
+| 라이브 실측 | 숏폼 커머스 8–13s · RAG 평가 9–19s · CDP 도입 13–17s — 전 게이트 PASS (SLA 90s) |
 
 ---
 
@@ -228,6 +271,7 @@ v2.0과 동일:
 ./scripts/reflect.sh --week --signals-only
 ./scripts/curate-playbook.sh --dry-run
 ./scripts/research-trust-eval.sh
+./scripts/topic-pack-eval.sh
 ./scripts/commander-integration-eval.sh
 ./scripts/newsletter-freshness-eval.sh
 ./scripts/newsletter-gate-b-eval.sh

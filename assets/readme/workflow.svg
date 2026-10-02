@@ -1,38 +1,81 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 280" role="img" aria-labelledby="wf-title wf-desc">
-  <title id="wf-title">M1 to M5 deterministic pipeline</title>
-  <desc id="wf-desc">Research Brief flows through Content Package with Threads, Newsletter Gate A-D, Quality, then Notion archive in about 20 to 26 seconds.</desc>
-  <rect width="1200" height="280" rx="16" fill="#F7F7F7"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 460" role="img" aria-labelledby="wf-title wf-desc">
+  <title id="wf-title">Two deterministic pipelines: Daily M1 to M5 and Topic Pack M1 to M6</title>
+  <desc id="wf-desc">Daily: Research Brief, Packages, Newsletter Gate A-D, Quality validate, Notion Permalink in 16-29 seconds. Topic Pack: Research with 7 lenses, AX Blueprint, Resource Map, Future Ahead, Channel Pack, Archive and learn in 10-20 seconds. Both are triggered from Telegram, Slack or PlayMCP.</desc>
+  <rect width="1200" height="460" rx="16" fill="#F7F7F7"/>
   <rect x="0" y="0" width="1200" height="6" fill="#111111"/>
-  <text x="48" y="48" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#666666" letter-spacing="1">HOW IT WORKS · 20–26s · LLM OPTIONAL · GATE A–D</text>
-  <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
-    <rect x="40" y="80" width="160" height="120" rx="8" fill="#111111"/>
-    <text x="120" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M1</text>
-    <text x="120" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Research</text>
-    <text x="120" y="176" text-anchor="middle" font-size="13" fill="#888888">Brief SoT</text>
-    <path d="M208 140 L232 140" stroke="#111111" stroke-width="2"/>
-    <path d="M226 134 L236 140 L226 146" fill="none" stroke="#111111" stroke-width="2"/>
-    <rect x="244" y="80" width="160" height="120" rx="8" fill="#111111"/>
-    <text x="324" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M2</text>
-    <text x="324" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Packages</text>
-    <text x="324" y="176" text-anchor="middle" font-size="13" fill="#888888">Blog·Thr·IG·LI</text>
-    <path d="M412 140 L436 140" stroke="#111111" stroke-width="2"/>
-    <path d="M430 134 L440 140 L430 146" fill="none" stroke="#111111" stroke-width="2"/>
-    <rect x="448" y="80" width="160" height="120" rx="8" fill="#111111"/>
-    <text x="528" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M2b</text>
-    <text x="528" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Newsletter</text>
-    <text x="528" y="176" text-anchor="middle" font-size="13" fill="#888888">Gate A–D</text>
-    <path d="M616 140 L640 140" stroke="#111111" stroke-width="2"/>
-    <path d="M634 134 L644 140 L634 146" fill="none" stroke="#111111" stroke-width="2"/>
-    <rect x="652" y="80" width="160" height="120" rx="8" fill="#FFE500"/>
-    <text x="732" y="118" text-anchor="middle" font-size="14" fill="#111111" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">QUALITY</text>
-    <text x="732" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#111111">Validate</text>
-    <text x="732" y="176" text-anchor="middle" font-size="13" fill="#444444">voice · publish</text>
-    <path d="M820 140 L844 140" stroke="#111111" stroke-width="2"/>
-    <path d="M838 134 L848 140 L838 146" fill="none" stroke="#111111" stroke-width="2"/>
-    <rect x="856" y="80" width="160" height="120" rx="8" fill="#111111"/>
-    <text x="936" y="118" text-anchor="middle" font-size="14" fill="#FFE500" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">M5</text>
-    <text x="936" y="148" text-anchor="middle" font-size="18" font-weight="600" fill="#F7F7F7">Notion</text>
-    <text x="936" y="176" text-anchor="middle" font-size="13" fill="#888888">Permalink</text>
-    <text x="1040" y="240" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#888888">Commander: Telegram · Slack · PlayMCP</text>
+  <text x="48" y="52" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#666666" letter-spacing="1">HOW IT WORKS · DETERMINISTIC · LLM OPTIONAL</text>
+
+  <g id="daily-row" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', 'Malgun Gothic', 'Noto Sans KR', sans-serif">
+    <text x="48" y="96" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" fill="#111111">DAILY · {date}_brief.md · 16–29s</text>
+
+    <rect x="48" y="112" width="192" height="120" rx="8" fill="#111111"/>
+    <text x="144" y="146" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M1</text>
+    <text x="144" y="182" text-anchor="middle" font-size="24" font-weight="700" fill="#F7F7F7">Research</text>
+    <text x="144" y="212" text-anchor="middle" font-size="18" fill="#9A9A9A">Brief SoT</text>
+    <path d="M246 172 L268 172" stroke="#111111" stroke-width="2"/><path d="M262 166 L271 172 L262 178" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="276" y="112" width="192" height="120" rx="8" fill="#111111"/>
+    <text x="372" y="146" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M2</text>
+    <text x="372" y="182" text-anchor="middle" font-size="24" font-weight="700" fill="#F7F7F7">Packages</text>
+    <text x="372" y="212" text-anchor="middle" font-size="18" fill="#9A9A9A">Blog·Thr·IG·LI</text>
+    <path d="M474 172 L496 172" stroke="#111111" stroke-width="2"/><path d="M490 166 L499 172 L490 178" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="504" y="112" width="192" height="120" rx="8" fill="#111111"/>
+    <text x="600" y="146" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M2b</text>
+    <text x="600" y="182" text-anchor="middle" font-size="24" font-weight="700" fill="#F7F7F7">Newsletter</text>
+    <text x="600" y="212" text-anchor="middle" font-size="18" fill="#9A9A9A">Gate A–D</text>
+    <path d="M702 172 L724 172" stroke="#111111" stroke-width="2"/><path d="M718 166 L727 172 L718 178" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="732" y="112" width="192" height="120" rx="8" fill="#FFE500"/>
+    <text x="828" y="146" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#111111">QUALITY</text>
+    <text x="828" y="182" text-anchor="middle" font-size="24" font-weight="700" fill="#111111">Validate</text>
+    <text x="828" y="212" text-anchor="middle" font-size="18" fill="#444444">voice · publishable</text>
+    <path d="M930 172 L952 172" stroke="#111111" stroke-width="2"/><path d="M946 166 L955 172 L946 178" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="960" y="112" width="192" height="120" rx="8" fill="#111111"/>
+    <text x="1056" y="146" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M5</text>
+    <text x="1056" y="182" text-anchor="middle" font-size="24" font-weight="700" fill="#F7F7F7">Notion</text>
+    <text x="1056" y="212" text-anchor="middle" font-size="18" fill="#9A9A9A">Permalink</text>
   </g>
+
+  <g id="topic-row" font-family="-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Segoe UI', 'Malgun Gothic', 'Noto Sans KR', sans-serif">
+    <text x="48" y="276" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" fill="#111111">TOPIC PACK · 임의 키워드 · 10–20s</text>
+
+    <rect x="48" y="292" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="128" y="326" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M1</text>
+    <text x="128" y="360" text-anchor="middle" font-size="22" font-weight="700" fill="#F7F7F7">Research</text>
+    <text x="128" y="390" text-anchor="middle" font-size="18" fill="#9A9A9A">7-Lens 근거</text>
+    <path d="M212 352 L230 352" stroke="#111111" stroke-width="2"/><path d="M225 346 L234 352 L225 358" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="237" y="292" width="160" height="120" rx="8" fill="#FFE500"/>
+    <text x="317" y="326" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#111111">M2</text>
+    <text x="317" y="360" text-anchor="middle" font-size="22" font-weight="700" fill="#111111">AX 설계</text>
+    <text x="317" y="390" text-anchor="middle" font-size="18" fill="#444444">30/60/90</text>
+    <path d="M401 352 L419 352" stroke="#111111" stroke-width="2"/><path d="M414 346 L423 352 L414 358" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="426" y="292" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="506" y="326" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M3</text>
+    <text x="506" y="360" text-anchor="middle" font-size="22" font-weight="700" fill="#F7F7F7">Resources</text>
+    <text x="506" y="390" text-anchor="middle" font-size="18" fill="#9A9A9A">도구·논문</text>
+    <path d="M590 352 L608 352" stroke="#111111" stroke-width="2"/><path d="M603 346 L612 352 L603 358" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="615" y="292" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="695" y="326" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M4</text>
+    <text x="695" y="360" text-anchor="middle" font-size="22" font-weight="700" fill="#F7F7F7">Future</text>
+    <text x="695" y="390" text-anchor="middle" font-size="18" fill="#9A9A9A">2×2 시나리오</text>
+    <path d="M779 352 L797 352" stroke="#111111" stroke-width="2"/><path d="M792 346 L801 352 L792 358" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="804" y="292" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="884" y="326" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M5</text>
+    <text x="884" y="360" text-anchor="middle" font-size="22" font-weight="700" fill="#F7F7F7">Channels</text>
+    <text x="884" y="390" text-anchor="middle" font-size="18" fill="#9A9A9A">채널 5종</text>
+    <path d="M968 352 L986 352" stroke="#111111" stroke-width="2"/><path d="M981 346 L990 352 L981 358" fill="none" stroke="#111111" stroke-width="2"/>
+
+    <rect x="992" y="292" width="160" height="120" rx="8" fill="#111111"/>
+    <text x="1072" y="326" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#FFE500">M6</text>
+    <text x="1072" y="360" text-anchor="middle" font-size="22" font-weight="700" fill="#F7F7F7">Archive</text>
+    <text x="1072" y="390" text-anchor="middle" font-size="18" fill="#9A9A9A">Notion·학습</text>
+  </g>
+
+  <text x="1152" y="446" text-anchor="end" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#888888">Commander: Telegram · Slack · PlayMCP — /pipeline · /topic</text>
 </svg>

@@ -1,6 +1,6 @@
 {
   "project": "hermes-content-studio",
-  "last_updated": "2026-07-26T22:30:00+09:00",
+  "last_updated": "2026-10-02",
   "rules": {
     "single_active_feature": true,
     "passing_requires_evidence": true,
@@ -476,6 +476,29 @@
         "schemas/delta.schema.json"
       ],
       "notes": "승격(--promote)은 수동. F5 subject-gepa 보류."
+    },
+    {
+      "id": "topic-pack-ax",
+      "priority": 21,
+      "area": "research-content",
+      "title": "Topic-Agnostic AX Pipeline — 임의 키워드 Topic Pack M1–M6 (리서치·AX Blueprint·Resource Map·Future Ahead·채널·아카이브)",
+      "handoff": "docs/plans/2026-10-02-001-feat-topic-agnostic-ax-m1-m6-plan.md",
+      "active": true,
+      "status": "in_progress",
+      "depends_on": [],
+      "verification": [
+        "./scripts/topic-pack-eval.sh",
+        "python3 -m pytest -q tests/test_ax_*.py",
+        "./scripts/run-topic-pack.sh \"숏폼 커머스\""
+      ],
+      "evidence": [
+        "config/topic-research.yaml",
+        "scripts/lib/ax/pipeline.py",
+        "scripts/run-topic-pack.sh",
+        "scripts/topic-pack-eval.sh",
+        "content/topics/_index.json"
+      ],
+      "notes": "로컬 검증 완료 (eval 21/0 · pytest 44 · 라이브 3키워드 전 게이트 PASS). M6 --notion 은 Hermes Agent(tools)·Notion OAuth 설치 후 검증 필요."
     }
   ]
 }
