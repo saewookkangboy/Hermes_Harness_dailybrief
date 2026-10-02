@@ -51,10 +51,10 @@ metadata:
 
 ```bash
 # 결정적 (assemble-content-package.py 내장)
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 
 # LLM humanize (선택)
-HERMES_HUMANIZE=1 ~/hermes-content-studio/scripts/run-content-package.sh
+HERMES_HUMANIZE=1 ~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 ```
 
 Upstream 설치 (별도):

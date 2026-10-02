@@ -10,7 +10,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 SCRIPTS = WORKDIR / "scripts"
 RESEARCH = WORKDIR / "content" / "research"
 sys.path.insert(0, str(SCRIPTS))

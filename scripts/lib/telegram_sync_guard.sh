@@ -3,7 +3,7 @@
 # shellcheck shell=bash
 
 _tsg_workdir() {
-  echo "${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+  echo "${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 }
 
 _tsg_lock_path() {

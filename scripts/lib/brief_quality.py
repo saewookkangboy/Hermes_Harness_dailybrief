@@ -11,7 +11,7 @@ from lib.content_quality import localize_title, polish_display_title
 from lib.humanize_korean import humanize
 
 INSIGHT_LIMIT = 7
-CONFIG_PATH = Path.home() / "hermes-content-studio" / "config" / "research-brief.yaml"
+CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "research-brief.yaml"
 
 TITLE_BY_TOPIC: dict[str, str] = {
     "korea_ax": "한국 AX 전환 — 교육·FAQ·사례 중심",
@@ -396,7 +396,7 @@ def synthesize_korean_summary(title: str, snippet: str, query: str) -> str:
         "hermes_agent": (
             f"[Hermes Agent] 오픈소스·자체호스팅 에이전트는 "
             f"멀티채널·스킬·메모리 확장이 강점입니다. "
-            f"Intel Mac·VPS 등 로컬/엣지 운영으로 데이터 주권·"
+            f"로컬 Mac·VPS 등 로컬/엣지 운영으로 데이터 주권·"
             f"커스터마이징이 가능합니다."
         ),
         "ai_ide": (
@@ -587,7 +587,7 @@ def synthesize_utilization(topic_key: str, channel: str) -> str:
             "③ HERMES_ENHANCE=1 선택 polish. Hermes Content Studio가 레퍼런스."
         ),
         "hermes_agent": (
-            "① Intel Mac/VPS 자체호스팅 ② Telegram·Notion 커맨더 "
+            "① 로컬 Mac/VPS 자체호스팅 ② Telegram·Notion 커맨더 "
             "③ 스킬·MCP 확장. 콘텐츠·리서치·아카이브 자동화 데모."
         ),
         "llm_anthropic": "Claude를 장문 분석·정책 민감 초안·에이전트 API 축으로 편성.",

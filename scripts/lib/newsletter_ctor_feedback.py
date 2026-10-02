@@ -17,7 +17,7 @@ from lib.newsletter_ctor import (
     list_records,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 FEEDBACK_PATH = WORKDIR / ".harness" / "newsletter-ctor-feedback.json"
 
 QUESTION_RE = re.compile(r"[?？]")

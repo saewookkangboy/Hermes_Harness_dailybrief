@@ -35,7 +35,7 @@ paths:
   cost_ledger: .harness/cost-ledger.jsonl
   eval_results: .harness/eval-results.json
 
-# 성능 고도화 (Intel Mac)
+# 성능 고도화 (Apple Silicon M2)
 performance:
   # 결정적 파이프라인 우선 — LLM polish는 HERMES_ENHANCE=1 일 때만
   deterministic_first: true

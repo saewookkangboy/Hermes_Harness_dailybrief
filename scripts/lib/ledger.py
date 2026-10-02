@@ -11,7 +11,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-STUDIO = Path(os.environ.get("HERMES_STUDIO", os.environ.get("HERMES_WORKDIR", Path.home() / "hermes-content-studio")))
+STUDIO = Path(os.environ.get("HERMES_STUDIO", os.environ.get("HERMES_WORKDIR", Path(__file__).resolve().parents[2])))
 HARNESS = STUDIO / ".harness"
 LEDGER = Path(os.environ.get("HERMES_COST_LEDGER", str(HARNESS / "cost-ledger.jsonl")))
 TRACES = HARNESS / "traces"

@@ -10,8 +10,8 @@
 부모 스튜디오가 Brief·blog·wiki를 upstream으로 넘기고, sibling ×8이 같은 5-Subsystem 하네스로 파이프라인을 돌립니다.
 
 ```bash
-~/hermes-content-studio/scripts/bootstrap-hermes-studios.sh
-~/hermes-content-studio/scripts/studios-all-upstream-eval.sh 2026-07-12
+~/Hermes_Harness_dailybrief/scripts/bootstrap-hermes-studios.sh
+~/Hermes_Harness_dailybrief/scripts/studios-all-upstream-eval.sh 2026-07-12
 ```
 
 ---
@@ -45,7 +45,7 @@
 - **Scope:** `single_active_feature`
 - **Lifecycle:** init → pipeline → session-handoff
 
-공유 lib: `~/hermes-content-studio/scripts/lib` (symlink)
+공유 lib: `~/Hermes_Harness_dailybrief/scripts/lib` (symlink)
 
 ## 아키텍처
 
@@ -89,7 +89,7 @@ flowchart TB
 
 ```bash
 # 통합 eval (brief + blog 필요)
-~/hermes-content-studio/scripts/studios-tier1-upstream-eval.sh 2026-07-12
+~/Hermes_Harness_dailybrief/scripts/studios-tier1-upstream-eval.sh 2026-07-12
 
 # 개별
 HERMES_WORKDIR=~/hermes-course-studio ~/hermes-course-studio/scripts/run-course-pipeline.sh
@@ -102,7 +102,7 @@ HERMES_WORKDIR=~/hermes-seo-studio ~/hermes-seo-studio/scripts/run-seo-pipeline.
 ## Tier 2 실행
 
 ```bash
-~/hermes-content-studio/scripts/studios-tier2-upstream-eval.sh 2026-07-12
+~/Hermes_Harness_dailybrief/scripts/studios-tier2-upstream-eval.sh 2026-07-12
 HERMES_WORKDIR=~/hermes-personal-studio ~/hermes-personal-studio/scripts/run-personal-pipeline.sh
 HERMES_WORKDIR=~/hermes-wiki-studio ~/hermes-wiki-studio/scripts/run-wiki-pipeline.sh
 HERMES_WORKDIR=~/hermes-dev-studio ~/hermes-dev-studio/scripts/run-dev-pipeline.sh
@@ -111,12 +111,12 @@ HERMES_WORKDIR=~/hermes-dev-studio ~/hermes-dev-studio/scripts/run-dev-pipeline.
 ## Tier 3 실행
 
 ```bash
-~/hermes-content-studio/scripts/studios-tier3-upstream-eval.sh 2026-07-12
+~/Hermes_Harness_dailybrief/scripts/studios-tier3-upstream-eval.sh 2026-07-12
 HERMES_WORKDIR=~/hermes-delivery-studio ~/hermes-delivery-studio/scripts/run-delivery-pipeline.sh
 HERMES_WORKDIR=~/hermes-social-studio ~/hermes-social-studio/scripts/run-social-pipeline.sh
 
 # 전체 Tier 1–3
-~/hermes-content-studio/scripts/studios-all-upstream-eval.sh 2026-07-12
+~/Hermes_Harness_dailybrief/scripts/studios-all-upstream-eval.sh 2026-07-12
 ```
 
 ## 세션 시작 (임의 Studio)
@@ -133,7 +133,7 @@ $HERMES_WORKDIR/scripts/run-course-pipeline.sh
 기존 Studio 덮어쓰기:
 
 ```bash
-python3 ~/hermes-content-studio/scripts/bootstrap-hermes-studios.py
+python3 ~/Hermes_Harness_dailybrief/scripts/bootstrap-hermes-studios.py
 ```
 
 `feature_list.json`·`progress.md`가 재생성되므로 커스텀 변경은 백업 후 실행.

@@ -23,7 +23,7 @@ from lib.newsletter_subject import (
     save_subject_scores,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 CONFIG_PATH = WORKDIR / "config" / "newsletter.yaml"
 
 

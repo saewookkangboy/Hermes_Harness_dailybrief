@@ -9,7 +9,7 @@ from lib.common import compress_sentences, finish_at_sentence, read_template
 from lib.content_quality import Insight
 from lib.newsletter_subject import SubjectScore
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 TEMPLATE_PATH = WORKDIR / "templates" / "email" / "newsletter.html"
 
 

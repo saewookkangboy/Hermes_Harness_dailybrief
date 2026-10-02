@@ -22,7 +22,7 @@ from lib.humanize_korean import humanize, humanize_linkedin_post
 from lib.newsletter_complete import audit_newsletter_md
 from lib.voice_style_audit import audit_instagram_caption, audit_linkedin_post_body
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 SCRIPTS = WORKDIR / "scripts"
 
 

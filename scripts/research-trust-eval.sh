@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 STAMP="${1:-$(date +%Y-%m-%d)}"
 BRIEF="$WORKDIR/content/research/${STAMP}_brief.md"
 if [[ ! -f "$BRIEF" ]]; then

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 그래프 운영 질의. 즉시 실무 가치가 나오는 3종.
 set -euo pipefail
-STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$HOME/hermes-content-studio}}"
+STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}}"
 DB="$STUDIO/content/wiki/graph.db"
 cd "$STUDIO"
 

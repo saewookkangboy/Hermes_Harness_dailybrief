@@ -44,14 +44,14 @@ Telegram 알림·Terminal 모니터(`watch-telegram.sh`)는 변경하지 않습�
 ## 실행
 
 ```bash
-~/hermes-content-studio/scripts/archive-to-notion.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/archive-to-notion.sh [YYYY-MM-DD]
 ```
 
 ## 워크플로우 (에이전트) — Telegram 요청 시 필수
 
 콘텐츠 파일 저장 후 **반드시** Notion 동기화:
 ```bash
-TELEGRAM_CHAT_ID=<chat_id> ~/hermes-content-studio/scripts/archive-to-notion.sh $(date +%Y-%m-%d) --force
+TELEGRAM_CHAT_ID=<chat_id> ~/Hermes_Harness_dailybrief/scripts/archive-to-notion.sh $(date +%Y-%m-%d) --force
 ```
 
 Telegram Permalink 형식으로 사용자에게 전달.

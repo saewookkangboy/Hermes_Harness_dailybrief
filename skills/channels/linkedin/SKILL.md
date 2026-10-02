@@ -28,7 +28,7 @@ metadata:
 ### A. 결정적 (기본, ~2s)
 
 ```bash
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 ```
 
 산출:
@@ -46,7 +46,7 @@ metadata:
 
 ```bash
 # Hermes M3 (선택)
-HERMES_ENHANCE=1 ~/hermes-content-studio/scripts/run-content-package.sh
+HERMES_ENHANCE=1 ~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 hermes chat -q "..." -s channel-linkedin -t hermes-cli
 ```
 

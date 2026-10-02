@@ -6,7 +6,7 @@ import argparse
 import sys
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKDIR / "scripts"))
 
 from lib.telegram_notify import format_notion_summary, format_progress, send_message  # noqa: E402

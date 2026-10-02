@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 LOGS = WORKDIR / "content" / "logs"
 SKILLS = WORKDIR / "skills"
 CONFIG = WORKDIR / "config"
@@ -125,7 +125,7 @@ def build_resources_spec(date: str) -> str:
 
 | 항목 | 값 |
 |------|-----|
-| 워크스페이스 | `~/hermes-content-studio` |
+| 워크스페이스 | `~/Hermes_Harness_dailybrief` |
 | Hermes Agent | `~/.hermes/` (Gateway · sessions · MCP) |
 | Harness state | `.harness/progress.md`, `feature_list.json`, `cost-ledger.jsonl` |
 | 날짜 SoT | `STUDIO_TZ=Asia/Seoul` · `scripts/lib/common.py` `studio_today()` |

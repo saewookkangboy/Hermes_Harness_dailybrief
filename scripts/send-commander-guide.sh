@@ -3,7 +3,7 @@
 set -euo pipefail
 
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
-GUIDE="${1:-$HOME/hermes-content-studio/content/logs/2026-06-08_commander-natural-language-guide.md}"
+GUIDE="${1:-$(dirname "$SCRIPTS")/content/logs/2026-06-08_commander-natural-language-guide.md}"
 
 if [[ ! -f "$GUIDE" ]]; then
   echo "❌ 가이드 없음: $GUIDE" >&2
@@ -31,11 +31,12 @@ run_py() {
 echo "=== Commander 가이드 전송 ==="
 echo "원본: $GUIDE"
 
-run_py - "$GUIDE" "$CHAT" "$SLACK" <<'PY'
+HERMES_SCRIPTS_DIR="$SCRIPTS" run_py - "$GUIDE" "$CHAT" "$SLACK" <<'PY'
+import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+sys.path.insert(0, os.environ["HERMES_SCRIPTS_DIR"])
 
 from lib.slack_notify import send_long_text
 from lib.telegram_notify import send_message

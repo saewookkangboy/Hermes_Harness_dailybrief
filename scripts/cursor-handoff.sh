@@ -12,7 +12,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 export HERMES_NOTIFY_SLACK=1
 if [[ -z "${SLACK_HOME_CHANNEL:-}" && -f "$HOME/.hermes/.env" ]]; then

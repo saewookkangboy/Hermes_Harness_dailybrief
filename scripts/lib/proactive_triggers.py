@@ -10,7 +10,7 @@ from lib.brief_gate import brief_path, needs_daily_research
 from lib.common import studio_today
 from lib.notion_oauth_watch import proactive_oauth_message
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 STATE_PATH = WORKDIR / "content" / ".notion-archive-state.json"
 METRICS_PATH = WORKDIR / ".harness" / "newsletter-ctor-metrics.json"
 MAX_NOTION_STALE_HOURS = 24

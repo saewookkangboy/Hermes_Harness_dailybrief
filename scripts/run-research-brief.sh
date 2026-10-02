@@ -8,7 +8,7 @@
 # Usage: ./run-research-brief.sh [YYYY-MM-DD]
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SCRIPTS="$WORKDIR/scripts"
 # shellcheck source=lib/studio-date.sh
 source "$SCRIPTS/lib/studio-date.sh"

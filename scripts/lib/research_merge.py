@@ -9,7 +9,7 @@ from typing import Any
 
 from lib.brief_quality import canonicalize_url, title_token_overlap
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 RESEARCH_DIR = WORKDIR / "content" / "research"
 
 

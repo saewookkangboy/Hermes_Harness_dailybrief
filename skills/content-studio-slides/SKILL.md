@@ -27,19 +27,19 @@ metadata:
 
 ```bash
 # 기본: 템플릿 HTML + PPTX (로컬, 빠름)
-~/hermes-content-studio/scripts/run-lecture-slides.sh "AEO 실전 가이드" \
+~/Hermes_Harness_dailybrief/scripts/run-lecture-slides.sh "AEO 실전 가이드" \
   --content-file my-outline.txt --preset claude
 
 # claude-design 연동: PPTX(로컬) + Hermes claude-design HTML(1920×1080) + Notion
-~/hermes-content-studio/scripts/run-lecture-slides.sh "AEO 실전 가이드" \
+~/Hermes_Harness_dailybrief/scripts/run-lecture-slides.sh "AEO 실전 가이드" \
   --content-file my-outline.txt \
   --design-mode claude-design --notion-sync
 
 # 주간 브리프 + claude-design (파이프라인)
-LECTURE_DESIGN_MODE=claude-design ~/hermes-content-studio/scripts/run-pipeline.sh
+LECTURE_DESIGN_MODE=claude-design ~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 
 # Telegram Permalink 포함
-TELEGRAM_CHAT_ID=8975802496 ~/hermes-content-studio/scripts/run-lecture-slides.sh \
+TELEGRAM_CHAT_ID=8975802496 ~/Hermes_Harness_dailybrief/scripts/run-lecture-slides.sh \
   "AEO 실전" --content-file outline.txt --design-mode claude-design --notion-sync
 ```
 
@@ -100,7 +100,7 @@ Getdesign.md 토큰 적용:
 스킬: `claude-design` + `content-studio-slides`
 
 ```bash
-~/hermes-content-studio/scripts/run-lecture-slides.sh "제목" \
+~/Hermes_Harness_dailybrief/scripts/run-lecture-slides.sh "제목" \
   --content-file outline.txt --design-mode claude-design --notion-sync
 ```
 

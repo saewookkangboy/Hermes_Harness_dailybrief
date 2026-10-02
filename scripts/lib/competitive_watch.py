@@ -11,7 +11,7 @@ import yaml
 from lib.brief_graph import build_brief_graph, load_brief_graph, save_brief_graph
 from lib.common import studio_today, truncate
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 CONFIG_PATH = WORKDIR / "config" / "competitive-watch.yaml"
 STATE_PATH = WORKDIR / ".harness" / "competitive-watch-state.json"
 LOGS_DIR = WORKDIR / "content" / "logs"

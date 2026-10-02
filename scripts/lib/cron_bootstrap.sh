@@ -24,7 +24,7 @@ if m:
       return 0
     fi
   done
-  for wd in "${HOME}/hermes-content-studio"; do
+  for wd in "$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)" "${HOME}/Hermes_Harness_dailybrief"; do
     if [[ -d "${wd}/scripts/lib" ]]; then
       printf '%s' "$wd"
       return 0

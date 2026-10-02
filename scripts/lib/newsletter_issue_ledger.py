@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 DEFAULT_LEDGER = WORKDIR / "content" / "newsletter" / "issue-ledger.jsonl"
 _TOPIC_RE = re.compile(r"[^0-9a-zA-Z가-힣]+")
 

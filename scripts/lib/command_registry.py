@@ -7,7 +7,7 @@ from typing import Any
 
 import yaml
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 SCRIPTS = WORKDIR / "scripts"
 CONFIG_PATH = WORKDIR / "config" / "agent-commands.yaml"
 

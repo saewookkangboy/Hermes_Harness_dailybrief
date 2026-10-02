@@ -18,18 +18,18 @@ metadata:
 ## 필수 실행
 
 ```bash
-~/hermes-content-studio/scripts/telegram-lecture.sh qc "<사용자 요청 전문>"
+~/Hermes_Harness_dailybrief/scripts/telegram-lecture.sh qc "<사용자 요청 전문>"
 ```
 
 또는 (Terminal):
 
 ```bash
-~/hermes-content-studio/scripts/telegram-lecture.sh "AEO 실전 90분, 대상: B2B 마케터, FAQ·실습 포함"
+~/Hermes_Harness_dailybrief/scripts/telegram-lecture.sh "AEO 실전 90분, 대상: B2B 마케터, FAQ·실습 포함"
 ```
 
 ## 입력 예시
 
-- "Hermes Content Studio 실습 2시간, Intel Mac 대상, hands-on 위주"
+- "Hermes Content Studio 실습 2시간, Apple Silicon Mac 대상, hands-on 위주"
 - "AEO FAQ schema 워크숍 90분, 마케터·SEO 담당자"
 - "claude-design 1920x1080 HTML 덱, AX 전환 사례 5개" (+ `LECTURE_DESIGN_MODE=claude-design`)
 

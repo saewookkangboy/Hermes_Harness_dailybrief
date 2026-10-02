@@ -55,13 +55,13 @@ metadata:
 
 ```bash
 # 전체 (M1→M2)
-~/hermes-content-studio/scripts/run-pipeline.sh
+~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 
 # M2만
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 
 # Telegram
-~/hermes-content-studio/scripts/telegram-pipeline.sh pipeline
+~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh pipeline
 ```
 
 ## 채널 Skill Index
@@ -89,7 +89,7 @@ metadata:
 ## Hermes CLI
 
 ```bash
-~/hermes-content-studio/scripts/hermes-run.sh "..." --skills content-orchestration -t hermes-cli
+~/Hermes_Harness_dailybrief/scripts/hermes-run.sh "..." --skills content-orchestration -t hermes-cli
 ```
 
 ## Anti-patterns

@@ -5,7 +5,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKDIR / "scripts"))
 
 from lib.brief_gate import assert_brief_ready_for_content, brief_path  # noqa: E402

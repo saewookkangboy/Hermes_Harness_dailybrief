@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 BLOG_SECTION_TITLES = frozenset(
     {

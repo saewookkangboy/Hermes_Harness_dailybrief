@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PASS=0; FAIL=0
 record() { [[ "$1" == PASS ]] && PASS=$((PASS+1)) || FAIL=$((FAIL+1)); echo "$1 $2"; }
 
@@ -17,16 +17,18 @@ grep -q 'bare 승인' "$WORKDIR/config/slack-routing.yaml" && record PASS "nl_co
 
 "$DIR/telegram-pipeline.sh" qc research-pending 2>/dev/null | grep -q "research staging" && record PASS "qc_research_pending" || record FAIL "qc_research_pending"
 
-STAGING_SMOKE=$(python3 - <<'PY'
+STAGING_SMOKE=$(HERMES_WORKDIR="$WORKDIR" python3 - <<'PY'
+import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+WORKDIR = Path(os.environ["HERMES_WORKDIR"])
+sys.path.insert(0, str(WORKDIR / "scripts"))
 from lib.research_staging import write_staging, list_pending, approve, format_pending_status
 from lib.research_merge import require_approve_on_replace
 
 assert require_approve_on_replace() is True
 rid = "smoke-test-run"
-brief = Path.home() / "hermes-content-studio" / "content" / "research"
+brief = WORKDIR / "content" / "research"
 # use tiny fake — approve path copies to live; use unique stamp to avoid clobber
 stamp = "2099-01-01"
 text = "# smoke\n## Executive Summary\nx\n"
@@ -35,7 +37,7 @@ assert any(i["run_id"] == rid for i in list_pending())
 assert "smoke-test-run" in format_pending_status()
 # clean without approving to live
 import shutil
-shutil.rmtree(Path.home() / "hermes-content-studio" / "content" / "research" / "_staging" / rid, ignore_errors=True)
+shutil.rmtree(WORKDIR / "content" / "research" / "_staging" / rid, ignore_errors=True)
 print("OK")
 PY
 )

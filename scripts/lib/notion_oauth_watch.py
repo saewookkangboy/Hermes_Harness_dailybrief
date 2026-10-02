@@ -16,10 +16,10 @@ from lib.notion_oauth import (
     notion_token_expiry,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 CONFIG_PATH = WORKDIR / "config" / "notion-archive.yaml"
 STATE_PATH = WORKDIR / ".harness" / "notion-oauth-watch-state.json"
-REAUTH_SCRIPT = "~/hermes-content-studio/scripts/reauth-notion-mcp.sh"
+REAUTH_SCRIPT = str(WORKDIR / "scripts" / "reauth-notion-mcp.sh")
 
 SEVERITY_ORDER = {"ok": 0, "warn": 1, "critical": 2, "fail": 3}
 

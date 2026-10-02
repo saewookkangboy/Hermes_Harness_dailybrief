@@ -4,7 +4,7 @@
 
 # Hermes Content Studio
 
-Intel Mac에서 돌아가는 **자체호스팅 마케팅·교육 콘텐츠 스튜디오**예요.  
+Apple Silicon Mac(MacBook Air M2)에서 돌아가는 **자체호스팅 마케팅·교육 콘텐츠 스튜디오**예요.  
 일일 리서치 브리프(`{date}_brief.md`)를 Brief SoT로 두고, 블로그·Threads·인스타그램·링크드인·B2B 뉴스레터를 **결정적 파이프라인(M1→M5)** 으로 생성·검증·Notion 아카이브합니다.
 
 [Harness v1.3](https://github.com/walkinglabs/awesome-harness-engineering) · System Logic [v2.1](docs/architecture/SYSTEM-LOGIC.md) · [`AGENTS.md`](AGENTS.md) · [`HARNESS.md`](HARNESS.md) · [Docs](docs/README.md)
@@ -61,25 +61,25 @@ Intel Mac에서 돌아가는 **자체호스팅 마케팅·교육 콘텐츠 스�
 
 ```bash
 # 1) 세션 부트스트랩
-~/hermes-content-studio/scripts/init.sh
-cat ~/hermes-content-studio/.harness/progress.md
+~/Hermes_Harness_dailybrief/scripts/init.sh
+cat ~/Hermes_Harness_dailybrief/.harness/progress.md
 
 # 2) (선택) 서비스 — Ollama + Gateway
-~/hermes-content-studio/scripts/start-services.sh
-~/hermes-content-studio/scripts/health-check.sh
+~/Hermes_Harness_dailybrief/scripts/start-services.sh
+~/Hermes_Harness_dailybrief/scripts/health-check.sh
 
 # 3) 리서치만 / 전체 파이프라인
-~/hermes-content-studio/scripts/run-research-brief.sh
-HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/run-pipeline.sh
+~/Hermes_Harness_dailybrief/scripts/run-research-brief.sh
+HERMES_WIKI_GRAPH=1 ~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 
 # 4) 뉴스레터 단독 + publishable 게이트
-SKIP_INIT=1 ~/hermes-content-studio/scripts/run-newsletter.sh --validate
+SKIP_INIT=1 ~/Hermes_Harness_dailybrief/scripts/run-newsletter.sh --validate
 ```
 
 상태바가 필요하면:
 
 ```bash
-~/hermes-content-studio/scripts/hermes-run.sh \
+~/Hermes_Harness_dailybrief/scripts/hermes-run.sh \
   "이번 주 리서치 브리프 작성" --skills marketing-research
 ```
 
@@ -95,7 +95,7 @@ SKIP_INIT=1 ~/hermes-content-studio/scripts/run-newsletter.sh --validate
 | 요청 시 | Cursor 핸드오프 | `run-cursor-handoff.sh --latest` |
 
 ```bash
-~/hermes-content-studio/scripts/setup-cron.sh
+~/Hermes_Harness_dailybrief/scripts/setup-cron.sh
 ```
 
 ---
@@ -134,7 +134,7 @@ content/
 
 ```bash
 # 결정적 트리거 (LLM 없음)
-~/hermes-content-studio/scripts/telegram-pipeline.sh pipeline
+~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh pipeline
 ```
 
 ---
@@ -153,32 +153,32 @@ content/
 
 ```bash
 # 채널 validate
-~/hermes-content-studio/scripts/validate-output.sh research content/research/$(date +%Y-%m-%d)_brief.md
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh research content/research/$(date +%Y-%m-%d)_brief.md
 
 # Voice · Naturalness
-~/hermes-content-studio/scripts/voice-style-eval.sh
-~/hermes-content-studio/scripts/naturalness-eval.sh
+~/Hermes_Harness_dailybrief/scripts/voice-style-eval.sh
+~/Hermes_Harness_dailybrief/scripts/naturalness-eval.sh
 
 # Newsletter Gate A–D
-~/hermes-content-studio/scripts/newsletter-freshness-eval.sh   # A
-~/hermes-content-studio/scripts/newsletter-gate-b-eval.sh      # B
-~/hermes-content-studio/scripts/newsletter-gate-c-eval.sh      # C
-~/hermes-content-studio/scripts/newsletter-gate-d-eval.sh      # D
+~/Hermes_Harness_dailybrief/scripts/newsletter-freshness-eval.sh   # A
+~/Hermes_Harness_dailybrief/scripts/newsletter-gate-b-eval.sh      # B
+~/Hermes_Harness_dailybrief/scripts/newsletter-gate-c-eval.sh      # C
+~/Hermes_Harness_dailybrief/scripts/newsletter-gate-d-eval.sh      # D
 
 # 비용 · Wiki · Ask
-~/hermes-content-studio/scripts/cost-report.sh --since 7d
-HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
-~/hermes-content-studio/scripts/ask-eval.sh --compare
+~/Hermes_Harness_dailybrief/scripts/cost-report.sh --since 7d
+HERMES_WIKI_GRAPH=1 ~/Hermes_Harness_dailybrief/scripts/wiki-graph.sh
+~/Hermes_Harness_dailybrief/scripts/ask-eval.sh --compare
 ```
 
 ### 전체 품질 스모크
 
 ```bash
-~/hermes-content-studio/scripts/harness-eval.sh --quick      # 구조 40/0
-~/hermes-content-studio/scripts/harness-eval.sh --record     # SLA 벤치
-~/hermes-content-studio/scripts/e2e-smoke-test.sh            # E2E
-~/hermes-content-studio/scripts/agents-eval.sh               # Agents A–D
-~/hermes-content-studio/scripts/staging-supervised-eval.sh   # L2 staging
+~/Hermes_Harness_dailybrief/scripts/harness-eval.sh --quick      # 구조 40/0
+~/Hermes_Harness_dailybrief/scripts/harness-eval.sh --record     # SLA 벤치
+~/Hermes_Harness_dailybrief/scripts/e2e-smoke-test.sh            # E2E
+~/Hermes_Harness_dailybrief/scripts/agents-eval.sh               # Agents A–D
+~/Hermes_Harness_dailybrief/scripts/staging-supervised-eval.sh   # L2 staging
 ```
 
 리포트 예: `content/logs/2026-08-12_full-quality-retest.md` (gitignore · 로컬 SoT는 `.harness/progress.md`)
@@ -198,7 +198,7 @@ HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
 | Lifecycle | `session-handoff.md` |
 
 ```bash
-~/hermes-content-studio/scripts/harness-eval.sh --quick
+~/Hermes_Harness_dailybrief/scripts/harness-eval.sh --quick
 ```
 
 아키텍처 상세: [`docs/architecture/`](docs/architecture/)
@@ -208,7 +208,7 @@ HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
 ## 디렉토리
 
 ```
-hermes-content-studio/
+Hermes_Harness_dailybrief/
 ├── AGENTS.md · HARNESS.md · Getdesign.md · JARVIS.md
 ├── assets/readme/ · assets/docs/   # README · Docs 비주얼 (Pure SVG)
 ├── config/                         # harness · newsletter · notion-archive
@@ -222,21 +222,24 @@ hermes-content-studio/
 
 ---
 
-## Intel Mac 메모
+## Apple Silicon (M2) 메모
 
+- 워크스페이스: `~/Hermes_Harness_dailybrief` — 스크립트는 자기 위치로 루트를 찾으므로 다른 경로로 옮겨도 동작해요 (`HERMES_WORKDIR`로 오버라이드)
 - 결정적 경로: `run-research-brief.sh` + `run-content-package.sh` + `run-newsletter.sh`
 - 실측 full_pipeline **~20–26s** (SLA 상한 60–70s)
-- 로컬 polish: Ollama `gemma4:latest` (선택)
-- 16GB 이하에서는 Ollama + Gateway 동시 실행에 주의
-- 상시 cron이면 Mac 절전 해제 권장
+- 로컬 polish: Ollama `gemma4:latest` (선택, Metal 가속)
+- Python: Hermes venv(`~/.hermes/hermes-agent/venv`)가 없으면 `python3`(pyenv 3.11)로 폴백 — `pip install -r requirements.txt`
+- Homebrew: `/opt/homebrew` (arm64)
+- 16GB 통합 메모리 — Ollama 대형 모델(llama3.3 등)과 Gateway 동시 실행은 피하세요
+- MacBook Air는 팬리스라 장시간 LLM polish 시 스로틀링될 수 있어요. 상시 cron이면 전원 연결 + 절전 해제 권장
 
 ---
 
 ## Cursor 연동
 
 ```bash
-~/hermes-content-studio/scripts/install-cursor-cli.sh
-~/hermes-content-studio/scripts/run-cursor-handoff.sh --latest
+~/Hermes_Harness_dailybrief/scripts/install-cursor-cli.sh
+~/Hermes_Harness_dailybrief/scripts/run-cursor-handoff.sh --latest
 ```
 
 Telegram `/automate` → Codex HANDOFF → Cursor CLI (`HERMES_CURSOR_AUTO=1`).

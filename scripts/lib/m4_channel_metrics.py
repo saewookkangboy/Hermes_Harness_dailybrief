@@ -8,7 +8,7 @@ from typing import Any
 
 from lib.newsletter_ctor import ctor_summary_for_m4, list_records
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 METRICS_PATH = WORKDIR / ".harness" / "channel-metrics.json"
 
 

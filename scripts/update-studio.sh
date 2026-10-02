@@ -5,7 +5,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 SKIP_HERMES=0
 
@@ -13,8 +13,13 @@ for arg in "$@"; do
   [[ "$arg" == "--skip-hermes" ]] && SKIP_HERMES=1
 done
 
-echo "=== Hermes Content Studio 업데이트 (v1.2.0) ==="
+echo "=== Hermes Content Studio 업데이트 (v1.3.0) ==="
 echo ""
+
+if [[ "$SKIP_HERMES" == "0" ]] && ! command -v hermes >/dev/null 2>&1; then
+  echo "⚠️  Hermes Agent 미설치 — Hermes 업데이트 스킵" >&2
+  SKIP_HERMES=1
+fi
 
 if [[ "$SKIP_HERMES" == "0" ]]; then
   echo "--- 1/4 Hermes Agent ---"
@@ -43,5 +48,5 @@ echo "버전: $(grep 'version:' "$WORKDIR/config/studio.yaml" | head -1 | awk '{
 echo "Hermes: $(hermes --version 2>/dev/null | head -1)"
 echo ""
 echo "빠른 검증:"
-echo "  ~/hermes-content-studio/scripts/run-research-brief.sh"
-echo "  ~/hermes-content-studio/scripts/run-pipeline.sh"
+echo "  $WORKDIR/scripts/run-research-brief.sh"
+echo "  $WORKDIR/scripts/run-pipeline.sh"

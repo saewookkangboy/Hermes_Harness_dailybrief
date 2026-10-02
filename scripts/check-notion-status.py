@@ -9,7 +9,7 @@ from datetime import date
 from fnmatch import fnmatch
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKDIR / "scripts"))
 
 from lib.markdown_notion import file_content_hash, is_text_file  # noqa: E402

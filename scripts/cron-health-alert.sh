@@ -2,7 +2,7 @@
 # 런타임 헬스 이상 시에만 stdout 출력 (cron --no-agent: 빈 출력 = 무음)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 # shellcheck source=lib/cron_bootstrap.sh
 source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 # shellcheck source=lib/studio-date.sh
@@ -13,7 +13,7 @@ source "$SCRIPTS_DIR/lib/watch_telegram_singleton.sh"
 DATE="$(studio_commander_date)"
 
 ensure_watch_telegram() {
-  local ensure_lock="${HERMES_WATCH_ENSURE_LOCK:-$HOME/hermes-content-studio/.harness/watch-telegram-ensure.lock.d}"
+  local ensure_lock="${HERMES_WATCH_ENSURE_LOCK:-$WORKDIR/.harness/watch-telegram-ensure.lock.d}"
   if ! mkdir "$ensure_lock" 2>/dev/null; then
     return 0
   fi
@@ -52,5 +52,5 @@ echo "🚨 Hermes Studio Health · ${DATE}"
 echo ""
 echo "$ISSUES"
 echo ""
-echo "복구: ~/hermes-content-studio/scripts/reauth-notion-mcp.sh"
-echo "백필: ~/hermes-content-studio/scripts/backfill-notion-archive.sh $(date +%Y-%m-%d)"
+echo "복구: $SCRIPTS_DIR/reauth-notion-mcp.sh"
+echo "백필: $SCRIPTS_DIR/backfill-notion-archive.sh $(date +%Y-%m-%d)"

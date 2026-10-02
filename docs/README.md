@@ -54,14 +54,14 @@ Hermes Content Studio 운영·아키텍처 문서 허브예요.
 ## 빠른 검증
 
 ```bash
-~/hermes-content-studio/scripts/init.sh --skip-health
-~/hermes-content-studio/scripts/harness-eval.sh --quick
-~/hermes-content-studio/scripts/newsletter-gate-c-eval.sh   # publishable
-~/hermes-content-studio/scripts/e2e-smoke-test.sh
-~/hermes-content-studio/scripts/generate-architecture-md.py
+~/Hermes_Harness_dailybrief/scripts/init.sh --skip-health
+~/Hermes_Harness_dailybrief/scripts/harness-eval.sh --quick
+~/Hermes_Harness_dailybrief/scripts/newsletter-gate-c-eval.sh   # publishable
+~/Hermes_Harness_dailybrief/scripts/e2e-smoke-test.sh
+~/Hermes_Harness_dailybrief/scripts/generate-architecture-md.py
 ```
 
-Notion 동기화: `~/hermes-content-studio/scripts/export-architecture-notion.sh`
+Notion 동기화: `~/Hermes_Harness_dailybrief/scripts/export-architecture-notion.sh`
 
 ---
 

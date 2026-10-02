@@ -5,7 +5,7 @@ from pathlib import Path
 
 from lib.newsletter_select import SelectedIssue, display_title_for
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 def build_title_image_prompt(stamp: str, selected: SelectedIssue, cfg: dict | None = None) -> str:

@@ -9,7 +9,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKDIR / "scripts"))
 
 from lib.slack_notify import get_bot_token, load_env, send_long_text, send_message  # noqa: E402
@@ -283,7 +283,7 @@ def main() -> int:
     if not get_bot_token():
         print(
             "⚠️ SLACK_BOT_TOKEN 없음 — digest 파일만 저장됨\n"
-            "  → ~/hermes-content-studio/scripts/setup-slack.sh 실행 후 재시도",
+            "  → ~/Hermes_Harness_dailybrief/scripts/setup-slack.sh 실행 후 재시도",
             file=sys.stderr,
         )
         print(out_path)

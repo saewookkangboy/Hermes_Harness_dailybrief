@@ -48,7 +48,7 @@ if [[ -z "$TOOLSETS" ]]; then
   esac
 fi
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SCRIPTS="$WORKDIR/scripts"
 # shellcheck source=lib/hermes-codex.sh
 source "$SCRIPTS/lib/hermes-codex.sh"

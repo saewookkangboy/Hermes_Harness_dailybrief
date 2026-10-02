@@ -2,7 +2,7 @@
 # Competitive Watch cron — Brief Graph 감시 digest (결정적)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 # shellcheck source=lib/cron_bootstrap.sh
 source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 

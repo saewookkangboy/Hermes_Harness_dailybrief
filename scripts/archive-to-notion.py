@@ -14,7 +14,7 @@ from datetime import datetime
 from fnmatch import fnmatch
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKDIR / "scripts"))
 
 from lib.markdown_notion import file_content_hash, is_text_file, md_to_notion  # noqa: E402
@@ -356,13 +356,13 @@ def archive_date(
             msg = "⚠️ Notion 동기화: 신규/변경 콘텐츠 없음\n"
             if hygiene_report and hygiene_report.get("duplicates"):
                 msg += f"중복 정리: {hygiene_report['duplicates']}건 이동\n"
-            msg += f"로컬: ~/hermes-content-studio/content/*/{stamp}_*"
+            msg += f"로컬: ~/Hermes_Harness_dailybrief/content/*/{stamp}_*"
             push_notify(telegram_chat, slack_channel, msg)
         elif show_progress:
             msg = "⚠️ Notion 동기화: 신규/변경 콘텐츠 없음\n"
             if hygiene_report and hygiene_report.get("duplicates"):
                 msg += f"중복 정리: {hygiene_report['duplicates']}건 이동\n"
-            msg += f"로컬: ~/hermes-content-studio/content/*/{stamp}_*"
+            msg += f"로컬: ~/Hermes_Harness_dailybrief/content/*/{stamp}_*"
             push_notify(telegram_chat, slack_channel, msg)
         return {
             "day_url": state.get("days", {}).get(stamp, {}).get("url", "")

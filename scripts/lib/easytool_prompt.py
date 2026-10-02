@@ -1,13 +1,24 @@
 """EasyTool-style compact commander prompts — 토큰 절약."""
 from __future__ import annotations
 
+import shlex
 from pathlib import Path
 from typing import Any
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 EASYTOOL_PATH = WORKDIR / "config" / "commander-easytool.yaml"
 TELEGRAM_ROUTING_PATH = WORKDIR / "config" / "telegram-routing.yaml"
-SCRIPTS_BASE = "~/hermes-content-studio/scripts"
+
+
+def _display_path(path: Path) -> str:
+    try:
+        return "~/" + shlex.quote(path.relative_to(Path.home()).as_posix())
+    except ValueError:
+        return shlex.quote(str(path))
+
+
+# 워크스페이스 경로는 Base 규칙 한 줄에만 — route마다 반복하면 저장소 위치에 따라 max_prompt_chars 초과
+BASE_RULE = f"Base: cd {_display_path(WORKDIR)} && scripts/<cmd>.sh"
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -37,12 +48,13 @@ def build_compact_channel_prompt(easytool_path: Path | None = None) -> str:
         note = route.get("note", "")
         extra = f" kw:{kw}" if kw else ""
         note_s = f" ({note})" if note else ""
-        lines.append(f"- {name}: {SCRIPTS_BASE}/{cmd} | {slash}{extra}{note_s}")
+        lines.append(f"- {name}: scripts/{cmd} | {slash}{extra}{note_s}")
 
     lines.append("")
     lines.append("Rules:")
     for rule in cfg.get("rules") or []:
         lines.append(f"- {rule}")
+    lines.append(f"- {BASE_RULE}")
 
     hints = cfg.get("quick_command_hints") or {}
     if hints:

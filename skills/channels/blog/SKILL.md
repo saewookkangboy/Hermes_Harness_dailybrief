@@ -52,14 +52,14 @@ Brief Top 인사이트 → **AI Agent·에이전틱 AI** 관점의 Velog 일일 
 ## 실행
 
 ```bash
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 # blog · Threads 검증
-~/hermes-content-studio/scripts/validate-output.sh blog-article content/packages/YYYY-MM-DD_blog-article.md
-~/hermes-content-studio/scripts/validate-output.sh threads-package content/packages/YYYY-MM-DD_threads.md
-~/hermes-content-studio/scripts/validate-output.sh blog content/blog/YYYY-MM-DD_blog_*.html
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh blog-article content/packages/YYYY-MM-DD_blog-article.md
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh threads-package content/packages/YYYY-MM-DD_threads.md
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh blog content/blog/YYYY-MM-DD_blog_*.html
 # eval: unit + live (packages 필요)
-~/hermes-content-studio/scripts/blog-daily-report-eval.sh --unit
-~/hermes-content-studio/scripts/blog-daily-report-eval.sh --live YYYY-MM-DD
+~/Hermes_Harness_dailybrief/scripts/blog-daily-report-eval.sh --unit
+~/Hermes_Harness_dailybrief/scripts/blog-daily-report-eval.sh --live YYYY-MM-DD
 ```
 
 ## 품질 (`config/content-quality.yaml#blog`)

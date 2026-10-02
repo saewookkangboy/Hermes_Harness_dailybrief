@@ -11,7 +11,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 START_SERVICES=0
 SKIP_HEALTH=0
@@ -23,12 +23,12 @@ for arg in "$@"; do
   esac
 done
 
-echo "=== Hermes Content Studio init.sh (Harness v1.2.0) ==="
+echo "=== Hermes Content Studio init.sh (Harness v1.3.0) ==="
 echo "워크디렉: $WORKDIR"
 echo ""
 
 # ── 1. 하네스 디렉토리 ─────────────────────────────────────
-mkdir -p "$WORKDIR/.harness/traces"
+mkdir -p "$WORKDIR/.harness/traces" "$HOME/.hermes/logs"
 mkdir -p "$WORKDIR/content"/{research,blog,instagram,linkedin,newsletter,lectures,drafts/cursor-handoff}
 
 if [[ ! -f "$WORKDIR/.harness/feature_list.json" ]]; then
@@ -56,7 +56,9 @@ else
   if ! pgrep -x ollama >/dev/null 2>&1; then
     echo "⚠️  Ollama 미실행 — Hermes polish 시 필요" >&2
   fi
-  if ! pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
+  if ! command -v hermes >/dev/null 2>&1; then
+    echo "⚠️  Hermes Agent 미설치 — 결정적 파이프라인만 사용 가능 (Telegram/Slack 커맨더 불가)" >&2
+  elif ! pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
     echo "⚠️  Gateway 미실행 — Telegram 요청 불가" >&2
   fi
 fi

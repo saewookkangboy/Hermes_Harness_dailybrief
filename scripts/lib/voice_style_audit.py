@@ -8,7 +8,7 @@ from pathlib import Path
 from lib.content_quality_config import ai_tell_patterns, change_rate_max
 from lib.humanize_korean import humanize
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 FIXTURES_DIR = WORKDIR / "tests" / "fixtures" / "voice"
 
 _MID_ELLIPSIS = re.compile(r"[^\s.!?。…」』\"']\u2026")

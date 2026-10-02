@@ -20,7 +20,7 @@ from lib.content_quality import (
 )
 from lib.humanize_korean import humanize
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 CONFIG_PATH = WORKDIR / "config" / "content-quality.yaml"
 LEGACY_CONFIG_PATH = WORKDIR / "config" / "longform-content.yaml"
 

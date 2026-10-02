@@ -8,7 +8,7 @@ from lib.proactive_triggers import run_proactive_checks
 from lib.notion_oauth_watch import evaluate_notion_oauth_watch
 from lib.watch_telegram_singleton import root_count
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 def _pgrep(pattern: str) -> bool:

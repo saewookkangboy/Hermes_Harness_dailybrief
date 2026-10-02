@@ -9,7 +9,7 @@ from lib.longform_context import complete_text, load_longform_config
 from lib.newsletter_cta import build_cta
 from lib.newsletter_select import SelectedIssue, display_title_for
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 def _word_count(text: str) -> int:

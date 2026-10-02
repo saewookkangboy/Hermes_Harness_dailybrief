@@ -20,7 +20,7 @@ from lib.newsletter_subject import score_subject_line
 from lib.voice_style_audit import voice_trait_flags
 from lib.naturalness_audit import score_naturalness
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 LOGS_DIR = WORKDIR / "content" / "logs"
 HANDOFF_DIR = WORKDIR / ".harness" / "handoffs"
 CONFIG_PATH = WORKDIR / "config" / "content-quality.yaml"

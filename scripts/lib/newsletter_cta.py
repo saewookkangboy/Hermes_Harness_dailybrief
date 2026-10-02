@@ -8,7 +8,7 @@ from pathlib import Path
 from lib.content_quality import Insight
 from lib.newsletter_select import display_title_for
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 PLACEHOLDER_RE = re.compile(
     r"통합 컨텍스트|전문을 확인|블로그·Notion|href=['\"]?#['\"]?|^#$",
     re.I,

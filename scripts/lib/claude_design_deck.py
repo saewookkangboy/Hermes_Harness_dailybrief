@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 def build_claude_design_prompt(
@@ -26,7 +26,7 @@ def build_claude_design_prompt(
 - **주제:** {topic}
 - **날짜:** {stamp}
 - **디자인:** getdesign.md Claude 프리셋 ({preset_name}) — terracotta #D97757, editorial 톤
-- **참조:** ~/hermes-content-studio/Getdesign.md, config/design-catalog.yaml
+- **참조:** ~/Hermes_Harness_dailybrief/Getdesign.md, config/design-catalog.yaml
 
 ## 입력 (반드시 읽기)
 1. 강의 기획: `{outline_path}`

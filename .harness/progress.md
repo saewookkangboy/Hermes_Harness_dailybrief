@@ -1,5 +1,32 @@
 # Harness Progress — v1.3.0 Graph / Token / Playbook
 
+## Host migration — Apple Silicon M2 · 워크스페이스 이전 (2026-10-02)
+
+호스트: MacBook Air M2 (arm64, 16GB, macOS 27) · 워크스페이스 `~/hermes-content-studio` → `~/Hermes_Harness_dailybrief`
+
+- **루트 해석 포터블화:** 셸 `${HERMES_WORKDIR:-<BASH_SOURCE 기준 루트>}` · Python `Path(__file__).resolve().parents[N]` · 셸 내 heredoc Python은 `HERMES_WORKDIR`/`$WORKDIR` 사용
+- **cron:** `setup-commander-cron.sh`가 `~/.hermes/scripts` 복사본 헤더에 `HERMES_WORKDIR` 고정 · `cron_bootstrap.sh` 폴백 갱신
+- **Hermes Agent 미설치 대응:** health-check/init/start-services/update-studio — Hermes 의존 항목 WARN 강등 · Python `python3`(pyenv 3.11) 폴백
+- **의존성:** `requirements.txt` + `ddgs` · `python-dotenv` · `~/.hermes/logs` 자동 생성
+- **문서/설정/스킬:** 경로 → `~/Hermes_Harness_dailybrief` · Intel i5 → Apple M2 프로필 (`config/studio.yaml` host)
+- **EasyTool:** route는 상대 `scripts/<cmd>` · 워크스페이스 경로는 `Base: cd <root> && scripts/<cmd>.sh` 1줄 (위치 무관 815–829자 ≤ 900)
+- health-check: gemma4 `grep -q` + pipefail SIGPIPE 오탐 수정
+
+**검증:** init 68/0 · run-pipeline 16s (validate 전 채널 PASS · publishable=true) · harness-eval quick 37/3
+
+### 강력 재점검 (2026-10-02)
+
+- **수정:** health-check `eval` 경로 인용 (공백 경로) · easytool `~` 표기 `relative_to` · handoff `cd` `shlex.quote` · easytool 길이 위치 의존 제거
+- **정적:** heredoc 내 `BASH_SOURCE` 0 · `parents[N]` 80/80 · lib `WORKDIR` 61 · JSON/YAML 37 파싱 · shellcheck 신규 경고 0 · 외부 symlink/LaunchAgent 구경로 0
+- **동적:** 재배치 복사본(`/tmp/hh relocated copy`, 공백) 파이프라인 rc=0 18s · 산출물 21 · 구경로 누출 0 · cron fake-HOME 배포 10본 HERMES_WORKDIR 고정 OK · pytest 44 passed
+- **격리 비교 (fake HOME, 토큰 unset, 27 eval):** HEAD 대비 회귀 0 — harness-eval quick 37/3 동일 · Gate D 재실행 PASS×2 (1회 e2e_gate_c 실패는 동시 세션 경합, 재현 안 됨)
+- **잔여 FAIL (환경, HEAD 동일):** humanize-llm/m5-notion/playmcp-routing wiring
+- **Hermes v0.21 통합 (실 HOME 재확인):** 스튜디오 venv `~/.hermes/hermes-agent/venv` (3.14 · Hermes editable + requirements) 존재 → `HERMES_PY` 36개 스크립트 그대로 동작 (별도 resolver 불필요) · Notion MCP OAuth ✓ (`hermes mcp test notion` 툴 목록 OK) · quick_commands telegram 38/slack 38/playmcp 17 누락·불일치 0
+- **실 HOME 결과:** health-check 72/1 (❌ Hermes Gateway 미설치) · harness-eval quick **39/1** · m5-notion 5/0 · playmcp-routing 2/0
+- **잔여:** humanize-llm `notion_mcp_skip_log` — Notion 외 MCP(PlayMCP) 미등록 시 skip 로그 없음 (환경) · Gateway 미설치 + Telegram/Slack 토큰 없음 → Telegram channel_prompt 미기록
+
+---
+
 ## Beautify docs refresh (2026-08-12)
 
 Skill: [beautify-github-readme](https://github.com/oil-oil/beautify-github-readme) · README mode + Pure SVG

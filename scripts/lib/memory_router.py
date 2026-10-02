@@ -11,7 +11,7 @@ from lib.brief_graph import load_brief_graph
 from lib.common import studio_today, truncate
 from lib.wiki_router import route_wiki
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 PACKAGES = WORKDIR / "content" / "packages"
 PERSONAL = WORKDIR / "content" / "personal"
 STATE_PATH = WORKDIR / "content" / ".notion-archive-state.json"

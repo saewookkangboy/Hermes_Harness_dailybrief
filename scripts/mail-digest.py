@@ -13,7 +13,7 @@ from email import message_from_bytes
 from email.header import decode_header
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = WORKDIR / "content" / "personal"
 
 

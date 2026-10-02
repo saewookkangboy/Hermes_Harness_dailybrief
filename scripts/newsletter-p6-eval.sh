@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 STAMP="${1:-$(date +%Y-%m-%d)}"
 if [[ ! -f "$WORKDIR/content/research/${STAMP}_brief.md" ]]; then
   LATEST=$(ls -1 "$WORKDIR/content/research/"*_brief.md 2>/dev/null | sed 's/.*\///;s/_brief.md//' | sort -r | head -1)
@@ -32,7 +32,7 @@ python3 <<PY && record PASS "notion_paste_canonical" || record FAIL "notion_tier
 import json
 from pathlib import Path
 stamp = "${STAMP}"
-state = json.loads((Path.home() / "hermes-content-studio/content/.notion-archive-state.json").read_text())
+state = json.loads((Path("${WORKDIR}") / "content/.notion-archive-state.json").read_text())
 meta = state.get("pages", {}).get(f"{stamp}/newsletter_paste")
 assert meta and meta.get("tier") == "canonical", meta
 assert meta.get("url"), meta

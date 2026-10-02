@@ -21,7 +21,7 @@ from lib.harness import timed_stage
 from lib.newsletter_quality import build_newsletter_context_md, build_newsletter_md
 from lib.wiki_concepts import inject_wiki_blurbs
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 PACKAGES = WORKDIR / "content" / "packages"
 HANDOFF_DIR = WORKDIR / ".harness" / "handoffs"
 

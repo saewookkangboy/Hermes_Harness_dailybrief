@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 REPORT="$WORKDIR/content/logs/$(studio_today 2>/dev/null || date +%Y-%m-%d)_commander-integration-eval.md"
 mkdir -p "$WORKDIR/content/logs"
 PASS=0; FAIL=0

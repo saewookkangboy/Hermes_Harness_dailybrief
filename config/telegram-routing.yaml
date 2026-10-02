@@ -8,7 +8,7 @@ telegram_routing:
 
     ## A) Weekly pipeline (zero LLM, ~15s) — NO lecture
     Keywords: 파이프라인, pipeline, 주간, weekly, 브리프, 콘텐츠
-    Command: ~/hermes-content-studio/scripts/telegram-pipeline.sh auto "<message>"
+    Command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh auto "<message>"
     Slash: /pipeline (M1+M2+M2b+Notion) /research /content /newsletter /sync /studio /notion-status
     Research: /research <kw> [--replace] [--approve] · /research-pending · /research-approve
     (bare 승인 = publish; 리서치 승인 = research-approve)
@@ -17,12 +17,12 @@ telegram_routing:
 
     ## B) Lecture (separate — NOT in /pipeline)
     Keywords: 강의, lecture, 슬라이드, outline, HTML 덱
-    Command: ~/hermes-content-studio/scripts/telegram-lecture.sh qc "<message>"
+    Command: ~/Hermes_Harness_dailybrief/scripts/telegram-lecture.sh qc "<message>"
     Slash: /lecture-studio <requirements>
 
     ## C) Personal (Codex, background)
     Keywords: 이메일, mail, automate, codex, 맞춤, custom
-    Command: ~/hermes-content-studio/scripts/telegram-custom.sh auto "<message>"
+    Command: ~/Hermes_Harness_dailybrief/scripts/telegram-custom.sh auto "<message>"
     Slash: /mail /personal /automate
 
     Rules: ONE terminal command. Reply with stdout only.
@@ -30,109 +30,112 @@ telegram_routing:
 quick_commands:
   pipeline:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc pipeline
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc pipeline
   research:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc research
   research-pending:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research-pending
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc research-pending
   research-approve:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc research-approve
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc research-approve
   content:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc content
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc content
   newsletter:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc newsletter
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc newsletter
   sync:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc sync
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc sync
   studio:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc status
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc status
   notion-status:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc notion-status
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc notion-status
   notion-fix:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc notion-fix
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc notion-fix
   mail:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-custom.sh qc mail
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-custom.sh qc mail
   personal:
     type: alias
     target: /personal-assistant
   automate:
     type: alias
     target: /personal-assistant
+  cursor:
+    type: exec
+    command: ~/Hermes_Harness_dailybrief/scripts/cursor-handoff.sh qc
   lecture:
     type: alias
     target: /lecture-studio
   morning:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc morning
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc morning
   catch-up:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc catch-up
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc catch-up
   catchup:
     type: alias
     target: /catch-up
   publish:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc publish
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc publish
   deep:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc deep
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc deep
   ask:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc ask
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc ask
   linkedin:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc linkedin
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc linkedin
   traces:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc traces
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc traces
   handoff:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc handoff
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc handoff
   graph:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc graph
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc graph
   commands:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc commands
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc commands
   approve:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc approve
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc approve
   pending:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc pending
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc pending
   coach:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc coach
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc coach
   agents-eval:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc agents-eval
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc agents-eval
   agents:
     type: alias
     target: /agents-eval
   audit:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc audit
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc audit
   instagram:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc instagram
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc instagram
   wiki:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc wiki
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc wiki
   squad:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc squad
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc squad
   watch:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc watch
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc watch
   supervised:
     type: exec
-    command: ~/hermes-content-studio/scripts/telegram-pipeline.sh qc supervised
+    command: ~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh qc supervised

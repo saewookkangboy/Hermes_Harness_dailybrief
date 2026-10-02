@@ -17,8 +17,8 @@
 | [SYSTEM-LOGIC.md](./SYSTEM-LOGIC.md) | **v2.1** | 2026-07-20 ~ | Graph · Token · Playbook · Newsletter Gate A–D · 품질 기준선 2026-08-12 |
 
 ```bash
-~/hermes-content-studio/scripts/generate-architecture-md.py
-~/hermes-content-studio/scripts/export-architecture-notion.sh
+~/Hermes_Harness_dailybrief/scripts/generate-architecture-md.py
+~/Hermes_Harness_dailybrief/scripts/export-architecture-notion.sh
 ```
 
 산출: `content/logs/{date}_studio-resources-spec.md` · `{date}_studio-dependency-diagrams.md` · `{date}_cursor-agent-resources.md`

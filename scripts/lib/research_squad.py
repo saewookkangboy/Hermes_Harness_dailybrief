@@ -16,7 +16,7 @@ from lib.memory_router import route_query
 from lib.personal_bridge import format_inbox_summary, queue_topic_for_brief, sync_inbox_from_personal
 from lib.wiki_router import route_wiki
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 RAW_DIR = WORKDIR / "content" / "research" / "raw"
 HANDOFF_DIR = WORKDIR / ".harness" / "handoffs"
 

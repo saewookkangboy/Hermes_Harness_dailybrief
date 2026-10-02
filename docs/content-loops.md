@@ -15,8 +15,8 @@
 M1→M5 **결정적 assemble**은 유지하고, LLM 루프는 triage·코칭·개인화 경로에만 쓴다.
 
 ```bash
-~/hermes-content-studio/scripts/setup-commander-cron.sh
-~/hermes-content-studio/scripts/cron-daily-content-triage.sh
+~/Hermes_Harness_dailybrief/scripts/setup-commander-cron.sh
+~/Hermes_Harness_dailybrief/scripts/cron-daily-content-triage.sh
 ```
 
 <p align="center">
@@ -67,14 +67,14 @@ M1→M5 **결정적 assemble**은 유지하고, LLM 루프는 triage·코칭·�
 ### 등록
 
 ```bash
-~/hermes-content-studio/scripts/setup-commander-cron.sh
+~/Hermes_Harness_dailybrief/scripts/setup-commander-cron.sh
 # → cron-daily-triage  30 9 * * 1-5
 ```
 
 ### 수동 실행
 
 ```bash
-~/hermes-content-studio/scripts/cron-daily-content-triage.sh
+~/Hermes_Harness_dailybrief/scripts/cron-daily-content-triage.sh
 ```
 
 ---
@@ -126,7 +126,7 @@ M1→M2→(M2b)→Audit→M5를 **결정적 감독**으로 평일 자동 실행.
 ### 등록
 
 ```bash
-~/hermes-content-studio/scripts/setup-commander-cron.sh
+~/Hermes_Harness_dailybrief/scripts/setup-commander-cron.sh
 # → cron-supervised-pipeline  0 10 * * 1-5
 ```
 
@@ -134,13 +134,13 @@ M1→M2→(M2b)→Audit→M5를 **결정적 감독**으로 평일 자동 실행.
 
 ```bash
 # dry-run (설정만 확인)
-HERMES_CRON_SUPERVISED_DRY_RUN=1 ~/hermes-content-studio/scripts/cron-supervised-pipeline.sh
+HERMES_CRON_SUPERVISED_DRY_RUN=1 ~/Hermes_Harness_dailybrief/scripts/cron-supervised-pipeline.sh
 
 # M2b 제외 (cron 기본과 동일)
-~/hermes-content-studio/scripts/cron-supervised-pipeline.sh
+~/Hermes_Harness_dailybrief/scripts/cron-supervised-pipeline.sh
 
 # M2b 포함
-HERMES_CRON_SKIP_NEWSLETTER=0 ~/hermes-content-studio/scripts/cron-supervised-pipeline.sh
+HERMES_CRON_SKIP_NEWSLETTER=0 ~/Hermes_Harness_dailybrief/scripts/cron-supervised-pipeline.sh
 ```
 
 ### 산출
@@ -233,13 +233,13 @@ LLM 경로 cap — SoT: `config/content-quality.yaml` `budget` 섹션
 
 ```bash
 # 자연스러움 eval
-~/hermes-content-studio/scripts/naturalness-eval.sh
+~/Hermes_Harness_dailybrief/scripts/naturalness-eval.sh
 # Loop budget kill · cap E2E
-~/hermes-content-studio/scripts/loop-budget-eval.sh
+~/Hermes_Harness_dailybrief/scripts/loop-budget-eval.sh
 # 오늘 ledger vs cap (read-only)
-~/hermes-content-studio/scripts/loop-budget-status.sh
+~/Hermes_Harness_dailybrief/scripts/loop-budget-status.sh
 # Studio 아키텍처 → Notion
-~/hermes-content-studio/scripts/export-architecture-notion.sh
+~/Hermes_Harness_dailybrief/scripts/export-architecture-notion.sh
 ```
 
 ---
@@ -259,13 +259,13 @@ LLM 경로 cap — SoT: `config/content-quality.yaml` `budget` 섹션
 
 ```bash
 # Hermes 품질 게이트 (필수)
-~/hermes-content-studio/scripts/agents-eval.sh
-~/hermes-content-studio/scripts/validate-output.sh research content/research/YYYY-MM-DD_brief.md
-~/hermes-content-studio/scripts/voice-style-eval.sh
-~/hermes-content-studio/scripts/content-loop-eval.sh
+~/Hermes_Harness_dailybrief/scripts/agents-eval.sh
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh research content/research/YYYY-MM-DD_brief.md
+~/Hermes_Harness_dailybrief/scripts/voice-style-eval.sh
+~/Hermes_Harness_dailybrief/scripts/content-loop-eval.sh
 
 # Loop readiness (콘텐츠 공장 rubric — 권장 ≥70)
-~/hermes-content-studio/scripts/content-loop-eval.sh
+~/Hermes_Harness_dailybrief/scripts/content-loop-eval.sh
 ```
 
 ---

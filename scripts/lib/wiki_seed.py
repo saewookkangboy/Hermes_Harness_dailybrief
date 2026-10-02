@@ -8,7 +8,7 @@ from pathlib import Path
 from lib.brief_graph import load_brief_graph
 from lib.common import compress_sentences, studio_today, truncate
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 WIKI_ROOT = WORKDIR / "content" / "wiki"
 CONCEPTS_DIR = WIKI_ROOT / "concepts"
 INDEX_PATH = WIKI_ROOT / "index.md"

@@ -16,7 +16,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 OUTPUT_DIR = WORKDIR / "content" / "research"
 HARNESS_CONFIG = WORKDIR / "config" / "harness.yaml"
 BRIEF_CONFIG = WORKDIR / "config" / "research-brief.yaml"
@@ -120,9 +120,7 @@ def _import_ddgs():
         from ddgs import DDGS  # type: ignore
         return DDGS
     except ImportError:
-        venv_py = Path.home() / ".hermes" / "hermes-agent" / "venv" / "bin" / "python"
-        if venv_py.exists():
-            print(f"ddgs not found — install: {venv_py} -m pip install ddgs", file=sys.stderr)
+        print(f"ddgs not found — install: {sys.executable} -m pip install ddgs", file=sys.stderr)
         raise
 
 

@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 LOCK="$WORKDIR/.harness/watch-telegram.lock"
 PID_FILE="/tmp/hermes-watch-telegram.pid"
 # shellcheck source=lib/watch_telegram_singleton.sh
@@ -27,4 +27,4 @@ done < <(watch_telegram_root_pids)
 
 rm -f "$LOCK" "$PID_FILE" 2>/dev/null || true
 echo "watch-telegram 정리 완료 — 종료 ${count}건"
-echo "재시작: ~/hermes-content-studio/scripts/start-services.sh"
+echo "재시작: $DIR/start-services.sh"

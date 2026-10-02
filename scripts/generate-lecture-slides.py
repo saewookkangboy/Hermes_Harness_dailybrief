@@ -9,7 +9,7 @@ import sys
 from datetime import date
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(WORKDIR / "scripts"))
 
 from lib.claude_design_deck import paths_to_json  # noqa: E402

@@ -7,7 +7,7 @@ from pathlib import Path
 
 from lib.common import truncate
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 WIKI_ROOT = WORKDIR / "content" / "wiki"
 INDEX_PATH = WIKI_ROOT / "index.md"
 CONCEPTS_DIR = WIKI_ROOT / "concepts"

@@ -11,7 +11,7 @@ from typing import Any
 from lib.common import compress_sentences, finish_at_sentence, read_template, slugify, truncate
 from lib.humanize_korean import humanize, humanize_linkedin_post
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 @dataclass

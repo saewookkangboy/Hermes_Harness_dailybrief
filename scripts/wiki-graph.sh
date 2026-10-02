@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 누적 개념 그래프 빌드 래퍼. 결정적 (LLM 0).
 set -euo pipefail
-STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$HOME/hermes-content-studio}}"
+STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}}"
 cd "$STUDIO"
 
 FORCE=0

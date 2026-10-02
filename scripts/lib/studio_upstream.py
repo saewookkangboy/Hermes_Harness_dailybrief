@@ -9,7 +9,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-CONTENT_STUDIO = Path.home() / "hermes-content-studio"
+CONTENT_STUDIO = Path(__file__).resolve().parents[2]
 RESEARCH_DIR = CONTENT_STUDIO / "content" / "research"
 BLOG_DIR = CONTENT_STUDIO / "content" / "blog"
 WIKI_CONCEPTS_DIR = CONTENT_STUDIO / "content" / "wiki" / "concepts"

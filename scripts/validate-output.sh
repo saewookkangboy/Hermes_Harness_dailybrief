@@ -2,7 +2,8 @@
 # Hermes Content Studio — 산출물 품질 검증 (품질 게이트 강화)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export HERMES_WORKDIR="$WORKDIR"
 TYPE="${1:?Usage: validate-output.sh research|blog-article|blog|threads-package|instagram|linkedin|newsletter|newsletter-html|newsletter-paste|newsletter-subject-scores|newsletter-linkedin|newsletter-title-image|lecture FILE}"
 FILE="${2:?Missing file path}"
 
@@ -241,9 +242,10 @@ if chars > 12000:
     raise SystemExit(f"본문 너무 김(완독 저하): {chars}")
 PY
     python3 - "$FILE" <<'PY' || fail "뉴스레터 완성도·잘림 게이트"
+import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio/scripts"))
+sys.path.insert(0, str(Path(os.environ["HERMES_WORKDIR"]) / "scripts"))
 from lib.newsletter_complete import audit_newsletter_md
 text = Path(sys.argv[1]).read_text(encoding="utf-8")
 issues = audit_newsletter_md(text)
@@ -251,9 +253,10 @@ if issues:
     raise SystemExit("; ".join(issues[:5]))
 PY
     python3 - "$FILE" <<'PY' || fail "뉴스레터 신선도·보일러플레이트 게이트"
+import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio/scripts"))
+sys.path.insert(0, str(Path(os.environ["HERMES_WORKDIR"]) / "scripts"))
 from lib.newsletter_gates import assert_freshness, assert_cta_https, assert_title_body_consistency
 p = Path(sys.argv[1])
 text = p.read_text(encoding="utf-8")
@@ -340,9 +343,10 @@ winner = data.get("winner") or {}
 cands = data.get("candidates") or []
 if not winner or not cands:
     raise SystemExit("winner/candidates 없음")
+import os
 import yaml
 from pathlib import Path as P
-cfg_path = P.home() / "hermes-content-studio" / "config" / "newsletter.yaml"
+cfg_path = P(os.environ["HERMES_WORKDIR"]) / "config" / "newsletter.yaml"
 min_score = 40
 if cfg_path.exists():
     cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}

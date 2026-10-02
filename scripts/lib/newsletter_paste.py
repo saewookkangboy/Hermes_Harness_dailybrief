@@ -16,7 +16,7 @@ from lib.content_quality import parse_brief
 from lib.newsletter_select import select_issue_insights
 from lib.newsletter_subject import format_subject_ab_block
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 def _paste_body_md(full_md: str) -> str:

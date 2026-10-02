@@ -24,6 +24,7 @@ for arg in "$@"; do
 done
 DATE="${DATE:-$(studio_today)}"
 
+mkdir -p "$HOME/.hermes/logs"
 echo "[Notion Status] 점검: $DATE" | tee -a ~/.hermes/logs/content-studio.log
 
 if [[ ${#ARGS[@]} -gt 0 ]]; then

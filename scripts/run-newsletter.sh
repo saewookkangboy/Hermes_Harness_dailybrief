@@ -7,7 +7,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 STAMP="${1:-$(date +%Y-%m-%d)}"
 VALIDATE=0
 [[ "${2:-}" == "--validate" ]] && VALIDATE=1

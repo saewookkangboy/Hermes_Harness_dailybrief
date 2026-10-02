@@ -10,11 +10,12 @@
 #   ./watch-telegram.sh --once   # 최근 Telegram 이벤트만 출력
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SCRIPTS="$WORKDIR/scripts"
 AGENT_LOG="${HERMES_AGENT_LOG:-$HOME/.hermes/logs/agent.log}"
 GATEWAY_LOG="${HERMES_GATEWAY_LOG:-$HOME/.hermes/logs/gateway.log}"
 STUDIO_LOG="${HERMES_STUDIO_LOG:-$HOME/.hermes/logs/content-studio.log}"
+mkdir -p "$(dirname "$STUDIO_LOG")"
 STATE_DIR="${HERMES_WATCH_STATE:-$WORKDIR/.harness/watch-telegram-state/$$}"
 INSTANCE_LOCK="${HERMES_WATCH_LOCK:-$WORKDIR/.harness/watch-telegram.lock}"
 SYNC_DEBOUNCE_SEC="${NOTION_SYNC_DEBOUNCE_SEC:-0}"

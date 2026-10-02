@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 STAMP="${1:-$(date +%Y-%m-%d)}"
 if [[ ! -f "$WORKDIR/content/research/${STAMP}_brief.md" ]]; then
   LATEST=$(ls -1 "$WORKDIR/content/research/"*_brief.md 2>/dev/null | sed 's/.*\///;s/_brief.md//' | sort -r | head -1)
@@ -23,7 +23,7 @@ python3 <<PY && record PASS "notion_newsletter_synced" || record FAIL "notion_sy
 import json
 from pathlib import Path
 stamp = "${STAMP}"
-state = json.loads((Path.home() / "hermes-content-studio/content/.notion-archive-state.json").read_text())
+state = json.loads((Path("${WORKDIR}") / "content/.notion-archive-state.json").read_text())
 pages = state.get("pages") or {}
 for cat in ("newsletter", "newsletter_html"):
     meta = pages.get(f"{stamp}/{cat}")

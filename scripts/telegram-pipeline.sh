@@ -12,8 +12,10 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
+export HERMES_WORKDIR="$WORKDIR"
 LOG="$HOME/.hermes/logs/content-studio.log"
+mkdir -p "$(dirname "$LOG")"
 # shellcheck source=lib/studio-date.sh
 source "$DIR/lib/studio-date.sh"
 # shellcheck source=lib/telegram_sync_guard.sh
@@ -213,9 +215,10 @@ run_research_keyword() {
 
 run_research_pending() {
   python3 - <<'PY'
+import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+sys.path.insert(0, str(Path(os.environ["HERMES_WORKDIR"]) / "scripts"))
 from lib.research_staging import format_pending_status
 print(format_pending_status())
 PY
@@ -228,7 +231,7 @@ run_research_approve() {
 import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path.home() / "hermes-content-studio" / "scripts"))
+sys.path.insert(0, str(Path(os.environ["HERMES_WORKDIR"]) / "scripts"))
 from lib.research_staging import approve
 target = (os.environ.get("HERMES_RESEARCH_APPROVE_TARGET") or "").strip()
 if target == "all":

@@ -19,7 +19,7 @@
 ## 세션 시작 (필수)
 
 ```bash
-cd ~/hermes-content-studio
+cd ~/Hermes_Harness_dailybrief
 ./scripts/init.sh
 cat .harness/progress.md
 ```

@@ -13,7 +13,7 @@ from lib.newsletter_issue_ledger import recent_excluding
 from lib.newsletter_quality import load_newsletter_config
 from lib.newsletter_select import is_unsafe_insight
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 def banned_boilerplate(text: str, cfg: dict | None = None) -> list[str]:

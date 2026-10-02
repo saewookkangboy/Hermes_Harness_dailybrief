@@ -19,7 +19,7 @@ from lib.voice_style_audit import run_voice_audit_stamp
 from lib.content_quality_config import supervised_stage_blocking
 from lib.loop_budget import check_loop_budget
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 SCRIPTS = WORKDIR / "scripts"
 HANDOFF_DIR = WORKDIR / ".harness" / "handoffs"
 LOGS_DIR = WORKDIR / "content" / "logs"

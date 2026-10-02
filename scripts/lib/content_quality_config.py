@@ -8,7 +8,7 @@ from typing import Any
 
 import yaml
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 CONFIG_PATH = WORKDIR / "config" / "content-quality.yaml"
 LEGACY_VOICE = WORKDIR / "config" / "voice-style.yaml"
 LEGACY_LONGFORM = WORKDIR / "config" / "longform-content.yaml"

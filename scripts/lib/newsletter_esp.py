@@ -11,7 +11,7 @@ from typing import Any
 
 from lib.newsletter_quality import load_newsletter_config, _preheader  # noqa: PLC2701
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 LOG_DIR = WORKDIR / "content" / "logs"
 
 

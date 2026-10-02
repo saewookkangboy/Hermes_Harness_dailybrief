@@ -20,7 +20,7 @@ from lib.notion_client import (  # noqa: E402
     update_page_content,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 LOGS = WORKDIR / "content" / "logs"
 STATE_PATH = WORKDIR / "content" / ".notion-architecture-state.json"
 

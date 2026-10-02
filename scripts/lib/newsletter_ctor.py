@@ -10,7 +10,7 @@ from typing import Any
 from lib.common import read_template, truncate
 from lib.newsletter_quality import load_newsletter_config
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 METRICS_PATH = WORKDIR / ".harness" / "newsletter-ctor-metrics.json"
 TEMPLATE_PATH = WORKDIR / "templates" / "dashboard" / "newsletter-ctor.html"
 REPORT_DIR = WORKDIR / "content" / "logs"

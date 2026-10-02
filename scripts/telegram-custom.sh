@@ -11,9 +11,10 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 DATE="${DATE:-$(date +%Y-%m-%d)}"
 LOG="$HOME/.hermes/logs/content-studio.log"
+mkdir -p "$(dirname "$LOG")"
 JOB_DIR="$WORKDIR/.harness/jobs"
 OUT_DIR="$WORKDIR/content/personal"
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"

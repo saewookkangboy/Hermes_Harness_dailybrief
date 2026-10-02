@@ -7,7 +7,7 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$DIR/lib/slack_home.sh"
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 ENV_FILE="$HOME/.hermes/.env"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PASS=0
 FAIL=0
 WARN=0

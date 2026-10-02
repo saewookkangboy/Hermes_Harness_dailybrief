@@ -1,5 +1,5 @@
 # Hermes Content Studio — 설정
-# Intel Mac (MacBook Pro) 자체호스팅
+# Apple Silicon Mac (MacBook Air M2) 자체호스팅
 
 studio:
   name: Hermes Content Studio
@@ -7,14 +7,18 @@ studio:
   orchestration: config/content-orchestration.yaml
   harness: config/harness.yaml
   harness_doc: HARNESS.md
-  workspace: ~/hermes-content-studio
-  design_system: ~/hermes-content-studio/Getdesign.md
+  workspace: ~/Hermes_Harness_dailybrief
+  design_system: ~/Hermes_Harness_dailybrief/Getdesign.md
 
 host:
   platform: darwin
-  arch: x86_64
-  model: Intel Core i5-8259U
-  notes: "로컬 Ollama gemma4 8B — 요약·초안용. 결정적 파이프라인(~30s) + Hermes polish(선택)"
+  arch: arm64
+  model: MacBook Air (Mac14,2) · Apple M2
+  memory_gb: 16
+  os: macOS 27
+  homebrew_prefix: /opt/homebrew
+  python: ~/.pyenv/shims/python3  # 3.11 — Hermes venv 없을 때 폴백
+  notes: "로컬 Ollama gemma4 (Metal 가속) — 요약·초안용. 결정적 파이프라인(~20s) + Hermes polish(선택)"
 
 channels:
   blog:
@@ -98,7 +102,7 @@ integrations:
     provider: openai-codex
     model: gpt-5.5  # ChatGPT Codex OAuth (gpt-5.3-codex retired 2026-06)
     auth: oauth  # ChatGPT/Codex 구독 — hermes auth / setup-codex.sh
-    cli: ~/.hermes/node/bin/codex
+    cli: codex  # PATH (nvm) — 없으면 ~/.hermes/node/bin/codex
     setup_script: scripts/setup-codex.sh
     fallback: true  # ~/.hermes/config.yaml fallback_providers
     quality_paths:

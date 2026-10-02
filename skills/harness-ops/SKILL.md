@@ -25,18 +25,18 @@ metadata:
 ## 세션 시작 (Mandatory)
 
 ```bash
-~/hermes-content-studio/scripts/init.sh
-cat ~/hermes-content-studio/.harness/progress.md
+~/Hermes_Harness_dailybrief/scripts/init.sh
+cat ~/Hermes_Harness_dailybrief/.harness/progress.md
 ```
 
 ## 성능 Eval
 
 ```bash
 # 구조 검증 (빠름, ~1s)
-~/hermes-content-studio/scripts/harness-eval.sh --quick
+~/Hermes_Harness_dailybrief/scripts/harness-eval.sh --quick
 
 # 벤치마크 + 회귀 검출 (~30s)
-~/hermes-content-studio/scripts/harness-eval.sh --record
+~/Hermes_Harness_dailybrief/scripts/harness-eval.sh --record
 ```
 
 ## 결정적 파이프라인 (권장)
@@ -44,13 +44,13 @@ cat ~/hermes-content-studio/.harness/progress.md
 LLM 없이 ~45초:
 
 ```bash
-~/hermes-content-studio/scripts/run-pipeline.sh
+~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 ```
 
 LLM polish (선택, 2-5분 추가):
 
 ```bash
-HERMES_ENHANCE=1 ~/hermes-content-studio/scripts/run-pipeline.sh
+HERMES_ENHANCE=1 ~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 ```
 
 ## 완료 정의

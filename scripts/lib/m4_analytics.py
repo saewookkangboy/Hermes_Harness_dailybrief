@@ -9,7 +9,7 @@ from typing import Any
 
 from lib.harness import get_baseline, get_sla, load_harness_config
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 TRACES_DIR = WORKDIR / ".harness" / "traces"
 STATE_PATH = WORKDIR / "content" / ".notion-archive-state.json"
 M4_SNAPSHOT = WORKDIR / ".harness" / "m4-snapshot.json"

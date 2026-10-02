@@ -11,7 +11,7 @@
 # hermes cron --no-agent · stdout → Telegram deliver
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 # shellcheck source=lib/cron_bootstrap.sh
 source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 # shellcheck source=lib/studio-date.sh

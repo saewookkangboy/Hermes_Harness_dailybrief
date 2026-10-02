@@ -19,7 +19,7 @@ def get_workdir() -> Path:
     raw = os.environ.get("HERMES_WORKDIR", "").strip()
     if raw:
         return Path(raw).expanduser().resolve()
-    return Path.home() / "hermes-content-studio"
+    return Path(__file__).resolve().parents[2]
 
 
 WORKDIR = get_workdir()

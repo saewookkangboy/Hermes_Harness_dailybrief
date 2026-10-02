@@ -36,7 +36,7 @@ metadata:
 **LLM으로 직접 작성하지 마세요.** 아래 **단일 명령**만 실행:
 
 ```bash
-~/hermes-content-studio/scripts/telegram-custom.sh auto "<사용자 요청 전문>"
+~/Hermes_Harness_dailybrief/scripts/telegram-custom.sh auto "<사용자 요청 전문>"
 ```
 
 - 백그라운드 작업 접수 → 완료 시 Telegram 알림
@@ -60,7 +60,7 @@ metadata:
 
 개인화 작업은 **Codex (gpt-5.5)** 사용:
 - `HERMES_USE_CODEX=1` (telegram-custom.sh 자동 설정)
-- 미연결: `~/hermes-content-studio/scripts/setup-codex.sh`
+- 미연결: `~/Hermes_Harness_dailybrief/scripts/setup-codex.sh`
 
 ## vs /pipeline
 

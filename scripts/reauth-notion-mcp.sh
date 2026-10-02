@@ -22,9 +22,10 @@ hermes mcp test notion
 
 echo ""
 echo "--- OAuth 상태 ---"
-"$HERMES_PY" - <<'PY'
+HERMES_SCRIPTS_DIR="$DIR" "$HERMES_PY" - <<'PY'
+import os
 import sys
-sys.path.insert(0, "/Users/chunghyo/hermes-content-studio/scripts")
+sys.path.insert(0, os.environ["HERMES_SCRIPTS_DIR"])
 from lib.notion_client import load_config, setup_mcp_verified
 from lib.notion_oauth import check_notion_oauth_status, required_notion_tools
 

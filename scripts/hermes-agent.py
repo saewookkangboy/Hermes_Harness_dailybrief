@@ -10,7 +10,7 @@ import sys
 import time
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 SCRIPTS = WORKDIR / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 

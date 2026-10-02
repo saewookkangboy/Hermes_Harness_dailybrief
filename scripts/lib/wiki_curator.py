@@ -14,7 +14,7 @@ import yaml
 from lib.common import studio_today, truncate
 from lib.wiki_seed import seed_from_brief_graph
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 WIKI_ROOT = WORKDIR / "content" / "wiki"
 CONCEPTS_DIR = WIKI_ROOT / "concepts"
 INDEX_PATH = WIKI_ROOT / "index.md"

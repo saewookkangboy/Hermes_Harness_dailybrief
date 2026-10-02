@@ -26,8 +26,8 @@ B2B 이메일 뉴스레터 — **오픈율 방향성 + 완독율(CTOR) 10–15%*
 ## 결정적 파이프라인 (~10s)
 
 ```bash
-~/hermes-content-studio/scripts/run-newsletter.sh [YYYY-MM-DD] --validate
-~/hermes-content-studio/scripts/hermes-agent.sh newsletter --date YYYY-MM-DD --validate
+~/Hermes_Harness_dailybrief/scripts/run-newsletter.sh [YYYY-MM-DD] --validate
+~/Hermes_Harness_dailybrief/scripts/hermes-agent.sh newsletter --date YYYY-MM-DD --validate
 ```
 
 산출:
@@ -40,7 +40,7 @@ B2B 이메일 뉴스레터 — **오픈율 방향성 + 완독율(CTOR) 10–15%*
 ## 주간 파이프라인 (M1→M2→M2b→M5)
 
 ```bash
-~/hermes-content-studio/scripts/run-pipeline.sh
+~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 # SKIP_NEWSLETTER=1 로 M2b 제외
 ```
 
@@ -72,12 +72,12 @@ B2B 이메일 뉴스레터 — **오픈율 방향성 + 완독율(CTOR) 10–15%*
 ## 검증
 
 ```bash
-~/hermes-content-studio/scripts/newsletter-eval.sh [YYYY-MM-DD]
-~/hermes-content-studio/scripts/newsletter-p2-eval.sh [YYYY-MM-DD]
-~/hermes-content-studio/scripts/newsletter-p4-eval.sh [YYYY-MM-DD]
-~/hermes-content-studio/scripts/newsletter-p6-eval.sh [YYYY-MM-DD]
-~/hermes-content-studio/scripts/newsletter-ctor-record.sh YYYY-MM-DD --delivered N --opens N --clicks N
-~/hermes-content-studio/scripts/newsletter-ctor-dashboard.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/newsletter-eval.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/newsletter-p2-eval.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/newsletter-p4-eval.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/newsletter-p6-eval.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/newsletter-ctor-record.sh YYYY-MM-DD --delivered N --opens N --clicks N
+~/Hermes_Harness_dailybrief/scripts/newsletter-ctor-dashboard.sh [YYYY-MM-DD]
 ```
 
 ## 배포 (Notion → 외부 플랫폼)

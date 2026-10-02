@@ -7,7 +7,7 @@ set -euo pipefail
 
 ENV_FILE="$HOME/.hermes/.env"
 MANIFEST="$HOME/.hermes/slack-manifest.json"
-WORKDIR="$HOME/hermes-content-studio"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 echo "=== Hermes Slack Bot 설정 ==="
 

@@ -31,8 +31,8 @@ metadata:
 ## 실행 (결정적, ~15s)
 
 ```bash
-~/hermes-content-studio/scripts/run-research-brief.sh
-~/hermes-content-studio/scripts/run-pipeline.sh         # M1+M2
+~/Hermes_Harness_dailybrief/scripts/run-research-brief.sh
+~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh         # M1+M2
 ```
 
 ## 상세 Skill
@@ -54,7 +54,7 @@ metadata:
 ## 후속 (M2)
 
 ```bash
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 ```
 
 > "이 브리프 기반으로 M2 콘텐츠 패키지(blog+insta+linkedin)를 생성할까요?"

@@ -17,7 +17,7 @@ from lib.content_quality import (
 from lib.harness import timed_stage
 from lib.wiki_concepts import inject_wiki_blurbs
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 PACKAGES = WORKDIR / "content" / "packages"
 INSTAGRAM_DIR = WORKDIR / "content" / "instagram"
 HANDOFF_DIR = WORKDIR / ".harness" / "handoffs"

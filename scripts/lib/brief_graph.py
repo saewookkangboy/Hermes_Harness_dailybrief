@@ -11,7 +11,7 @@ from lib.common import studio_today, truncate
 from lib.common import compress_sentences
 from lib.content_quality import Insight, _insight_topic_key, parse_brief
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 RESEARCH = WORKDIR / "content" / "research"
 GRAPH_PATH = RESEARCH / "_brief_graph.json"
 

@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from textwrap import dedent
 
-CONTENT_STUDIO = Path.home() / "hermes-content-studio"
+CONTENT_STUDIO = Path(__file__).resolve().parents[1]
 SCRIPTS = CONTENT_STUDIO / "scripts"
 NOW = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%dT%H:%M:%S%z")
 

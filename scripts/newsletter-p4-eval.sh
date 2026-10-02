@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 STAMP="${1:-$(date +%Y-%m-%d)}"
 if [[ ! -f "$WORKDIR/content/research/${STAMP}_brief.md" ]]; then
   LATEST=$(ls -1 "$WORKDIR/content/research/"*_brief.md 2>/dev/null | sed 's/.*\///;s/_brief.md//' | sort -r | head -1)
@@ -28,7 +28,7 @@ from pathlib import Path
 sys.path.insert(0, "${DIR}")
 from lib.notion_quality import assess_content
 import yaml
-cfg = yaml.safe_load((Path.home() / "hermes-content-studio/config/notion-archive.yaml").read_text())
+cfg = yaml.safe_load((Path("${WORKDIR}") / "config/notion-archive.yaml").read_text())
 text = Path("${LINKEDIN_CTX}").read_text(encoding="utf-8")
 q = assess_content(text, "linkedin", cfg, path=Path("${LINKEDIN_CTX}"))
 assert not q.fact_check_issues, q.fact_check_issues

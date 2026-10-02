@@ -11,7 +11,7 @@ OUTPUT_HTML="${5:?output html path}"
 PPTX="${6:?pptx path}"
 PRESET="${7:-claude}"
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SCRIPTS="$WORKDIR/scripts"
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 

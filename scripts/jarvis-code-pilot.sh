@@ -8,7 +8,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 LOG_DIR="$WORKDIR/content/logs"
 DATE="${DATE:-$(date +%Y-%m-%d)}"
 REPORT="$LOG_DIR/${DATE}_jarvis-code-pilot.md"
@@ -132,7 +132,7 @@ rm -f "$INSTALL_SCRIPT"
   elif [[ "$FAIL" -eq 0 ]]; then
     echo "Prereq OK — \`JARVIS_CODE_PILOT_INSTALL=1 JARVIS_CODE_NO_MODEL_PRELOAD=1 ./scripts/jarvis-code-pilot.sh\` 로 설치 후 재검증."
   else
-    echo "파일럿 FAIL — Hermes M1~M5는 영향 없음. macOS/Intel 호환 이슈 확인 필요."
+    echo "파일럿 FAIL — Hermes M1~M5는 영향 없음. macOS/Apple Silicon 호환 이슈 확인 필요."
   fi
 } > "$REPORT"
 

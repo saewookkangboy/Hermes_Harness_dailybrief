@@ -4,7 +4,7 @@
 # hermes cron: 토 11:00 (setup-commander-cron.sh)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SCRIPTS_DIR="$WORKDIR/scripts"
 # shellcheck source=lib/studio-date.sh
 source "$SCRIPTS_DIR/lib/studio-date.sh"

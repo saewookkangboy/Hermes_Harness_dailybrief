@@ -27,8 +27,8 @@ modes:
       heading: "Source Serif 4"
       body: "Source Sans 3"
     references:
-      - ~/hermes-content-studio/Getdesign.md
-      - ~/hermes-content-studio/config/design-catalog.yaml
+      - ~/Hermes_Harness_dailybrief/Getdesign.md
+      - ~/Hermes_Harness_dailybrief/config/design-catalog.yaml
       - https://getdesign.md/ (Claude preset)
 
 notion_sync:

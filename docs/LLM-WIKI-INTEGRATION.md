@@ -14,8 +14,8 @@
 **일별 콘텐츠 공장(M1→M5)은 그대로 두고**, Commander·장기 리서치·개인 메모를 위해 **누적 wiki + graph.db** 계층을 선택적으로 쌓는다. 전면 Wiki 교체는 SLA·재현성·validate 게이트를 훼손하므로 하지 않는다.
 
 ```bash
-~/hermes-content-studio/scripts/wiki-lint-eval.sh
-HERMES_WIKI_SEED=1 ~/hermes-content-studio/scripts/wiki-seed.sh
+~/Hermes_Harness_dailybrief/scripts/wiki-lint-eval.sh
+HERMES_WIKI_SEED=1 ~/Hermes_Harness_dailybrief/scripts/wiki-seed.sh
 ```
 
 ---
@@ -141,13 +141,13 @@ Wiki Ingest를 **M1 SLA 경로에 직접 넣지 않는다.** 소스당 10~15 페
 
 ```bash
 # 구조 게이트 (네트워크·LLM 불필요)
-~/hermes-content-studio/scripts/wiki-lint-eval.sh
+~/Hermes_Harness_dailybrief/scripts/wiki-lint-eval.sh
 
 # 결정적 Seed (brief 있을 때)
-HERMES_WIKI_SEED=1 ~/hermes-content-studio/scripts/wiki-seed.sh
+HERMES_WIKI_SEED=1 ~/Hermes_Harness_dailybrief/scripts/wiki-seed.sh
 
 # memory_router wiki 히트
-~/hermes-content-studio/scripts/hermes-agent.sh ask "Claude AX 인사이트"
+~/Hermes_Harness_dailybrief/scripts/hermes-agent.sh ask "Claude AX 인사이트"
 ```
 
 ---

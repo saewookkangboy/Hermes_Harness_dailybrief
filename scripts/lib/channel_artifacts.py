@@ -5,7 +5,7 @@ import re
 import shutil
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 STALE_ROOT = WORKDIR / "content" / "_stale"
 
 _CHANNEL_PATTERNS: dict[str, str] = {

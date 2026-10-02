@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 단계별 토큰·비용 집계 리포트
 set -euo pipefail
-STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$HOME/hermes-content-studio}}"
+STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}}"
 cd "$STUDIO"
 
 SINCE="7d"

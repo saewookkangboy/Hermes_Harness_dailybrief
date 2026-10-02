@@ -26,7 +26,7 @@ Cursor Agent로 넘기기 위한 **핸드오프 패키지**를 생성합니다.
 ## 워크스페이스
 
 ```
-~/hermes-content-studio/content/drafts/cursor-handoff/
+~/Hermes_Harness_dailybrief/content/drafts/cursor-handoff/
 ├── YYYY-MM-DD_{project}_HANDOFF.md    # 메인 핸드오프 문서
 ├── YYYY-MM-DD_{project}_CONTEXT.md    # 배경·결정·제약
 └── YYYY-MM-DD_{project}_TASKS.md      # 구현 태스크 목록
@@ -59,7 +59,7 @@ Cursor Agent로 넘기기 위한 **핸드오프 패키지**를 생성합니다.
 - 기존 컨벤션: {PROJECT_STRUCTURE.md 참조}
 
 ## Getdesign.md 적용
-(UI 작업 시 ~/hermes-content-studio/Getdesign.md 색상·타이포 참조)
+(UI 작업 시 ~/Hermes_Harness_dailybrief/Getdesign.md 색상·타이포 참조)
 
 ## 수용 기준
 1. ...
@@ -79,11 +79,11 @@ Cursor Agent로 넘기기 위한 **핸드오프 패키지**를 생성합니다.
 ### 방법 B: Cursor CLI (자동화)
 ```bash
 # 설치 (1회)
-~/hermes-content-studio/scripts/install-cursor-cli.sh
+~/Hermes_Harness_dailybrief/scripts/install-cursor-cli.sh
 
 # HANDOFF 자동 실행 (headless)
-~/hermes-content-studio/scripts/run-cursor-handoff.sh --latest
-~/hermes-content-studio/scripts/run-cursor-handoff.sh --handoff content/drafts/cursor-handoff/YYYY-MM-DD_{project}_HANDOFF.md
+~/Hermes_Harness_dailybrief/scripts/run-cursor-handoff.sh --latest
+~/Hermes_Harness_dailybrief/scripts/run-cursor-handoff.sh --handoff content/drafts/cursor-handoff/YYYY-MM-DD_{project}_HANDOFF.md
 
 # Telegram /automate: Codex → HANDOFF 생성 → run-cursor-handoff --background (HERMES_CURSOR_AUTO=1)
 ```
@@ -112,7 +112,7 @@ const result = await Agent.prompt(handoffPrompt, {
 4. HANDOFF.md 생성 → `cursor-handoff/` 저장
 5. `run-cursor-handoff.sh --latest` 자동 실행 (HERMES_CURSOR_AUTO=1) 또는 사용자에게 Cursor IDE 안내
 
-## Intel Mac 팁
+## Apple Silicon (M2) 팁
 
 - Cursor Agent는 클라우드/로컬 모델 선택 가능 — 복잡한 구현은 클라우드 권장
 - Hermes(Ollama)로 기획 → Cursor로 구현 분업이 효율적

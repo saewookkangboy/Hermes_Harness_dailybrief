@@ -1,6 +1,7 @@
 """Session handoff 고도화 — .harness/session-handoff.md 자동 생성."""
 from __future__ import annotations
 
+import shlex
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -9,7 +10,7 @@ from lib.m4_analytics import format_m4_report
 from lib.omm import format_omm_block
 from lib.session_sot import load_session
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 HANDOFF_PATH = WORKDIR / ".harness" / "session-handoff.md"
 
 NEXT_COMMANDS: dict[str, list[str]] = {
@@ -92,7 +93,7 @@ def build_handoff_markdown(session_id: str = "cli", m4_days: int = 7) -> str:
         "## 이어하기 (Resume)",
         "",
         "```bash",
-        "cd ~/hermes-content-studio",
+        f"cd {shlex.quote(str(WORKDIR))}",
         "./scripts/init.sh --skip-health",
     ]
     for c in next_cmds:

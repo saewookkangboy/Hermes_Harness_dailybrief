@@ -35,7 +35,7 @@ PlayMCP MCP-Gateway(`https://playmcp.kakao.com/mcp`)를 Slack Bot과 **동일한
 
 1. PlayMCP 로그인: https://playmcp.kakao.com
 2. 도구함에 필요한 MCP 서버 추가: https://playmcp.kakao.com/toolbox
-3. 연결 설정: `~/hermes-content-studio/scripts/setup-playmcp.sh`
+3. 연결 설정: `~/Hermes_Harness_dailybrief/scripts/setup-playmcp.sh`
 4. Hermes MCP: `playmcp` 서버 enabled (`~/.hermes/config.yaml`)
 
 ## 커맨더 명령 (Hermes CLI)
@@ -59,14 +59,14 @@ hermes chat -s playmcp-commander
 2. `playmcp-commander` 스킬로 커맨더 컨텍스트 로드
 3. PlayMCP MCP 도구(`mcp_playmcp_*`)로 도구함 서버 호출
 4. `content-pipeline` 등 오케스트레이션 스킬과 연계
-5. 산출물 → `~/hermes-content-studio/content/{channel}/`
+5. 산출물 → `~/Hermes_Harness_dailybrief/content/{channel}/`
 
 ## 토큰 갱신
 
 액세스 토큰 만료 시 PlayMCP 도구함에서 새 OTT 발급 후:
 
 ```bash
-ONE_TIME_TOKEN=새OTT ~/hermes-content-studio/scripts/setup-playmcp.sh
+ONE_TIME_TOKEN=새OTT ~/Hermes_Harness_dailybrief/scripts/setup-playmcp.sh
 ```
 
 ## 품질 게이트

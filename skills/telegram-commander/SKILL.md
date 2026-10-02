@@ -84,9 +84,9 @@ Gemini API: model=gemini-3-pro-image-preview (Nano Banana Pro 2), aspect_ratio=4
 ### 검증 (완료 선언 전)
 
 ```bash
-~/hermes-content-studio/scripts/validate-output.sh instagram \
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh instagram \
   content/instagram/YYYY-MM-DD_instagram_*.md
-~/hermes-content-studio/scripts/validate-output.sh instagram-context \
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh instagram-context \
   content/packages/YYYY-MM-DD_instagram-context.md
 ```
 
@@ -130,8 +130,8 @@ Gemini API: model=gemini-3-pro-image-preview (Nano Banana Pro 2), aspect_ratio=4
 ## 설정
 
 ```bash
-~/hermes-content-studio/scripts/setup-telegram-routing.sh
-~/hermes-content-studio/scripts/setup-codex.sh   # 개인화 필수
+~/Hermes_Harness_dailybrief/scripts/setup-telegram-routing.sh
+~/Hermes_Harness_dailybrief/scripts/setup-codex.sh   # 개인화 필수
 ```
 
 ## Anti-patterns

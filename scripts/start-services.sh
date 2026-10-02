@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Hermes Content Studio — 서비스 시작 (Intel Mac)
+# Hermes Content Studio — 서비스 시작 (Apple Silicon Mac)
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
+WORKDIR="${HERMES_WORKDIR:-$(dirname "$DIR")}"
 WATCH_PID_FILE="/tmp/hermes-watch-telegram.pid"
 # shellcheck source=lib/watch_telegram_singleton.sh
 source "$DIR/lib/watch_telegram_singleton.sh"
@@ -27,7 +28,9 @@ else
 fi
 
 # 3. Hermes Gateway 확인/시작
-if ! pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
+if ! command -v hermes >/dev/null 2>&1; then
+  echo "[3/4] Hermes Agent 미설치 — Gateway 스킵 (결정적 파이프라인만 사용 가능)"
+elif ! pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
   echo "[3/4] Hermes Gateway 시작..."
   hermes gateway run --replace &
   sleep 5
@@ -45,6 +48,7 @@ if [[ "${SKIP_WATCH_TELEGRAM:-0}" != "1" ]]; then
     sleep 0.5
   fi
   echo "[4/4] watch-telegram 시작 (백그라운드, 단일 인스턴스)..."
+  mkdir -p "$HOME/.hermes/logs"
   nohup "$DIR/watch-telegram.sh" >>"$HOME/.hermes/logs/watch-telegram.log" 2>&1 &
   echo $! > "$WATCH_PID_FILE"
   echo "  PID: $(cat "$WATCH_PID_FILE") · 로그: ~/.hermes/logs/watch-telegram.log"
@@ -55,11 +59,11 @@ fi
 echo ""
 echo "=== 상태 ==="
 hermes cron status 2>/dev/null || echo "cron: 확인 필요"
-echo "워크스페이스: ~/hermes-content-studio"
-echo "디자인 시스템: ~/hermes-content-studio/Getdesign.md"
+echo "워크스페이스: $WORKDIR"
+echo "디자인 시스템: $WORKDIR/Getdesign.md"
 echo ""
 echo "Telegram 즉시 명령 (LLM 없음): /pipeline /research /content /sync /studio"
 echo ""
 echo "다음 단계:"
-echo "  ~/hermes-content-studio/scripts/hermes-run.sh '이번 주 리서치' --skills marketing-research"
-echo "  ~/hermes-content-studio/scripts/setup-telegram-routing.sh  # 라우팅 미적용 시"
+echo "  $WORKDIR/scripts/hermes-run.sh '이번 주 리서치' --skills marketing-research"
+echo "  $WORKDIR/scripts/setup-telegram-routing.sh  # 라우팅 미적용 시"

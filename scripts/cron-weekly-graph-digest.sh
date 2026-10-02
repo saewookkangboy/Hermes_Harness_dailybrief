@@ -2,7 +2,7 @@
 # 주간 Brief Graph digest → Telegram/Slack deliver (결정적, LLM 없음)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 DAYS="${GRAPH_DAYS:-14}"
 # shellcheck source=lib/cron_bootstrap.sh
 source "$WORKDIR/scripts/lib/cron_bootstrap.sh"

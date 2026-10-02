@@ -16,7 +16,7 @@ from lib.publish_gate import (
     request_publish,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 SCHEDULE_DIR = WORKDIR / ".harness" / "publish-schedule"
 KST = ZoneInfo("Asia/Seoul")
 

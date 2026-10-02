@@ -7,7 +7,7 @@ from pathlib import Path
 
 from lib.content_quality_config import load_content_quality_config
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 @dataclass

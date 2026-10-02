@@ -473,17 +473,17 @@ Agent·파이프라인 공통 DoD:
 
 ```bash
 # 세션 시작
-~/hermes-content-studio/scripts/init.sh
-cat ~/hermes-content-studio/.harness/progress.md
+~/Hermes_Harness_dailybrief/scripts/init.sh
+cat ~/Hermes_Harness_dailybrief/.harness/progress.md
 
 # 전체 파이프라인 (결정적)
-~/hermes-content-studio/scripts/run-pipeline.sh
+~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 
 # Telegram 커맨더
-~/hermes-content-studio/scripts/telegram-pipeline.sh pipeline
+~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh pipeline
 
 # Notion force + 최종 알림
-~/hermes-content-studio/scripts/archive-to-notion.sh $(date +%Y-%m-%d) --force --notify-final
+~/Hermes_Harness_dailybrief/scripts/archive-to-notion.sh $(date +%Y-%m-%d) --force --notify-final
 ```
 
 ---

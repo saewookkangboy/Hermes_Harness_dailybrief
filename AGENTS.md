@@ -4,7 +4,8 @@
 
 # Hermes Content Studio — Agent Context
 
-Intel Mac 자체호스팅 마케팅·교육 콘텐츠 스튜디오.
+Apple Silicon Mac(MacBook Air M2, arm64) 자체호스팅 마케팅·교육 콘텐츠 스튜디오.
+워크스페이스: `~/Hermes_Harness_dailybrief` (스크립트는 자기 위치 기준 · `HERMES_WORKDIR` 오버라이드)
 Harness v1.3.0 (System Logic **v2.1**) — [awesome-harness-engineering](https://github.com/walkinglabs/awesome-harness-engineering)
 
 아키텍처: `docs/architecture/SYSTEM-LOGIC.md` · 변경 기록: `docs/architecture/archive/v2.1-graph-token-playbook.md`
@@ -12,15 +13,15 @@ Harness v1.3.0 (System Logic **v2.1**) — [awesome-harness-engineering](https:/
 ## 세션 시작 (필수)
 
 ```bash
-~/hermes-content-studio/scripts/init.sh
-cat ~/hermes-content-studio/.harness/progress.md
+~/Hermes_Harness_dailybrief/scripts/init.sh
+cat ~/Hermes_Harness_dailybrief/.harness/progress.md
 ```
 
 상세: `HARNESS.md` · 설정: `config/harness.yaml`
 
 ## 워크스페이스 규칙
 
-- 모든 산출물: `~/hermes-content-studio/content/{channel}/`
+- 모든 산출물: `~/Hermes_Harness_dailybrief/content/{channel}/`
 - 디자인 시스템: `Getdesign.md` 필수 참조
 - 파일명: `YYYY-MM-DD_{channel}_{slug}.{ext}`
 - 언어: 한국어 (기술 용어 영문 병기)
@@ -30,111 +31,111 @@ cat ~/hermes-content-studio/.harness/progress.md
 
 ```bash
 # 하네스 부트스트랩 (세션 시작)
-~/hermes-content-studio/scripts/init.sh
+~/Hermes_Harness_dailybrief/scripts/init.sh
 
 # 성능 eval (구조·벤치마크)
-~/hermes-content-studio/scripts/harness-eval.sh --quick
+~/Hermes_Harness_dailybrief/scripts/harness-eval.sh --quick
 
 # E2E 사용성·성능 스모크 (Telegram 포함)
-~/hermes-content-studio/scripts/e2e-smoke-test.sh --telegram
+~/Hermes_Harness_dailybrief/scripts/e2e-smoke-test.sh --telegram
 
 # 리서치 브리프 (결정적, ~15s)
-~/hermes-content-studio/scripts/run-research-brief.sh
+~/Hermes_Harness_dailybrief/scripts/run-research-brief.sh
 
 # 전체 파이프라인 (결정적, M1+M2+M2b · 실측 ~20–26s / SLA 60–70s)
-~/hermes-content-studio/scripts/run-pipeline.sh
-# SKIP_NEWSLETTER=1 ~/hermes-content-studio/scripts/run-pipeline.sh  # 뉴스레터 제외
+~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
+# SKIP_NEWSLETTER=1 ~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh  # 뉴스레터 제외
 
 # B2B 뉴스레터 (Brief SoT → md + HTML + A/B 제목 · Gate A–D)
-~/hermes-content-studio/scripts/run-newsletter.sh [YYYY-MM-DD] --validate
-~/hermes-content-studio/scripts/hermes-agent.sh newsletter --date YYYY-MM-DD --validate
-~/hermes-content-studio/scripts/newsletter-eval.sh [YYYY-MM-DD]
-~/hermes-content-studio/scripts/newsletter-freshness-eval.sh [YYYY-MM-DD]  # Gate A
-~/hermes-content-studio/scripts/newsletter-gate-b-eval.sh [YYYY-MM-DD]     # Gate B
-~/hermes-content-studio/scripts/newsletter-gate-c-eval.sh [YYYY-MM-DD]     # Gate C publishable
-~/hermes-content-studio/scripts/newsletter-gate-d-eval.sh [YYYY-MM-DD]     # Gate D CTOR
-~/hermes-content-studio/scripts/newsletter-ctor-record.sh YYYY-MM-DD --delivered N --opens N --clicks N
-~/hermes-content-studio/scripts/newsletter-ctor-dashboard.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/run-newsletter.sh [YYYY-MM-DD] --validate
+~/Hermes_Harness_dailybrief/scripts/hermes-agent.sh newsletter --date YYYY-MM-DD --validate
+~/Hermes_Harness_dailybrief/scripts/newsletter-eval.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/newsletter-freshness-eval.sh [YYYY-MM-DD]  # Gate A
+~/Hermes_Harness_dailybrief/scripts/newsletter-gate-b-eval.sh [YYYY-MM-DD]     # Gate B
+~/Hermes_Harness_dailybrief/scripts/newsletter-gate-c-eval.sh [YYYY-MM-DD]     # Gate C publishable
+~/Hermes_Harness_dailybrief/scripts/newsletter-gate-d-eval.sh [YYYY-MM-DD]     # Gate D CTOR
+~/Hermes_Harness_dailybrief/scripts/newsletter-ctor-record.sh YYYY-MM-DD --delivered N --opens N --clicks N
+~/Hermes_Harness_dailybrief/scripts/newsletter-ctor-dashboard.sh [YYYY-MM-DD]
 # 배포: Notion 붙여넣기 팩 → 외부 플랫폼 (ESP 발송 없음)
 # content/packages/{date}_newsletter-paste.md · {date}_newsletter-publish.json
-~/hermes-content-studio/scripts/commander-integration-eval.sh   # Telegram/Slack/Harness 점검
-~/hermes-content-studio/scripts/agents-eval.sh                  # Agents A–D 품질·운영·지식·성과
-~/hermes-content-studio/scripts/e2e-smoke-test.sh               # E2E 스모크
-~/hermes-content-studio/scripts/staging-supervised-eval.sh      # L2 staging
+~/Hermes_Harness_dailybrief/scripts/commander-integration-eval.sh   # Telegram/Slack/Harness 점검
+~/Hermes_Harness_dailybrief/scripts/agents-eval.sh                  # Agents A–D 품질·운영·지식·성과
+~/Hermes_Harness_dailybrief/scripts/e2e-smoke-test.sh               # E2E 스모크
+~/Hermes_Harness_dailybrief/scripts/staging-supervised-eval.sh      # L2 staging
 # 스튜디오 업데이트 (Hermes + 의존성 + 헬스체크)
-~/hermes-content-studio/scripts/update-studio.sh
+~/Hermes_Harness_dailybrief/scripts/update-studio.sh
 
 # 상태 표시바 + Hermes (단일 작업)
-~/hermes-content-studio/scripts/hermes-run.sh \
+~/Hermes_Harness_dailybrief/scripts/hermes-run.sh \
   "이번 주 리서치 브리프 작성" --skills marketing-research
 
 # Telegram 요청 진행 상황 (start-services.sh가 백그라운드 시작)
-~/hermes-content-studio/scripts/watch-telegram.sh
+~/Hermes_Harness_dailybrief/scripts/watch-telegram.sh
 
 # Telegram 결정적 파이프라인 (LLM 없음)
-~/hermes-content-studio/scripts/telegram-pipeline.sh pipeline
+~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh pipeline
 
 # Slack 결정적 파이프라인 + 일일 digest (#일반데이터)
-~/hermes-content-studio/scripts/setup-slack.sh
-~/hermes-content-studio/scripts/setup-slack-routing.sh
-~/hermes-content-studio/scripts/slack-daily-log.sh              # 오늘 전문 digest → Slack
-~/hermes-content-studio/scripts/slack-daily-log.sh --build-only # 로컬만 저장
+~/Hermes_Harness_dailybrief/scripts/setup-slack.sh
+~/Hermes_Harness_dailybrief/scripts/setup-slack-routing.sh
+~/Hermes_Harness_dailybrief/scripts/slack-daily-log.sh              # 오늘 전문 digest → Slack
+~/Hermes_Harness_dailybrief/scripts/slack-daily-log.sh --build-only # 로컬만 저장
 
 # Telegram 개인화 (Codex · 백그라운드)
-~/hermes-content-studio/scripts/telegram-custom.sh mail "받편함 요약"
-~/hermes-content-studio/scripts/setup-telegram-routing.sh
+~/Hermes_Harness_dailybrief/scripts/telegram-custom.sh mail "받편함 요약"
+~/Hermes_Harness_dailybrief/scripts/setup-telegram-routing.sh
 
 # Cursor Agent CLI (HANDOFF 자동 실행)
-~/hermes-content-studio/scripts/install-cursor-cli.sh
-~/hermes-content-studio/scripts/run-cursor-handoff.sh --latest
+~/Hermes_Harness_dailybrief/scripts/install-cursor-cli.sh
+~/Hermes_Harness_dailybrief/scripts/run-cursor-handoff.sh --latest
 # /automate → Codex HANDOFF → run-cursor-handoff --background (HERMES_CURSOR_AUTO=1)
 
 
 # 비용·토큰 (F1)
-~/hermes-content-studio/scripts/cost-report.sh --since 7d
-~/hermes-content-studio/scripts/token-gate-eval.sh
+~/Hermes_Harness_dailybrief/scripts/cost-report.sh --since 7d
+~/Hermes_Harness_dailybrief/scripts/token-gate-eval.sh
 
 # 누적 개념 그래프 (F2, 결정적, LLM 없음)
-HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
-~/hermes-content-studio/scripts/wiki-graph.sh --force --rebuild
-~/hermes-content-studio/scripts/graph-query.sh stale-citations
-~/hermes-content-studio/scripts/graph-query.sh top-concepts
-~/hermes-content-studio/scripts/graph-query.sh recycle-candidates
+HERMES_WIKI_GRAPH=1 ~/Hermes_Harness_dailybrief/scripts/wiki-graph.sh
+~/Hermes_Harness_dailybrief/scripts/wiki-graph.sh --force --rebuild
+~/Hermes_Harness_dailybrief/scripts/graph-query.sh stale-citations
+~/Hermes_Harness_dailybrief/scripts/graph-query.sh top-concepts
+~/Hermes_Harness_dailybrief/scripts/graph-query.sh recycle-candidates
 
 # /ask graph-first (F3)
 PYTHONPATH=scripts python3 -m lib.graph_context "<질문>" --budget 3000
-~/hermes-content-studio/scripts/ask-eval.sh --compare
+~/Hermes_Harness_dailybrief/scripts/ask-eval.sh --compare
 
 # 학습 루프 (F4)
-~/hermes-content-studio/scripts/reflect.sh --week
-~/hermes-content-studio/scripts/reflect.sh --week --signals-only
-~/hermes-content-studio/scripts/curate-playbook.sh --dry-run
-~/hermes-content-studio/scripts/curate-playbook.sh --shadow --runs 5
-~/hermes-content-studio/scripts/curate-playbook.sh --promote
-~/hermes-content-studio/scripts/curate-playbook.sh --verify
+~/Hermes_Harness_dailybrief/scripts/reflect.sh --week
+~/Hermes_Harness_dailybrief/scripts/reflect.sh --week --signals-only
+~/Hermes_Harness_dailybrief/scripts/curate-playbook.sh --dry-run
+~/Hermes_Harness_dailybrief/scripts/curate-playbook.sh --shadow --runs 5
+~/Hermes_Harness_dailybrief/scripts/curate-playbook.sh --promote
+~/Hermes_Harness_dailybrief/scripts/curate-playbook.sh --verify
 
 # Notion 일자별 아카이브
-~/hermes-content-studio/scripts/archive-to-notion.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/archive-to-notion.sh [YYYY-MM-DD]
 
 # Studio 아키텍처 → Notion (운영 리소스·의존성·Cursor 맵)
-~/hermes-content-studio/scripts/export-architecture-notion.sh
+~/Hermes_Harness_dailybrief/scripts/export-architecture-notion.sh
 
 # Voice · Naturalness (결정적 품질 게이트)
-~/hermes-content-studio/scripts/voice-style-eval.sh [YYYY-MM-DD]
-~/hermes-content-studio/scripts/naturalness-eval.sh [YYYY-MM-DD]
-~/hermes-content-studio/scripts/loop-budget-eval.sh
-~/hermes-content-studio/scripts/loop-budget-status.sh
-~/hermes-content-studio/scripts/humanize-llm-eval.sh [YYYY-MM-DD]
-HERMES_HUMANIZE_LLM_LIVE=1 ~/hermes-content-studio/scripts/humanize-llm-eval.sh [YYYY-MM-DD]
-HERMES_M5_E2E_LIVE=1 ~/hermes-content-studio/scripts/m5-notion-eval.sh [YYYY-MM-DD]
-HERMES_SUPERVISED_STAGING=1 ~/hermes-content-studio/scripts/staging-supervised-eval.sh [YYYY-MM-DD]
-HERMES_PLAYMCP_E2E_LIVE=1 ~/hermes-content-studio/scripts/playmcp-routing-e2e.sh
+~/Hermes_Harness_dailybrief/scripts/voice-style-eval.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/naturalness-eval.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/loop-budget-eval.sh
+~/Hermes_Harness_dailybrief/scripts/loop-budget-status.sh
+~/Hermes_Harness_dailybrief/scripts/humanize-llm-eval.sh [YYYY-MM-DD]
+HERMES_HUMANIZE_LLM_LIVE=1 ~/Hermes_Harness_dailybrief/scripts/humanize-llm-eval.sh [YYYY-MM-DD]
+HERMES_M5_E2E_LIVE=1 ~/Hermes_Harness_dailybrief/scripts/m5-notion-eval.sh [YYYY-MM-DD]
+HERMES_SUPERVISED_STAGING=1 ~/Hermes_Harness_dailybrief/scripts/staging-supervised-eval.sh [YYYY-MM-DD]
+HERMES_PLAYMCP_E2E_LIVE=1 ~/Hermes_Harness_dailybrief/scripts/playmcp-routing-e2e.sh
 # 주간 staging cron: setup-commander-cron.sh → cron-staging-supervised 토 11:00
 # 프로덕션 blocking: voice + naturalness ON (budget cap 초과는 WARN, budget_blocking=false)
-HERMES_HUMANIZE=1 ~/hermes-content-studio/scripts/run-humanize-polish.sh [YYYY-MM-DD]
+HERMES_HUMANIZE=1 ~/Hermes_Harness_dailybrief/scripts/run-humanize-polish.sh [YYYY-MM-DD]
 HERMES_HUMANIZE=1 HERMES_HUMANIZE_LLM=1 HERMES_HUMANIZE_LLM_CHANNELS=linkedin \
-  ~/hermes-content-studio/scripts/run-humanize-polish.sh [YYYY-MM-DD]
-HERMES_CRON_HUMANIZE=1 ~/hermes-content-studio/scripts/cron-supervised-pipeline.sh
+  ~/Hermes_Harness_dailybrief/scripts/run-humanize-polish.sh [YYYY-MM-DD]
+HERMES_CRON_HUMANIZE=1 ~/Hermes_Harness_dailybrief/scripts/cron-supervised-pipeline.sh
 # Notion archive: playmcp 스킵 (기본) · HERMES_MCP_DISCOVER_ALL=1 전체 MCP
 ```
 
@@ -171,14 +172,14 @@ Telegram에서 요청 보낼 때 **별도 Terminal**에서 `watch-telegram.sh` �
 
 ```bash
 # 구조 게이트
-~/hermes-content-studio/scripts/wiki-lint-eval.sh
+~/Hermes_Harness_dailybrief/scripts/wiki-lint-eval.sh
 
 # 결정적 Seed (brief_graph → concepts, LLM 없음)
-HERMES_WIKI_SEED=1 ~/hermes-content-studio/scripts/wiki-seed.sh
+HERMES_WIKI_SEED=1 ~/Hermes_Harness_dailybrief/scripts/wiki-seed.sh
 
 # LLM Ingest / Lint (비동기, 기본 off)
-HERMES_WIKI_INGEST=1 ~/hermes-content-studio/scripts/run-wiki-ingest.sh
-HERMES_WIKI_LINT=1 ~/hermes-content-studio/scripts/run-wiki-lint.sh
+HERMES_WIKI_INGEST=1 ~/Hermes_Harness_dailybrief/scripts/run-wiki-ingest.sh
+HERMES_WIKI_LINT=1 ~/Hermes_Harness_dailybrief/scripts/run-wiki-lint.sh
 ```
 
 ## 스킬 우선순위
@@ -232,7 +233,7 @@ LEARNED 를 직접 편집하지 말고 `curate-playbook.sh` 를 사용하세요.
 
 ```bash
 # 강의 슬라이드 (HTML + PPTX + claude-design 연동)
-~/hermes-content-studio/scripts/run-lecture-slides.sh "제목" \
+~/Hermes_Harness_dailybrief/scripts/run-lecture-slides.sh "제목" \
   --content-file outline.txt --design-mode claude-design --notion-sync
 ```
 

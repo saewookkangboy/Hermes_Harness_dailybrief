@@ -54,7 +54,7 @@ metadata:
 ## 실행
 
 ```bash
-~/hermes-content-studio/scripts/run-research-brief.sh [YYYY-MM-DD]
+~/Hermes_Harness_dailybrief/scripts/run-research-brief.sh [YYYY-MM-DD]
 ```
 
 ## 출력 스키마
@@ -118,7 +118,7 @@ M2 실행 제안:
 > "이 브리프 기반으로 M2 콘텐츠 패키지(blog+insta+linkedin)를 생성할까요?"
 
 ```bash
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 ```
 
 ## LEARNED

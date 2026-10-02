@@ -28,7 +28,6 @@ easytool:
   rules:
     - "/slash → scripts/<cmd>.sh qc <name> (zero LLM)"
     - "NL pipeline → telegram-pipeline.sh auto"
-    - "Base: ~/hermes-content-studio/scripts/"
 
   quick_command_hints:
     pipeline: "M1+M2+M2b+Notion"

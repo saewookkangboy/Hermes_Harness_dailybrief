@@ -109,25 +109,25 @@ streak_days: 2
 
 ```bash
 # 결정적 Seed (LLM 없음)
-HERMES_WIKI_SEED=1 ~/hermes-content-studio/scripts/wiki-seed.sh
+HERMES_WIKI_SEED=1 ~/Hermes_Harness_dailybrief/scripts/wiki-seed.sh
 
 # LLM Ingest
-HERMES_WIKI_INGEST=1 ~/hermes-content-studio/scripts/run-wiki-ingest.sh
+HERMES_WIKI_INGEST=1 ~/Hermes_Harness_dailybrief/scripts/run-wiki-ingest.sh
 
 # LLM Lint
-HERMES_WIKI_LINT=1 ~/hermes-content-studio/scripts/run-wiki-lint.sh
+HERMES_WIKI_LINT=1 ~/Hermes_Harness_dailybrief/scripts/run-wiki-lint.sh
 
 # 구조 eval
-~/hermes-content-studio/scripts/wiki-lint-eval.sh
+~/Hermes_Harness_dailybrief/scripts/wiki-lint-eval.sh
 
 # 누적 그래프 (결정적)
-HERMES_WIKI_GRAPH=1 ~/hermes-content-studio/scripts/wiki-graph.sh
-~/hermes-content-studio/scripts/wiki-graph.sh --force --rebuild
-~/hermes-content-studio/scripts/graph-query.sh stale-citations
+HERMES_WIKI_GRAPH=1 ~/Hermes_Harness_dailybrief/scripts/wiki-graph.sh
+~/Hermes_Harness_dailybrief/scripts/wiki-graph.sh --force --rebuild
+~/Hermes_Harness_dailybrief/scripts/graph-query.sh stale-citations
 
 # /ask graph-first
 PYTHONPATH=scripts python3 -m lib.graph_context "<질문>" --budget 3000
-~/hermes-content-studio/scripts/ask-eval.sh --compare
+~/Hermes_Harness_dailybrief/scripts/ask-eval.sh --compare
 ```
 
 ## 도구

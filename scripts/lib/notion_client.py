@@ -17,7 +17,7 @@ from lib.notion_oauth_watch import (
     try_silent_refresh,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 CONFIG_PATH = WORKDIR / "config" / "notion-archive.yaml"
 STATE_PATH = WORKDIR / "content" / ".notion-archive-state.json"
 LOG_PATH = Path.home() / ".hermes" / "logs" / "content-studio.log"
@@ -54,14 +54,18 @@ def setup_mcp(*, server_names: list[str] | None = None):
     from dotenv import load_dotenv
 
     load_dotenv(Path.home() / ".hermes" / ".env")
-    from tools import mcp_tool
     from tools.registry import registry
 
-    if os.environ.get("HERMES_MCP_DISCOVER_ALL", "0") == "1":
-        mcp_tool.discover_mcp_tools()
-        return registry
+    # Hermes ≥0.21 splits mcp_tool into *_config / *_discovery; ≤0.18 exposes them on mcp_tool.
+    try:
+        from tools.mcp_tool_config import _load_mcp_config
+        from tools.mcp_tool_discovery import discover_mcp_tools, register_mcp_servers
+    except ImportError:
+        from tools.mcp_tool import _load_mcp_config, discover_mcp_tools, register_mcp_servers
 
-    from tools.mcp_tool import _load_mcp_config, register_mcp_servers
+    if os.environ.get("HERMES_MCP_DISCOVER_ALL", "0") == "1":
+        discover_mcp_tools()
+        return registry
 
     allow = list(server_names or [])
     if not allow:

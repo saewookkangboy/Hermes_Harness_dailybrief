@@ -13,7 +13,7 @@
 #   SKIP_NOTION_ARCHIVE=1              (Notion 건너뛰기)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SCRIPTS="$WORKDIR/scripts"
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 

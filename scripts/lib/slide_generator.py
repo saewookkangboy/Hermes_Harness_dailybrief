@@ -12,7 +12,7 @@ import yaml
 
 from lib.common import slugify as _slugify
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 @dataclass

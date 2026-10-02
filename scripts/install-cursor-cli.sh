@@ -38,7 +38,7 @@ check_status() {
     fi
     echo ""
     echo "  핸드오프 실행:"
-    echo "    ~/hermes-content-studio/scripts/run-cursor-handoff.sh --latest"
+    echo "    ~/Hermes_Harness_dailybrief/scripts/run-cursor-handoff.sh --latest"
     echo ""
     echo "  Telegram /automate 후 자동 실행:"
     echo "    HERMES_CURSOR_AUTO=1 (기본값)"

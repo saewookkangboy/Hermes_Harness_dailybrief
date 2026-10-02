@@ -3,8 +3,8 @@
 ## 자동 검증
 
 ```bash
-~/hermes-content-studio/scripts/validate-output.sh linkedin-context content/packages/YYYY-MM-DD_linkedin-context.md
-~/hermes-content-studio/scripts/validate-output.sh linkedin content/linkedin/YYYY-MM-DD_linkedin_*.md
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh linkedin-context content/packages/YYYY-MM-DD_linkedin-context.md
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh linkedin content/linkedin/YYYY-MM-DD_linkedin_*.md
 ```
 
 ## 피드 문법 체크리스트 (linkedin-feed-strategy-maker)
@@ -43,5 +43,5 @@
 ## Archive
 
 ```bash
-~/hermes-content-studio/scripts/archive-to-notion.sh YYYY-MM-DD --force
+~/Hermes_Harness_dailybrief/scripts/archive-to-notion.sh YYYY-MM-DD --force
 ```

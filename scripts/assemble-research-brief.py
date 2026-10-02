@@ -22,7 +22,7 @@ from lib.brief_quality import (
     title_token_overlap,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[1]
 RESEARCH_DIR = WORKDIR / "content" / "research"
 
 KOREA_QUERIES = {

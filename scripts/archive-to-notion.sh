@@ -16,8 +16,9 @@ source "$DIR/lib/studio-date.sh"
 # shellcheck source=lib/telegram_sync_guard.sh
 source "$DIR/lib/telegram_sync_guard.sh"
 HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 ARCHIVE_LOCK="$WORKDIR/.harness/archive-notion.lock"
+mkdir -p "$HOME/.hermes/logs"
 
 ARGS=()
 REQUESTED_DATE=""

@@ -33,9 +33,9 @@ metadata:
 ## 실행
 
 ```bash
-~/hermes-content-studio/scripts/run-content-package.sh
-~/hermes-content-studio/scripts/validate-output.sh instagram-context content/packages/YYYY-MM-DD_instagram-context.md
-~/hermes-content-studio/scripts/validate-output.sh instagram content/instagram/YYYY-MM-DD_instagram_*.md
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh instagram-context content/packages/YYYY-MM-DD_instagram-context.md
+~/Hermes_Harness_dailybrief/scripts/validate-output.sh instagram content/instagram/YYYY-MM-DD_instagram_*.md
 ```
 
 ## 품질 (`config/content-guidelines.yaml#instagram`)

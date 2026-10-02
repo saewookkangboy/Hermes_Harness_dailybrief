@@ -16,7 +16,7 @@
 ## 결정적 경로 (기본)
 
 ```bash
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 ```
 
 → `linkedin-context.md` + `linkedin_*.md` (규칙 기반, OpenAI 불필요)
@@ -24,13 +24,13 @@
 ## M3 LLM 경로 (선택)
 
 ```bash
-HERMES_ENHANCE=1 ~/hermes-content-studio/scripts/run-content-package.sh
+HERMES_ENHANCE=1 ~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 ```
 
 또는:
 
 ```bash
-~/hermes-content-studio/scripts/hermes-run.sh \
+~/Hermes_Harness_dailybrief/scripts/hermes-run.sh \
   "M3 LinkedIn: brief 기반 analyze→strategy→draft. 04-validate 체크리스트 준수." \
   --skills channel-linkedin -t hermes-cli
 ```

@@ -6,7 +6,7 @@ import json
 import time
 from pathlib import Path
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 DEDUPE_PATH = WORKDIR / ".harness" / "notify-dedupe.json"
 TTL_SEC = 120
 

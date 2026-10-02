@@ -2,7 +2,7 @@
 # Notion OAuth 지속 감시 — 2h cron · 선제 refresh · Telegram 알림 (이상 시만)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 # shellcheck source=lib/cron_bootstrap.sh
 source "$WORKDIR/scripts/lib/cron_bootstrap.sh"
 # shellcheck source=lib/studio-date.sh

@@ -10,9 +10,9 @@ HERMES_PY="$HOME/.hermes/hermes-agent/venv/bin/python"
 
 run_py() { if [[ -x "$HERMES_PY" ]]; then "$HERMES_PY" "$@"; else python3 "$@"; fi; }
 
-run_py - "$CH" <<'PY'
-import json, sys, urllib.request
-sys.path.insert(0, "/Users/chunghyo/hermes-content-studio/scripts")
+HERMES_SCRIPTS_DIR="$DIR" run_py - "$CH" <<'PY'
+import json, os, sys, urllib.request
+sys.path.insert(0, os.environ["HERMES_SCRIPTS_DIR"])
 from lib.slack_notify import get_bot_token
 
 ch = sys.argv[1]

@@ -14,7 +14,7 @@ from lib.voice_style_audit import (
     audit_mid_truncation,
 )
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 FIXTURES_DIR = WORKDIR / "tests" / "fixtures" / "voice"
 
 _FIRST_PERSON = re.compile(r"(저는|제가|돌려보니|현장에서|컨설팅 현장)")

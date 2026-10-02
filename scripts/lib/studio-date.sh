@@ -15,7 +15,7 @@ studio_refresh_date() {
 # content/packages 또는 research에 해당 날짜 산출물 존재 여부
 studio_has_content_for() {
   local d="${1:-$(studio_today)}"
-  local w="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+  local w="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
   [[ -f "$w/content/research/${d}_brief.md" ]] && return 0
   [[ -f "$w/content/packages/${d}_unified-context.md" ]] && return 0
   return 1
@@ -24,7 +24,7 @@ studio_has_content_for() {
 # Notion sync용: 인자 없으면 오늘, 오늘 산출물 없으면 최신 brief 날짜(경고)
 studio_resolve_archive_date() {
   local requested="${1:-}"
-  local w="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+  local w="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
   local today
   today="$(studio_today)"
 
@@ -54,7 +54,7 @@ studio_resolve_archive_date() {
 
 # Telegram/슬래시 커맨더 — 오늘 우선, 없으면 최신 brief 1건
 studio_latest_brief_date() {
-  local w="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+  local w="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
   local latest
   latest=$(ls -t "$w/content/research/"*_brief.md 2>/dev/null | grep -v SEED | head -1 || true)
   if [[ -n "$latest" ]]; then

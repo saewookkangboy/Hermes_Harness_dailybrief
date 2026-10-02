@@ -65,16 +65,16 @@ P0 INPUT → P1 CONTEXT → P2 ASSEMBLE → P3 VALIDATE → P4 ARCHIVE → [P5 E
 
 ```bash
 # 결정적 전체 (권장, ~45s)
-~/hermes-content-studio/scripts/run-pipeline.sh
+~/Hermes_Harness_dailybrief/scripts/run-pipeline.sh
 
 # M1만
-~/hermes-content-studio/scripts/run-research-brief.sh
+~/Hermes_Harness_dailybrief/scripts/run-research-brief.sh
 
 # M2만 (brief 필요)
-~/hermes-content-studio/scripts/run-content-package.sh
+~/Hermes_Harness_dailybrief/scripts/run-content-package.sh
 
 # Telegram E2E
-~/hermes-content-studio/scripts/telegram-pipeline.sh pipeline
+~/Hermes_Harness_dailybrief/scripts/telegram-pipeline.sh pipeline
 ```
 
 ## Handoff 규칙

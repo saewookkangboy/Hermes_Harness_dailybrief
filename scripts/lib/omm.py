@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 OMM_PATH = WORKDIR / ".harness" / "omm.jsonl"
 JARVIS_PATH = WORKDIR / "JARVIS.md"
 

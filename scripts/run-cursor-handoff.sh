@@ -15,7 +15,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 HANDOFF_DIR="$WORKDIR/content/drafts/cursor-handoff"
 LOG="${HERMES_CURSOR_LOG:-$HOME/.hermes/logs/cursor-handoff.log}"
 DATE="${DATE:-$(date +%Y-%m-%d)}"

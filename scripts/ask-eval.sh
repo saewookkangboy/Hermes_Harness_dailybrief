@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # /ask 토큰·품질 비교 eval. --compare 는 legacy vs graph 양쪽 실행.
 set -euo pipefail
-STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$HOME/hermes-content-studio}}"
+STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}}"
 cd "$STUDIO"
 
 MODE="graph"

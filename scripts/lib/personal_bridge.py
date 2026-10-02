@@ -8,7 +8,7 @@ from pathlib import Path
 
 from lib.common import studio_today, truncate
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 PERSONAL_DIR = WORKDIR / "content" / "personal"
 INBOX_PATH = PERSONAL_DIR / "_inbox_candidates.json"
 

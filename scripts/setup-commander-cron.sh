@@ -2,7 +2,7 @@
 # 결정적 Commander cron — 모닝 브리핑 · 헬스 알림 (--no-agent)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 HERMES_SCRIPTS="$HOME/.hermes/scripts"
 DELIVER="${CRON_DELIVER:-telegram}"
 SCRIPTS_DIR="$WORKDIR/scripts"
@@ -24,15 +24,24 @@ echo ""
 
 mkdir -p "$HERMES_SCRIPTS"
 
+# 복사본은 ~/.hermes/scripts 에서 실행되므로 자기 위치로 워크스페이스를 찾을 수 없음 — 배포 시 경로 고정
+_deploy_pinned() {
+  local src="$1" dest="$2"
+  {
+    head -n 1 "$src"
+    printf ': "${HERMES_WORKDIR:=%s}"; export HERMES_WORKDIR\n' "$WORKDIR"
+    tail -n +2 "$src"
+  } >"$dest"
+  chmod +x "$dest"
+}
+
 _deploy_cron_script() {
   local name="$1"
-  cp "$WORKDIR/scripts/${name}" "$HERMES_SCRIPTS/${name}"
-  chmod +x "$HERMES_SCRIPTS/${name}"
+  _deploy_pinned "$WORKDIR/scripts/${name}" "$HERMES_SCRIPTS/${name}"
 }
 
 # bootstrap: ~/.hermes/scripts 에서 source (workspace lib/ 과 동일 내용)
-cp "$WORKDIR/scripts/lib/cron_bootstrap.sh" "$HERMES_SCRIPTS/cron_bootstrap.sh"
-chmod +x "$HERMES_SCRIPTS/cron_bootstrap.sh"
+_deploy_pinned "$WORKDIR/scripts/lib/cron_bootstrap.sh" "$HERMES_SCRIPTS/cron_bootstrap.sh"
 
 chmod +x "$WORKDIR/scripts/cron-morning-brief.sh" "$WORKDIR/scripts/cron-health-alert.sh" \
   "$WORKDIR/scripts/cron-daily-content-triage.sh" "$WORKDIR/scripts/cron-supervised-pipeline.sh" \
@@ -87,9 +96,6 @@ _create "cron-supervised-pipeline" "0 10 * * 1-5" "cron-supervised-pipeline.sh"
 _create "cron-health-alert" "0 10,18 * * *" "cron-health-alert.sh"
 _create "cron-notion-oauth-watch" "0 */2 * * *" "cron-notion-oauth-watch.sh"
 
-chmod +x "$WORKDIR/scripts/cron-weekly-graph-digest.sh"
-cp "$WORKDIR/scripts/cron-weekly-graph-digest.sh" "$HERMES_SCRIPTS/cron-weekly-graph-digest.sh"
-chmod +x "$HERMES_SCRIPTS/cron-weekly-graph-digest.sh"
 _create "cron-weekly-graph" "0 9 * * 1" "cron-weekly-graph-digest.sh"
 
 _create "cron-publish-schedule" "*/15 * * * *" "cron-publish-schedule.sh"

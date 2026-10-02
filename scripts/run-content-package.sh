@@ -2,7 +2,7 @@
 # Hermes Content Studio — 콘텐츠 패키지 (Brief SoT → blog · instagram · linkedin)
 set -euo pipefail
 
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 SCRIPTS="$WORKDIR/scripts"
 # shellcheck source=lib/studio-date.sh
 source "$SCRIPTS/lib/studio-date.sh"

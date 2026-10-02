@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 주간 Reflector. 신호 수집은 결정적, LLM은 1회만.
 set -euo pipefail
-STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$HOME/hermes-content-studio}}"
+STUDIO="${HERMES_STUDIO:-${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}}"
 cd "$STUDIO"
 
 DAYS=7

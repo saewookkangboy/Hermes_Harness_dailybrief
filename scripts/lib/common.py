@@ -8,7 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 
 
 def studio_today() -> str:

@@ -16,7 +16,7 @@ from lib.common import studio_today
 from lib.newsletter_complete import audit_newsletter_md
 from lib.notion_quality import assess_content
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 SCRIPTS = WORKDIR / "scripts"
 LOGS_DIR = WORKDIR / "content" / "logs"
 NOTION_CFG = WORKDIR / "config" / "notion-archive.yaml"

@@ -4,7 +4,7 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKDIR="${HERMES_WORKDIR:-$HOME/hermes-content-studio}"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 # Prefer explicit stamp; default today
 STAMP="${1:-$(date +%Y-%m-%d)}"
 REPORT="$WORKDIR/content/logs/${STAMP}_research-functional-stress.md"
@@ -100,7 +100,7 @@ rid = "_stress_iso"
 write_staging(run_id=rid, stamp="2099-12-31", mode="replace", keywords="iso", brief_text="# t\n", insight_count=0)
 assert any(i["run_id"] == rid for i in list_pending())
 assert "research staging" in format_pending_status()
-shutil.rmtree(Path.home() / "hermes-content-studio/content/research/_staging" / rid, ignore_errors=True)
+shutil.rmtree(Path("$WORKDIR") / "content/research/_staging" / rid, ignore_errors=True)
 
 brief = Path("content/research/${STAMP}_brief.md")
 # resolve latest if missing
@@ -131,9 +131,9 @@ grep -q research-pending config/playmcp-routing.yaml && record PASS "playmcp has
 grep -q '리서치 승인' config/agent-commands.yaml && record PASS "agent-commands research-approve" || record FAIL "agent-commands"
 grep -qE 'bare 승인|승인 alone' config/slack-routing.yaml && record PASS "NL collision documented" || record FAIL "NL collision docs"
 
-PARSE_CHECK=$(bash <<'BASH' 2>&1 || true
+PARSE_CHECK=$(HERMES_SCRIPTS_DIR="$DIR" bash <<'BASH' 2>&1 || true
 set -euo pipefail
-DIR="$HOME/hermes-content-studio/scripts"
+DIR="$HERMES_SCRIPTS_DIR"
 eval "$(sed -n '/^parse_research_args()/,/^}/p' "$DIR/telegram-pipeline.sh")"
 eval "$(sed -n '/^detect_action()/,/^}/p' "$DIR/telegram-pipeline.sh")"
 out=$(parse_research_args "/research RAG 평가 --replace")

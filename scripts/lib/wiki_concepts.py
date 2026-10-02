@@ -7,7 +7,7 @@ from pathlib import Path
 from lib.common import compress_sentences, truncate
 from lib.content_quality import Insight, _insight_topic_key
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 CONCEPTS_DIR = WORKDIR / "content" / "wiki" / "concepts"
 
 

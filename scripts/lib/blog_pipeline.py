@@ -12,7 +12,7 @@ from lib.content_quality import Insight, build_blog_html, parse_brief
 from lib.harness import timed_stage
 from lib.wiki_concepts import wiki_blurb_for_insight
 
-WORKDIR = Path.home() / "hermes-content-studio"
+WORKDIR = Path(__file__).resolve().parents[2]
 PACKAGES = WORKDIR / "content" / "packages"
 BLOG_DIR = WORKDIR / "content" / "blog"
 HANDOFF_DIR = WORKDIR / ".harness" / "handoffs"

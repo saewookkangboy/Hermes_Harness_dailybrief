@@ -2,7 +2,7 @@
 # Hermes Content Studio — cron 작업 등록 (일일 리서치 + 주간 콘텐츠)
 set -euo pipefail
 
-WORKDIR="$HOME/hermes-content-studio"
+WORKDIR="${HERMES_WORKDIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 echo "=== Cron 작업 등록 (Asia/Seoul) ==="
 
 # 기존 중복 Daily AI Marketing Brief 제거

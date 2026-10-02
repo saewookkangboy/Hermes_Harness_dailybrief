@@ -2,7 +2,7 @@
 # Tier 3 upstream integration eval (Delivery · Social)
 set -euo pipefail
 DATE="${1:-2026-07-12}"
-PARENT="${HERMES_PARENT_STUDIO:-$HOME/hermes-content-studio}"
+PARENT="${HERMES_PARENT_STUDIO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 PASS=0
 FAIL=0
 
