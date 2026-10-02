@@ -1,0 +1,68 @@
+{
+  "cdp": {
+    "keyword": "CDP 도입 방법",
+    "runs": 8,
+    "domain": "data_crm",
+    "intent": "how_to",
+    "last_stamp": "2026-10-02",
+    "gates": "relevance=PASS · coverage=PASS · diversity=PASS · blueprint=PASS · future=PASS · channel=PASS · validate=PASS",
+    "paths": {
+      "spec": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/topic_spec.json",
+      "evidence": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_evidence_cdp.json",
+      "research": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_research_cdp.md",
+      "ax-blueprint": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_ax-blueprint_cdp.md",
+      "resource-map": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_resource-map_cdp.md",
+      "future-ahead": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_future-ahead_cdp.md",
+      "blog": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_blog_cdp.md",
+      "linkedin": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_linkedin_cdp.md",
+      "newsletter": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_newsletter_cdp.md",
+      "threads": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_threads_cdp.md",
+      "instagram": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_instagram_cdp.md",
+      "topic-pack": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/cdp/2026-10-02_topic-pack_cdp.md"
+    }
+  },
+  "short-form-video-commerce": {
+    "keyword": "숏폼 커머스",
+    "runs": 5,
+    "domain": "commerce",
+    "intent": "trend",
+    "last_stamp": "2026-10-02",
+    "gates": "relevance=PASS · coverage=PASS · diversity=PASS · blueprint=PASS · future=PASS · channel=PASS · validate=PASS",
+    "paths": {
+      "spec": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/topic_spec.json",
+      "evidence": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_evidence_short-form-video-commerce.json",
+      "research": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_research_short-form-video-commerce.md",
+      "ax-blueprint": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_ax-blueprint_short-form-video-commerce.md",
+      "resource-map": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_resource-map_short-form-video-commerce.md",
+      "future-ahead": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_future-ahead_short-form-video-commerce.md",
+      "blog": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_blog_short-form-video-commerce.md",
+      "linkedin": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_linkedin_short-form-video-commerce.md",
+      "newsletter": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_newsletter_short-form-video-commerce.md",
+      "threads": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_threads_short-form-video-commerce.md",
+      "instagram": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_instagram_short-form-video-commerce.md",
+      "topic-pack": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/short-form-video-commerce/2026-10-02_topic-pack_short-form-video-commerce.md"
+    }
+  },
+  "rag-evaluation": {
+    "keyword": "RAG 평가",
+    "runs": 6,
+    "domain": "ai_tech",
+    "intent": "trend",
+    "last_stamp": "2026-10-02",
+    "gates": "relevance=PASS · coverage=PASS · diversity=PASS · blueprint=PASS · future=PASS · channel=PASS · validate=PASS",
+    "paths": {
+      "spec": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/topic_spec.json",
+      "evidence": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_evidence_rag-evaluation.json",
+      "research": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_research_rag-evaluation.md",
+      "ax-blueprint": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_ax-blueprint_rag-evaluation.md",
+      "resource-map": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_resource-map_rag-evaluation.md",
+      "future-ahead": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_future-ahead_rag-evaluation.md",
+      "blog": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_blog_rag-evaluation.md",
+      "linkedin": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_linkedin_rag-evaluation.md",
+      "newsletter": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_newsletter_rag-evaluation.md",
+      "threads": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_threads_rag-evaluation.md",
+      "instagram": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_instagram_rag-evaluation.md",
+      "topic-pack": "/Users/chunghyo/Hermes_Harness_dailybrief/content/topics/rag-evaluation/2026-10-02_topic-pack_rag-evaluation.md"
+    }
+  }
+}

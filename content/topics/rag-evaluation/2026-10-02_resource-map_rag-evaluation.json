@@ -1,0 +1,321 @@
+{
+  "topic": "RAG 평가",
+  "stamp": "2026-10-02",
+  "tools": [
+    {
+      "name": "Ragas",
+      "url": "https://docs.ragas.io",
+      "stage": "measurement",
+      "note": "RAG 평가",
+      "stage_label": "측정·분석",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "LangGraph",
+      "url": "https://www.langchain.com/langgraph",
+      "stage": "production",
+      "note": "에이전트 워크플로",
+      "stage_label": "콘텐츠 제작",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "Model Context Protocol",
+      "url": "https://modelcontextprotocol.io",
+      "stage": "distribution",
+      "note": "에이전트-도구 연결 표준",
+      "stage_label": "배포·채널 운영",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "GA4",
+      "url": "https://analytics.google.com",
+      "note": "웹·앱 분석",
+      "stage": "measurement",
+      "stage_label": "측정·분석",
+      "origin": "공통"
+    },
+    {
+      "name": "Looker Studio",
+      "url": "https://lookerstudio.google.com",
+      "note": "대시보드",
+      "stage": "measurement",
+      "stage_label": "측정·분석",
+      "origin": "공통"
+    },
+    {
+      "name": "NotebookLM",
+      "url": "https://notebooklm.google.com",
+      "note": "자료 기반 기획 요약",
+      "stage": "planning",
+      "stage_label": "기획·전략",
+      "origin": "공통"
+    },
+    {
+      "name": "Claude",
+      "url": "https://claude.ai",
+      "note": "장문 브리프·전략 초안",
+      "stage": "planning",
+      "stage_label": "기획·전략",
+      "origin": "공통"
+    },
+    {
+      "name": "Canva Magic Studio",
+      "url": "https://www.canva.com/magic",
+      "note": "디자인 변형 대량 생성",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "Gemini (Nano Banana)",
+      "url": "https://gemini.google.com",
+      "note": "이미지 생성·편집",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "CapCut",
+      "url": "https://www.capcut.com",
+      "note": "숏폼 편집 자동화",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "Perplexity",
+      "url": "https://www.perplexity.ai",
+      "note": "출처 기반 리서치",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "Google Trends",
+      "url": "https://trends.google.com",
+      "note": "검색 수요 추세",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "네이버 데이터랩",
+      "url": "https://datalab.naver.com",
+      "note": "국내 검색·쇼핑 트렌드",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "Optimizely",
+      "url": "https://www.optimizely.com",
+      "note": "실험·개인화",
+      "stage": "optimization",
+      "stage_label": "최적화·개인화",
+      "origin": "공통"
+    },
+    {
+      "name": "Braze",
+      "url": "https://www.braze.com",
+      "note": "CRM 메시지 자동화",
+      "stage": "optimization",
+      "stage_label": "최적화·개인화",
+      "origin": "공통"
+    },
+    {
+      "name": "n8n",
+      "url": "https://n8n.io",
+      "note": "셀프호스팅 워크플로 자동화",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "Zapier",
+      "url": "https://zapier.com",
+      "note": "SaaS 연결 자동화",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "Buffer",
+      "url": "https://buffer.com",
+      "note": "소셜 예약 발행",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    }
+  ],
+  "open_source": [
+    {
+      "name": "Tencent/WeKnora",
+      "url": "https://github.com/Tencent/WeKnora",
+      "stars": 31703,
+      "language": "Go",
+      "updated": "2026-10-01",
+      "freshness": 1.0,
+      "note": "Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki."
+    },
+    {
+      "name": "promptfoo/promptfoo",
+      "url": "https://github.com/promptfoo/promptfoo",
+      "stars": 25638,
+      "language": "TypeScript",
+      "updated": "2026-10-02",
+      "freshness": 1.0,
+      "note": "Test your prompts, agents, and RAGs. Red teaming/pentesting/vulnerability scanning for AI. Compare performance of GPT, Claude, Gemini, DeepSeek, and more. Simple declarative configs with command line and CI/CD integration. Used by OpenAI and Anthropic."
+    },
+    {
+      "name": "comet-ml/opik",
+      "url": "https://github.com/comet-ml/opik",
+      "stars": 22331,
+      "language": "Python",
+      "updated": "2026-10-02",
+      "freshness": 1.0,
+      "note": "Debug, evaluate, and monitor your LLM applications, RAG systems, and agentic workflows with comprehensive tracing, automated evaluations, and production-ready dashboards."
+    },
+    {
+      "name": "dataelement/bisheng",
+      "url": "https://github.com/dataelement/bisheng",
+      "stars": 12021,
+      "language": "Python",
+      "updated": "2026-09-30",
+      "freshness": 1.0,
+      "note": "BISHENG is an open LLM devops platform for next generation Enterprise AI applications. Powerful and comprehensive features include: GenAI workflow, RAG, Agent, Unified model management, Evaluation, SFT, Dataset Management, Enterprise-level System Management, Observability and."
+    },
+    {
+      "name": "Kiln-AI/Kiln",
+      "url": "https://github.com/Kiln-AI/Kiln",
+      "stars": 5154,
+      "language": "Python",
+      "updated": "2026-10-01",
+      "freshness": 1.0,
+      "note": "Build, Evaluate, and Optimize AI Systems. Includes evals, RAG, agents, fine-tuning, synthetic data generation, dataset management, MCP, and more."
+    }
+  ],
+  "papers": [
+    {
+      "title": "A Matryoshka Hierarchical RAG for Efficient Multi-Hop Question Answering",
+      "url": "http://arxiv.org/abs/2610.01767v1",
+      "published": "2026-10-01",
+      "freshness": 1.0,
+      "note": "Retrieval-Augmented Generation (RAG) systems for multi-hop Question Answering (QA) must balance retrieval quality with computational cost. This cost is incurred during indexing time, through the use of expensive Knowledge Graphs (KGs) or Large Language Models (LLMs) to generate."
+    },
+    {
+      "title": "Mapping the RAG Landscape: A Four Axis Taxonomy of Efficiency, Defense, Interactivity, and Reasoning",
+      "url": "http://arxiv.org/abs/2610.01936v1",
+      "published": "2026-10-01",
+      "freshness": 1.0,
+      "note": "Large Language Models (LLMs) have demonstrated remarkable fluency across many tasks but remain limited by their static, parameter bound knowledge and their susceptibility to hallucinating information."
+    },
+    {
+      "title": "Walking the Embedding Space: Datastore Extraction from Multimodal RAG",
+      "url": "http://arxiv.org/abs/2610.01871v1",
+      "published": "2026-10-01",
+      "freshness": 1.0,
+      "note": "Multimodal Retrieval-Augmented Generation (MRAG) has emerged as a reliable and cost-effective technique of grounding the generative capabilities of Multimodal Large Language Models (MLLMs) into relevant, up-to-date, external knowledge."
+    }
+  ],
+  "latest": [
+    {
+      "title": "지식광장네트워크, 노인 영양상태 분석·식품 추천 AI 시스템 납품",
+      "url": "https://www.mt.co.kr/future/2026/09/30/2026093013290896008",
+      "source": "news",
+      "published": "2026-10-01",
+      "freshness": 1.0
+    },
+    {
+      "title": "Dnotitia Brings Dedicated Vector Silicon to Server Scale at AI Infra Summit 2026",
+      "url": "https://www.design-reuse.com/news/202531148-dnotitia-brings-dedicated-vector-silicon-to-server-scale-at-ai-infra-summit-2026",
+      "source": "news",
+      "published": "2026-09-18",
+      "freshness": 1.0
+    },
+    {
+      "title": "GenAI Hiring Surge: Top Skills, Salaries, and Cities Indian Employers Want in 2026",
+      "url": "https://www.careerindia.com/news/genai-hiring-surge-india-2026-top-skills-salary-packages-cities-011-65139.html",
+      "source": "news",
+      "published": "2026-09-05",
+      "freshness": 1.0
+    },
+    {
+      "title": "RAG 시스템, 어떻게 평가해야 할까? — RAGAS로 정량적 품질 검증 - CH",
+      "url": "https://blog.choonzang.com/it/ai/4990",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "7 Best Open-Source RAG Frameworks For Production AI Projects",
+      "url": "https://www.designveloper.com/blog/best-open-source-rag-framework",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "GitHub - Rohit2332000/RAG_EVALIUATION_using_DeepEVAL: End-to",
+      "url": "https://github.com/Rohit2332000/RAG_EVALIUATION_using_DeepEVAL",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "open-rag-eval: RAG evaluation without golden answers",
+      "url": "https://hysenlabs.com/projects/vectara-open-rag-eval",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "RAG Testing and Evaluation: How to Validate Retrieval",
+      "url": "https://shiftasia.com/column/rag-testing-and-evaluation-how-to-validate-rag-systems",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    }
+  ],
+  "learning": [
+    {
+      "name": "Retrieval-Augmented Generation (RAG): The Complete Guide to How AI Chooses, Retrieves, and Cites Web Pages",
+      "url": "https://almcorp.com/retrieval-augmented-generation-rag-complete-guide",
+      "note": "Search engines used to be simple systems where people asked a question, algorithms ranked pages, and then they clicked through links to get their answer. This paradigm is shifting because of."
+    },
+    {
+      "name": "Two books to read before putting AI agents into production. What is the difference between \"evaluation\" and \"safety\"?",
+      "url": "https://note.com/alive_fairy7015/n/n7d3f095f4f8b?hl=en",
+      "note": "When you start using Claude Code or Codex, the first hurdle is \"how to build.\" Once you can set up the environment, issue instructions, connect tools, and run tests, AI agents become \"things that work."
+    },
+    {
+      "name": "RAG 평가 — ragas·faithfulness로 검색 품질 재는 법",
+      "url": "https://labelwebs.tistory.com/583",
+      "note": "RAG 평가를 검색하면 ‘평가지표·방법·ragas’가 함께 뜹니다. RAG를 돌리는데 ‘답이 맞는지 감으로만 보는’ 분께, RAG 평가의 지표·ragas·측정 루틴을 실전으로 정리합니다.🎯 무엇을 재나 — 검색과 생성, 따로따로RAG 평가는 두 덩이입니다."
+    },
+    {
+      "name": "Google Skillshop",
+      "url": "https://skillshop.withgoogle.com",
+      "note": "광고·분석 공식 교육"
+    },
+    {
+      "name": "HubSpot Academy",
+      "url": "https://academy.hubspot.com",
+      "note": "인바운드·콘텐츠 마케팅"
+    },
+    {
+      "name": "DeepLearning.AI Short Courses",
+      "url": "https://www.deeplearning.ai/short-courses",
+      "note": "생성형 AI 실습"
+    },
+    {
+      "name": "Anthropic Docs",
+      "url": "https://docs.anthropic.com",
+      "note": "에이전트·프롬프트 설계"
+    },
+    {
+      "name": "OpenAI Cookbook",
+      "url": "https://cookbook.openai.com",
+      "note": "API 활용 예제"
+    }
+  ],
+  "freshness_avg": 0.76
+}

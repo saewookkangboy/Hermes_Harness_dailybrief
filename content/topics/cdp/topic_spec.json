@@ -1,0 +1,26 @@
+{
+  "keyword": "CDP 도입 방법",
+  "slug": "cdp",
+  "stamp": "2026-10-02",
+  "tokens": [
+    "cdp"
+  ],
+  "en_tokens": [
+    "customer data platform"
+  ],
+  "ko_query": "CDP 도입",
+  "en_query": "cdp customer data platform",
+  "core_groups": [
+    [
+      "cdp",
+      "customer data platform",
+      "customerdataplatform"
+    ]
+  ],
+  "domain": "data_crm",
+  "domain_label": "데이터·CRM",
+  "secondary_domains": [],
+  "intent": "how_to",
+  "intent_label": "실행 가이드",
+  "audience": "마케팅 실무자·팀 리드·AX 의사결정자"
+}

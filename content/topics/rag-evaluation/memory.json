@@ -1,0 +1,71 @@
+{
+  "runs": [
+    {
+      "stamp": "2026-10-02",
+      "recorded_at": "2026-10-02T08:47:15+00:00",
+      "urls": [
+        "https://github.com/Tencent/WeKnora",
+        "https://github.com/promptfoo/promptfoo",
+        "https://github.com/dataelement/bisheng",
+        "https://github.com/Kiln-AI/Kiln",
+        "http://arxiv.org/abs/2610.01767v1",
+        "https://almcorp.com/retrieval-augmented-generation-rag-complete-guide",
+        "https://note.com/alive_fairy7015/n/n7d3f095f4f8b?hl=en",
+        "https://github.com/comet-ml/opik",
+        "http://arxiv.org/abs/2610.01936v1",
+        "http://arxiv.org/abs/2610.01871v1",
+        "https://labelwebs.tistory.com/583",
+        "https://blog.choonzang.com/it/ai/4990",
+        "https://claudecode.to/docs/rag-quality-improvement",
+        "https://www.kunalganglani.com/blog/rag-evaluation-metrics-retrieval-quality",
+        "https://www.promptfoo.dev/docs/guides/evaluate-rag",
+        "https://blog.redhub.ai/rag-evaluation",
+        "https://docs.databricks.com/aws/en/agents/retrieval-augmented-generation",
+        "https://consciousengines.com/blog/morgan-stanley-eval-driven-rag-case-study",
+        "https://www.designveloper.com/blog/best-open-source-rag-framework",
+        "https://github.com/Rohit2332000/RAG_EVALIUATION_using_DeepEVAL",
+        "https://hysenlabs.com/projects/vectara-open-rag-eval",
+        "https://shiftasia.com/column/rag-testing-and-evaluation-how-to-validate-rag-systems",
+        "https://blog.saaro.net/en/rag-evaluation-2026-die-vier-kernmetriken-und-wie-man-sie-di",
+        "https://tools.zgba.com/tools/ragas",
+        "https://note.com/aka_sh/n/n9e993c07a5c1?hl=ko",
+        "https://ragaboutit.com/rag-evaluation-fixes",
+        "https://blog.bigshift.kr/기업용-rag-솔루션-선택-가이드-검색-정확도보안운영-방식으로-외주-업체-고르는-법",
+        "https://www.mt.co.kr/future/2026/09/30/2026093013290896008",
+        "https://www.outsourcing.co.kr/news/articleView.html?idxno=203885",
+        "https://www.design-reuse.com/news/202531148-dnotitia-brings-dedicated-vector-silicon-to-server-scale-at-ai-infra-summit-2026",
+        "https://www.careerindia.com/news/genai-hiring-surge-india-2026-top-skills-salary-packages-cities-011-65139.html",
+        "https://github.com/Udbhav748/AgroSense-RAG-Submission",
+        "https://note.com/nice_stilt34/n/n30b206734251?hl=en",
+        "https://www.invenglobal.com/articles/25643/2026-asian-games-lol-national-team-evaluation-matches-to-be-held-in-busan-for-two-days-starting-sept-19",
+        "https://github.com/satwiki/RAG-orchestration-with-evals",
+        "https://uvik.net/case-studies/enterprise-rag-hybrid-retrieval-ai-data-pod",
+        "https://elevenlabs.io/ko/blog/retrieval-augmented-generation-rag",
+        "https://www.msap.ai/llm/what-is-rag",
+        "https://note.com/hike_inc/n/nefd439c42908?hl=ko",
+        "https://k-stockrookie.blogspot.com/2026/09/k-ai-06-enterprise-ai-rag-data-governance-security.html"
+      ],
+      "lens_counts": {
+        "tech_tools": 16,
+        "future_signals": 6,
+        "definition": 13,
+        "use_cases": 10,
+        "risk_regulation": 5,
+        "market_news": 3,
+        "korea": 2
+      },
+      "terms": [
+        "claude",
+        "genai",
+        "시스템",
+        "open-source",
+        "기업용"
+      ],
+      "relevant_count": 40,
+      "new_count": 40,
+      "gates_passed": true
+    }
+  ],
+  "keyword": "RAG 평가",
+  "slug": "rag-evaluation"
+}

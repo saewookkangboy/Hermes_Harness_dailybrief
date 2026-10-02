@@ -1,21 +1,20 @@
 ---
 topic_key: workspace_agents
-updated_at: 2026-07-13
-source_count: 13
-streak_days: 6
+updated_at: 2026-10-02
+source_count: 6
+streak_days: 3
 ---
 
-# 2026 AI·마케팅 실무 인사이트
+# OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향
 
 ## 최신 요약
-2026 AI·마케팅 실무 인사이트
+OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향
 
 ## 출처
-- 2026-07-13: [2026 AI·마케팅 실무 인사이트](https://www.linkedin.com/pulse/june-2026-updates-chatgpt-advertising-bram-van-der-hallen-of00e)
-- 2026-07-12: [OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향](https://techstory.com.au/2026/01/07/openai-reportedly-prepares-to-test-advertisements-in-chatgpt/)
-- 2026-07-11: [2026 AEO(Answer Engine Optimization) 실무 가이드](https://www.nicodigital.com/ai-search-statistics-2026/)
-- 2026-07-10: [ChatGPT 릴리스 노트 주간 펄스](https://help.openai.com/en/articles/6825453-chatgpt-release-notes)
-- 2026-07-09: [ChatGPT 릴리스 노트 주간 펄스](https://help.openai.com/en/articles/11391654-codex-updates)
+- 2026-08-07: [OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향](https://www.businessinsider.com/openai-ad-upgrades-chatgpt-ramps-up-global-reach-2026-8)
+- 2026-08-06: [OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향](https://techxplore.com/news/2026-01-openai-ads-chatgpt-door-dangerous.html)
+- 2026-08-05: [이번 주 B2B AI 실무 신호](https://www.linkedin.com/pulse/june-2026-updates-chatgpt-advertising-bram-van-der-hallen-of00e)
+- 2026-08-03: [OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향](https://digiday.com/marketing/openais-chatgpt-reaches-the-coupon-stage-of-building-an-ad-business/)
 
 ## 관련
 [[ai_ide]] · [[general]] · [[korea_ax]] · [[llm_anthropic]]

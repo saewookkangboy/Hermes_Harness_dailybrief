@@ -1,0 +1,36 @@
+{
+  "keyword": "숏폼 커머스",
+  "slug": "short-form-video-commerce",
+  "stamp": "2026-10-02",
+  "tokens": [
+    "숏폼",
+    "커머스"
+  ],
+  "en_tokens": [
+    "short-form video",
+    "commerce"
+  ],
+  "ko_query": "숏폼 커머스",
+  "en_query": "short-form video commerce",
+  "core_groups": [
+    [
+      "숏폼",
+      "short-form video",
+      "short form video",
+      "short-formvideo",
+      "short-form"
+    ],
+    [
+      "커머스",
+      "commerce"
+    ]
+  ],
+  "domain": "commerce",
+  "domain_label": "커머스·리테일",
+  "secondary_domains": [
+    "content_social"
+  ],
+  "intent": "trend",
+  "intent_label": "트렌드 파악",
+  "audience": "마케팅 실무자·팀 리드·AX 의사결정자"
+}

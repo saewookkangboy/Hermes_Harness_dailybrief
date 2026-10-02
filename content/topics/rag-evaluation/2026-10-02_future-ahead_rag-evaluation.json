@@ -1,0 +1,150 @@
+{
+  "topic": "RAG 평가",
+  "stamp": "2026-10-02",
+  "predictions": [
+    {
+      "horizon": "now",
+      "label": "Now (0–6개월)",
+      "statement": "앞으로 6개월 안에는 'RAG 평가'의 정의·개념 신호가 실무 의사결정으로 이어질 가능성이 커요. 대표 근거는 'Retrieval-Augmented Generation (RAG): The Complete Guide to How AI Chooses, Retrieves, and Cites Web Pages'예요.",
+      "signals": [
+        {
+          "title": "Retrieval-Augmented Generation (RAG): The Complete Guide to How AI Chooses, Retrieves, and Cites Web Pages",
+          "url": "https://almcorp.com/retrieval-augmented-generation-rag-complete-guide",
+          "lens": "definition"
+        },
+        {
+          "title": "Two books to read before putting AI agents into production. What is the difference between \"evaluation\" and \"safety\"?",
+          "url": "https://note.com/alive_fairy7015/n/n7d3f095f4f8b?hl=en",
+          "lens": "definition"
+        },
+        {
+          "title": "RAG 평가 — ragas·faithfulness로 검색 품질 재는 법",
+          "url": "https://labelwebs.tistory.com/583",
+          "lens": "definition"
+        }
+      ],
+      "confidence": 0.8,
+      "confidence_label": "높음"
+    },
+    {
+      "horizon": "next",
+      "label": "Next (6–18개월)",
+      "statement": "6~18개월 사이에는 도구·플랫폼 통합 역량이 'RAG 평가' 성과 격차를 만들 거예요. 'Tencent/WeKnora' 같은 신호가 그 방향을 보여 줘요.",
+      "signals": [
+        {
+          "title": "Tencent/WeKnora",
+          "url": "https://github.com/Tencent/WeKnora",
+          "lens": "tech_tools"
+        },
+        {
+          "title": "promptfoo/promptfoo",
+          "url": "https://github.com/promptfoo/promptfoo",
+          "lens": "tech_tools"
+        },
+        {
+          "title": "dataelement/bisheng",
+          "url": "https://github.com/dataelement/bisheng",
+          "lens": "tech_tools"
+        }
+      ],
+      "confidence": 0.82,
+      "confidence_label": "높음"
+    },
+    {
+      "horizon": "future",
+      "label": "Future (18–36개월)",
+      "statement": "18~36개월 뒤 'RAG 평가'의 판도는 claude, genai, 시스템 같은 신규 용어에서 먼저 드러날 수 있어요. 초기 단서는 'A Matryoshka Hierarchical RAG for Efficient Multi-Hop Question Answering'예요.",
+      "signals": [
+        {
+          "title": "A Matryoshka Hierarchical RAG for Efficient Multi-Hop Question Answering",
+          "url": "http://arxiv.org/abs/2610.01767v1",
+          "lens": "future_signals"
+        },
+        {
+          "title": "Mapping the RAG Landscape: A Four Axis Taxonomy of Efficiency, Defense, Interactivity, and Reasoning",
+          "url": "http://arxiv.org/abs/2610.01936v1",
+          "lens": "future_signals"
+        },
+        {
+          "title": "Walking the Embedding Space: Datastore Extraction from Multimodal RAG",
+          "url": "http://arxiv.org/abs/2610.01871v1",
+          "lens": "future_signals"
+        }
+      ],
+      "confidence": 0.7,
+      "confidence_label": "높음"
+    }
+  ],
+  "watchlist": [
+    "약한 신호 'claude' (2개 도메인)",
+    "약한 신호 'genai' (2개 도메인)",
+    "약한 신호 '시스템' (2개 도메인)",
+    "약한 신호 'open-source' (3개 도메인)",
+    "약한 신호 '기업용' (2개 도메인)"
+  ],
+  "weak_signals": [
+    {
+      "term": "claude",
+      "domains": 2,
+      "share": 0.07,
+      "freshness": 1.0
+    },
+    {
+      "term": "genai",
+      "domains": 2,
+      "share": 0.07,
+      "freshness": 1.0
+    },
+    {
+      "term": "시스템",
+      "domains": 2,
+      "share": 0.07,
+      "freshness": 0.75
+    },
+    {
+      "term": "open-source",
+      "domains": 3,
+      "share": 0.11,
+      "freshness": 0.67
+    },
+    {
+      "term": "기업용",
+      "domains": 2,
+      "share": 0.07,
+      "freshness": 0.5
+    }
+  ],
+  "graph_signals": [],
+  "lens_trend": [],
+  "axes": {
+    "x": "모델 비용 하락 속도",
+    "y": "거버넌스 요구"
+  },
+  "scenarios": [
+    {
+      "name": "급락 · 자율 운영 허용",
+      "desc": "모델 비용 하락 속도는 급락, 거버넌스 요구는 자율 운영 허용 쪽으로 가는 경우예요. 먼저 실험한 팀이 데이터와 노하우를 쌓아 격차를 벌려요.",
+      "prepare": "Quick Win 자동화를 30일 안에 파일럿으로 돌려요."
+    },
+    {
+      "name": "급락 · 강한 통제",
+      "desc": "모델 비용 하락 속도는 급락, 거버넌스 요구는 강한 통제 쪽으로 가는 경우예요. 빠르게 도입하더라도 승인·기록 체계가 없으면 리스크가 커져요.",
+      "prepare": "HITL 승인 단계와 감사 로그를 먼저 갖춰요."
+    },
+    {
+      "name": "완만 · 자율 운영 허용",
+      "desc": "모델 비용 하락 속도는 완만, 거버넌스 요구는 자율 운영 허용 쪽으로 가는 경우예요. 큰 투자보다 저비용 실험을 꾸준히 이어 가는 편이 유리해요.",
+      "prepare": "효율 개선 과제부터 작은 자동화를 쌓아요."
+    },
+    {
+      "name": "완만 · 강한 통제",
+      "desc": "모델 비용 하락 속도는 완만, 거버넌스 요구는 강한 통제 쪽으로 가는 경우예요. 관망하면서 규제 대응 역량을 먼저 갖추는 게 안전해요.",
+      "prepare": "리스크 체크리스트와 데이터 거버넌스를 정비해요."
+    }
+  ],
+  "actions": [
+    "측정·분석: 'RAG 평가' 파일럿 범위를 정하고 '리포트 작성 시간·이상 탐지 리드타임' 기준선을 이번 주에 기록해요.",
+    "기획·전략: 'RAG 평가' 파일럿 범위를 정하고 '기획 사이클 타임(일)' 기준선을 이번 주에 기록해요.",
+    "콘텐츠 제작: 'RAG 평가' 파일럿 범위를 정하고 '에셋당 제작 시간·변형 수' 기준선을 이번 주에 기록해요."
+  ]
+}

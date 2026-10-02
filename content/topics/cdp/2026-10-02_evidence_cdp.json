@@ -1,0 +1,626 @@
+{
+  "topic": "CDP 도입 방법",
+  "stamp": "2026-10-02",
+  "raw_count": 60,
+  "relevant_count": 26,
+  "raw_ratio": 0.433,
+  "query_count": 23,
+  "lens_counts": {
+    "use_cases": 24,
+    "tech_tools": 22,
+    "market_news": 6,
+    "definition": 5,
+    "future_signals": 2
+  },
+  "source_type_counts": {
+    "news": 1,
+    "github": 2,
+    "web": 22,
+    "hn": 1
+  },
+  "domain_count": 18,
+  "new_count": 26,
+  "errors": [
+    "web:definition:CDP 도입 개념 정리 → DDGSException: No results found."
+  ],
+  "items": [
+    {
+      "id": "ev-48faa36de9",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "news",
+      "query": "cdp customer data platform risks challenges",
+      "title": "Zeotap launches Open CDP: the first fully composable CDP that runs on open-source compute and the customer's own lakehouse — sovereign by",
+      "url": "https://markets.businessinsider.com/news/stocks/zeotap-launches-open-cdp-the-first-fully-composable-cdp-that-runs-on-open-source-compute-and-the-customer-s-own-lakehouse-sovereign-by-design-1036547781",
+      "domain": "markets.businessinsider.com",
+      "snippet": "The Zeotap Open CDP is available to qualified enterprise customers in Europe and elsewhere in the world. Zeotap works with each customer to model the deployment against their existing lakehouse.",
+      "published": "2026-09-14",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.932,
+      "is_new": true,
+      "meta": {
+        "publisher": "Markets Insider"
+      }
+    },
+    {
+      "id": "ev-8cc2443604",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "github",
+      "query": "cdp customer data platform",
+      "title": "Tracardi/tracardi",
+      "url": "https://github.com/Tracardi/tracardi",
+      "domain": "github.com",
+      "snippet": "TRACARDI is a new HOME for your customer data. TRACARDI is an Composable API-first solution for any company that need inexpensive CDP to intergrate with.",
+      "published": "2026-09-22",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.81,
+      "is_new": true,
+      "meta": {
+        "stars": 657,
+        "language": "Python",
+        "topics": [
+          "api-first",
+          "cdp",
+          "customer",
+          "customer-data-platform",
+          "e-commerce",
+          "elastic-search",
+          "hacktoberfest",
+          "headless",
+          "open-source",
+          "platform",
+          "python",
+          "tracardi",
+          "unomi",
+          "user-profile",
+          "web"
+        ]
+      }
+    },
+    {
+      "id": "ev-37a70820d6",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "github",
+      "query": "cdp customer data platform",
+      "title": "rudderlabs/rudder-sdk-js",
+      "url": "https://github.com/rudderlabs/rudder-sdk-js",
+      "domain": "github.com",
+      "snippet": "JavaScript SDK for RudderStack - the Customer Data Platform for Developers.",
+      "published": "2026-10-01",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.81,
+      "is_new": true,
+      "meta": {
+        "stars": 177,
+        "language": "TypeScript",
+        "topics": [
+          "analytics",
+          "cdp",
+          "customer-data",
+          "customer-data-pipeline",
+          "customer-data-platform",
+          "data-synchronization",
+          "hacktoberfest",
+          "javascript",
+          "marketing-analytics",
+          "marketing-automation",
+          "product-analytics",
+          "product-personalization",
+          "rudderstack",
+          "sdk",
+          "segment-alternative",
+          "web"
+        ]
+      }
+    },
+    {
+      "id": "ev-235daf8ebf",
+      "lens": "market_news",
+      "lenses": [
+        "market_news",
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform news 2026",
+      "title": "CDP Industry Statistics 2026: Market Size & Trends",
+      "url": "https://cdp.com/basics/cdp-industry-statistics",
+      "domain": "cdp.com",
+      "snippet": "According to the January 2025 Customer Data Platform Industry Update, net CDP employment rose by 675 (a 4% increase) to 17,350 and total funding rose by $988.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-0799b980bc",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "definition",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform tools platform 2026",
+      "title": "What Is a Customer Data Platform? CDP Guide [2026]",
+      "url": "https://cdp.com/basics/what-is-a-customer-data-platform-cdp",
+      "domain": "cdp.com",
+      "snippet": "What is a customer data platform (CDP)? A 2026 guide to how CDPs unify profiles, power AI activation, and how to pick the right CDP for your team.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-efd36a570e",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform tools platform 2026",
+      "title": "11 Best Customer Data Platforms (CDPs) Compared for 2026",
+      "url": "https://insiderone.com/best-customer-data-platform",
+      "domain": "insiderone.com",
+      "snippet": "The right customer data platform (CDP) helps businesses grow revenue and retention by delivering relevant experiences at every stage of the customer lifecycle. It does this by turning fragmented data into something teams can actually use.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-e50fea5682",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "market_news"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform case study marketing",
+      "title": "CDP market in 2026: key figures, trends and growth - DinMo",
+      "url": "https://www.dinmo.com/cdp/solutions/cdp-market",
+      "domain": "dinmo.com",
+      "snippet": "A practical business role: CDPs unify customer data and help marketing teams build audiences, personalise experiences and coordinate engagement across channels.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 5,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-bf5e0f8aff",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform open source",
+      "title": "Zeotap launches Open CDP: the first fully composable CDP",
+      "url": "https://finance.yahoo.com/technology/articles/zeotap-launches-open-cdp-first-173000824.html",
+      "domain": "finance.yahoo.com",
+      "snippet": "Open CDP, a new way to deploy its composable Customer Data Platform (CDP) that runs entirely on open-source compute over the customer's own lakehouse.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-023b7fd118",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform open source",
+      "title": "Zeotap Launches Open Customer Data Platform - LinkedIn",
+      "url": "https://www.linkedin.com/posts/martech360_zeotap-customerdataplatform-martech360-activity-7506308538688942080-jmWP",
+      "domain": "linkedin.com",
+      "snippet": "Open CDP takes composability down to the compute itself. Customers keep their data, their storage, and their catalog; we bring the open engine and the CDP.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-af6dd04fcd",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals",
+        "definition",
+        "market_news",
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform future trends 2027",
+      "title": "Customer Data Platform Market Size, Share, Trends & Forecast What Is a Customer Data Platform?",
+      "url": "https://www.fortunebusinessinsights.com/industry-reports/customer-data-platform-market-100633",
+      "domain": "fortunebusinessinsights.com",
+      "snippet": "Customer Data Platform (CDP) Market Latest Insights The global customer data platform (CDP) market size was valued at USD 3.28 billion in 2025 and is projected to grow from USD 4.07 billion in 2026 to USD 17.03 billion by 2034, exhibiting a CAGR of 19.60% during the forecast.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-d4544fb219",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals",
+        "market_news",
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform future trends 2027",
+      "title": "Adobe Customer Data Platform Trends Report 2026",
+      "url": "https://business.adobe.com/resources/sdk/agentic-era-for-cdps.html",
+      "domain": "business.adobe.com",
+      "snippet": "The response was near-universal: 98% say CDPs are essential for preparing for the agentic future. The value of a CDP is increasingly tied to whether it can make customer data usable in real time, with enough context and control to support AI-powered engagement.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-67952a2b17",
+      "lens": "market_news",
+      "lenses": [
+        "market_news",
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform news 2026",
+      "title": "Strategic Analysis of the Customer Data Platform (CDP",
+      "url": "https://www.linkedin.com/pulse/strategic-analysis-customer-data-platform-cdp-software-1jbqf",
+      "domain": "linkedin.com",
+      "snippet": "The Customer Data Platform Cdp Software Market was valued at USD 1.83 Billion in 2025 and is projected to reach USD 13.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-23c7dc7a0f",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform tools platform 2026",
+      "title": "The 15 Best Customer Data Platform (CDP) Companies for 2026",
+      "url": "https://www.softwaretestinghelp.com/best-customer-data-platform-cdp",
+      "domain": "softwaretestinghelp.com",
+      "snippet": "Comparison of top Customer Data Platforms with features, pros, cons, client details, etc. to identify the best CDP software as per your requirements: CDP stands for Customer Data Platform.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-c2346ccf92",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform tools platform 2026",
+      "title": "5 Best Customer Data Platforms 2026 (CDP Vendors) - cdp.com",
+      "url": "https://cdp.com/basics/cdp-vendors",
+      "domain": "cdp.com",
+      "snippet": "The 5 best customer data platforms in 2026, compared on pricing, implementation time, AI capabilities, and native execution — plus who each is best for.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-b8f4942c98",
+      "lens": "definition",
+      "lenses": [
+        "definition",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "CDP 도입 도입 사례",
+      "title": "고객데이터플랫폼 (CDP) 개념과 고객정보 합침, 왜 중요할까요?",
+      "url": "https://mm.jameweb.co.kr/고객데이터플랫폼cdp-개념과-고객정보-합침-왜-중요할",
+      "domain": "mm.jameweb.co.kr",
+      "snippet": "고객데이터플랫폼 (CDP)이란 무엇일까요? 고객데이터플랫폼 (CDP)은 다양한 소스에서 발생하는 고객 데이터를 수집, 통합, 분석하여 일관되고 통합된 고객 프로필 을 생성하는 기술 솔루션이에요. 웹사이트 방문 기록, 모바일 앱 사용 내역, 구매 정보, CRM 데이터, 소셜 미디어 활동 등 고객과의 모든.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-d0c0533eff",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "CDP 도입 도입 사례",
+      "title": "에이전시를 위한 Adobe Real-Time CDP Collaboration 사용 사례",
+      "url": "https://business.adobe.com/kr/resources/sdk/real-time-cdp-collaboration-for-agencies.html",
+      "domain": "business.adobe.com",
+      "snippet": "에이전시가 Real-Time CDP Collaboration을 활용해 여러 클라이언트와 함께 프라이버시 중심 캠페인을 활성화하고 최적화하며, 다양한 채널에서 가치를 제공하는 방법을 알아보세요.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-83e04b167b",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "what is cdp customer data platform",
+      "title": "Customer data platform - Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Customer_data_platform",
+      "domain": "en.wikipedia.org",
+      "snippet": "A Customer Data Platform (CDP) is a software system that aggregates and organizes customer data from various touchpoints to build a unified customer profile. Features · Types of Customer Data · Data activation.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-f0ab0b0805",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform risks challenges",
+      "title": "7 CDP Challenges in 2026 (And How to Overcome Them)",
+      "url": "https://cdp.com/articles/common-cdp-challenges",
+      "domain": "cdp.com",
+      "snippet": "The most common CDP challenges in 2026 are data quality and integration complexity, slow time to value, low adoption from non-technical teams, AI readiness.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-44dd690e7d",
+      "lens": "definition",
+      "lenses": [
+        "definition",
+        "market_news",
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform research",
+      "title": "What Is a Customer Data Platform? A Guide for New Businesses",
+      "url": "https://www.salesforce.com/marketing/data/what-is-a-customer-data-platform/smb",
+      "domain": "salesforce.com",
+      "snippet": "Learn how a Customer Data Platform (CDP) can help your new business connect customer data, improve targeting, and boost growth.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-291988e0c5",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform news 2026",
+      "title": "Top 5+ Vietnam Customer Data Platform Solutions in 2026",
+      "url": "https://www.tmasolutions.com/insights/vietnam-customer-data-platform",
+      "domain": "tmasolutions.com",
+      "snippet": "Discover top Vietnam customer data platform solutions in 2026. Compare leading CDP providers, core features, AI integration, and key selection criteria.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 0,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-1c9655cb1f",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform news 2026",
+      "title": "Klaviyo Data Platform: The Smarter CDP Built for Faster Results",
+      "url": "https://www.klaviyo.com/blog/customer-data-platform",
+      "domain": "klaviyo.com",
+      "snippet": "The article explains how Klaviyo Data Platform (KDP) functions as an embedded CDP that unifies customer data, marketing, and service in one system.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 0,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-8c0b5cc8db",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "cdp customer data platform case study marketing",
+      "title": "[PDF] Customer Data Platform Case Studies - ftp.mat-travel.com",
+      "url": "https://ftp.mat-travel.com/digest/kBwBlXnVkGXh/Customer_Data_Platform_Case_Studies",
+      "domain": "ftp.mat-travel.com",
+      "snippet": "Customer data platform case studies provide valuable insights into how organizations leverage technology to enhance their understanding of customer behavior.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 0,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-ccc26e9528",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "CDP 도입 도입 사례",
+      "title": "CDP Use Cases: 11 Enterprise Marketing Examples - Insider",
+      "url": "https://insiderone.com/cdp-use-cases",
+      "domain": "insiderone.com",
+      "snippet": "Explore 11 Customer data platform (CDP) use cases like data unification, personalization, and journey orchestration with real-life examples.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 0,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-ca538a32d2",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "CDP 도입 도입 사례",
+      "title": "Top CDP Use Cases and How To Develop Them",
+      "url": "https://cdp.com/articles/how-to-develop-cdp-use-cases",
+      "domain": "cdp.com",
+      "snippet": "Discover the top CDP use cases that drive ROI and learn a step-by-step process for developing use cases before selecting a customer data platform vendor.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 0,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-c79c587b36",
+      "lens": "definition",
+      "lenses": [
+        "definition",
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "what is cdp customer data platform",
+      "title": "What Is a CDP? Customer Data Platforms Explained - LiveRamp",
+      "url": "https://liveramp.com/blog/what-is-a-cdp-customer-data-platforms-explained",
+      "domain": "liveramp.com",
+      "snippet": "A customer data platform (CDP) collects, unifies, and activates first-party customer data within an organization's owned systems.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 0,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-62fbdbae8b",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "use_cases"
+      ],
+      "source_type": "hn",
+      "query": "cdp customer data platform",
+      "title": "Show HN: Blueshift – Customer Data Platform (CDP) for Marketing Applications",
+      "url": "https://app.getblueshift.com/users/sign_up",
+      "domain": "app.getblueshift.com",
+      "snippet": "Hacker News 16 points · 4 comments.",
+      "published": "2024-02-26",
+      "relevance": 1.0,
+      "freshness": 0.0,
+      "corroboration": 0,
+      "confidence": 0.47,
+      "is_new": true,
+      "meta": {
+        "points": 16
+      }
+    }
+  ]
+}

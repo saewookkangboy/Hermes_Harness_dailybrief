@@ -1,0 +1,982 @@
+{
+  "topic": "RAG 평가",
+  "stamp": "2026-10-02",
+  "raw_count": 69,
+  "relevant_count": 40,
+  "raw_ratio": 0.58,
+  "query_count": 23,
+  "lens_counts": {
+    "tech_tools": 16,
+    "future_signals": 6,
+    "definition": 13,
+    "use_cases": 10,
+    "risk_regulation": 5,
+    "market_news": 3,
+    "korea": 2
+  },
+  "source_type_counts": {
+    "github": 5,
+    "arxiv": 3,
+    "news": 9,
+    "web": 23
+  },
+  "domain_count": 28,
+  "new_count": 40,
+  "errors": [
+    "web:tech_tools:rag evaluation tools platform 2026 → DDGSException: ConnectError: ConnectError('error sending request for url (https://www.startpage",
+    "web:market_news:rag evaluation news 2026 → DDGSException: ConnectError: ConnectError('error sending request for url (https://www.startpage",
+    "web:risk_regulation:rag evaluation risks challenges → DDGSException: ConnectError: ConnectError('error sending request for url (https://www.startpage",
+    "web:future_signals:rag evaluation future trends 2027 → DDGSException: ConnectError: ConnectError('error sending request for url (https://www.startpage"
+  ],
+  "items": [
+    {
+      "id": "ev-cd80ba38bf",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "github",
+      "query": "rag evaluation",
+      "title": "Tencent/WeKnora",
+      "url": "https://github.com/Tencent/WeKnora",
+      "domain": "github.com",
+      "snippet": "Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki.",
+      "published": "2026-10-01",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.91,
+      "is_new": true,
+      "meta": {
+        "stars": 31703,
+        "language": "Go",
+        "topics": [
+          "agent",
+          "agentic",
+          "ai",
+          "chatbot",
+          "dsh-plugin",
+          "embeddings",
+          "evaluation",
+          "generative-ai",
+          "golang",
+          "knowledge-base",
+          "llm",
+          "multi-tenant",
+          "ollama",
+          "openai",
+          "question-answering",
+          "rag",
+          "reranking",
+          "semantic-search",
+          "vector-search",
+          "wiki"
+        ]
+      }
+    },
+    {
+      "id": "ev-bfbf32c9cf",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "github",
+      "query": "rag evaluation",
+      "title": "promptfoo/promptfoo",
+      "url": "https://github.com/promptfoo/promptfoo",
+      "domain": "github.com",
+      "snippet": "Test your prompts, agents, and RAGs. Red teaming/pentesting/vulnerability scanning for AI. Compare performance of GPT, Claude, Gemini, DeepSeek, and more. Simple declarative configs with command line and CI/CD integration. Used by OpenAI and Anthropic.",
+      "published": "2026-10-02",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 3,
+      "confidence": 0.91,
+      "is_new": true,
+      "meta": {
+        "stars": 25638,
+        "language": "TypeScript",
+        "topics": [
+          "ci",
+          "ci-cd",
+          "cicd",
+          "evaluation",
+          "evaluation-framework",
+          "llm",
+          "llm-eval",
+          "llm-evaluation",
+          "llm-evaluation-framework",
+          "llmops",
+          "pentesting",
+          "prompt-engineering",
+          "prompt-testing",
+          "prompts",
+          "rag",
+          "red-teaming",
+          "testing",
+          "vulnerability-scanners"
+        ]
+      }
+    },
+    {
+      "id": "ev-b6d0f73fe7",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "future_signals"
+      ],
+      "source_type": "github",
+      "query": "rag evaluation",
+      "title": "dataelement/bisheng",
+      "url": "https://github.com/dataelement/bisheng",
+      "domain": "github.com",
+      "snippet": "BISHENG is an open LLM devops platform for next generation Enterprise AI applications. Powerful and comprehensive features include: GenAI workflow, RAG, Agent, Unified model management, Evaluation, SFT, Dataset Management, Enterprise-level System Management, Observability and.",
+      "published": "2026-09-30",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 1,
+      "confidence": 0.86,
+      "is_new": true,
+      "meta": {
+        "stars": 12021,
+        "language": "Python",
+        "topics": [
+          "agent",
+          "ai",
+          "chatbot",
+          "enterprise",
+          "finetune",
+          "genai",
+          "gpt",
+          "langchian",
+          "llama",
+          "llm",
+          "llmdevops",
+          "llmops",
+          "ocr",
+          "openai",
+          "orchestration",
+          "python",
+          "rag",
+          "react",
+          "sft",
+          "workflow"
+        ]
+      }
+    },
+    {
+      "id": "ev-b8bd9d0ca7",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "github",
+      "query": "rag evaluation",
+      "title": "Kiln-AI/Kiln",
+      "url": "https://github.com/Kiln-AI/Kiln",
+      "domain": "github.com",
+      "snippet": "Build, Evaluate, and Optimize AI Systems. Includes evals, RAG, agents, fine-tuning, synthetic data generation, dataset management, MCP, and more.",
+      "published": "2026-10-01",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 1,
+      "confidence": 0.86,
+      "is_new": true,
+      "meta": {
+        "stars": 5154,
+        "language": "Python",
+        "topics": [
+          "ai",
+          "chain-of-thought",
+          "collaboration",
+          "dataset-generation",
+          "evals",
+          "evaluation",
+          "evaluation-framework",
+          "fine-tuning",
+          "machine-learning",
+          "macos",
+          "mcp",
+          "ml",
+          "ollama",
+          "openai",
+          "prompt",
+          "prompt-engineering",
+          "python",
+          "rlhf",
+          "synthetic-data",
+          "windows"
+        ]
+      }
+    },
+    {
+      "id": "ev-d3db2ecd09",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals",
+        "tech_tools"
+      ],
+      "source_type": "arxiv",
+      "query": "rag evaluation",
+      "title": "A Matryoshka Hierarchical RAG for Efficient Multi-Hop Question Answering",
+      "url": "http://arxiv.org/abs/2610.01767v1",
+      "domain": "arxiv.org",
+      "snippet": "Retrieval-Augmented Generation (RAG) systems for multi-hop Question Answering (QA) must balance retrieval quality with computational cost. This cost is incurred during indexing time, through the use of expensive Knowledge Graphs (KGs) or Large Language Models (LLMs) to generate.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.855,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-63e8d956fb",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "news",
+      "query": "rag evaluation case study marketing",
+      "title": "Retrieval-Augmented Generation (RAG): The Complete Guide to How AI Chooses, Retrieves, and Cites Web Pages",
+      "url": "https://almcorp.com/retrieval-augmented-generation-rag-complete-guide",
+      "domain": "almcorp.com",
+      "snippet": "Search engines used to be simple systems where people asked a question, algorithms ranked pages, and then they clicked through links to get their answer. This paradigm is shifting because of.",
+      "published": "2026-09-25",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "almcorp"
+      }
+    },
+    {
+      "id": "ev-3b1448d7ea",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "news",
+      "query": "rag evaluation risks challenges",
+      "title": "Two books to read before putting AI agents into production. What is the difference between \"evaluation\" and \"safety\"?",
+      "url": "https://note.com/alive_fairy7015/n/n7d3f095f4f8b?hl=en",
+      "domain": "note.com",
+      "snippet": "When you start using Claude Code or Codex, the first hurdle is \"how to build.\" Once you can set up the environment, issue instructions, connect tools, and run tests, AI agents become \"things that work.",
+      "published": "2026-09-19",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 3,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "note"
+      }
+    },
+    {
+      "id": "ev-8713a2fa12",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "github",
+      "query": "rag evaluation",
+      "title": "comet-ml/opik",
+      "url": "https://github.com/comet-ml/opik",
+      "domain": "github.com",
+      "snippet": "Debug, evaluate, and monitor your LLM applications, RAG systems, and agentic workflows with comprehensive tracing, automated evaluations, and production-ready dashboards.",
+      "published": "2026-10-02",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.81,
+      "is_new": true,
+      "meta": {
+        "stars": 22331,
+        "language": "Python",
+        "topics": [
+          "evaluation",
+          "hacktoberfest",
+          "hacktoberfest2025",
+          "langchain",
+          "llama-index",
+          "llm",
+          "llm-evaluation",
+          "llm-observability",
+          "llmops",
+          "open-source",
+          "openai",
+          "playground",
+          "prompt-engineering"
+        ]
+      }
+    },
+    {
+      "id": "ev-d81e030ed0",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "arxiv",
+      "query": "rag evaluation",
+      "title": "Mapping the RAG Landscape: A Four Axis Taxonomy of Efficiency, Defense, Interactivity, and Reasoning",
+      "url": "http://arxiv.org/abs/2610.01936v1",
+      "domain": "arxiv.org",
+      "snippet": "Large Language Models (LLMs) have demonstrated remarkable fluency across many tasks but remain limited by their static, parameter bound knowledge and their susceptibility to hallucinating information.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 1,
+      "confidence": 0.805,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-5a563c0e1c",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "arxiv",
+      "query": "rag evaluation",
+      "title": "Walking the Embedding Space: Datastore Extraction from Multimodal RAG",
+      "url": "http://arxiv.org/abs/2610.01871v1",
+      "domain": "arxiv.org",
+      "snippet": "Multimodal Retrieval-Augmented Generation (MRAG) has emerged as a reliable and cost-effective technique of grounding the generative capabilities of Multimodal Large Language Models (MLLMs) into relevant, up-to-date, external knowledge.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 1,
+      "confidence": 0.805,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-ed86965411",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 개념 정리",
+      "title": "RAG 평가 — ragas·faithfulness로 검색 품질 재는 법",
+      "url": "https://labelwebs.tistory.com/583",
+      "domain": "labelwebs.tistory.com",
+      "snippet": "RAG 평가를 검색하면 ‘평가지표·방법·ragas’가 함께 뜹니다. RAG를 돌리는데 ‘답이 맞는지 감으로만 보는’ 분께, RAG 평가의 지표·ragas·측정 루틴을 실전으로 정리합니다.🎯 무엇을 재나 — 검색과 생성, 따로따로RAG 평가는 두 덩이입니다.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 6,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-0fb2db98d1",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 개념 정리",
+      "title": "RAG 시스템, 어떻게 평가해야 할까? — RAGAS로 정량적 품질 검증 - CH",
+      "url": "https://blog.choonzang.com/it/ai/4990",
+      "domain": "blog.choonzang.com",
+      "snippet": "RAGAS(Retrieval-Augmented Generation Assessment)는 RAG의 성능을 정량적으로 측정하기 위한 오픈소스 평가 프레임워크입니다. LLM을 평가자(judge)로 활용해서 검색 품질과 생성 품질을 숫자(0~1 스코어)로 산출.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-6d1b08c10d",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 개념 정리",
+      "title": "RAG 성능 개선 방법과 평가지표 - claudecode.to",
+      "url": "https://claudecode.to/docs/rag-quality-improvement",
+      "domain": "claudecode.to",
+      "snippet": "RAG 성능 개선 방법을 순서대로 정리합니다. 검색 실패와 생성 실패를 가르고, 판정 데이터를 직접 만들고, Recall@k·nDCG·MRR로 기준선을 잰 뒤 한 번에 하나씩 고치는 루프를 다룹니다.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 5,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-beedc3d164",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "what is rag evaluation",
+      "title": "RAG Retrieval Quality Metrics [2026]: Recall@k, MRR",
+      "url": "https://www.kunalganglani.com/blog/rag-evaluation-metrics-retrieval-quality",
+      "domain": "kunalganglani.com",
+      "snippet": "RAG Evaluation Metrics for Retrieval Quality: My Production Playbook If your RAG app got worse after an embeddings or chunking change, grading answers won’t tell you why.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 5,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-c2bf6b13f5",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "what is rag evaluation",
+      "title": "Evaluating RAG pipelines / Promptfoo",
+      "url": "https://www.promptfoo.dev/docs/guides/evaluate-rag",
+      "domain": "promptfoo.dev",
+      "snippet": "Evaluating RAG pipelines Retrieval-augmented generation is a method for enriching LLM prompts with relevant data. Typically, the user prompt will be converting into an embedding and matching documents are fetched from a vector store.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 4,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-5f708ddc44",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "what is rag evaluation",
+      "title": "RAG Evaluation: How to Grade Your Retrieval — RedHub AI",
+      "url": "https://blog.redhub.ai/rag-evaluation",
+      "domain": "blog.redhub.ai",
+      "snippet": "RAG evaluation in plain English: why retrieval feels right but pulls wrong chunks, precision and recall explained, gold sets, and grading it in CI.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-95baa24d59",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "what is rag evaluation",
+      "title": "RAG (Retrieval Augmented Generation) on - Databricks",
+      "url": "https://docs.databricks.com/aws/en/agents/retrieval-augmented-generation",
+      "domain": "docs.databricks.com",
+      "snippet": "Evaluation & monitoring Evaluation and monitoring help determine if your RAG application meets your quality, cost, and latency requirements. Evaluation occurs during development, while monitoring happens once the application is deployed to production.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 4,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-984633e75f",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation case study marketing",
+      "title": "Morgan Stanley Enterprise RAG Case Study — Conscious Engines",
+      "url": "https://consciousengines.com/blog/morgan-stanley-eval-driven-rag-case-study",
+      "domain": "consciousengines.com",
+      "snippet": "[Case Study] From 7,000 Questions to 100,000 Documents: Morgan Stanley's Eval-Driven RAG How a regulated wealth business made institutional knowledge usable, achieved more than 98% advisor-team adoption, and treated evaluation as daily infrastructure.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-aa57a6775a",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "definition",
+        "future_signals"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation open source",
+      "title": "7 Best Open-Source RAG Frameworks For Production AI Projects",
+      "url": "https://www.designveloper.com/blog/best-open-source-rag-framework",
+      "domain": "designveloper.com",
+      "snippet": "It covers distinct RAG layers: orchestration, data and retrieval, explicit pipelines, document parsing, GraphRAG, local search, and visual application building. Each option gets a best-fit rule, while narrower evaluation or research tools may fit specialized projects better.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 4,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-21b59c6387",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation open source",
+      "title": "GitHub - Rohit2332000/RAG_EVALIUATION_using_DeepEVAL: End-to",
+      "url": "https://github.com/Rohit2332000/RAG_EVALIUATION_using_DeepEVAL",
+      "domain": "github.com",
+      "snippet": "A component-wise evaluation framework for building reliable, grounded, safe, and production-ready RAG applications using DeepEval. Retrieval-Augmented Generation (RAG) systems are not evaluated effectively by checking only whether the final answer \"looks correct.\" A RAG.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-7d2b09432d",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation open source",
+      "title": "open-rag-eval: RAG evaluation without golden answers",
+      "url": "https://hysenlabs.com/projects/vectara-open-rag-eval",
+      "domain": "hysenlabs.com",
+      "snippet": "The problem open-rag-eval targets: evaluation without a golden answer set Most RAG evaluation workflows assume you have reference answers or labeled relevant chunks. Producing those is slow, and they go stale the moment you change your retriever or your prompt.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-93aae6d8ef",
+      "lens": "risk_regulation",
+      "lenses": [
+        "risk_regulation",
+        "definition",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation regulation compliance 2026",
+      "title": "RAG Testing and Evaluation: How to Validate Retrieval",
+      "url": "https://shiftasia.com/column/rag-testing-and-evaluation-how-to-validate-rag-systems",
+      "domain": "shiftasia.com",
+      "snippet": "A practical guide to RAG testing for AI engineers and QA leaders: retrieval metrics, grounding checks, failure triage, governance, and a release readiness gate.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-bc906b3034",
+      "lens": "risk_regulation",
+      "lenses": [
+        "risk_regulation"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation regulation compliance 2026",
+      "title": "RAG Evaluation 2026: The Four Core Metrics and How to Read",
+      "url": "https://blog.saaro.net/en/rag-evaluation-2026-die-vier-kernmetriken-und-wie-man-sie-di",
+      "domain": "blog.saaro.net",
+      "snippet": "Faithfulness, Answer Relevancy, Context Precision, and Context Recall—which metrics set the standard for RAG quality in 2026, how to measure them, and what the scores really mean.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-9c5c485152",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools",
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation regulation compliance 2026",
+      "title": "Ragas Guide 2026 / Evaluation framework for RAG pipelines",
+      "url": "https://tools.zgba.com/tools/ragas",
+      "domain": "tools.zgba.com",
+      "snippet": "Ragas: Specialized metrics for RAG evaluation including context relevance, faithfulness, and answer relevance scores. 15k+ GitHub stars, open-source.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 4,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-76e07f50e8",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 도입 사례",
+      "title": "[실용화 완전 가이드] 생성 AI의 사내 도입 (RAG)을 성공으로 이끄는",
+      "url": "https://note.com/aka_sh/n/n9e993c07a5c1?hl=ko",
+      "domain": "note.com",
+      "snippet": "본 기사에서는 RAG의 기본을 확인한 후, 12가지 기법을 초급·중급·상급 순으로 정리합니다. 후반부에서는 2026년 시점에서 알아두어야 할 동향과 기업 시스템에 통합할 때의 구현 및 평가 사고방식을 소개합니다.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 4,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-84599d64b8",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation research",
+      "title": "RAG Evaluation: 7 Fixes for Honest Testing",
+      "url": "https://ragaboutit.com/rag-evaluation-fixes",
+      "domain": "ragaboutit.com",
+      "snippet": "Your RAG evaluation says 94%. Production disagrees. Here are 7 fixes for honest RAG evaluation, from retrieval metrics to judge calibration.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-2427413880",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "definition",
+        "tech_tools",
+        "risk_regulation"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 국내 기업",
+      "title": "기업용 RAG 솔루션 선택 가이드: 검색 정확도·보안·운영 방식으로 외",
+      "url": "https://blog.bigshift.kr/기업용-rag-솔루션-선택-가이드-검색-정확도보안운영-방식으로-외주-업체-고르는-법",
+      "domain": "blog.bigshift.kr",
+      "snippet": "기업용 RAG 솔루션 선택 가이드: 공급사 유형·아키텍처·도입 성과 비교 을 함께 살펴보면 현재 평가 항목을 공급 방식·아키텍처·도입 성과와 연결해 비교할 수 있습니다. 외주 업체나 솔루션을 비교할 때 가장 먼저 정리해야 할 것은 평가 축입니다.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 4,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-8d3eba87b0",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "news",
+      "query": "RAG 평가 최신 뉴스",
+      "title": "지식광장네트워크, 노인 영양상태 분석·식품 추천 AI 시스템 납품",
+      "url": "https://www.mt.co.kr/future/2026/09/30/2026093013290896008",
+      "domain": "mt.co.kr",
+      "snippet": "AI(인공지능)·지식그래프 전문기업 지식광장네트워크(대표 이강배)가 노인 영양관리에 특화한 온톨로지 기반 RAG(검색증강생성) 시스템 'GeroNutri'(효반로드) 개발을 완료하고 발주사인 '복지유니온'(대표 장성오)에 납품했다고 30일 밝혔다.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.733,
+      "is_new": true,
+      "meta": {
+        "publisher": "머니투데이"
+      }
+    },
+    {
+      "id": "ev-8054afbe84",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "news",
+      "query": "RAG 평가 최신 뉴스",
+      "title": "[초점] '에이전틱 AI' 시대의 도래 아웃소싱 산업, 인력 공급 넘어 '통제권' 경쟁으로",
+      "url": "https://www.outsourcing.co.kr/news/articleView.html?idxno=203885",
+      "domain": "outsourcing.co.kr",
+      "snippet": "[아웃소싱타임스 김민수 기자]기업들의 생성형 인공지능 (AI) 도입이 초기 실험 단계를 넘어 실제 비즈니스 가치를 창출하는 상용화 (프로덕션) 단계로 진입하고 있지만, 기술적 복잡성과 평가 기준 부재로 대다수 기업이 확장.",
+      "published": "2026-09-28",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.733,
+      "is_new": true,
+      "meta": {
+        "publisher": "아웃소싱타임스"
+      }
+    },
+    {
+      "id": "ev-a840f76ded",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "news",
+      "query": "rag evaluation news 2026",
+      "title": "Dnotitia Brings Dedicated Vector Silicon to Server Scale at AI Infra Summit 2026",
+      "url": "https://www.design-reuse.com/news/202531148-dnotitia-brings-dedicated-vector-silicon-to-server-scale-at-ai-infra-summit-2026",
+      "domain": "design-reuse.com",
+      "snippet": "VDPU integrates with Dnotitia's Seahorse vector database and widely used vector-search software including Milvus, FAISS and hnswlib, and the company is expanding server-scale evaluations with system, storage, memory and vector database partners.",
+      "published": "2026-09-18",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.733,
+      "is_new": true,
+      "meta": {
+        "publisher": "Design And Reuse"
+      }
+    },
+    {
+      "id": "ev-6e93afd436",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "news",
+      "query": "rag evaluation news 2026",
+      "title": "GenAI Hiring Surge: Top Skills, Salaries, and Cities Indian Employers Want in 2026",
+      "url": "https://www.careerindia.com/news/genai-hiring-surge-india-2026-top-skills-salary-packages-cities-011-65139.html",
+      "domain": "careerindia.com",
+      "snippet": "Hiring dashboards refreshed on September 3-5 point to a clear Generative AI openings uptick. Live skills trackers show 'generative ai', 'llm', and 'rag' mentions rising across India job postings. For job seekers, this week offers speed.",
+      "published": "2026-09-05",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.733,
+      "is_new": true,
+      "meta": {
+        "publisher": "Top"
+      }
+    },
+    {
+      "id": "ev-be9d990090",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "news",
+      "query": "rag evaluation case study marketing",
+      "title": "AgroSense-RAG",
+      "url": "https://github.com/Udbhav748/AgroSense-RAG-Submission",
+      "domain": "github.com",
+      "snippet": "A ~2:20 walkthrough recorded straight from the running app (signup → PDF upload/ingestion → grounded chat with streamed citations → multimodal leaf diagnosis → session history) — real screen capture.",
+      "published": "2026-09-24",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.733,
+      "is_new": true,
+      "meta": {
+        "publisher": "GitHub"
+      }
+    },
+    {
+      "id": "ev-c7865a9356",
+      "lens": "risk_regulation",
+      "lenses": [
+        "risk_regulation"
+      ],
+      "source_type": "news",
+      "query": "rag evaluation risks challenges",
+      "title": "Is it feasible to integrate Jev into an FAQ? Design considerations based on pricing, differences from RAG, and Japanese language accuracy",
+      "url": "https://note.com/nice_stilt34/n/n30b206734251?hl=en",
+      "domain": "note.com",
+      "snippet": "If it is an \"AI that returns judgments without generating text,\" wouldn't it be interesting to integrate it into an FAQ?This was the first thing I thought of after researching the trending TypeSafe AI.",
+      "published": "2026-09-24",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.733,
+      "is_new": true,
+      "meta": {
+        "publisher": "note"
+      }
+    },
+    {
+      "id": "ev-1477f24b86",
+      "lens": "korea",
+      "lenses": [
+        "korea"
+      ],
+      "source_type": "news",
+      "query": "Korea rag evaluation 2026",
+      "title": "2026 Asian Games LoL National Team Evaluation Matches to Be Held in Busan for Two Days Starting Sept. 19",
+      "url": "https://www.invenglobal.com/articles/25643/2026-asian-games-lol-national-team-evaluation-matches-to-be-held-in-busan-for-two-days-starting-sept-19",
+      "domain": "invenglobal.com",
+      "snippet": "The Korea e-Sports Association (hereinafter KeSPA) will host evaluation matches for the 2026 Aichi-Nagoya Asian Games League of Legends (hereinafter LoL) national team at the Busan Cinema Center on.",
+      "published": "2026-09-06",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 0,
+      "confidence": 0.733,
+      "is_new": true,
+      "meta": {
+        "publisher": "Inven Global"
+      }
+    },
+    {
+      "id": "ev-6a8a872376",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation open source",
+      "title": "GitHub - satwiki/RAG-orchestration-with-evals: Implementation",
+      "url": "https://github.com/satwiki/RAG-orchestration-with-evals",
+      "domain": "github.com",
+      "snippet": "Implementation of RAG mechanism along with evaluation sets. - satwiki/RAG-orchestration-with-evals.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 0,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-a3ec117ef6",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "rag evaluation case study marketing",
+      "title": "Enterprise RAG Retrieval and Reranking Case Study / Uvik Software",
+      "url": "https://uvik.net/case-studies/enterprise-rag-hybrid-retrieval-ai-data-pod",
+      "domain": "uvik.net",
+      "snippet": "How Uvik Software embedded an AI and data pod to rebuild hybrid retrieval, reranking, and grounding checks for an enterprise RAG platform.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-184628dbb0",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 도입 사례",
+      "title": "RAG란? 현대 AI 시스템의 핵심 개념과 활용 사례",
+      "url": "https://elevenlabs.io/ko/blog/retrieval-augmented-generation-rag",
+      "domain": "elevenlabs.io",
+      "snippet": "AI에서 RAG의 의미, 검색 증강 생성의 작동 방식과 한계 및 활용 사례, 그리고 AI 에이전트의 외부 지식 활용을 돕는 방법을 알아보세요.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-acc3bb4de6",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 도입 사례",
+      "title": "RAG란 무엇인가 — 파이프라인 해부와 도입 체크리스트 / MSAP.ai",
+      "url": "https://www.msap.ai/llm/what-is-rag",
+      "domain": "msap.ai",
+      "snippet": "RAG는 질문 관련 문서를 검색해 LLM 답변의 근거로 붙이는 검색 증강 생성 기법입니다. 청킹·임베딩·벡터 DB 파이프라인 6단계, 파인튜닝 대비 선택 기준, 기업 도입 체크리스트를 정리했습니다.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 7,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-a60797ebe3",
+      "lens": "risk_regulation",
+      "lenses": [
+        "risk_regulation",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 규제 리스크",
+      "title": "RAG의 보안 위험과 대책｜사내 도입을 본 운영까지 진행하기 위한 설",
+      "url": "https://note.com/hike_inc/n/nefd439c42908?hl=ko",
+      "domain": "note.com",
+      "snippet": "사내 문서를 LLM이 참조하게 하는 RAG는 검색과 생성을 연결하는 구조이기 때문에 기존의 사내 검색과는 다른 위험을 안고 있습니다. **가장 중요한 논점은 '모델에 무엇을 학습시킬 것인가'가 아니라 '누구에게 어떤 문서를 검색하게 할 것인가'입니다.** 이 부분을 설계 단계에서 확실히 할 수.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-9317259322",
+      "lens": "korea",
+      "lenses": [
+        "korea",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "RAG 평가 국내 기업",
+      "title": "297. K-AI 산업 6. 기업용 AI의 진짜 병목은 데이터일까?｜RAG·벡터DB",
+      "url": "https://k-stockrookie.blogspot.com/2026/09/k-ai-06-enterprise-ai-rag-data-governance-security.html",
+      "domain": "k-stockrookie.blogspot.com",
+      "snippet": "국내 기업 공시는 글로벌 벡터DB처럼 RAG 단독 사용량제나 ARR·MRR을 명확히 분리하는 경우가 드물고, 프로젝트·솔루션·유지관리 매출 중심으로 나타난다. 따라서 산업 수요가 존재한다는 이유만으로 특정 기업의 실적 레버리지를 바로 계산하면 안 된다. 3.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    }
+  ]
+}

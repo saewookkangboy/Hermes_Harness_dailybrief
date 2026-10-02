@@ -1,0 +1,207 @@
+{
+  "topic": "숏폼 커머스",
+  "stamp": "2026-10-02",
+  "domain": "커머스·리테일",
+  "maturity": {
+    "current": "L1",
+    "target": "L3",
+    "assumption": "현재 수준은 일반적인 마케팅 팀 기준 가정치예요"
+  },
+  "opportunities": [
+    {
+      "stage": "production",
+      "label": "콘텐츠 제작",
+      "impact": 5,
+      "feasibility": 5,
+      "priority": 25,
+      "quadrant": "quick_win",
+      "quadrant_label": "Quick Win",
+      "automation": "채널별 카피·이미지·숏폼 변형을 템플릿 기반으로 대량 생성 — '숏폼 커머스' 기준으로 설계해요",
+      "kpi": "에셋당 제작 시간·변형 수",
+      "hitl": "브랜드 톤·사실 확인 검수는 사람이 해요",
+      "risk": "'[PDF] Affiliate Marketing Checklist 2026 - adventist.org.ws' 같은 규제·신뢰 이슈를 발행 전 체크리스트로 관리해야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L3",
+      "tools": [
+        "Shopify Magic",
+        "TikTok Symphony",
+        "Opus Clip"
+      ],
+      "evidence": [
+        {
+          "title": "스토리앤미디어 이원주 대표, ‘제36회 올해 베스트 인물 대상’ 수상",
+          "url": "https://www.gosiweek.com/article/1065596454436507"
+        },
+        {
+          "title": "쿠팡, ‘쿠팡쇼츠’로 숏폼 커머스 승부수 < 유통·서비스 < 기사",
+          "url": "https://www.smedaily.co.kr/news/articleView.html?idxno=363022"
+        }
+      ]
+    },
+    {
+      "stage": "optimization",
+      "label": "최적화·개인화",
+      "impact": 5,
+      "feasibility": 4,
+      "priority": 20,
+      "quadrant": "quick_win",
+      "quadrant_label": "Quick Win",
+      "automation": "A/B·세그먼트별 메시지 자동 실험과 예산 재배분 제안 — '숏폼 커머스' 기준으로 설계해요",
+      "kpi": "전환율·ROAS·CTOR 개선폭",
+      "hitl": "예산 재배분 승인·개인정보 사용 범위 결정은 사람이 해요",
+      "risk": "'[PDF] Affiliate Marketing Checklist 2026 - adventist.org.ws' 같은 규제·신뢰 이슈를 발행 전 체크리스트로 관리해야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L3",
+      "tools": [
+        "Optimizely",
+        "Braze"
+      ],
+      "evidence": [
+        {
+          "title": "7 Video Marketing Case Studies You Must Look at - Videowise26 Video Marketing Examples to Inspire Your Own Store’s Korean Retailers Turn to",
+          "url": "https://videowise.com/blog/video-marketing-case-studies"
+        },
+        {
+          "title": "2026 라이브커머스 트렌드: 지금 뜨는 국내 라이브·숏폼 활용법 (feat",
+          "url": "https://imweb.me/blog?idx=520"
+        }
+      ]
+    },
+    {
+      "stage": "distribution",
+      "label": "배포·채널 운영",
+      "impact": 4,
+      "feasibility": 4,
+      "priority": 16,
+      "quadrant": "quick_win",
+      "quadrant_label": "Quick Win",
+      "automation": "채널별 최적 시간 예약 발행·크로스포스팅 워크플로 — '숏폼 커머스' 기준으로 설계해요",
+      "kpi": "발행 리드타임·채널 커버리지",
+      "hitl": "위기 이슈 시 발행 중단(stop button)은 사람이 해요",
+      "risk": "'[PDF] Affiliate Marketing Checklist 2026 - adventist.org.ws' 같은 규제·신뢰 이슈를 발행 전 체크리스트로 관리해야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L3",
+      "tools": [
+        "네이버 쇼핑라이브",
+        "n8n",
+        "Zapier"
+      ],
+      "evidence": [
+        {
+          "title": "라이브 커머스 숏폼 재활용 전략: 3시간 방송을 전환 자산으로 만드는",
+          "url": "https://marketing-log.tistory.com/entry/라이브-커머스-숏폼-재활용-전략-3시간-방송을-전환-자산으로-만드는-방법"
+        },
+        {
+          "title": "Short Video Platform Market Size, Share, Report, Forecast 2035",
+          "url": "https://www.marketresearchfuture.com/reports/short-video-platform-market-26699"
+        }
+      ]
+    },
+    {
+      "stage": "measurement",
+      "label": "측정·분석",
+      "impact": 4,
+      "feasibility": 4,
+      "priority": 16,
+      "quadrant": "quick_win",
+      "quadrant_label": "Quick Win",
+      "automation": "채널 지표 자동 수집 → 주간 성과 리포트·이상 탐지 — '숏폼 커머스' 기준으로 설계해요",
+      "kpi": "리포트 작성 시간·이상 탐지 리드타임",
+      "hitl": "지표 해석과 다음 액션 결정은 사람이 해요",
+      "risk": "개인정보·동의 범위를 벗어난 데이터 결합이 없는지 점검해야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L3",
+      "tools": [
+        "GA4",
+        "Looker Studio"
+      ],
+      "evidence": [
+        {
+          "title": "WANGLEVY9/VidForge",
+          "url": "https://github.com/WANGLEVY9/VidForge"
+        },
+        {
+          "title": "레비오사-모노키즈 맞손 실제 키즈모델 촬영 자산, AI 콘텐츠·해외 판매로 확장",
+          "url": "https://www.newstap.co.kr/news/articleView.html?idxno=335179"
+        }
+      ]
+    },
+    {
+      "stage": "research",
+      "label": "시장·고객 리서치",
+      "impact": 4,
+      "feasibility": 3,
+      "priority": 12,
+      "quadrant": "strategic",
+      "quadrant_label": "전략 과제",
+      "automation": "검색·소셜·리뷰 신호를 매일 수집해 요약하는 리서치 에이전트 — '숏폼 커머스' 기준으로 설계해요",
+      "kpi": "인사이트 리드타임(시간)",
+      "hitl": "주간 우선순위 확정은 사람이 해요",
+      "risk": "근거 출처가 불분명한 자동 생성 결과가 그대로 쓰이지 않게 사실 확인 단계를 둬야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L2",
+      "tools": [
+        "Perplexity",
+        "Google Trends",
+        "네이버 데이터랩"
+      ],
+      "evidence": [
+        {
+          "title": "Factors Influencing Consumer Attitudes towards Short-Form",
+          "url": "https://www.sciencedirect.com/science/article/abs/pii/S1875952126000820"
+        },
+        {
+          "title": "How Short-Form Video Is Changing the Way Businesses Build",
+          "url": "https://www.linkedin.com/pulse/how-short-form-video-changing-way-businesses-build-brands-pxwpf"
+        }
+      ]
+    },
+    {
+      "stage": "planning",
+      "label": "기획·전략",
+      "impact": 3,
+      "feasibility": 4,
+      "priority": 12,
+      "quadrant": "efficiency",
+      "quadrant_label": "효율 개선",
+      "automation": "브리프 → 콘텐츠 캘린더·메시지 하우스 초안 자동 생성 — '숏폼 커머스' 기준으로 설계해요",
+      "kpi": "기획 사이클 타임(일)",
+      "hitl": "포지셔닝·메시지 최종 승인은 사람이 해요",
+      "risk": "근거 출처가 불분명한 자동 생성 결과가 그대로 쓰이지 않게 사실 확인 단계를 둬야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L2",
+      "tools": [
+        "NotebookLM",
+        "Claude"
+      ],
+      "evidence": [
+        {
+          "title": "2026년 라이브 커머스 실무 A to Z: 기획부터 숏폼 재활용, 리마케팅",
+          "url": "https://video.ampm.co.kr/video/4587"
+        },
+        {
+          "title": "Short-Form Video for Small Businesses: What Works in 2026",
+          "url": "https://primediamarketing.com/short-form-video-small-businesses"
+        }
+      ]
+    }
+  ],
+  "roadmap": {
+    "30": [
+      "콘텐츠 제작",
+      "최적화·개인화"
+    ],
+    "60": [
+      "배포·채널 운영",
+      "측정·분석"
+    ],
+    "90": [
+      "기획·전략"
+    ]
+  },
+  "governance": [
+    "모든 자동 발행에는 사람이 누르는 중단 버튼(stop button)을 둬요",
+    "생성 결과는 출처 URL과 함께 저장해 사후 감사가 가능하게 해요",
+    "주의 이슈: [PDF] Affiliate Marketing Checklist 2026 - adventist.org.ws"
+  ]
+}

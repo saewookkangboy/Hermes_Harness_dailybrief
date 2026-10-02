@@ -1,0 +1,34 @@
+{
+  "keyword": "RAG 평가",
+  "slug": "rag-evaluation",
+  "stamp": "2026-10-02",
+  "tokens": [
+    "rag",
+    "평가"
+  ],
+  "en_tokens": [
+    "retrieval-augmented generation",
+    "evaluation"
+  ],
+  "ko_query": "RAG 평가",
+  "en_query": "rag evaluation",
+  "core_groups": [
+    [
+      "rag",
+      "retrieval-augmented generation",
+      "retrieval augmented generation",
+      "retrieval-augmentedgeneration",
+      "retrieval-augmented"
+    ],
+    [
+      "평가",
+      "evaluation"
+    ]
+  ],
+  "domain": "ai_tech",
+  "domain_label": "AI 기술",
+  "secondary_domains": [],
+  "intent": "trend",
+  "intent_label": "트렌드 파악",
+  "audience": "마케팅 실무자·팀 리드·AX 의사결정자"
+}

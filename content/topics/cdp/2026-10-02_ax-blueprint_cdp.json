@@ -1,0 +1,209 @@
+{
+  "topic": "CDP 도입 방법",
+  "stamp": "2026-10-02",
+  "domain": "데이터·CRM",
+  "maturity": {
+    "current": "L1",
+    "target": "L3",
+    "assumption": "현재 수준은 일반적인 마케팅 팀 기준 가정치예요"
+  },
+  "opportunities": [
+    {
+      "stage": "measurement",
+      "label": "측정·분석",
+      "impact": 5,
+      "feasibility": 5,
+      "priority": 25,
+      "quadrant": "quick_win",
+      "quadrant_label": "Quick Win",
+      "automation": "채널 지표 자동 수집 → 주간 성과 리포트·이상 탐지 — 'CDP 도입' 기준으로 설계해요",
+      "kpi": "리포트 작성 시간·이상 탐지 리드타임",
+      "hitl": "지표 해석과 다음 액션 결정은 사람이 해요",
+      "risk": "개인정보·동의 범위를 벗어난 데이터 결합이 없는지 점검해야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L3",
+      "tools": [
+        "Segment",
+        "GA4",
+        "Looker Studio"
+      ],
+      "evidence": [
+        {
+          "title": "Tracardi/tracardi",
+          "url": "https://github.com/Tracardi/tracardi"
+        },
+        {
+          "title": "rudderlabs/rudder-sdk-js",
+          "url": "https://github.com/rudderlabs/rudder-sdk-js"
+        }
+      ]
+    },
+    {
+      "stage": "optimization",
+      "label": "최적화·개인화",
+      "impact": 5,
+      "feasibility": 5,
+      "priority": 25,
+      "quadrant": "quick_win",
+      "quadrant_label": "Quick Win",
+      "automation": "A/B·세그먼트별 메시지 자동 실험과 예산 재배분 제안 — 'CDP 도입' 기준으로 설계해요",
+      "kpi": "전환율·ROAS·CTOR 개선폭",
+      "hitl": "예산 재배분 승인·개인정보 사용 범위 결정은 사람이 해요",
+      "risk": "개인정보·동의 범위를 벗어난 데이터 결합이 없는지 점검해야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L3",
+      "tools": [
+        "Salesforce Data Cloud",
+        "Optimizely",
+        "Braze"
+      ],
+      "evidence": [
+        {
+          "title": "에이전시를 위한 Adobe Real-Time CDP Collaboration 사용 사례",
+          "url": "https://business.adobe.com/kr/resources/sdk/real-time-cdp-collaboration-for-agencies.html"
+        },
+        {
+          "title": "CDP Use Cases: 11 Enterprise Marketing Examples - Insider",
+          "url": "https://insiderone.com/cdp-use-cases"
+        }
+      ]
+    },
+    {
+      "stage": "production",
+      "label": "콘텐츠 제작",
+      "impact": 4,
+      "feasibility": 4,
+      "priority": 16,
+      "quadrant": "quick_win",
+      "quadrant_label": "Quick Win",
+      "automation": "채널별 카피·이미지·숏폼 변형을 템플릿 기반으로 대량 생성 — 'CDP 도입' 기준으로 설계해요",
+      "kpi": "에셋당 제작 시간·변형 수",
+      "hitl": "브랜드 톤·사실 확인 검수는 사람이 해요",
+      "risk": "근거 출처가 불분명한 자동 생성 결과가 그대로 쓰이지 않게 사실 확인 단계를 둬야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L3",
+      "tools": [
+        "Canva Magic Studio",
+        "Gemini (Nano Banana)",
+        "CapCut"
+      ],
+      "evidence": [
+        {
+          "title": "What Is a Customer Data Platform? CDP Guide [2026]",
+          "url": "https://cdp.com/basics/what-is-a-customer-data-platform-cdp"
+        },
+        {
+          "title": "11 Best Customer Data Platforms (CDPs) Compared for 2026",
+          "url": "https://insiderone.com/best-customer-data-platform"
+        }
+      ]
+    },
+    {
+      "stage": "planning",
+      "label": "기획·전략",
+      "impact": 3,
+      "feasibility": 4,
+      "priority": 12,
+      "quadrant": "efficiency",
+      "quadrant_label": "효율 개선",
+      "automation": "브리프 → 콘텐츠 캘린더·메시지 하우스 초안 자동 생성 — 'CDP 도입' 기준으로 설계해요",
+      "kpi": "기획 사이클 타임(일)",
+      "hitl": "포지셔닝·메시지 최종 승인은 사람이 해요",
+      "risk": "근거 출처가 불분명한 자동 생성 결과가 그대로 쓰이지 않게 사실 확인 단계를 둬야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L2",
+      "tools": [
+        "NotebookLM",
+        "Claude"
+      ],
+      "evidence": [
+        {
+          "title": "What Is a Customer Data Platform? A Guide for New Businesses",
+          "url": "https://www.salesforce.com/marketing/data/what-is-a-customer-data-platform/smb"
+        },
+        {
+          "title": "Top CDP Use Cases and How To Develop Them",
+          "url": "https://cdp.com/articles/how-to-develop-cdp-use-cases"
+        }
+      ]
+    },
+    {
+      "stage": "distribution",
+      "label": "배포·채널 운영",
+      "impact": 4,
+      "feasibility": 3,
+      "priority": 12,
+      "quadrant": "strategic",
+      "quadrant_label": "전략 과제",
+      "automation": "채널별 최적 시간 예약 발행·크로스포스팅 워크플로 — 'CDP 도입' 기준으로 설계해요",
+      "kpi": "발행 리드타임·채널 커버리지",
+      "hitl": "위기 이슈 시 발행 중단(stop button)은 사람이 해요",
+      "risk": "근거 출처가 불분명한 자동 생성 결과가 그대로 쓰이지 않게 사실 확인 단계를 둬야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L2",
+      "tools": [
+        "n8n",
+        "Zapier",
+        "Buffer"
+      ],
+      "evidence": [
+        {
+          "title": "7 CDP Challenges in 2026 (And How to Overcome Them)",
+          "url": "https://cdp.com/articles/common-cdp-challenges"
+        },
+        {
+          "title": "Top 5+ Vietnam Customer Data Platform Solutions in 2026",
+          "url": "https://www.tmasolutions.com/insights/vietnam-customer-data-platform"
+        }
+      ]
+    },
+    {
+      "stage": "research",
+      "label": "시장·고객 리서치",
+      "impact": 3,
+      "feasibility": 3,
+      "priority": 9,
+      "quadrant": "hold",
+      "quadrant_label": "보류",
+      "automation": "검색·소셜·리뷰 신호를 매일 수집해 요약하는 리서치 에이전트 — 'CDP 도입' 기준으로 설계해요",
+      "kpi": "인사이트 리드타임(시간)",
+      "hitl": "주간 우선순위 확정은 사람이 해요",
+      "risk": "근거 출처가 불분명한 자동 생성 결과가 그대로 쓰이지 않게 사실 확인 단계를 둬야 해요",
+      "maturity_current": "L1",
+      "maturity_target": "L2",
+      "tools": [
+        "Perplexity",
+        "Google Trends",
+        "네이버 데이터랩"
+      ],
+      "evidence": [
+        {
+          "title": "Customer Data Platform Market Size, Share, Trends & Forecast What Is a Customer Data Platform?",
+          "url": "https://www.fortunebusinessinsights.com/industry-reports/customer-data-platform-market-100633"
+        },
+        {
+          "title": "Adobe Customer Data Platform Trends Report 2026",
+          "url": "https://business.adobe.com/resources/sdk/agentic-era-for-cdps.html"
+        }
+      ]
+    }
+  ],
+  "roadmap": {
+    "30": [
+      "측정·분석",
+      "최적화·개인화"
+    ],
+    "60": [
+      "콘텐츠 제작",
+      "배포·채널 운영"
+    ],
+    "90": [
+      "기획·전략",
+      "시장·고객 리서치"
+    ]
+  },
+  "governance": [
+    "모든 자동 발행에는 사람이 누르는 중단 버튼(stop button)을 둬요",
+    "생성 결과는 출처 URL과 함께 저장해 사후 감사가 가능하게 해요"
+  ]
+}

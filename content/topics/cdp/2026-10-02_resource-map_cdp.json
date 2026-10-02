@@ -1,0 +1,264 @@
+{
+  "topic": "CDP 도입 방법",
+  "stamp": "2026-10-02",
+  "tools": [
+    {
+      "name": "Segment",
+      "url": "https://segment.com",
+      "stage": "measurement",
+      "note": "CDP 이벤트 수집",
+      "stage_label": "측정·분석",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "Salesforce Data Cloud",
+      "url": "https://www.salesforce.com/data",
+      "stage": "optimization",
+      "note": "통합 고객 프로필",
+      "stage_label": "최적화·개인화",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "GA4",
+      "url": "https://analytics.google.com",
+      "note": "웹·앱 분석",
+      "stage": "measurement",
+      "stage_label": "측정·분석",
+      "origin": "공통"
+    },
+    {
+      "name": "Looker Studio",
+      "url": "https://lookerstudio.google.com",
+      "note": "대시보드",
+      "stage": "measurement",
+      "stage_label": "측정·분석",
+      "origin": "공통"
+    },
+    {
+      "name": "Optimizely",
+      "url": "https://www.optimizely.com",
+      "note": "실험·개인화",
+      "stage": "optimization",
+      "stage_label": "최적화·개인화",
+      "origin": "공통"
+    },
+    {
+      "name": "Braze",
+      "url": "https://www.braze.com",
+      "note": "CRM 메시지 자동화",
+      "stage": "optimization",
+      "stage_label": "최적화·개인화",
+      "origin": "공통"
+    },
+    {
+      "name": "Canva Magic Studio",
+      "url": "https://www.canva.com/magic",
+      "note": "디자인 변형 대량 생성",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "Gemini (Nano Banana)",
+      "url": "https://gemini.google.com",
+      "note": "이미지 생성·편집",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "CapCut",
+      "url": "https://www.capcut.com",
+      "note": "숏폼 편집 자동화",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "NotebookLM",
+      "url": "https://notebooklm.google.com",
+      "note": "자료 기반 기획 요약",
+      "stage": "planning",
+      "stage_label": "기획·전략",
+      "origin": "공통"
+    },
+    {
+      "name": "Claude",
+      "url": "https://claude.ai",
+      "note": "장문 브리프·전략 초안",
+      "stage": "planning",
+      "stage_label": "기획·전략",
+      "origin": "공통"
+    },
+    {
+      "name": "n8n",
+      "url": "https://n8n.io",
+      "note": "셀프호스팅 워크플로 자동화",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "Zapier",
+      "url": "https://zapier.com",
+      "note": "SaaS 연결 자동화",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "Buffer",
+      "url": "https://buffer.com",
+      "note": "소셜 예약 발행",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "Perplexity",
+      "url": "https://www.perplexity.ai",
+      "note": "출처 기반 리서치",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "Google Trends",
+      "url": "https://trends.google.com",
+      "note": "검색 수요 추세",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "네이버 데이터랩",
+      "url": "https://datalab.naver.com",
+      "note": "국내 검색·쇼핑 트렌드",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    }
+  ],
+  "open_source": [
+    {
+      "name": "Tracardi/tracardi",
+      "url": "https://github.com/Tracardi/tracardi",
+      "stars": 657,
+      "language": "Python",
+      "updated": "2026-09-22",
+      "freshness": 1.0,
+      "note": "TRACARDI is a new HOME for your customer data. TRACARDI is an Composable API-first solution for any company that need inexpensive CDP to intergrate with."
+    },
+    {
+      "name": "rudderlabs/rudder-sdk-js",
+      "url": "https://github.com/rudderlabs/rudder-sdk-js",
+      "stars": 177,
+      "language": "TypeScript",
+      "updated": "2026-10-01",
+      "freshness": 1.0,
+      "note": "JavaScript SDK for RudderStack - the Customer Data Platform for Developers."
+    }
+  ],
+  "papers": [],
+  "latest": [
+    {
+      "title": "CDP Industry Statistics 2026: Market Size & Trends",
+      "url": "https://cdp.com/basics/cdp-industry-statistics",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "What Is a Customer Data Platform? CDP Guide [2026]",
+      "url": "https://cdp.com/basics/what-is-a-customer-data-platform-cdp",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "11 Best Customer Data Platforms (CDPs) Compared for 2026",
+      "url": "https://insiderone.com/best-customer-data-platform",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "CDP market in 2026: key figures, trends and growth - DinMo",
+      "url": "https://www.dinmo.com/cdp/solutions/cdp-market",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "Zeotap launches Open CDP: the first fully composable CDP",
+      "url": "https://finance.yahoo.com/technology/articles/zeotap-launches-open-cdp-first-173000824.html",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "Zeotap Launches Open Customer Data Platform - LinkedIn",
+      "url": "https://www.linkedin.com/posts/martech360_zeotap-customerdataplatform-martech360-activity-7506308538688942080-jmWP",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "Customer Data Platform Market Size, Share, Trends & Forecast What Is a Customer Data Platform?",
+      "url": "https://www.fortunebusinessinsights.com/industry-reports/customer-data-platform-market-100633",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "Adobe Customer Data Platform Trends Report 2026",
+      "url": "https://business.adobe.com/resources/sdk/agentic-era-for-cdps.html",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    }
+  ],
+  "learning": [
+    {
+      "name": "What Is a Customer Data Platform? CDP Guide [2026]",
+      "url": "https://cdp.com/basics/what-is-a-customer-data-platform-cdp",
+      "note": "What is a customer data platform (CDP)? A 2026 guide to how CDPs unify profiles, power AI activation, and how to pick the right CDP for your team."
+    },
+    {
+      "name": "Customer Data Platform Market Size, Share, Trends & Forecast What Is a Customer Data Platform?",
+      "url": "https://www.fortunebusinessinsights.com/industry-reports/customer-data-platform-market-100633",
+      "note": "Customer Data Platform (CDP) Market Latest Insights The global customer data platform (CDP) market size was valued at USD 3.28 billion in 2025 and is projected to grow from USD 4.07 billion in 2026 to USD 17.03 billion by 2034, exhibiting a CAGR of 19.60% during the forecast."
+    },
+    {
+      "name": "고객데이터플랫폼 (CDP) 개념과 고객정보 합침, 왜 중요할까요?",
+      "url": "https://mm.jameweb.co.kr/고객데이터플랫폼cdp-개념과-고객정보-합침-왜-중요할",
+      "note": "고객데이터플랫폼 (CDP)이란 무엇일까요? 고객데이터플랫폼 (CDP)은 다양한 소스에서 발생하는 고객 데이터를 수집, 통합, 분석하여 일관되고 통합된 고객 프로필 을 생성하는 기술 솔루션이에요. 웹사이트 방문 기록, 모바일 앱 사용 내역, 구매 정보, CRM 데이터, 소셜 미디어 활동 등 고객과의 모든."
+    },
+    {
+      "name": "Google Skillshop",
+      "url": "https://skillshop.withgoogle.com",
+      "note": "광고·분석 공식 교육"
+    },
+    {
+      "name": "HubSpot Academy",
+      "url": "https://academy.hubspot.com",
+      "note": "인바운드·콘텐츠 마케팅"
+    },
+    {
+      "name": "DeepLearning.AI Short Courses",
+      "url": "https://www.deeplearning.ai/short-courses",
+      "note": "생성형 AI 실습"
+    },
+    {
+      "name": "Anthropic Docs",
+      "url": "https://docs.anthropic.com",
+      "note": "에이전트·프롬프트 설계"
+    },
+    {
+      "name": "OpenAI Cookbook",
+      "url": "https://cookbook.openai.com",
+      "note": "API 활용 예제"
+    }
+  ],
+  "freshness_avg": 0.52
+}

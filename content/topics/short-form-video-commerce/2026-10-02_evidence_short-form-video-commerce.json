@@ -1,0 +1,885 @@
+{
+  "topic": "숏폼 커머스",
+  "stamp": "2026-10-02",
+  "raw_count": 72,
+  "relevant_count": 40,
+  "raw_ratio": 0.556,
+  "query_count": 21,
+  "lens_counts": {
+    "market_news": 10,
+    "korea": 9,
+    "use_cases": 9,
+    "future_signals": 11,
+    "tech_tools": 8,
+    "definition": 7,
+    "risk_regulation": 1
+  },
+  "source_type_counts": {
+    "news": 11,
+    "arxiv": 4,
+    "github": 1,
+    "web": 24
+  },
+  "domain_count": 34,
+  "new_count": 40,
+  "errors": [],
+  "items": [
+    {
+      "id": "ev-b033f0513d",
+      "lens": "market_news",
+      "lenses": [
+        "market_news",
+        "korea"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 최신 뉴스",
+      "title": "B tv 핫딜, 출시 10개월 만에 누적 판매액 100억원 돌파",
+      "url": "https://www.yna.co.kr/view/AKR20260930052800017",
+      "domain": "yna.co.kr",
+      "snippet": "(서울=연합뉴스) 유현민 기자 = SK브로드밴드의 TV 기반 숏폼 커머스 서비스 'B tv 핫딜'이 출시 10개월 만에 누적 판매액 100억원을 넘어섰다. SK브로드밴드는 지난해 11월 출시한 B tv 핫딜의 누적.",
+      "published": "2026-10-01",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 5,
+      "confidence": 0.932,
+      "is_new": true,
+      "meta": {
+        "publisher": "연합뉴스"
+      }
+    },
+    {
+      "id": "ev-f780d0924e",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 한국 시장 2026",
+      "title": "스토리앤미디어 이원주 대표, ‘제36회 올해 베스트 인물 대상’ 수상",
+      "url": "https://www.gosiweek.com/article/1065596454436507",
+      "domain": "gosiweek.com",
+      "snippet": "숏폼 마케팅 전문 대행사 ㈜스토리앤미디어의 이원주 대표이사가 숏폼 콘텐츠 제작과 마케팅, 커머스를 연계한 성과를 인정받아 제36회 ‘2026 올해 베스트 인물 대상’을 수상했다. 이원주.",
+      "published": "2026-09-07",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.932,
+      "is_new": true,
+      "meta": {
+        "publisher": "gosiweek"
+      }
+    },
+    {
+      "id": "ev-d7620d16b9",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals",
+        "tech_tools"
+      ],
+      "source_type": "arxiv",
+      "query": "short-form video commerce",
+      "title": "VCG: A Multimodal Retrieval Framework for E-Commerce Video Feeds under Extreme Cold-Start Conditions",
+      "url": "http://arxiv.org/abs/2606.19627v1",
+      "domain": "arxiv.org",
+      "snippet": "The digital commerce landscape is shifting from static, search-driven catalogs to dynamic, immersive video feeds. This transition introduces an ``extreme cold-start'' problem: unlike traditional items, new short-form videos lack the dense interaction history required for.",
+      "published": "2026-06-17",
+      "relevance": 1.0,
+      "freshness": 0.77,
+      "corroboration": 4,
+      "confidence": 0.898,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-a194a00921",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "arxiv",
+      "query": "short-form video commerce",
+      "title": "ViASNet: A Video Ad Saliency Network for Predicting Dynamic Saliency and Viewer Engagement",
+      "url": "http://arxiv.org/abs/2605.29302v1",
+      "domain": "arxiv.org",
+      "snippet": "The digital media landscape has seen a pervasive shift toward short-form video advertising on TV, social media and e-commerce platforms. The present study focuses on deep saliency prediction for short-form video advertising.",
+      "published": "2026-05-28",
+      "relevance": 1.0,
+      "freshness": 0.71,
+      "corroboration": 8,
+      "confidence": 0.882,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-d5037eb3f1",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "github",
+      "query": "short-form video commerce",
+      "title": "WANGLEVY9/VidForge",
+      "url": "https://github.com/WANGLEVY9/VidForge",
+      "domain": "github.com",
+      "snippet": "Open-source AI pipeline for short-form commerce videos: multimodal analysis, RAG scripts, multi-agent orchestration, FFmpeg composition, and cost tracing.",
+      "published": "2026-09-30",
+      "relevance": 1.0,
+      "freshness": 1.0,
+      "corroboration": 1,
+      "confidence": 0.86,
+      "is_new": true,
+      "meta": {
+        "stars": 114,
+        "language": "TypeScript",
+        "topics": [
+          "ai-video",
+          "aigc",
+          "bullmq",
+          "ecommerce",
+          "ffmpeg",
+          "generative-ai",
+          "langgraph",
+          "multi-agent",
+          "nestjs",
+          "open-source",
+          "pgvector",
+          "react",
+          "short-video",
+          "typescript",
+          "video-generation"
+        ]
+      }
+    },
+    {
+      "id": "ev-964c2c6852",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "news",
+      "query": "short-form video commerce news 2026",
+      "title": "How social commerce platforms are changing the retail marketing mix",
+      "url": "https://retailtimes.co.uk/how-social-commerce-platforms-are-changing-the-retail-marketing-mix",
+      "domain": "retailtimes.co.uk",
+      "snippet": "Social commerce platforms are redefining how retailers connect with modern consumers, offering native shopping experiences.",
+      "published": "2026-09-29",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 8,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "Retail Times"
+      }
+    },
+    {
+      "id": "ev-16f4338a71",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 최신 뉴스",
+      "title": "TV·모바일·콘텐츠 거쳐 크리에이터로 CJ온스타일, 차세대 커머스 속도",
+      "url": "https://news.tf.co.kr/read/economy/2368959.htm",
+      "domain": "news.tf.co.kr",
+      "snippet": "콘텐츠 커머스가 안정적인 사업 궤도에 오르면서 매출도 가파르게 오르고 있다. 올해 2분기 기준 CJ온스타일의 라이브 커머스 순판매액 (취급고)은 전년 대비 161.3% 급증한 1848억원을 기록했다. 이는 총주문액에서 취소.",
+      "published": "2026-09-23",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 4,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "더팩트"
+      }
+    },
+    {
+      "id": "ev-595ce7f248",
+      "lens": "korea",
+      "lenses": [
+        "korea"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 국내 기업",
+      "title": "에피소드컴퍼니, 2027년 연결 매출 1100억 원 목표 커머스 비중 키워 기업가치 제고한다",
+      "url": "https://www.nextdaily.co.kr/news/articleView.html?idxno=253483",
+      "domain": "nextdaily.co.kr",
+      "snippet": "에피소드컴퍼니가 콘텐츠와 셀럽 IP를 토대로 한 커머스 사업을 키워 2027년 연결 매출 1100억 원을 달성하겠다는 목표를 내놓았다. 커머스 매출 비중을 높여 수익 기반을 다지고, 188억 원 규모의 재원을 바탕으로.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "넥스트데일리"
+      }
+    },
+    {
+      "id": "ev-bed65cd14c",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 국내 기업",
+      "title": "레비오사-모노키즈 맞손 실제 키즈모델 촬영 자산, AI 콘텐츠·해외 판매로 확장",
+      "url": "https://www.newstap.co.kr/news/articleView.html?idxno=335179",
+      "domain": "newstap.co.kr",
+      "snippet": "AI 네이티브 커머스 플랫폼 기업 레비오사(법인명 주식회사 레비오사에이아이)가 베이비·키즈 모델 전문 에이전시 모노키즈와 업무협약(MOU)을 체결하고, 실제 모델의 촬영 자산을 AI 콘텐츠로 확장해 브랜드 마케팅과 상품.",
+      "published": "2026-09-24",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 3,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "뉴스탭"
+      }
+    },
+    {
+      "id": "ev-167df70806",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 국내 기업",
+      "title": "에피소드컴퍼니, 밸류업 계획 공시 \"내년 매출 1100억 원 달성\"",
+      "url": "https://www.msn.com/ko-kr/news/other/에피소드컴퍼니-밸류업-계획-공시-내년-매출-1100억-원-달성/ar-AA2dg8xp?ocid=BingNewsVerp",
+      "domain": "msn.com",
+      "snippet": "에피소드컴퍼니가 내년 매출액 1,100억 원 달성을 목표로 콘텐츠와 셀럽 IP(지식재산권)를 기반으로 한 커머스 사업부문 성장에 속도를 낸다고 밝혔습니다. 또 188억 원 규모의 주주환원 재원을 바탕으로 자기주식 취득을 우선.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "매일방송 on MSN"
+      }
+    },
+    {
+      "id": "ev-9bb7ea63b5",
+      "lens": "korea",
+      "lenses": [
+        "korea"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 한국 시장 2026",
+      "title": "[더벨]에피소드컴퍼니, 커머스 중심 체질 전환 승부수",
+      "url": "https://www.mt.co.kr/stock/2026/09/30/2026093015449658828",
+      "domain": "mt.co.kr",
+      "snippet": "더벨'머니투데이 thebell'에 출고된 기사입니다. 에피소드컴퍼니가 커머스를 중심으로 매출 구조를 바꿔 기업가치 재평가에 나선다. 콘텐츠와 셀럽 지식재산권(IP)으로 확보한 대중의 관심을 상품 구매로 연결해 커머스를 주력.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 2,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "머니투데이"
+      }
+    },
+    {
+      "id": "ev-4a1a32220b",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 한국 시장 2026",
+      "title": "에피소드컴퍼니, 밸류업 발표 \"커머스 기반 내년 1100억 매출 목표\"",
+      "url": "https://www.msn.com/ko-kr/money/markets/에피소드컴퍼니-밸류업-발표-커머스-기반-내년-1100억-매출-목표/ar-AA2dft7k?ocid=BingNewsVerp",
+      "domain": "msn.com",
+      "snippet": "에피소드컴퍼니가 내년 연결기준 매출액 1100억 원 달성을 목표로 콘텐츠와 셀럽 IP(지식재산권)를 기반으로 한 커머스 사업부문 성장에 속도를 낸다고 30일 밝혔다. 아울러 188억원 규모의 주주환원 재원을 바탕으로 자기주식.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 5,
+      "confidence": 0.833,
+      "is_new": true,
+      "meta": {
+        "publisher": "머니투데이 on MSN"
+      }
+    },
+    {
+      "id": "ev-f281bfeb19",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "news",
+      "query": "short-form video commerce case study marketing",
+      "title": "New Study from Kroger, Vidmob and MMA Global Finds Predictive Creative Scoring Can Forecast E-commerce Conversion",
+      "url": "https://finance.yahoo.com/media-advertising/articles/study-kroger-vidmob-mma-global-130000791.html",
+      "domain": "finance.yahoo.com",
+      "snippet": "Kroger, Vidmob, and MMA Global today announced the findings of a new industry study demonstrating that predictive creative scoring can accurately forecast e-commerce purchase conversion before media.",
+      "published": "2026-10-01",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 1,
+      "confidence": 0.783,
+      "is_new": true,
+      "meta": {
+        "publisher": "Yahoo Finance"
+      }
+    },
+    {
+      "id": "ev-e1714efc2b",
+      "lens": "korea",
+      "lenses": [
+        "korea"
+      ],
+      "source_type": "news",
+      "query": "숏폼 커머스 국내 기업",
+      "title": "[유통갤러리] CJ온스타일, 크리에이터 커머스 페스티벌 개막 外",
+      "url": "https://theviewers.co.kr/View.aspx?No=4248142",
+      "domain": "theviewers.co.kr",
+      "snippet": "◆CJ온스타일, 크리에이터 커머스 페스티벌 22일 개막CJ온스타일은 국내 최초 ‘크리에이터 커머스 페스티벌 코리아(Creator Commerce Festival Korea 2026, 이하 CCFK)’ 입장권을 1일부터.",
+      "published": "2026-09-15",
+      "relevance": 0.5,
+      "freshness": 1.0,
+      "corroboration": 1,
+      "confidence": 0.783,
+      "is_new": true,
+      "meta": {
+        "publisher": "뷰어스"
+      }
+    },
+    {
+      "id": "ev-1143c449da",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "korea",
+        "future_signals"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce case study marketing",
+      "title": "7 Video Marketing Case Studies You Must Look at - Videowise26 Video Marketing Examples to Inspire Your Own Store’s Korean Retailers Turn to",
+      "url": "https://videowise.com/blog/video-marketing-case-studies",
+      "domain": "videowise.com",
+      "snippet": "Sep 21, 2026 · Learn from ecommerce video marketing case studies: see real tactics, results, and takeaways brands use. Sep 21, 2026 · See concrete video marketing examples that drive ecommerce engagement, conversions, and loyalty, plus tips on what makes each approach effective.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 7,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-082f9f6170",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "market_news",
+        "tech_tools",
+        "korea",
+        "future_signals"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 도입 사례",
+      "title": "2026 라이브커머스 트렌드: 지금 뜨는 국내 라이브·숏폼 활용법 (feat",
+      "url": "https://imweb.me/blog?idx=520",
+      "domain": "imweb.me",
+      "snippet": "3 days ago · 라이브커머스, 어떻게 활용할까? 국내 기업 사례로 보는 2026 트렌드국내 라이브커머스 시장의 성장세가 심상치 않아요. 지난해 시장 규모는 전년 대비 35% 늘어난 4조 7,000억 원, 올해는 6조 원을 넘어설 전망입니다. 홈쇼핑과 대형 커머스 플랫폼뿐 아니라 브랜드.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 5,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-005f064065",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 도입 사례",
+      "title": "SKB \"B tv 핫딜, TV 속 숏폼 커머스로 우뚝\" - 아시아에이",
+      "url": "https://www.asiaa.co.kr/news/articleView.html?idxno=264559",
+      "domain": "asiaa.co.kr",
+      "snippet": "2 days ago · [아시아에이=강민수 기자] SK브로드밴드는 유료방송 업계 첫 선보인 TV 기반 숏폼 커머스 서비스 ‘B tv 핫딜’이 론칭 10개월 만에 누적 판매액 100억 원.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-f6e16b5f83",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases",
+        "korea"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 도입 사례",
+      "title": "쿠팡, ‘쿠팡쇼츠’로 숏폼 커머스 승부수 < 유통·서비스 < 기사",
+      "url": "https://www.smedaily.co.kr/news/articleView.html?idxno=363022",
+      "domain": "smedaily.co.kr",
+      "snippet": "Sep 11, 2026 · 경쟁사들의 숏폼 커머스 확장도 빨라지고 있다. 네이버는 숏폼 서비스 '클립'의 크리에이터 선발 규모를 최대 2만 명으로 늘리고 활동 기간도 최장 11개월로 확대했다. 콘텐츠 제작을 돕는 'AI 에디터'를 연내 도입하고 클립탭 개편도 예고하는 등 창작자 생태계 강화에 힘을 싣고 있다. 클립은 지난해.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 4,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-b6144a7eaf",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 도입 사례",
+      "title": "홈쇼핑 지고 숏폼 커머스 뜨나 B tv 핫딜, 누적 판매액 100억원",
+      "url": "https://www.lcnews.co.kr/news/articleView.html?idxno=209023",
+      "domain": "lcnews.co.kr",
+      "snippet": "2 days ago · SK브로드밴드는 TV 기반 숏폼 커머스 서비스 ‘B tv 핫딜’의 누적 판매액이 100억원을 넘어섰다고 30일 밝혔다. B tv 핫딜은 지난해 11월 서비스를 시작해 올해 6월 누적 판매액 50억원을 돌파했다. 이후 약 3개월 만에 추가로 50억원을 기록했다.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 7,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-ada94fd724",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 개념 정리",
+      "title": "2026년 라이브 커머스 실무 A to Z: 기획부터 숏폼 재활용, 리마케팅",
+      "url": "https://video.ampm.co.kr/video/4587",
+      "domain": "video.ampm.co.kr",
+      "snippet": "Sep 8, 2026 · 2026년 라이브 커머스 운영을 준비하는 브랜드와 실무자를 위해, 방송 기획 단계부터 상품 구성, 혜택 설계, 진행 방식, 시청자 유입 전략까지 전반적인 운영 흐름을 정리한 콘텐츠입니다. 또한 라이브 종료 후 영상을 숏폼 콘텐츠로 재가공해 추가 노출을 확보하고, 방송 시청자와 구매 이탈.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-76083cdd87",
+      "lens": "definition",
+      "lenses": [
+        "definition",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce regulation compliance 2026",
+      "title": "[Definitive Guide] Corporate Use of Short-Form Video Marketing",
+      "url": "https://note.com/s_line/n/n79b8f3942a08",
+      "domain": "note.com",
+      "snippet": "Sep 15, 2026 · As of 2026, short-form video is the fastest-growing format in corporate digital marketing, posting videos will not yield results. e-commerce (social commerce).",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 12,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-7f4e05209e",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 국내 기업",
+      "title": "SKB 숏폼 커머스 '핫딜', 누적 판매 100억 돌파",
+      "url": "https://news.bizwatch.co.kr/article/mobile/2026/09/30/0005",
+      "domain": "news.bizwatch.co.kr",
+      "snippet": "2 days ago · SK브로드밴드는 유료방송 업계 최초로 선보인 TV기반 숏폼 커머스 서비스 'B tv 핫딜'이 출시 10개월만에 누적 판매액 100억원을 돌파했다고 30일 밝혔다. 지난해 11월 서비스를 시작.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 6,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-92259bf7e7",
+      "lens": "korea",
+      "lenses": [
+        "korea"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 국내 기업",
+      "title": "GLOBAL INFLUENCER EXPO 2026 — KOREA - Threads",
+      "url": "https://www.threads.com/@withkorea24/post/DdirZeSk5EZ/global-influencer-expo-2026-koreaan-international-event-bringing-together-influe",
+      "domain": "threads.com",
+      "snippet": "Sep 21, 2026 · K-FOOD · K-BEAUTY · K-PET 라이브커머스 · 숏폼 챌린지 GIE는 기업·인플루언서·바이어를 하나로 연결해 수출까지 완결하는 국내 유일의 전시회입니다.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-9bbf06c507",
+      "lens": "market_news",
+      "lenses": [
+        "market_news",
+        "tech_tools",
+        "future_signals"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce risks challenges",
+      "title": "Short Video Platform Market Size, Share, Report, Forecast 2035",
+      "url": "https://www.marketresearchfuture.com/reports/short-video-platform-market-26699",
+      "domain": "marketresearchfuture.com",
+      "snippet": "Sep 17, 2026 · In the Short Video Platform Market, the content format segment is diversified, featuring short-form videos, live streaming, long-form videos, and livestreaming commerce.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 7,
+      "confidence": 0.74,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-c71bd8c755",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "arxiv",
+      "query": "short-form video commerce",
+      "title": "Click-to-Ask: An AI Live Streaming Assistant with Offline Copywriting and Online Interactive QA",
+      "url": "http://arxiv.org/abs/2603.18649v1",
+      "domain": "arxiv.org",
+      "snippet": "Live streaming commerce has become a prominent form of broadcasting in the modern era. To facilitate more efficient and convenient product promotions for streamers, we present Click-to-Ask, an AI-driven assistant for live streaming commerce with complementary offline and online.",
+      "published": "2026-03-19",
+      "relevance": 0.5,
+      "freshness": 0.501,
+      "corroboration": 2,
+      "confidence": 0.73,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-2177c81d84",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals",
+        "tech_tools"
+      ],
+      "source_type": "arxiv",
+      "query": "short-form video commerce",
+      "title": "Narrative Weaver: Towards Controllable Long-Range Visual Consistency with Multi-Modal Conditioning",
+      "url": "http://arxiv.org/abs/2603.06688v2",
+      "domain": "arxiv.org",
+      "snippet": "We present \"Narrative Weaver\", a novel framework that addresses a fundamental challenge in generative AI: achieving multi-modal controllable, long-range, and consistent visual content generation.",
+      "published": "2026-03-04",
+      "relevance": 1.0,
+      "freshness": 0.457,
+      "corroboration": 0,
+      "confidence": 0.719,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-a27f355679",
+      "lens": "korea",
+      "lenses": [
+        "korea"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce tools platform 2026",
+      "title": "Korean Retailers Turn to Shows and AI in Short-Form Video",
+      "url": "https://en.sedaily.com/finance/2026/09/15/korean-retailers-turn-to-shows-and-ai-in-short-form-video",
+      "domain": "en.sedaily.com",
+      "snippet": "Sep 15, 2026 · Korean retailers including Coupang, GS Shop and CJ Onstyle are expanding short-form video commerce with AI tools and variety-show content.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-a89dd22cde",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "숏폼 커머스 개념 정리",
+      "title": "라이브 커머스 숏폼 재활용 전략: 3시간 방송을 전환 자산으로 만드는",
+      "url": "https://marketing-log.tistory.com/entry/라이브-커머스-숏폼-재활용-전략-3시간-방송을-전환-자산으로-만드는-방법",
+      "domain": "marketing-log.tistory.com",
+      "snippet": "Sep 16, 2026 · 라이브 커머스 숏폼 재활용 전략: 3시간 방송을 전환 자산으로 만드는 방법 라이브 커머스 숏폼 재활용 전략은 긴 방송 원본에서 구매 의도와 신뢰 형성 신호가 확인된 장면을 선별해, 채널별 세로형 콘텐츠로 재구성하는 운영 방식입니다.",
+      "published": "",
+      "relevance": 1.0,
+      "freshness": 0.5,
+      "corroboration": 1,
+      "confidence": 0.69,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-a8b6d3e136",
+      "lens": "tech_tools",
+      "lenses": [
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce tools platform 2026",
+      "title": "Video Commerce Platform: How to Choose the Right One in 2026",
+      "url": "https://blog.wcart.io/video-commerce",
+      "domain": "blog.wcart.io",
+      "snippet": "4 days ago · Compare video commerce platform by features, integrations and pricing model. See how shoppable and live video tools work and how to pick one.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-1076c7577c",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce tools platform 2026",
+      "title": "Short-Form Video for Small Businesses: What Works in 2026",
+      "url": "https://primediamarketing.com/short-form-video-small-businesses",
+      "domain": "primediamarketing.com",
+      "snippet": "4 days ago · Short-form video for small businesses works best when it looks human. Our 2026 guide covers what gets watched, which platforms matter and how to start.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-bb5d980ab4",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "what is short-form video commerce",
+      "title": "Short-Form Video Marketing: A Complete Guide for Businesses",
+      "url": "https://www.linkedin.com/pulse/short-form-video-marketing-complete-guide-businesses-2026-ysnee",
+      "domain": "linkedin.com",
+      "snippet": "Short-form video marketing is the practice of using those videos deliberately, as part of a business's marketing, to reach a defined audience and achieve a defined outcome.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 5,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-788b5d4b1b",
+      "lens": "definition",
+      "lenses": [
+        "definition"
+      ],
+      "source_type": "web",
+      "query": "what is short-form video commerce",
+      "title": "Short-Form Video Marketing: A Complete Guide to Growing Your",
+      "url": "https://groweb.in/short-form-video-marketing-a-complete-guide-to-growing-your-brand-in-2026",
+      "domain": "groweb.in",
+      "snippet": "4 days ago · What Is Short-Form Video Marketing? Short-form video marketing is the practice of using brief, engaging videos to promote a brand, product, service, or idea.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 7,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-6e2249a30e",
+      "lens": "definition",
+      "lenses": [
+        "definition",
+        "tech_tools"
+      ],
+      "source_type": "web",
+      "query": "what is short-form video commerce",
+      "title": "Why Short-Form Video Still Dominates Digital Marketing",
+      "url": "https://adsyzygy.com/blog/2026/09/09/why-short-form-video-still-dominates-digital-marketing",
+      "domain": "adsyzygy.com",
+      "snippet": "Sep 9, 2026 · What Is Short-Form Video Marketing? Short-form video marketing refers to using brief video content to promote a brand, product, service, idea, or personality. These videos are generally designed for mobile viewing and are commonly presented in a vertical format.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 10,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-241c8096ec",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "web",
+      "query": "what is short-form video commerce",
+      "title": "Short-Form Video Marketing 2026: Is It Still Worth Investing?",
+      "url": "https://myadjournal.com/digital-marketing/short-form-video-marketing-in-2026-is-it-still-worth-investing-in",
+      "domain": "myadjournal.com",
+      "snippet": "Sep 5, 2026 · Discover why short-form video marketing remains powerful in 2026 and learn how brands can use video content, social media, AI, and storytelling to drive growth.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 9,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-70592c220f",
+      "lens": "use_cases",
+      "lenses": [
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce case study marketing",
+      "title": "26 Video Marketing Examples to Inspire Your Own Store’s",
+      "url": "https://videowise.com/blog/video-marketing-examples",
+      "domain": "videowise.com",
+      "snippet": "Sep 21, 2026 · See concrete video marketing examples that drive ecommerce engagement, conversions, and loyalty, plus tips on what makes each approach effective.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 2,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-fac6b2455f",
+      "lens": "market_news",
+      "lenses": [
+        "market_news"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce news 2026",
+      "title": "Social Media Marketing Updates 2026: Key Trends Every",
+      "url": "https://sharkxco.com/social-media-marketing-updates-2026-key-trends-every-business-should-know",
+      "domain": "sharkxco.com",
+      "snippet": "Sep 22, 2026 · 1. AI Is Transforming Social Media Marketing · 2. Short-Form Video Continues to Dominate · 3. Authentic Content Builds More Trust · 4. Community Engagement Is More.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 11,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-13017b57bb",
+      "lens": "risk_regulation",
+      "lenses": [
+        "risk_regulation"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce regulation compliance 2026",
+      "title": "[PDF] Affiliate Marketing Checklist 2026 - adventist.org.ws",
+      "url": "https://adventist.org.ws/content/docs/XpV9467biJ7a/Affiliate_Marketing_Checklist_2026",
+      "domain": "adventist.org.ws",
+      "snippet": "2 days ago · The 2026 checklist must include updated FTC disclosure mandates that require clear, prominent affiliate link s including short-form video,.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 5,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-bfd4c1ff96",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce research",
+      "title": "Factors Influencing Consumer Attitudes towards Short-Form",
+      "url": "https://www.sciencedirect.com/science/article/abs/pii/S1875952126000820",
+      "domain": "sciencedirect.com",
+      "snippet": "3 days ago · This research seeks to investigate both consumer attitudes toward addiction to short-form video platforms and their desire to use them. Also, this study.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-0a2f742060",
+      "lens": "future_signals",
+      "lenses": [
+        "future_signals"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce research",
+      "title": "(PDF) Research on the Impact of Short-Form Video Advertising",
+      "url": "https://www.academia.edu/176562233/Research_on_the_Impact_of_Short_Form_Video_Advertising_on_Social_Media_on_the_Purchase_Intention_of_Gen_Z_in_Vietnam",
+      "domain": "academia.edu",
+      "snippet": "18 hours ago · This study aims to investigate the impact of informativeness, entertainment, credibility, social interaction, incentives and irritation of short-form video.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 3,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    },
+    {
+      "id": "ev-7edcf5a820",
+      "lens": "market_news",
+      "lenses": [
+        "market_news",
+        "use_cases"
+      ],
+      "source_type": "web",
+      "query": "short-form video commerce research",
+      "title": "How Short-Form Video Is Changing the Way Businesses Build",
+      "url": "https://www.linkedin.com/pulse/how-short-form-video-changing-way-businesses-build-brands-pxwpf",
+      "domain": "linkedin.com",
+      "snippet": "7 days ago · HubSpot's 2026 State of Marketing report found that short-form video is the highest-ROI media format reported by marketers, with 48.6% ranking it among their.",
+      "published": "",
+      "relevance": 0.5,
+      "freshness": 0.5,
+      "corroboration": 10,
+      "confidence": 0.64,
+      "is_new": true,
+      "meta": {}
+    }
+  ]
+}

@@ -7,13 +7,13 @@
 
 | topic_key | 요약 | 갱신 |
 |-----------|------|------|
-| ai_ide | 2026 AI·마케팅 실무 인사이트 | 2026-07-11 (streak 1d) |
-| general | 국내 B2B AI 도입·예산 승인 | 2026-07-13 (streak 5d) |
-| korea_ax | 한국 AX 전환 — 교육·FAQ·사례 중심 | 2026-07-13 (streak 1d) |
-| llm_anthropic | Claude 엔터프라이즈 — 거버넌스·컨텍스트 | 2026-07-13 (streak 14d) |
-| llm_google | Google Gemini 업데이트 — AEO·Workspace 연동 | 2026-07-13 (streak 5d) |
-| llm_perplexity | Perplexity·AI 검색(AEO) 최적화 실무 | 2026-07-13 (streak 2d) |
-| workspace_agents | 2026 AI·마케팅 실무 인사이트 | 2026-07-13 (streak 6d) |
+| ai_ide | 이번 주 B2B AI 실무 신호 | 2026-07-31 (streak 1d) |
+| general | 국내 B2B AI 도입·예산 승인 | 2026-10-02 (streak 1d) |
+| korea_ax | 한국 AX 전환 — 교육·FAQ·사례 중심 | 2026-08-09 (streak 1d) |
+| llm_anthropic | Claude 엔터프라이즈 — 거버넌스·컨텍스트 | 2026-09-14 (streak 1d) |
+| llm_google | Google Gemini 업데이트 — AEO·Workspace 연동 | 2026-08-09 (streak 1d) |
+| llm_perplexity | Perplexity·AI 검색(AEO) 최적화 실무 | 2026-08-09 (streak 1d) |
+| workspace_agents | OpenAI ChatGPT 광고 도입 — B2B 마케팅 영향 | 2026-08-07 (streak 3d) |
 
 ## Entities
 

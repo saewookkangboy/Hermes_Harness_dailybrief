@@ -1,0 +1,122 @@
+{
+  "topic": "CDP 도입 방법",
+  "stamp": "2026-10-02",
+  "predictions": [
+    {
+      "horizon": "now",
+      "label": "Now (0–6개월)",
+      "statement": "앞으로 6개월 안에는 'CDP 도입'의 사례·Use case 신호가 실무 의사결정으로 이어질 가능성이 커요. 대표 근거는 'Zeotap launches Open CDP: the first fully composable CDP that runs on open-source compute and the customer's own lakehouse — sovereign by'예요.",
+      "signals": [
+        {
+          "title": "Zeotap launches Open CDP: the first fully composable CDP that runs on open-source compute and the customer's own lakehouse — sovereign by",
+          "url": "https://markets.businessinsider.com/news/stocks/zeotap-launches-open-cdp-the-first-fully-composable-cdp-that-runs-on-open-source-compute-and-the-customer-s-own-lakehouse-sovereign-by-design-1036547781",
+          "lens": "use_cases"
+        },
+        {
+          "title": "CDP Industry Statistics 2026: Market Size & Trends",
+          "url": "https://cdp.com/basics/cdp-industry-statistics",
+          "lens": "market_news"
+        },
+        {
+          "title": "CDP market in 2026: key figures, trends and growth - DinMo",
+          "url": "https://www.dinmo.com/cdp/solutions/cdp-market",
+          "lens": "use_cases"
+        }
+      ],
+      "confidence": 0.8,
+      "confidence_label": "높음"
+    },
+    {
+      "horizon": "next",
+      "label": "Next (6–18개월)",
+      "statement": "6~18개월 사이에는 도구·플랫폼 통합 역량이 'CDP 도입' 성과 격차를 만들 거예요. 'Tracardi/tracardi' 같은 신호가 그 방향을 보여 줘요.",
+      "signals": [
+        {
+          "title": "Tracardi/tracardi",
+          "url": "https://github.com/Tracardi/tracardi",
+          "lens": "tech_tools"
+        },
+        {
+          "title": "rudderlabs/rudder-sdk-js",
+          "url": "https://github.com/rudderlabs/rudder-sdk-js",
+          "lens": "tech_tools"
+        },
+        {
+          "title": "What Is a Customer Data Platform? CDP Guide [2026]",
+          "url": "https://cdp.com/basics/what-is-a-customer-data-platform-cdp",
+          "lens": "tech_tools"
+        }
+      ],
+      "confidence": 0.72,
+      "confidence_label": "높음"
+    },
+    {
+      "horizon": "future",
+      "label": "Future (18–36개월)",
+      "statement": "18~36개월 뒤 'CDP 도입'의 판도는 open-source 같은 신규 용어에서 먼저 드러날 수 있어요. 초기 단서는 'Customer Data Platform Market Size, Share, Trends & Forecast What Is a Customer Data Platform?'예요.",
+      "signals": [
+        {
+          "title": "Customer Data Platform Market Size, Share, Trends & Forecast What Is a Customer Data Platform?",
+          "url": "https://www.fortunebusinessinsights.com/industry-reports/customer-data-platform-market-100633",
+          "lens": "future_signals"
+        },
+        {
+          "title": "Adobe Customer Data Platform Trends Report 2026",
+          "url": "https://business.adobe.com/resources/sdk/agentic-era-for-cdps.html",
+          "lens": "future_signals"
+        },
+        {
+          "title": "Show HN: Blueshift – Customer Data Platform (CDP) for Marketing Applications",
+          "url": "https://app.getblueshift.com/users/sign_up",
+          "lens": "tech_tools"
+        }
+      ],
+      "confidence": 0.55,
+      "confidence_label": "보통"
+    }
+  ],
+  "watchlist": [
+    "약한 신호 'open-source' (2개 도메인)"
+  ],
+  "weak_signals": [
+    {
+      "term": "open-source",
+      "domains": 2,
+      "share": 0.11,
+      "freshness": 0.75
+    }
+  ],
+  "graph_signals": [],
+  "lens_trend": [],
+  "axes": {
+    "x": "퍼스트파티 데이터 성숙도",
+    "y": "개인정보 규제"
+  },
+  "scenarios": [
+    {
+      "name": "통합 프로필 · 동의 기반 활용 확대",
+      "desc": "퍼스트파티 데이터 성숙도는 통합 프로필, 개인정보 규제는 동의 기반 활용 확대 쪽으로 가는 경우예요. 먼저 실험한 팀이 데이터와 노하우를 쌓아 격차를 벌려요.",
+      "prepare": "Quick Win 자동화를 30일 안에 파일럿으로 돌려요."
+    },
+    {
+      "name": "통합 프로필 · 규제 강화",
+      "desc": "퍼스트파티 데이터 성숙도는 통합 프로필, 개인정보 규제는 규제 강화 쪽으로 가는 경우예요. 빠르게 도입하더라도 승인·기록 체계가 없으면 리스크가 커져요.",
+      "prepare": "HITL 승인 단계와 감사 로그를 먼저 갖춰요."
+    },
+    {
+      "name": "데이터 분절 · 동의 기반 활용 확대",
+      "desc": "퍼스트파티 데이터 성숙도는 데이터 분절, 개인정보 규제는 동의 기반 활용 확대 쪽으로 가는 경우예요. 큰 투자보다 저비용 실험을 꾸준히 이어 가는 편이 유리해요.",
+      "prepare": "효율 개선 과제부터 작은 자동화를 쌓아요."
+    },
+    {
+      "name": "데이터 분절 · 규제 강화",
+      "desc": "퍼스트파티 데이터 성숙도는 데이터 분절, 개인정보 규제는 규제 강화 쪽으로 가는 경우예요. 관망하면서 규제 대응 역량을 먼저 갖추는 게 안전해요.",
+      "prepare": "리스크 체크리스트와 데이터 거버넌스를 정비해요."
+    }
+  ],
+  "actions": [
+    "측정·분석: 'CDP 도입' 파일럿 범위를 정하고 '리포트 작성 시간·이상 탐지 리드타임' 기준선을 이번 주에 기록해요.",
+    "최적화·개인화: 'CDP 도입' 파일럿 범위를 정하고 '전환율·ROAS·CTOR 개선폭' 기준선을 이번 주에 기록해요.",
+    "콘텐츠 제작: 'CDP 도입' 파일럿 범위를 정하고 '에셋당 제작 시간·변형 수' 기준선을 이번 주에 기록해요."
+  ]
+}

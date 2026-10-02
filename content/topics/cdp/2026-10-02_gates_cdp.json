@@ -1,0 +1,129 @@
+{
+  "passed": true,
+  "summary": "relevance=PASS · coverage=PASS · diversity=PASS · blueprint=PASS · future=PASS · channel=PASS · validate=PASS",
+  "results": [
+    {
+      "name": "relevance",
+      "passed": true,
+      "blocking": true,
+      "detail": "관련 근거 26/60건 (최소 8)",
+      "warnings": [],
+      "metrics": {
+        "relevant": 26,
+        "raw": 60,
+        "ratio": 0.433
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "coverage",
+      "passed": true,
+      "blocking": true,
+      "detail": "렌즈 5/7 커버 (최소 4)",
+      "warnings": [],
+      "metrics": {
+        "covered": [
+          "definition",
+          "future_signals",
+          "market_news",
+          "tech_tools",
+          "use_cases"
+        ],
+        "lens_counts": {
+          "use_cases": 24,
+          "tech_tools": 22,
+          "market_news": 6,
+          "definition": 5,
+          "future_signals": 2
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "diversity",
+      "passed": true,
+      "blocking": true,
+      "detail": "소스 유형 4종 · 도메인 18개 (최소 2종·5개)",
+      "warnings": [],
+      "metrics": {
+        "source_types": {
+          "news": 1,
+          "github": 2,
+          "web": 22,
+          "hn": 1
+        },
+        "domains": 18
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "blueprint",
+      "passed": true,
+      "blocking": true,
+      "detail": "자동화 기회 6개 (최소 4)",
+      "warnings": [],
+      "metrics": {
+        "opportunities": 6
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "future",
+      "passed": true,
+      "blocking": true,
+      "detail": "예측 3개 · 액션 3개 (예측당 신호 ≥2)",
+      "warnings": [],
+      "metrics": {
+        "predictions": 3
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "channel",
+      "passed": true,
+      "blocking": true,
+      "detail": "blog 100 · linkedin 100 · newsletter 96 · instagram 96",
+      "warnings": [],
+      "metrics": {
+        "scores": {
+          "blog": {
+            "score": 100,
+            "min": 58,
+            "passed": true,
+            "issues": []
+          },
+          "linkedin": {
+            "score": 100,
+            "min": 60,
+            "passed": true,
+            "issues": []
+          },
+          "newsletter": {
+            "score": 96,
+            "min": 58,
+            "passed": true,
+            "issues": []
+          },
+          "instagram": {
+            "score": 96,
+            "min": 55,
+            "passed": true,
+            "issues": []
+          }
+        }
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "validate",
+      "passed": true,
+      "blocking": true,
+      "detail": "validate-output 6/6",
+      "warnings": [],
+      "metrics": {
+        "checked": 6
+      },
+      "status": "PASS"
+    }
+  ]
+}

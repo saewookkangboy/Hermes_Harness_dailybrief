@@ -1,0 +1,300 @@
+{
+  "topic": "숏폼 커머스",
+  "stamp": "2026-10-02",
+  "tools": [
+    {
+      "name": "Shopify Magic",
+      "url": "https://www.shopify.com/magic",
+      "stage": "production",
+      "note": "상품 설명·이미지 자동화",
+      "stage_label": "콘텐츠 제작",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "TikTok Symphony",
+      "url": "https://ads.tiktok.com/business/en/symphony",
+      "stage": "production",
+      "note": "숏폼 크리에이티브 생성",
+      "stage_label": "콘텐츠 제작",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "Opus Clip",
+      "url": "https://www.opus.pro",
+      "stage": "production",
+      "note": "롱폼 → 숏폼 클리핑",
+      "stage_label": "콘텐츠 제작",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "네이버 쇼핑라이브",
+      "url": "https://shoppinglive.naver.com",
+      "stage": "distribution",
+      "note": "국내 라이브커머스",
+      "stage_label": "배포·채널 운영",
+      "origin": "도메인 특화"
+    },
+    {
+      "name": "Canva Magic Studio",
+      "url": "https://www.canva.com/magic",
+      "note": "디자인 변형 대량 생성",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "Gemini (Nano Banana)",
+      "url": "https://gemini.google.com",
+      "note": "이미지 생성·편집",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "CapCut",
+      "url": "https://www.capcut.com",
+      "note": "숏폼 편집 자동화",
+      "stage": "production",
+      "stage_label": "콘텐츠 제작",
+      "origin": "공통"
+    },
+    {
+      "name": "Optimizely",
+      "url": "https://www.optimizely.com",
+      "note": "실험·개인화",
+      "stage": "optimization",
+      "stage_label": "최적화·개인화",
+      "origin": "공통"
+    },
+    {
+      "name": "Braze",
+      "url": "https://www.braze.com",
+      "note": "CRM 메시지 자동화",
+      "stage": "optimization",
+      "stage_label": "최적화·개인화",
+      "origin": "공통"
+    },
+    {
+      "name": "n8n",
+      "url": "https://n8n.io",
+      "note": "셀프호스팅 워크플로 자동화",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "Zapier",
+      "url": "https://zapier.com",
+      "note": "SaaS 연결 자동화",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "Buffer",
+      "url": "https://buffer.com",
+      "note": "소셜 예약 발행",
+      "stage": "distribution",
+      "stage_label": "배포·채널 운영",
+      "origin": "공통"
+    },
+    {
+      "name": "GA4",
+      "url": "https://analytics.google.com",
+      "note": "웹·앱 분석",
+      "stage": "measurement",
+      "stage_label": "측정·분석",
+      "origin": "공통"
+    },
+    {
+      "name": "Looker Studio",
+      "url": "https://lookerstudio.google.com",
+      "note": "대시보드",
+      "stage": "measurement",
+      "stage_label": "측정·분석",
+      "origin": "공통"
+    },
+    {
+      "name": "Perplexity",
+      "url": "https://www.perplexity.ai",
+      "note": "출처 기반 리서치",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "Google Trends",
+      "url": "https://trends.google.com",
+      "note": "검색 수요 추세",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "네이버 데이터랩",
+      "url": "https://datalab.naver.com",
+      "note": "국내 검색·쇼핑 트렌드",
+      "stage": "research",
+      "stage_label": "시장·고객 리서치",
+      "origin": "공통"
+    },
+    {
+      "name": "NotebookLM",
+      "url": "https://notebooklm.google.com",
+      "note": "자료 기반 기획 요약",
+      "stage": "planning",
+      "stage_label": "기획·전략",
+      "origin": "공통"
+    },
+    {
+      "name": "Claude",
+      "url": "https://claude.ai",
+      "note": "장문 브리프·전략 초안",
+      "stage": "planning",
+      "stage_label": "기획·전략",
+      "origin": "공통"
+    }
+  ],
+  "open_source": [
+    {
+      "name": "WANGLEVY9/VidForge",
+      "url": "https://github.com/WANGLEVY9/VidForge",
+      "stars": 114,
+      "language": "TypeScript",
+      "updated": "2026-09-30",
+      "freshness": 1.0,
+      "note": "Open-source AI pipeline for short-form commerce videos: multimodal analysis, RAG scripts, multi-agent orchestration, FFmpeg composition, and cost tracing."
+    }
+  ],
+  "papers": [
+    {
+      "title": "VCG: A Multimodal Retrieval Framework for E-Commerce Video Feeds under Extreme Cold-Start Conditions",
+      "url": "http://arxiv.org/abs/2606.19627v1",
+      "published": "2026-06-17",
+      "freshness": 0.77,
+      "note": "The digital commerce landscape is shifting from static, search-driven catalogs to dynamic, immersive video feeds. This transition introduces an ``extreme cold-start'' problem: unlike traditional items, new short-form videos lack the dense interaction history required for."
+    },
+    {
+      "title": "ViASNet: A Video Ad Saliency Network for Predicting Dynamic Saliency and Viewer Engagement",
+      "url": "http://arxiv.org/abs/2605.29302v1",
+      "published": "2026-05-28",
+      "freshness": 0.71,
+      "note": "The digital media landscape has seen a pervasive shift toward short-form video advertising on TV, social media and e-commerce platforms. The present study focuses on deep saliency prediction for short-form video advertising."
+    },
+    {
+      "title": "Click-to-Ask: An AI Live Streaming Assistant with Offline Copywriting and Online Interactive QA",
+      "url": "http://arxiv.org/abs/2603.18649v1",
+      "published": "2026-03-19",
+      "freshness": 0.501,
+      "note": "Live streaming commerce has become a prominent form of broadcasting in the modern era. To facilitate more efficient and convenient product promotions for streamers, we present Click-to-Ask, an AI-driven assistant for live streaming commerce with complementary offline and online."
+    },
+    {
+      "title": "Narrative Weaver: Towards Controllable Long-Range Visual Consistency with Multi-Modal Conditioning",
+      "url": "http://arxiv.org/abs/2603.06688v2",
+      "published": "2026-03-04",
+      "freshness": 0.457,
+      "note": "We present \"Narrative Weaver\", a novel framework that addresses a fundamental challenge in generative AI: achieving multi-modal controllable, long-range, and consistent visual content generation."
+    }
+  ],
+  "latest": [
+    {
+      "title": "B tv 핫딜, 출시 10개월 만에 누적 판매액 100억원 돌파",
+      "url": "https://www.yna.co.kr/view/AKR20260930052800017",
+      "source": "news",
+      "published": "2026-10-01",
+      "freshness": 1.0
+    },
+    {
+      "title": "How social commerce platforms are changing the retail marketing mix",
+      "url": "https://retailtimes.co.uk/how-social-commerce-platforms-are-changing-the-retail-marketing-mix",
+      "source": "news",
+      "published": "2026-09-29",
+      "freshness": 1.0
+    },
+    {
+      "title": "레비오사-모노키즈 맞손 실제 키즈모델 촬영 자산, AI 콘텐츠·해외 판매로 확장",
+      "url": "https://www.newstap.co.kr/news/articleView.html?idxno=335179",
+      "source": "news",
+      "published": "2026-09-24",
+      "freshness": 1.0
+    },
+    {
+      "title": "에피소드컴퍼니, 밸류업 계획 공시 \"내년 매출 1100억 원 달성\"",
+      "url": "https://www.msn.com/ko-kr/news/other/에피소드컴퍼니-밸류업-계획-공시-내년-매출-1100억-원-달성/ar-AA2dg8xp?ocid=BingNewsVerp",
+      "source": "news",
+      "published": "2026-10-01",
+      "freshness": 1.0
+    },
+    {
+      "title": "에피소드컴퍼니, 밸류업 발표 \"커머스 기반 내년 1100억 매출 목표\"",
+      "url": "https://www.msn.com/ko-kr/money/markets/에피소드컴퍼니-밸류업-발표-커머스-기반-내년-1100억-매출-목표/ar-AA2dft7k?ocid=BingNewsVerp",
+      "source": "news",
+      "published": "2026-10-01",
+      "freshness": 1.0
+    },
+    {
+      "title": "2026 라이브커머스 트렌드: 지금 뜨는 국내 라이브·숏폼 활용법 (feat",
+      "url": "https://imweb.me/blog?idx=520",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "SKB 숏폼 커머스 '핫딜', 누적 판매 100억 돌파",
+      "url": "https://news.bizwatch.co.kr/article/mobile/2026/09/30/0005",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    },
+    {
+      "title": "Short Video Platform Market Size, Share, Report, Forecast 2035",
+      "url": "https://www.marketresearchfuture.com/reports/short-video-platform-market-26699",
+      "source": "web",
+      "published": "",
+      "freshness": 0.5
+    }
+  ],
+  "learning": [
+    {
+      "name": "2026년 라이브 커머스 실무 A to Z: 기획부터 숏폼 재활용, 리마케팅",
+      "url": "https://video.ampm.co.kr/video/4587",
+      "note": "Sep 8, 2026 · 2026년 라이브 커머스 운영을 준비하는 브랜드와 실무자를 위해, 방송 기획 단계부터 상품 구성, 혜택 설계, 진행 방식, 시청자 유입 전략까지 전반적인 운영 흐름을 정리한 콘텐츠입니다. 또한 라이브 종료 후 영상을 숏폼 콘텐츠로 재가공해 추가 노출을 확보하고, 방송 시청자와 구매 이탈."
+    },
+    {
+      "name": "[Definitive Guide] Corporate Use of Short-Form Video Marketing",
+      "url": "https://note.com/s_line/n/n79b8f3942a08",
+      "note": "Sep 15, 2026 · As of 2026, short-form video is the fastest-growing format in corporate digital marketing, posting videos will not yield results. e-commerce (social commerce)."
+    },
+    {
+      "name": "라이브 커머스 숏폼 재활용 전략: 3시간 방송을 전환 자산으로 만드는",
+      "url": "https://marketing-log.tistory.com/entry/라이브-커머스-숏폼-재활용-전략-3시간-방송을-전환-자산으로-만드는-방법",
+      "note": "Sep 16, 2026 · 라이브 커머스 숏폼 재활용 전략: 3시간 방송을 전환 자산으로 만드는 방법 라이브 커머스 숏폼 재활용 전략은 긴 방송 원본에서 구매 의도와 신뢰 형성 신호가 확인된 장면을 선별해, 채널별 세로형 콘텐츠로 재구성하는 운영 방식입니다."
+    },
+    {
+      "name": "Google Skillshop",
+      "url": "https://skillshop.withgoogle.com",
+      "note": "광고·분석 공식 교육"
+    },
+    {
+      "name": "HubSpot Academy",
+      "url": "https://academy.hubspot.com",
+      "note": "인바운드·콘텐츠 마케팅"
+    },
+    {
+      "name": "DeepLearning.AI Short Courses",
+      "url": "https://www.deeplearning.ai/short-courses",
+      "note": "생성형 AI 실습"
+    },
+    {
+      "name": "Anthropic Docs",
+      "url": "https://docs.anthropic.com",
+      "note": "에이전트·프롬프트 설계"
+    },
+    {
+      "name": "OpenAI Cookbook",
+      "url": "https://cookbook.openai.com",
+      "note": "API 활용 예제"
+    }
+  ],
+  "freshness_avg": 0.69
+}
