@@ -58,7 +58,7 @@ else
   fi
   if ! command -v hermes >/dev/null 2>&1; then
     echo "⚠️  Hermes Agent 미설치 — 결정적 파이프라인만 사용 가능 (Telegram/Slack 커맨더 불가)" >&2
-  elif ! pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
+  elif ! pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' >/dev/null 2>&1; then
     echo "⚠️  Gateway 미실행 — Telegram 요청 불가" >&2
   fi
 fi

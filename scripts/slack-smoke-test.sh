@@ -141,8 +141,8 @@ fi
 # 6. gateway
 echo ""
 echo "[6/7] Gateway"
-if pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
-  pass "Gateway 실행 중 (PID $(pgrep -f 'hermes_cli.main gateway' | head -1))"
+if pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' >/dev/null 2>&1; then
+  pass "Gateway 실행 중 (PID $(pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' | head -1))"
 else
   fail "Gateway 미실행 — hermes gateway restart"
 fi

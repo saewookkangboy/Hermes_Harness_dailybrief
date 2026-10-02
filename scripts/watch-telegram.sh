@@ -311,7 +311,7 @@ done
 touch "$STUDIO_LOG" 2>/dev/null || true
 chmod +x "$SCRIPTS/telegram-notify.sh" "$SCRIPTS/telegram-post-sync.sh" 2>/dev/null || true
 
-if ! pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
+if ! pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' >/dev/null 2>&1; then
   echo "⚠️  Gateway 미실행 — Telegram 요청은 처리되지 않습니다." >&2
   echo "   hermes gateway restart" >&2
 fi

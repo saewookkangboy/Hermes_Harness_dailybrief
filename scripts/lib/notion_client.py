@@ -48,20 +48,31 @@ def save_state(state: dict) -> None:
     STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def setup_mcp(*, server_names: list[str] | None = None):
-    """Notion MCP registry — 기본은 notion만 연결 (PlayMCP 등 미사용 서버 스킵)."""
+def _hermes_mcp_api():
+    """(load_mcp_config, discover_mcp_tools, register_mcp_servers) — Hermes Agent는 sys.path 삽입 후에만 import 가능."""
     sys.path.insert(0, str(HERMES_AGENT))
     from dotenv import load_dotenv
 
     load_dotenv(Path.home() / ".hermes" / ".env")
-    from tools.registry import registry
-
     # Hermes ≥0.21 splits mcp_tool into *_config / *_discovery; ≤0.18 exposes them on mcp_tool.
     try:
         from tools.mcp_tool_config import _load_mcp_config
         from tools.mcp_tool_discovery import discover_mcp_tools, register_mcp_servers
     except ImportError:
         from tools.mcp_tool import _load_mcp_config, discover_mcp_tools, register_mcp_servers
+    return _load_mcp_config, discover_mcp_tools, register_mcp_servers
+
+
+def configured_mcp_servers() -> list[str]:
+    """~/.hermes/config.yaml 에 등록된 MCP 서버 이름."""
+    load_mcp_config, _, _ = _hermes_mcp_api()
+    return sorted(load_mcp_config())
+
+
+def setup_mcp(*, server_names: list[str] | None = None):
+    """Notion MCP registry — 기본은 notion만 연결 (PlayMCP 등 미사용 서버 스킵)."""
+    _load_mcp_config, discover_mcp_tools, register_mcp_servers = _hermes_mcp_api()
+    from tools.registry import registry
 
     if os.environ.get("HERMES_MCP_DISCOVER_ALL", "0") == "1":
         discover_mcp_tools()

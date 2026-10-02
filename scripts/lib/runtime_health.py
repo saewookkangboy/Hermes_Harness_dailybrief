@@ -28,7 +28,7 @@ def _watch_count() -> int:
 
 
 def check_gateway() -> str | None:
-    if _pgrep(r"hermes_cli\.main gateway"):
+    if _pgrep(r"hermes_cli\.main gateway|gateway run( |$)"):
         return None
     return "❌ Hermes Gateway 미실행 — hermes gateway restart"
 

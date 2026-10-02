@@ -70,7 +70,7 @@ hermes gateway restart
 sleep 3
 
 echo "[4/4] 연결 확인..."
-if pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
+if pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' >/dev/null 2>&1; then
   echo "  ✓ Gateway 실행 중"
 else
   echo "  ⚠️  Gateway 확인 필요: hermes gateway status"

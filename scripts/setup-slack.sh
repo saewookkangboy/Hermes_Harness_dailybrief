@@ -118,8 +118,8 @@ hermes gateway restart
 # 5. 연결 확인
 echo "[5/6] Gateway 상태 확인..."
 sleep 3
-if pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
-  echo "  ✓ Gateway 실행 중 (PID: $(pgrep -f 'hermes_cli.main gateway'))"
+if pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' >/dev/null 2>&1; then
+  echo "  ✓ Gateway 실행 중 (PID: $(pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' | head -1))"
 else
   echo "  ⚠️  Gateway 미실행 — hermes gateway status 확인"
 fi

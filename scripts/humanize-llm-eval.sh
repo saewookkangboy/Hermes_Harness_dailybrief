@@ -77,8 +77,17 @@ if echo "$MCP_NOISE" | grep -qiE "MCP server 'playmcp'|playmcp.*failed|unhandled
 else
   record PASS "notion_mcp_playmcp_suppressed"
 fi
+MCP_SKIPPABLE=$(RUN_PY - <<PY 2>/dev/null
+import sys
+sys.path.insert(0, "$DIR")
+from lib.notion_client import configured_mcp_servers
+print(" ".join(s for s in configured_mcp_servers() if s != "notion"))
+PY
+) || MCP_SKIPPABLE="?"
 if echo "$MCP_NOISE" | grep -q "MCP skip servers"; then
   record PASS "notion_mcp_skip_log"
+elif [[ -z "$MCP_SKIPPABLE" ]]; then
+  record PASS "notion_mcp_skip_log_na"
 else
   record FAIL "notion_mcp_skip_log"
 fi

@@ -30,12 +30,12 @@ fi
 # 3. Hermes Gateway 확인/시작
 if ! command -v hermes >/dev/null 2>&1; then
   echo "[3/4] Hermes Agent 미설치 — Gateway 스킵 (결정적 파이프라인만 사용 가능)"
-elif ! pgrep -f "hermes_cli.main gateway" >/dev/null 2>&1; then
+elif ! pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' >/dev/null 2>&1; then
   echo "[3/4] Hermes Gateway 시작..."
   hermes gateway run --replace &
   sleep 5
 else
-  echo "[3/4] Hermes Gateway 이미 실행 중 (PID: $(pgrep -f 'hermes_cli.main gateway'))"
+  echo "[3/4] Hermes Gateway 이미 실행 중 (PID: $(pgrep -f 'hermes_cli\.main gateway|gateway run( |$)' | head -1))"
 fi
 
 # 4. Telegram 모니터 (진행 표시 — Notion sync는 슬래시/파이프라인 담당)
